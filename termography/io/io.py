@@ -1,11 +1,13 @@
 import os
 import cv2
+from termography import get_data_dir
+from .modes import Modality
 
 
 class ImageLoader:
     def __init__(self, image_path, mode=None):
         """
-        Initializes and loades the image associated to the file indicated by the path passed as argument.
+        Initializes and loads the image associated to the file indicated by the path passed as argument.
         :param image_path: Absolute path to the image file to be loaded.
         :param mode: Modality to be used when laoding the image.
         """
@@ -40,7 +42,7 @@ class ImageLoader:
     @mode.setter
     def mode(self, mode):
         if mode is None:
-            self.__mode = cv2.IMREAD_COLOR
+            self.__mode = Modality.DEFAULT
         else:
             self.__mode = mode
 
