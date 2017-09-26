@@ -31,6 +31,35 @@ class LineDetector:
                                      minLineLength=self.line_detector_params.min_line_length,
                                      maxLineGap=self.line_detector_params.max_line_gap)
 
+    def mergeCloseLines(self, min_distance, min_angle):
+        close_pairs = []
+        for i in range(len(self.lines)):
+            start_1 = self.lines[i][0, 0:2]
+            end_1 = self.lines[i][0, 2:4]
+            v_1 = end_1 - start_1
+            for j in range(i+1, len(self.lines)):
+                start_2 = self.lines[j][0, 0:2]
+                end_2 = self.lines[j][0, 2:4]
+                v_2 = end_2 - start_2
+
+                angle = np.arccos(np.abs(np.dot(v_1, v_2) / (np.linalg.norm(v_1) * np.linalg.norm(v_2))))
+
+                if angle > min_angle:
+                    continue
+
+                dist_ss = np.linalg.norm(start_1 - start_2)
+                dist_se = np.linalg.norm(start_1 - end_2)
+                dist_ee = np.linalg.norm(end_1 - end_2)
+                if dist_ss > min_distance and dist_se > min_distance and dist_ee > min_distance:
+                    continue
+
+                close_pairs.append([i, j])
+
+        close_pairs = sorted(close_pairs)
+        print(close_pairs)
+
+
+
     @property
     def input_image(self):
         return self.__input_image

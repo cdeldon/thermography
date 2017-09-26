@@ -27,6 +27,10 @@ if __name__ == '__main__':
     line_detector = LineDetector(input_image=canny, line_detector_params=line_detector_params)
     line_detector.detect()
 
+    line_detector.mergeCloseLines(min_distance=25, min_angle=np.pi / 180 * 5)
+
+
+
     edges = cv2.cvtColor(canny, cv2.COLOR_GRAY2BGR)
 
     for line in line_detector.lines:
