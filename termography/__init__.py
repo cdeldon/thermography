@@ -1,6 +1,1 @@
-import os
-
-TERMOGRAPHY_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-def get_termography_root_dir():
-    return TERMOGRAPHY_ROOT_DIR
+from .settings import get_termography_root_dir, get_settings_dir, get_data_dir, set_data_dir

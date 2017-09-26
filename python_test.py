@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import os
 
+
+
 DATA_PATH = os.path.join(os.curdir, "data")
 IN_FILE_NAME = os.path.join(DATA_PATH, "checkerboard.jpg")
 OUT_FILE_NAME = os.path.join(DATA_PATH, "checkerboard_lines.jpg")
