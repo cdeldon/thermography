@@ -113,12 +113,14 @@ class SegmentClusterer:
             for _index_i in range(len(selected_indices)):
                 index_i = selected_indices[_index_i]
                 segment_i = self.segments[index_i]
+                angle_i = tg.angle(segment_i[0:2], segment_i[2:4])
                 for _index_j in range(_index_i+1, len(selected_indices)):
                     index_j = selected_indices[_index_j]
                     segment_j = self.segments[index_j]
+                    angle_j = tg.angle(segment_j[0:2], segment_j[2:4])
 
                     dist = tg.min_distance(segment_i, segment_j)
-                    if dist < min_intra_distance:
+                    if dist < min_intra_distance and np.abs(angle_i - angle_j) < np.pi / 180 * 3:
                         invalid_indices.append(index_j)
 
         self.clusters = np.delete(self.clusters, invalid_indices)
