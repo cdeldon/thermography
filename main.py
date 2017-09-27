@@ -1,6 +1,6 @@
 import termography as tg
 from termography.io import ImageLoader
-from termography.detection import LineDetector, LineDetectorParams
+from termography.detection import LineDetector, LineDetectorParams, LineClusterer
 
 import cv2
 import numpy as np
@@ -9,7 +9,7 @@ import os
 if __name__ == '__main__':
     TERMOGRAPHY_ROOT_DIR = tg.get_termography_root_dir()
     tg.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/foto FLIR")
-    IN_FILE_NAME = os.path.join(tg.get_data_dir(), "Hotspots.jpg")
+    IN_FILE_NAME = os.path.join(tg.get_data_dir(), "Hotspots2.jpg")
 
     image_loader = ImageLoader(image_path=IN_FILE_NAME)
 
@@ -26,16 +26,19 @@ if __name__ == '__main__':
     line_detector_params.max_line_gap = 10
     line_detector = LineDetector(input_image=canny, line_detector_params=line_detector_params)
     line_detector.detect()
-    line_detector.cluster_lines(num_clusters=20, n_init=5)
+
+    line_clusterer = LineClusterer(input_lines=line_detector.lines)
+    line_clusterer.cluster_lines(num_clusters=20, n_init=5)
+    line_clusterer.plot_line_clusters()
 
     edges = cv2.cvtColor(canny, cv2.COLOR_GRAY2BGR)
 
-    for label in range(np.max(line_detector.clusters) + 1):
-        selected = line_detector.lines[label == line_detector.clusters]
+    for label in range(np.max(line_clusterer.clusters) + 1):
+        selected = line_clusterer.lines[label == line_clusterer.clusters]
         color = np.random.randint(0, 255, 3)
         color = (int(color[0]), int(color[1]), int(color[2]))
         for line in selected:
-            cv2.line(img=edges, pt1=(line[0, 0], line[0, 1]), pt2=(line[0, 2], line[0, 3]),
+            cv2.line(img=edges, pt1=(line[0], line[1]), pt2=(line[2], line[3]),
                      color=color, thickness=2, lineType=cv2.LINE_AA)
 
     cv2.imshow("Input", image_loader.image_raw)

@@ -2,8 +2,8 @@ import cv2
 import matplotlib.pylab as plt
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import normalize
-from mpl_toolkits.mplot3d import Axes3D
 
 
 class LineDetectorParams:
@@ -26,7 +26,6 @@ class LineDetector:
         self.line_detector_params = line_detector_params
         # Output "lines" is an array containing endpoints of detected line segments.
         self.lines = None
-        self.clusters = None
 
     def detect(self):
         # Run Hough on edge detected image.
@@ -35,34 +34,6 @@ class LineDetector:
                                      threshold=self.line_detector_params.min_num_votes,
                                      minLineLength=self.line_detector_params.min_line_length,
                                      maxLineGap=self.line_detector_params.max_line_gap)
-
-    def cluster_lines(self, num_clusters=15, n_init=10):
-        centers = []
-        angles = []
-        for line in self.lines:
-            pt1 = line[0][0:2]
-            pt2 = line[0][2:4]
-            center = (pt1 + pt2) * 0.5
-            centers.append(center)
-
-            if pt1[0] == pt2[0]:
-                angles.append(np.pi * 0.5)
-            else:
-                angle = np.arctan((pt1[1] - pt2[1]) / (pt1[0] - pt2[0]))
-                angles.append(angle)
-
-        centers = np.array(centers)
-        angles = np.array([angles])
-
-        features = np.hstack((centers, angles.T))
-        norm_features = normalize(features, axis=0)
-
-        self.clusters = KMeans(n_clusters=num_clusters, n_init=n_init, random_state=0).fit_predict(norm_features)
-
-    def clean_clusters(self, max_line_distance):
-        num_clusters = np.max(self.clusters)
-        for label in range(num_clusters + 1):
-            selected = self.lines[label == self.clusters]
 
     @property
     def input_image(self):
@@ -80,4 +51,6 @@ class LineDetector:
 
     @lines.setter
     def lines(self, lines):
+        if lines is not None:
+            lines = np.squeeze(lines)
         self.__lines = lines
