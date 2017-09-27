@@ -12,7 +12,7 @@ if __name__ == '__main__':
     # Data input parameters.
     TERMOGRAPHY_ROOT_DIR = tg.get_termography_root_dir()
     tg.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/foto RGB")
-    IN_FILE_NAME = os.path.join(tg.get_data_dir(), "DJI_0011.jpg")
+    IN_FILE_NAME = os.path.join(tg.get_data_dir(), "DJI_0015.jpg")
 
     # Input preprocessing.
     image_loader = ImageLoader(image_path=IN_FILE_NAME)
@@ -58,7 +58,7 @@ if __name__ == '__main__':
             cv2.line(img=edges, pt1=(line[0], line[1]), pt2=(line[2], line[3]),
                      color=color, thickness=1, lineType=cv2.LINE_AA)
 
-    segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 20)
+    segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 20, min_intra_distance=5)
     for label, color in zip(range(np.max(segment_clusterer.clusters) + 1), colors):
         selected = segment_clusterer.segments[label == segment_clusterer.clusters]
         for line in selected:

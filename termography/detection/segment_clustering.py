@@ -64,8 +64,10 @@ class SegmentClusterer:
             ax.scatter(self.segment_features[self.clusters == i, 0], self.segment_features[self.clusters == i, 1],
                        self.segment_features[self.clusters == i, 2])
 
-        plt.xticks(())
-        plt.yticks(())
+        ax.set_xlabel('X coordinate')
+        ax.set_ylabel('Y coordinate')
+        ax.set_zlabel('Angle')
+
         plt.title('Segment clustering, {} components'.format(np.max(self.clusters) + 1))
         plt.show()
 
@@ -87,8 +89,7 @@ class SegmentClusterer:
             mean_centers.append(mean_center)
         return np.array(mean_angles), np.array(mean_centers)
 
-    def clean_clusters(self, mean_angles, max_angle_variation_mean=np.pi / 180 * 20, max_intra_angle=0,
-                       min_intra_distance=0):
+    def clean_clusters_angle(self, mean_angles, max_angle_variation_mean):
         num_clusters = np.max(self.clusters)
         invalid_indices = []
         for label, mean_angle in zip(range(num_clusters + 1), mean_angles):
@@ -101,3 +102,32 @@ class SegmentClusterer:
         self.clusters = np.delete(self.clusters, invalid_indices)
         self.segments = np.delete(self.segments, invalid_indices, axis=0)
         self.segment_features = np.delete(self.segment_features, invalid_indices, axis=0)
+
+    def clean_clusters_too_close(self, min_intra_distance):
+        print(self.clusters)
+        num_clusters = np.max(self.clusters)
+        invalid_indices = []
+        for label in range(num_clusters + 1):
+            selected_indices = np.where(label == self.clusters)[0]
+            print(selected_indices)
+            for _index_i in range(len(selected_indices)):
+                index_i = selected_indices[_index_i]
+                segment_i = self.segments[index_i]
+                for _index_j in range(_index_i+1, len(selected_indices)):
+                    index_j = selected_indices[_index_j]
+                    segment_j = self.segments[index_j]
+
+                    dist = tg.min_distance(segment_i, segment_j)
+                    if dist < min_intra_distance:
+                        invalid_indices.append(index_j)
+
+        self.clusters = np.delete(self.clusters, invalid_indices)
+        self.segments = np.delete(self.segments, invalid_indices, axis=0)
+        self.segment_features = np.delete(self.segment_features, invalid_indices, axis=0)
+
+    def clean_clusters(self, mean_angles, max_angle_variation_mean=np.pi / 180 * 20, max_intra_angle=0,
+                       min_intra_distance=0):
+
+        self.clean_clusters_angle(mean_angles, max_angle_variation_mean)
+        self.clean_clusters_too_close(min_intra_distance)
+
