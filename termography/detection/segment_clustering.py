@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import normalize
+import termography as tg
 
 
 class SegmentClusterer:
@@ -57,7 +58,6 @@ class SegmentClusterer:
             self.clusters = best_gmm.predict(self.segment_features)
 
     def plot_segment_clusters(self):
-
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         for i in range(np.max(self.clusters) + 1):
@@ -66,7 +66,7 @@ class SegmentClusterer:
 
         plt.xticks(())
         plt.yticks(())
-        plt.title('Segment clustering, {} components'.format(np.max(self.clusters)))
+        plt.title('Segment clustering, {} components'.format(np.max(self.clusters) + 1))
         plt.show()
 
     def compute_cluster_mean(self):
@@ -78,19 +78,26 @@ class SegmentClusterer:
             angles = []
             centers = []
             for segment in selection:
-                angle = np.arctan2(segment[3]-segment[1], segment[2] - segment[0])
-                if angle > np.pi:
-                    print(angle)
-                    angle -= np.pi
+                angle = tg.angle(segment[0:2], segment[2:4])
                 angles.append(angle)
                 centers.append((segment[0:2] + segment[2:4]) * 0.5)
-            mean_angle = np.mean(angles)
+            mean_angle = np.median(angles)
             mean_angles.append(mean_angle)
             mean_center = np.mean(centers, axis=0)
             mean_centers.append(mean_center)
         return np.array(mean_angles), np.array(mean_centers)
 
-    def clean_clusters(self, max_line_distance):
+    def clean_clusters(self, mean_angles, max_angle_variation_mean=np.pi / 180 * 20, max_intra_angle=0,
+                       min_intra_distance=0):
         num_clusters = np.max(self.clusters)
-        for label in range(num_clusters + 1):
-            selected = self.segments[label == self.clusters]
+        invalid_indices = []
+        for label, mean_angle in zip(range(num_clusters + 1), mean_angles):
+            selected_indices = np.where(label == self.clusters)[0]
+            for index in selected_indices:
+                segment = self.segments[index]
+                angle = tg.angle(segment[0:2], segment[2:4])
+                if np.abs(angle - mean_angle) > max_angle_variation_mean:
+                    invalid_indices.append(index)
+        self.clusters = np.delete(self.clusters, invalid_indices)
+        self.segments = np.delete(self.segments, invalid_indices, axis=0)
+        self.segment_features = np.delete(self.segment_features, invalid_indices, axis=0)
