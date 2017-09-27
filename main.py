@@ -26,16 +26,17 @@ if __name__ == '__main__':
     line_detector_params.max_line_gap = 10
     line_detector = LineDetector(input_image=canny, line_detector_params=line_detector_params)
     line_detector.detect()
-
-    line_detector.mergeCloseLines(min_distance=25, min_angle=np.pi / 180 * 5)
-
-
+    line_detector.cluster_lines(num_clusters=20, n_init=5)
 
     edges = cv2.cvtColor(canny, cv2.COLOR_GRAY2BGR)
 
-    for line in line_detector.lines:
-        cv2.line(img=edges, pt1=(line[0, 0], line[0, 1]), pt2=(line[0, 2], line[0, 3]),
-                 color=(0, 180, 210), thickness=2, lineType=cv2.LINE_AA)
+    for label in range(np.max(line_detector.clusters) + 1):
+        selected = line_detector.lines[label == line_detector.clusters]
+        color = np.random.randint(0, 255, 3)
+        color = (int(color[0]), int(color[1]), int(color[2]))
+        for line in selected:
+            cv2.line(img=edges, pt1=(line[0, 0], line[0, 1]), pt2=(line[0, 2], line[0, 3]),
+                     color=color, thickness=2, lineType=cv2.LINE_AA)
 
     cv2.imshow("Input", image_loader.image_raw)
     cv2.imshow("Canny", canny)
