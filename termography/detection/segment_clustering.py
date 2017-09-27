@@ -69,6 +69,27 @@ class SegmentClusterer:
         plt.title('Segment clustering, {} components'.format(np.max(self.clusters)))
         plt.show()
 
+    def compute_cluster_mean(self):
+        mean_centers = []
+        mean_angles = []
+        num_clusters = np.max(self.clusters)
+        for label in range(num_clusters + 1):
+            selection = self.segments[self.clusters == label]
+            angles = []
+            centers = []
+            for segment in selection:
+                angle = np.arctan2(segment[3]-segment[1], segment[2] - segment[0])
+                if angle > np.pi:
+                    print(angle)
+                    angle -= np.pi
+                angles.append(angle)
+                centers.append((segment[0:2] + segment[2:4]) * 0.5)
+            mean_angle = np.mean(angles)
+            mean_angles.append(mean_angle)
+            mean_center = np.mean(centers, axis=0)
+            mean_centers.append(mean_center)
+        return np.array(mean_angles), np.array(mean_centers)
+
     def clean_clusters(self, max_line_distance):
         num_clusters = np.max(self.clusters)
         for label in range(num_clusters + 1):
