@@ -1,2 +1,3 @@
-from .lines_detection import LineDetector, LineDetectorParams
-from .lines_clustering import LineClusterer
+from .edge_detection import EdgeDetector, EdgeDetectorParams
+from .segment_detection import SegmentDetector, SegmentDetectorParams
+from .segment_clustering import SegmentClusterer
