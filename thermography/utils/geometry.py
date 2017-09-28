@@ -98,3 +98,32 @@ def segment_min_distance(seg1, seg2):
     distance = np.linalg.norm(dP)
 
     return distance
+
+
+def line_estimate(seg1, seg2):
+    x = [*seg1[0::2], *seg2[0::2]]
+    y = [*seg1[1::2], *seg2[1::2]]
+
+    [slope, intercept] = np.polyfit(x, y, 1)
+
+    return slope, intercept
+
+
+def segment_intersection(seg1, seg2):
+    s1_x = seg1[2] - seg1[0]
+    s1_y = seg1[3] - seg1[1]
+    s2_x = seg2[2] - seg2[0]
+    s2_y = seg2[3] - seg2[1]
+
+    s = (-s1_y * (seg1[0] - seg2[0]) + s1_x * (seg1[1] - seg2[1])) / (-s2_x * s1_y + s1_x * s2_y)
+    t = (s2_x * (seg1[1] - seg2[1]) - s2_y * (seg1[0] - seg2[0])) / (-s2_x * s1_y + s1_x * s2_y)
+
+    if 0 <= s <= 1 and 0 <= t <= 1:
+        x = seg1[0] + (t * s1_x)
+        y = seg1[1] + (t * s1_y)
+        return x, y
+    return False
+
+
+def area_between_segment_and_line(seg, slope, intercept):
+    return 0
