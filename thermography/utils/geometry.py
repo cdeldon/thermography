@@ -16,7 +16,7 @@ def angle(pt1, pt2):
     return a
 
 
-def min_distance(seg1, seg2):
+def segment_min_distance(seg1, seg2):
     """
     Computes the minimal distance between two segments.
     Implementation taken form "https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&tab=function"
@@ -29,9 +29,9 @@ def min_distance(seg1, seg2):
     p3 = seg2[0:2]
     p4 = seg2[2:4]
 
-    u = p1 - p2
-    v = p3 - p4
-    w = p2 - p4
+    u = (p1 - p2).astype(np.float64)
+    v = (p3 - p4).astype(np.float64)
+    w = (p2 - p4).astype(np.float64)
 
     a = np.dot(u, u)
     b = np.dot(u, v)

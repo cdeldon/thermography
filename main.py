@@ -41,7 +41,7 @@ if __name__ == '__main__':
     # Segment clustering.
     segment_clusterer = SegmentClusterer(input_segments=segment_detector.segments)
     segment_clusterer.cluster_segments(num_clusters=5, n_init=8, cluster_type="gmm")
-    segment_clusterer.plot_segment_clusters()
+    segment_clusterer.plot_segment_features()
 
     mean_angles, mean_centers = segment_clusterer.compute_cluster_mean()
 

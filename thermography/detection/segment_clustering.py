@@ -13,7 +13,7 @@ class SegmentClusterer:
         self.segment_features = None
         self.clusters = None
 
-    def cluster_segments(self, num_clusters=15, n_init=10, cluster_type="gmm"):
+    def cluster_segments(self, num_clusters=15, n_init=10, cluster_type="gmm", swipe_clusters=True):
         if cluster_type not in ["gmm", "knn"]:
             raise ValueError("Invalid value for 'cluster_type': {} "
                              "'cluster_type' should be in ['gmm', 'knn']".format(cluster_type))
@@ -46,6 +46,8 @@ class SegmentClusterer:
             lowest_bic = np.infty
             bic = []
             n_components_range = range(1, num_clusters + 1)
+            if not swipe_clusters:
+                n_components_range = [num_clusters]
             for n_components in n_components_range:
                 # Fit a Gaussian mixture with EM.
                 gmm = GaussianMixture(n_components=n_components, covariance_type='full')
@@ -57,7 +59,7 @@ class SegmentClusterer:
 
             self.clusters = best_gmm.predict(self.segment_features)
 
-    def plot_segment_clusters(self):
+    def plot_segment_features(self):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         for i in range(np.max(self.clusters) + 1):
@@ -104,12 +106,10 @@ class SegmentClusterer:
         self.segment_features = np.delete(self.segment_features, invalid_indices, axis=0)
 
     def clean_clusters_too_close(self, min_intra_distance):
-        print(self.clusters)
         num_clusters = np.max(self.clusters)
         invalid_indices = []
         for label in range(num_clusters + 1):
             selected_indices = np.where(label == self.clusters)[0]
-            print(selected_indices)
             for _index_i in range(len(selected_indices)):
                 index_i = selected_indices[_index_i]
                 segment_i = self.segments[index_i]
@@ -119,7 +119,7 @@ class SegmentClusterer:
                     segment_j = self.segments[index_j]
                     angle_j = tg.angle(segment_j[0:2], segment_j[2:4])
 
-                    dist = tg.min_distance(segment_i, segment_j)
+                    dist = tg.segment_min_distance(segment_i, segment_j)
                     if dist < min_intra_distance and np.abs(angle_i - angle_j) < np.pi / 180 * 3:
                         invalid_indices.append(index_j)
 
