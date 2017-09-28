@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import normalize
-import termography as tg
+import thermography as tg
 
 
 class SegmentClusterer:

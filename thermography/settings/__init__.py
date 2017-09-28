@@ -1,7 +1,7 @@
 import os
 
 SETTINGS_DIR = os.path.dirname(os.path.abspath(__file__))
-TERMOGRAPHY_ROOT_DIR = os.path.dirname(SETTINGS_DIR)
+THERMOGRAPHY_ROOT_DIR = os.path.dirname(SETTINGS_DIR)
 DATA_DIR = None
 
 
@@ -9,14 +9,14 @@ def get_settings_dir():
     return SETTINGS_DIR
 
 
-def get_termography_root_dir():
-    return TERMOGRAPHY_ROOT_DIR
+def get_thermography_root_dir():
+    return THERMOGRAPHY_ROOT_DIR
 
 
 def get_data_dir():
     if DATA_DIR is None:
         raise EnvironmentError("Data directory has not been specified."
-                               "\nSpecify the directory using 'termography.set_data_dir(data_dir)' "
+                               "\nSpecify the directory using 'thermography.set_data_dir(data_dir)' "
                                "before using this function.")
     return DATA_DIR
 
