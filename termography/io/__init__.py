@@ -1,1 +1,1 @@
-from .io import ImageLoader
+from .io import ImageLoader, VideoLoader
