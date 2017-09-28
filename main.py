@@ -1,6 +1,6 @@
-import termography as tg
-from termography.io import ImageLoader
-from termography.detection import EdgeDetector, EdgeDetectorParams, SegmentDetector, SegmentDetectorParams, \
+import thermography as tg
+from thermography.io import ImageLoader
+from thermography.detection import EdgeDetector, EdgeDetectorParams, SegmentDetector, SegmentDetectorParams, \
     SegmentClusterer
 
 import cv2
@@ -10,7 +10,7 @@ import os
 if __name__ == '__main__':
 
     # Data input parameters.
-    TERMOGRAPHY_ROOT_DIR = tg.get_termography_root_dir()
+    THERMOGRAPHY_ROOT_DIR = tg.get_thermography_root_dir()
     tg.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/foto FLIR")
     IN_FILE_NAME = os.path.join(tg.get_data_dir(), "Hotspots.jpg")
 
