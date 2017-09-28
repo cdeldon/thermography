@@ -1,1 +1,1 @@
-# termografia
+# Thermography
