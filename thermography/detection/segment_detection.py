@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+__all__ = ["SegmentDetector", "SegmentDetectorParams"]
+
 
 class SegmentDetectorParams:
     def __init__(self):

@@ -1,7 +1,7 @@
 import thermography as tg
-from thermography.io import VideoLoader
-from thermography.detection import EdgeDetector, EdgeDetectorParams, SegmentDetector, SegmentDetectorParams, \
-    SegmentClusterer
+from thermography.io import *
+from thermography.detection import *
+
 
 import cv2
 import numpy as np
@@ -9,19 +9,19 @@ import os
 
 if __name__ == '__main__':
     # Data input parameters.
-    THERMOGRAPHY_ROOT_DIR = tg.get_thermography_root_dir()
-    tg.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
-    IN_FILE_NAME = os.path.join(tg.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
+    THERMOGRAPHY_ROOT_DIR = tg.settings.get_thermography_root_dir()
+    tg.settings.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
+    IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1200, end_frame=1300)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1200, end_frame=1201)
     # video_loader.show_video(fps=25)
 
     for i, frame in enumerate(video_loader.frames):
         gray = cv2.cvtColor(src=frame, code=cv2.COLOR_BGR2GRAY)
 
         scale_factor = 1
-        gray = tg.scale_image(gray, scale_factor)
+        gray = tg.utils.scale_image(gray, scale_factor)
         gray = cv2.blur(gray, (3, 3))
 
         # Edge detection
@@ -36,7 +36,7 @@ if __name__ == '__main__':
         segment_detector_params = SegmentDetectorParams()
         segment_detector_params.min_line_length = 150
         segment_detector_params.min_num_votes = 100
-        segment_detector_params.max_line_gap = 35
+        segment_detector_params.max_line_gap = 250
         segment_detector = SegmentDetector(input_image=edge_detector.edge_image, params=segment_detector_params)
         segment_detector.detect()
 
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
         colors = []
         for cluster in segment_clusterer.cluster_list:
-            color = tg.random_color()
+            color = tg.utils.random_color()
             colors.append(color)
             for segment in cluster:
                 cv2.line(img=edges, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
                         seg1 = cluster_i[i]
                         seg2 = cluster_j[j]
-                        interception = tg.segment_segment_intersection(seg1, seg2)
+                        interception = tg.utils.segment_segment_intersection(seg1, seg2)
                         if interception:
                             cv2.circle(edges, (int(interception[0]), int(interception[1])), 3, (0, 0, 255), 1,
                                        cv2.LINE_AA)
@@ -100,4 +100,4 @@ if __name__ == '__main__':
         cv2.imshow("Skeleton", edge_detector.edge_image)
         cv2.imshow("Segments on input image", edges)
         cv2.imshow("Cleaned segments on input image", edges_cleaned)
-        cv2.waitKey(1)
+        cv2.waitKey(0)
