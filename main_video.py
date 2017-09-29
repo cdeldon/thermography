@@ -46,7 +46,7 @@ if __name__ == '__main__':
         # Segment clustering.
         segment_clusterer = SegmentClusterer(input_segments=segment_detector.segments)
         segment_clusterer.cluster_segments(num_clusters=2, n_init=8, cluster_type="gmm", swipe_clusters=False)
-        segment_clusterer.plot_segment_features()
+        # segment_clusterer.plot_segment_features()
         mean_angles, mean_centers = segment_clusterer.compute_cluster_mean()
 
         # Displaying.
@@ -64,7 +64,7 @@ if __name__ == '__main__':
         for intersection in intersection_detector.raw_intersections:
             cv2.circle(edges, (int(intersection[0]), int(intersection[1])), 3, (0, 0, 255), 1, cv2.LINE_AA)
 
-        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 45,
+        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 5,
                                          min_intra_distance=20)
         for cluster, color in zip(segment_clusterer.cluster_list, colors):
             for segment in cluster:

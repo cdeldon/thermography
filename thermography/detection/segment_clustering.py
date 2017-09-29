@@ -32,12 +32,9 @@ class SegmentClusterer:
             center = (pt1 + pt2) * 0.5
             centers.append(center)
 
-            # Segment angle lies in [0, 2pi]
-            angle = tg.utils.angle(pt1, pt2)
-            # Flip angles pi radiants if they are greater than pi
-            if angle >= np.pi:
-                angle -= np.pi
-            angle *= 2
+            # Segment angle lies in [0, 2pi], multiply by 2 such that complex number associated to similar angles are
+            # close on the complex plane (e.g. 180° and 0°)
+            angle = tg.utils.angle(pt1, pt2) * 2
 
             # Need to use complex representation as Euclidean distance used in clustering makes sense in complex plane,
             # and does not directly on angles.
@@ -113,15 +110,22 @@ class SegmentClusterer:
         mean_angles = []
         for cluster in self.cluster_list:
             centers = 0.5 * (cluster[:, 0:2] + cluster[:, 2:4])
-            # Special mean for angles as defined in https://en.wikipedia.org/wiki/Mean_of_circular_quantities
-            sum_sin = np.sum(np.sin(np.arctan2(-(cluster[:, 3] - cluster[:, 1]), cluster[:, 2] - cluster[:, 0])))
-            sum_cos = np.sum(np.cos(np.arctan2(-(cluster[:, 3] - cluster[:, 1]), cluster[:, 2] - cluster[:, 0])))
-
-            mean_angle = np.arctan2(sum_sin, sum_cos)
-            mean_angles.append(mean_angle)
 
             mean_center = np.mean(centers, axis=0)
             mean_centers.append(mean_center)
+
+            angles = []
+            for segment in cluster:
+                angle = tg.utils.angle(segment[0:2], segment[2:4]) * 2
+
+                # Need to use complex representation as Euclidean distance used in clustering makes sense in
+                # complex plane, and does not directly on angles.
+                point = np.array([np.cos(angle), np.sin(angle)])
+                angles.append(point)
+
+            mean_point = np.mean(angles, axis=0)
+            mean_angle = np.arctan2(mean_point[1], mean_point[0]) / 2
+            mean_angles.append(mean_angle)
 
         return np.array(mean_angles), np.array(mean_centers)
 
@@ -130,8 +134,10 @@ class SegmentClusterer:
                 zip(self.cluster_list, self.cluster_features, mean_angles)):
             invalid_indices = []
             for segment_index, segment in enumerate(cluster):
-                angle = np.arctan2(-(segment[3] - segment[1]), segment[2] - segment[0])
-                if np.abs((angle - mean_angle) % np.pi) > max_angle_variation_mean:
+                angle = tg.utils.angle(segment[0:2], segment[2:4])
+                d_angle = np.arctan2(np.sin(angle - mean_angle), np.cos(angle - mean_angle))
+                if d_angle > max_angle_variation_mean and np.abs(d_angle - np.pi) > max_angle_variation_mean:
+                    print(d_angle / np.pi * 180)
                     invalid_indices.append(segment_index)
             self.cluster_list[cluster_index] = np.delete(cluster, invalid_indices, axis=0)
             self.cluster_features[cluster_index] = np.delete(features, invalid_indices, axis=0)
