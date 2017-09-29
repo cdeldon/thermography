@@ -1,8 +1,7 @@
 import numpy as np
 import unittest
 
-from thermography.utils.geometry import angle, segment_min_distance, line_estimate, segment_line_intersection, \
-    segment_segment_intersection
+from thermography.utils.geometry import *
 
 
 class TestGeometryUtils(unittest.TestCase):

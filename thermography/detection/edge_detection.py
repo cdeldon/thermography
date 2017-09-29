@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+__all__ = ["EdgeDetectorParams", "EdgeDetector"]
 
 class EdgeDetectorParams:
     def __init__(self):

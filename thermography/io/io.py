@@ -1,8 +1,9 @@
 import cv2
-import numpy as np
 import os
 import progressbar
 from .modes import Modality
+
+__all__ = ["ImageLoader", "VideoLoader"]
 
 
 class ImageLoader:

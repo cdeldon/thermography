@@ -4,7 +4,10 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import normalize
+
 import thermography as tg
+
+__all__ = ["SegmentClusterer"]
 
 
 class SegmentClusterer:
@@ -94,7 +97,7 @@ class SegmentClusterer:
             angles = []
             centers = []
             for segment in cluster:
-                angle = tg.angle(segment[0:2], segment[2:4])
+                angle = tg.utils.angle(segment[0:2], segment[2:4])
                 angles.append(angle)
                 centers.append((segment[0:2] + segment[2:4]) * 0.5)
             mean_angle = np.mean(angles)
@@ -108,7 +111,7 @@ class SegmentClusterer:
                 zip(self.cluster_list, self.cluster_features, mean_angles)):
             invalid_indices = []
             for segment_index, segment in enumerate(cluster):
-                angle = tg.angle(segment[0:2], segment[2:4])
+                angle = tg.utils.angle(segment[0:2], segment[2:4])
                 if np.abs(angle - mean_angle) > max_angle_variation_mean:
                     invalid_indices.append(segment_index)
             self.cluster_list[cluster_index] = np.delete(cluster, invalid_indices, axis=0)
@@ -150,4 +153,4 @@ class SegmentClusterer:
 
         self.clean_clusters_angle(mean_angles, max_angle_variation_mean)
         # self.merge_collinear_segments()
-        #self.clean_clusters_too_close(min_intra_distance)
+        # self.clean_clusters_too_close(min_intra_distance)
