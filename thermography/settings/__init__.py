@@ -3,6 +3,7 @@ import os
 SETTINGS_DIR = os.path.dirname(os.path.abspath(__file__))
 THERMOGRAPHY_ROOT_DIR = os.path.dirname(SETTINGS_DIR)
 DATA_DIR = None
+TEST_DIR = os.path.join(THERMOGRAPHY_ROOT_DIR, "test")
 
 
 def get_settings_dir():
@@ -26,3 +27,6 @@ def set_data_dir(data_dir):
         raise FileExistsError("Data directory {} does not exist.".format(data_dir))
     global DATA_DIR
     DATA_DIR = data_dir
+
+def get_test_dir():
+    return TEST_DIR
