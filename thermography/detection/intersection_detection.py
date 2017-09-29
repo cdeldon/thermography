@@ -3,6 +3,7 @@ import numpy as np
 
 __all__ = ["IntersectionDetector", "IntersectionDetectorParams"]
 
+
 class IntersectionDetectorParams:
     def __init__(self):
         self.intersection_min_distance = 10

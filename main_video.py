@@ -2,7 +2,6 @@ import thermography as tg
 from thermography.io import *
 from thermography.detection import *
 
-
 import cv2
 import numpy as np
 import os
@@ -14,7 +13,7 @@ if __name__ == '__main__':
     IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1200, end_frame=1201)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1200, end_frame=1300)
     # video_loader.show_video(fps=25)
 
     for i, frame in enumerate(video_loader.frames):
@@ -24,7 +23,7 @@ if __name__ == '__main__':
         gray = tg.utils.scale_image(gray, scale_factor)
         gray = cv2.blur(gray, (3, 3))
 
-        # Edge detection
+        # Edge detection.
         edge_detector_params = EdgeDetectorParams()
         edge_detector_params.dilation_steps = 2
         edge_detector_params.hysteresis_min_thresh = 30
@@ -40,11 +39,14 @@ if __name__ == '__main__':
         segment_detector = SegmentDetector(input_image=edge_detector.edge_image, params=segment_detector_params)
         segment_detector.detect()
 
+        # Intersection detection
+        intersection_detector = IntersectionDetector(input_segments=segment_detector.segments)
+        intersection_detector.detect()
+
         # Segment clustering.
         segment_clusterer = SegmentClusterer(input_segments=segment_detector.segments)
         segment_clusterer.cluster_segments(num_clusters=2, n_init=8, cluster_type="gmm", swipe_clusters=False)
-        # segment_clusterer.plot_segment_features()
-
+        segment_clusterer.plot_segment_features()
         mean_angles, mean_centers = segment_clusterer.compute_cluster_mean()
 
         # Displaying.
@@ -59,21 +61,10 @@ if __name__ == '__main__':
                 cv2.line(img=edges, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
                          color=color, thickness=1, lineType=cv2.LINE_AA)
 
-        for cluster_index_i in range(len(segment_clusterer.cluster_list)):
-            cluster_i = segment_clusterer.cluster_list[cluster_index_i]
-            for cluster_index_j in range(cluster_index_i, len(segment_clusterer.cluster_list)):
-                cluster_j = segment_clusterer.cluster_list[cluster_index_j]
-                for i in range(len(segment_clusterer.cluster_list[cluster_index_i])):
-                    for j in range(len(segment_clusterer.cluster_list[cluster_index_j])):
+        for intersection in intersection_detector.raw_intersections:
+            cv2.circle(edges, (int(intersection[0]), int(intersection[1])), 3, (0, 0, 255), 1, cv2.LINE_AA)
 
-                        seg1 = cluster_i[i]
-                        seg2 = cluster_j[j]
-                        interception = tg.utils.segment_segment_intersection(seg1, seg2)
-                        if interception:
-                            cv2.circle(edges, (int(interception[0]), int(interception[1])), 3, (0, 0, 255), 1,
-                                       cv2.LINE_AA)
-
-        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 15,
+        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 45,
                                          min_intra_distance=20)
         for cluster, color in zip(segment_clusterer.cluster_list, colors):
             for segment in cluster:
@@ -83,7 +74,7 @@ if __name__ == '__main__':
         for angle, center, color in zip(mean_angles, mean_centers, colors):
             cv2.circle(img=edges, center=(int(center[0]), int(center[1])), radius=5, color=color,
                        thickness=-1, lineType=cv2.LINE_AA)
-            slope = np.tan(angle)
+            slope = np.tan(-angle)
             dir = np.array([1.0, 0.0])
             dir[1] = slope * dir[0]
             dir /= np.linalg.norm(dir)
@@ -100,4 +91,4 @@ if __name__ == '__main__':
         cv2.imshow("Skeleton", edge_detector.edge_image)
         cv2.imshow("Segments on input image", edges)
         cv2.imshow("Cleaned segments on input image", edges_cleaned)
-        cv2.waitKey(0)
+        cv2.waitKey(40)

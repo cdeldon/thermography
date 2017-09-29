@@ -11,14 +11,14 @@ __all__ = ["angle",
 def angle(pt1, pt2):
     """
     Computes the angle (in radiants) between a segment specified by the two points and the x-axis.
+    Note that this function assumes the input are pixel coordinates, and thus negates the y-difference between the two
+    points to get a consistent angle with the one seen by the user.
     :param pt1: First point of the segment.
     :param pt2: Second point of the segment.
-    :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]
+    :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, 2*pi]
     """
-    a = np.arctan2(pt2[1] - pt1[1], pt2[0] - pt1[0])
-    if a >= np.pi:
-        a -= np.pi
-    elif a < 0:
+    a = np.arctan2(-(pt2[1] - pt1[1]), pt2[0] - pt1[0])
+    if a < 0:
         a += np.pi
     return a
 
