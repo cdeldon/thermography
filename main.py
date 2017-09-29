@@ -61,7 +61,7 @@ if __name__ == '__main__':
             for j in range(i+1, len(cluster)):
                 seg1 = cluster[i]
                 seg2 = cluster[j]
-                interception = tg.segment_intersection(seg1, seg2)
+                interception = tg.segment_segment_intersection(seg1, seg2)
                 if interception:
                     cv2.circle(edges, (int(interception[0]), int(interception[1])), 3, (0, 0, 255), 1, cv2.LINE_AA)
 

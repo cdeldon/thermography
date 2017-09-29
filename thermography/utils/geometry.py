@@ -109,7 +109,7 @@ def line_estimate(seg1, seg2):
     return slope, intercept
 
 
-def segment_intersection(seg1, seg2):
+def segment_segment_intersection(seg1, seg2):
     s1_x = seg1[2] - seg1[0]
     s1_y = seg1[3] - seg1[1]
     s2_x = seg2[2] - seg2[0]
@@ -129,5 +129,30 @@ def segment_intersection(seg1, seg2):
     return False
 
 
+def segment_line_intersection(seg, slope, intercept):
+    pt1 = seg[0:2]
+    pt2 = seg[2:4]
+
+    x0 = np.array([0, intercept])
+    x1 = np.array([1, slope + intercept])
+    r = x1 - x0
+    r = r / np.linalg.norm(r)
+
+    d1 = pt1 - x0
+    d2 = pt2 - x0
+
+    if np.cross(d1, r).dot(np.cross(r, d2)) < 0:
+        return False
+
+    d1_proj = x0 + r * np.dot(d1, r)
+    d2_proj = x0 + r * np.dot(d2, r)
+
+    # If segment was perpendicular to line.
+    if (d1_proj == d2_proj).all():
+        return d1_proj
+
+    return segment_segment_intersection(seg, np.array([d1_proj[0], d1_proj[1], d2_proj[0], d2_proj[1]]))
+
+
 def area_between_segment_and_line(seg, slope, intercept):
-    return 0
+    pass

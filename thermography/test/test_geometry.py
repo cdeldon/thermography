@@ -1,7 +1,8 @@
 import numpy as np
 import unittest
 
-from thermography.utils.geometry import angle, segment_min_distance, line_estimate, segment_intersection
+from thermography.utils.geometry import angle, segment_min_distance, line_estimate, segment_line_intersection, \
+    segment_segment_intersection
 
 
 class TestGeometryUtils(unittest.TestCase):
@@ -72,24 +73,39 @@ class TestGeometryUtils(unittest.TestCase):
     def test_segment_segment_intersection(self):
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([0, 0, 0, 1])
-        self.assertListAlmostEqual(segment_intersection(segment1, segment2), [0, 0])
-        self.assertListAlmostEqual(segment_intersection(segment2, segment1), (0, 0))
+        self.assertListAlmostEqual(segment_segment_intersection(segment1, segment2), [0, 0])
+        self.assertListAlmostEqual(segment_segment_intersection(segment2, segment1), (0, 0))
 
         segment3 = np.array([0.5, 1, 0.5, -1])
-        self.assertListAlmostEqual(segment_intersection(segment1, segment3), [0.5, 0])
-        self.assertListAlmostEqual(segment_intersection(segment3, segment1), [0.5, 0])
+        self.assertListAlmostEqual(segment_segment_intersection(segment1, segment3), [0.5, 0])
+        self.assertListAlmostEqual(segment_segment_intersection(segment3, segment1), [0.5, 0])
 
         segment4 = np.array([0.3, 1, 0.7, -1])
-        self.assertListAlmostEqual(segment_intersection(segment1, segment4), [0.5, 0])
-        self.assertListAlmostEqual(segment_intersection(segment4, segment1), [0.5, 0])
+        self.assertListAlmostEqual(segment_segment_intersection(segment1, segment4), [0.5, 0])
+        self.assertListAlmostEqual(segment_segment_intersection(segment4, segment1), [0.5, 0])
 
         segment5 = np.array([0, 1, 1, 1])
-        self.assertFalse(segment_intersection(segment1, segment5))
-        self.assertFalse(segment_intersection(segment5, segment1))
+        self.assertFalse(segment_segment_intersection(segment1, segment5))
+        self.assertFalse(segment_segment_intersection(segment5, segment1))
 
         segment6 = np.array([1.5, 0, 2.5, 0])
-        self.assertFalse(segment_intersection(segment1, segment6))
-        self.assertFalse(segment_intersection(segment6, segment1))
+        self.assertFalse(segment_segment_intersection(segment1, segment6))
+        self.assertFalse(segment_segment_intersection(segment6, segment1))
+
+    def test_segment_line_intersection(self):
+        segment1 = np.array([0, 1, 1, 0])
+        segment2 = np.array([1, 0, 0, 1])
+        line1 = [1, 0]
+        self.assertListAlmostEqual(segment_line_intersection(segment1, line1[0], line1[1]), [0.5, 0.5])
+        self.assertListAlmostEqual(segment_line_intersection(segment2, line1[0], line1[1]), [0.5, 0.5])
+
+        line2 = [1, 1.5]
+        self.assertFalse(segment_line_intersection(segment1, line2[0], line2[1]))
+        self.assertFalse(segment_line_intersection(segment2, line2[0], line2[1]))
+
+        line3 = [-1, 0]
+        self.assertFalse(segment_line_intersection(segment1, line3[0], line3[1]))
+        self.assertFalse(segment_line_intersection(segment2, line3[0], line3[1]))
 
 
 if __name__ == '__main__':
