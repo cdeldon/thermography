@@ -52,20 +52,26 @@ if __name__ == '__main__':
         edges_cleaned = edges.copy()
 
         colors = []
-        for label in range(np.max(segment_clusterer.clusters) + 1):
-            selected = segment_clusterer.segments[label == segment_clusterer.clusters]
+        for cluster in segment_clusterer.cluster_list:
             color = tg.random_color()
             colors.append(color)
-            for line in selected:
-                cv2.line(img=edges, pt1=(line[0], line[1]), pt2=(line[2], line[3]),
+            for segment in cluster:
+                cv2.line(img=edges, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
                          color=color, thickness=1, lineType=cv2.LINE_AA)
+
+            for i in range(len(cluster)):
+                for j in range(i + 1, len(cluster)):
+                    seg1 = cluster[i]
+                    seg2 = cluster[j]
+                    interception = tg.segment_segment_intersection(seg1, seg2)
+                    if interception:
+                        cv2.circle(edges, (int(interception[0]), int(interception[1])), 3, (0, 0, 255), 1, cv2.LINE_AA)
 
         segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 15,
                                          min_intra_distance=20)
-        for label, color in zip(range(np.max(segment_clusterer.clusters) + 1), colors):
-            selected = segment_clusterer.segments[label == segment_clusterer.clusters]
-            for line in selected:
-                cv2.line(img=edges_cleaned, pt1=(line[0], line[1]), pt2=(line[2], line[3]),
+        for cluster, color in zip(segment_clusterer.cluster_list, colors):
+            for segment in cluster:
+                cv2.line(img=edges_cleaned, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
                          color=color, thickness=1, lineType=cv2.LINE_AA)
 
         for angle, center, color in zip(mean_angles, mean_centers, colors):
