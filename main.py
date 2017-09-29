@@ -57,13 +57,18 @@ if __name__ == '__main__':
             cv2.line(img=edges, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
                      color=color, thickness=1, lineType=cv2.LINE_AA)
 
-        for i in range(len(cluster)):
-            for j in range(i+1, len(cluster)):
-                seg1 = cluster[i]
-                seg2 = cluster[j]
-                interception = tg.segment_segment_intersection(seg1, seg2)
-                if interception:
-                    cv2.circle(edges, (int(interception[0]), int(interception[1])), 3, (0, 0, 255), 1, cv2.LINE_AA)
+    for cluster_index_i in range(len(segment_clusterer.cluster_list)):
+        cluster_i = segment_clusterer.cluster_list[cluster_index_i]
+        for cluster_index_j in range(cluster_index_i, len(segment_clusterer.cluster_list)):
+            cluster_j = segment_clusterer.cluster_list[cluster_index_j]
+            for i in range(len(segment_clusterer.cluster_list[cluster_index_i])):
+                for j in range(len(segment_clusterer.cluster_list[cluster_index_j])):
+
+                    seg1 = cluster_i[i]
+                    seg2 = cluster_j[j]
+                    interception = tg.segment_segment_intersection(seg1, seg2)
+                    if interception:
+                        cv2.circle(edges, (int(interception[0]), int(interception[1])), 3, (0, 0, 255), 1, cv2.LINE_AA)
 
     segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 15,
                                      min_intra_distance=20)
