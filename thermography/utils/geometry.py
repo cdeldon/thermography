@@ -9,7 +9,7 @@ def angle(pt1, pt2):
     :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]
     """
     a = np.arctan2(pt2[1] - pt1[1], pt2[0] - pt1[0])
-    if a > np.pi:
+    if a >= np.pi:
         a -= np.pi
     elif a < 0:
         a += np.pi
@@ -115,8 +115,12 @@ def segment_intersection(seg1, seg2):
     s2_x = seg2[2] - seg2[0]
     s2_y = seg2[3] - seg2[1]
 
-    s = (-s1_y * (seg1[0] - seg2[0]) + s1_x * (seg1[1] - seg2[1])) / (-s2_x * s1_y + s1_x * s2_y)
-    t = (s2_x * (seg1[1] - seg2[1]) - s2_y * (seg1[0] - seg2[0])) / (-s2_x * s1_y + s1_x * s2_y)
+    denom = -s2_x * s1_y + s1_x * s2_y
+    if denom == 0:
+        return False
+
+    s = (-s1_y * (seg1[0] - seg2[0]) + s1_x * (seg1[1] - seg2[1])) / denom
+    t = (s2_x * (seg1[1] - seg2[1]) - s2_y * (seg1[0] - seg2[0])) / denom
 
     if 0 <= s <= 1 and 0 <= t <= 1:
         x = seg1[0] + (t * s1_x)
