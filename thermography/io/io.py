@@ -3,6 +3,8 @@ import os
 import progressbar
 from .modes import Modality
 
+from thermography.utils.images import scale_image
+
 __all__ = ["ImageLoader", "VideoLoader"]
 
 
@@ -58,17 +60,20 @@ class ImageLoader:
 
 
 class VideoLoader:
-    def __init__(self, video_path, start_frame=0, end_frame=None):
+    def __init__(self, video_path, start_frame=0, end_frame=None, scale_factor=1.0):
         """
         Loads the frames associated to the video indicated by the path passed as argument.
         :param video_path: Absolute path to the video to be loaded.
         :param start_frame: Start frame of the video to be considered (inclusive).
-        :param end_frame: End frame of the video to be considered (non inclusive)
+        :param end_frame: End frame of the video to be considered (non inclusive).
+        :param scale_factor: Scaling factor to apply to each frame inside the loaded video.
         """
         self.video_path = video_path
 
         self.start_frame = start_frame
         self.end_frame = end_frame
+
+        self.scale_factor = scale_factor
 
         self.frames = []
         self.__load_video(cv2.VideoCapture(self.video_path))
@@ -121,7 +126,7 @@ class VideoLoader:
             if not ret:
                 raise ValueError("Could not load frame {}".format(i + self.start_frame))
 
-            self.frames.append(video_raw.retrieve()[1])
+            self.frames.append(scale_image(video_raw.retrieve()[1], self.scale_factor))
             num_frames += 1
             bar.update(num_frames)
 

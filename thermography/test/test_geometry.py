@@ -100,20 +100,33 @@ class TestGeometryUtils(unittest.TestCase):
                 tmp = pt1
                 pt1 = pt2
                 pt2 = tmp
+            elif pt1[0] == pt2[0]:
+                if pt1[1] <= pt2[1]:
+                    return segment
+                else:
+                    return np.array([*pt2, *pt1])
+
             return np.array([*pt1, *pt2])
 
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([2, 0, 3, 0])
-        merged_segment = merge_segments([segment1, segment2], min_x_diff=0)
+        merged_segment = merge_segments([segment1, segment2])
         merged_segment = sort_points(merged_segment)
 
         self.assertListAlmostEqual(merged_segment, [0, 0, 3, 0])
 
         segment3 = np.array([0, 0.1, 1, 0.1])
-        merged_segment = merge_segments([segment1, segment3], min_x_diff=0)
+        merged_segment = merge_segments([segment1, segment3])
         merged_segment = sort_points(merged_segment)
 
         self.assertListAlmostEqual(merged_segment, [0, 0.05, 1, 0.05])
+
+        segment4 = np.array([0, 0, 0, 1])
+        segment5 = np.array([0.1, 1.5, 0.1, 2.5])
+        merged_segment = merge_segments([segment4, segment5])
+        merged_segment = sort_points(merged_segment)
+
+        self.assertListAlmostEqual(merged_segment, [0, 0.16666666, 0.1, 2.33333333])
 
     def test_point_line_distance(self):
         slope = 1

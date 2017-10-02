@@ -81,12 +81,12 @@ def mean_segment_angle(segment_list):
     return a
 
 
-def merge_segments(segment_list, min_x_diff=2):
+def merge_segments(segment_list, verticality_thresh=2):
     """
     Computes a unique segments as a representation of the almost collinear segments passed as argument.
     :param segment_list: List of almost collinear segments to be merged into a single segment.
-    :param min_x_diff: Minimal distance for any x-coordinate from mean coordinate in order to compute a fitting line
-    through the data. If all data is closer to mean(x) than this parameter, a vertical line is returned.
+    :param verticality_thresh: Verticality threshold, i.e. if std(y) > verticality_thresh * std(x) then the segment is
+    merged by using a a vertical fitting, otherwise an horizontal fitting.
     :return: A new segment defined on the line estimation over the segments passed as argument.
     """
     x = []
@@ -97,22 +97,30 @@ def merge_segments(segment_list, min_x_diff=2):
         y.append(segment[1])
         y.append(segment[3])
 
-    # Check if we are in presence of multiple almost vertical lines.
-    if (np.abs(np.mean(x) - x) < min_x_diff).all():
-        x0 = np.mean(x)
-        x1 = x0
-        y0 = np.min(y)
-        y1 = np.max(y)
+    std_x = np.std(x)
+    std_y = np.std(y)
+
+    # Vertical case.
+    if std_x == 0:
+        merged_segment = np.array([x[0], np.min(y), x[0], np.max(y)])
+        return merged_segment
+    else:
+        verticality = std_y / std_x
+        # Data is almost vertical aligned.
+        if verticality > verticality_thresh:
+            [slope_inv, intercept_inv] = np.polyfit(y, x, 1)
+            slope = 1.0 / slope_inv
+            intercept = -intercept_inv / slope_inv
+        # Data is horizontally aligned.
+        else:
+            [slope, intercept] = np.polyfit(x, y, 1)
+
+        x0 = np.min(x)
+        x1 = np.max(x)
+        y0 = intercept + slope * x0
+        y1 = intercept + slope * x1
+
         return np.array([x0, y0, x1, y1])
-
-    [slope, intercept] = np.polyfit(x, y, 1)
-
-    x0 = np.min(x)
-    x1 = np.max(x)
-    y0 = intercept + slope * x0
-    y1 = intercept + slope * x1
-
-    return np.array([x0, y0, x1, y1])
 
 
 def point_line_distance(point, slope, intercept):
@@ -143,7 +151,7 @@ def segments_collinear(seg1, seg2, max_angle=5.0 / 180 * np.pi, max_endpoint_dis
     if a > max_angle:
         return False
 
-    intersection = segment_segment_intersection(seg1, seg2)
+    intersection = segment_segment_intersection(np.array(seg1), np.array(seg2))
     if intersection:
         return True
     else:
@@ -266,6 +274,8 @@ def segment_min_distance(seg1, seg2):
 
 
 def segment_segment_intersection(seg1, seg2):
+    if (seg1 == seg2).all():
+        return False
     s1_x = seg1[2] - seg1[0]
     s1_y = seg1[3] - seg1[1]
     s2_x = seg2[2] - seg2[0]

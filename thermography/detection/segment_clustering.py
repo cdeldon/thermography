@@ -119,8 +119,7 @@ class SegmentClusterer:
         return np.array(mean_angles), np.array(mean_centers)
 
     def clean_clusters_angle(self, mean_angles, max_angle_variation_mean):
-        for cluster_index, (cluster, features, mean_angle) in enumerate(
-                zip(self.cluster_list, self.cluster_features, mean_angles)):
+        for cluster_index, (cluster, mean_angle) in enumerate(zip(self.cluster_list, mean_angles)):
             invalid_indices = []
             for segment_index, segment in enumerate(cluster):
                 # Retrieve angle in [0, pi] of current segment.
@@ -130,22 +129,30 @@ class SegmentClusterer:
                 if d_angle > max_angle_variation_mean:
                     invalid_indices.append(segment_index)
             self.cluster_list[cluster_index] = np.delete(cluster, invalid_indices, axis=0)
-            self.cluster_features[cluster_index] = np.delete(features, invalid_indices, axis=0)
 
     def merge_collinear_segments(self):
-        for cluster_index, (cluster, features) in enumerate(zip(self.cluster_list, self.cluster_features)):
-            found_collinear_segments = True
-            while found_collinear_segments:
-                found_collinear_segments = False
-                for cluster_index, cluster in enumerate(self.cluster_list):
-                    collinear_segments = []
-                    for segment_index_i in range(len(cluster)):
-                        segment_i = cluster[segment_index_i]
-                        for segment_index_j in range(segment_index_i + 1, len(cluster)):
-                            segment_j = cluster[segment_index_j]
-                            slope, intercept = tg.utils.line_estimate(segment_i, segment_j)
+        for cluster_index, cluster in enumerate(self.cluster_list):
+            merged = []
+            merged_segments = []
+            for i, segment_i in enumerate(cluster):
+                if i in merged:
+                    continue
+                collinears = [i]
+                for j in range(i+1, len(cluster)):
+                    segment_j = cluster[j]
+                    if tg.utils.segments_collinear(segment_i, segment_j, max_angle= 5.0 / 180 * np.pi, max_endpoint_distance=50):
+                        collinears.append(j)
 
-                    # selected_indices = np.where(label == self.clusters)[0]
+                merged_segment = tg.utils.merge_segments(cluster[collinears])
+                merged_segment = [int(m) for m in merged_segment]
+                merged_segments.append(merged_segment)
+
+                for index in collinears:
+                    if index not in merged:
+                        merged.append(index)
+
+            self.cluster_list[cluster_index] = np.array(merged_segments)
+
 
     def clean_clusters(self, mean_angles, max_angle_variation_mean=np.pi / 180 * 20, min_intra_distance=0):
         for cluster_index, (cluster, features) in enumerate(zip(self.cluster_list, self.cluster_features)):
@@ -154,4 +161,4 @@ class SegmentClusterer:
             self.cluster_features[cluster_index] = features[cluster_order]
 
         self.clean_clusters_angle(mean_angles, max_angle_variation_mean)
-        # self.merge_collinear_segments()
+        self.merge_collinear_segments()

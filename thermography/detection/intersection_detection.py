@@ -18,13 +18,15 @@ class IntersectionDetector:
 
     def detect(self):
         intersections = []
-        num_segments = len(self.segments)
-        for i in range(num_segments):
-            segment_i = self.segments[i]
-            for j in range(i + 1, num_segments):
-                segment_j = self.segments[j]
-                intersection = segment_segment_intersection(seg1=segment_i, seg2=segment_j)
-                if intersection:
-                    intersections.append(intersection)
+        num_clusters = len(self.segments)
+        for cluster_index_i in range(num_clusters):
+            cluster_i = self.segments[cluster_index_i]
+            for cluster_index_j in range(cluster_index_i, num_clusters):
+                cluster_j = self.segments[cluster_index_j]
+                for segment_i in cluster_i:
+                    for segment_j in cluster_j:
+                        intersection = segment_segment_intersection(seg1=segment_i, seg2=segment_j)
+                        if intersection:
+                            intersections.append(intersection)
 
         self.raw_intersections = np.array(intersections)
