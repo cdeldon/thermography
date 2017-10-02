@@ -114,18 +114,7 @@ class SegmentClusterer:
             mean_center = np.mean(centers, axis=0)
             mean_centers.append(mean_center)
 
-            angles = []
-            for segment in cluster:
-                angle = tg.utils.angle(segment[0:2], segment[2:4]) * 2
-
-                # Need to use complex representation as Euclidean distance used in clustering makes sense in
-                # complex plane, and does not directly on angles.
-                point = np.array([np.cos(angle), np.sin(angle)])
-                angles.append(point)
-
-            mean_point = np.mean(angles, axis=0)
-            mean_angle = np.arctan2(mean_point[1], mean_point[0]) / 2
-            mean_angles.append(mean_angle)
+            mean_angles.append(tg.utils.mean_segment_angle(cluster))
 
         return np.array(mean_angles), np.array(mean_centers)
 

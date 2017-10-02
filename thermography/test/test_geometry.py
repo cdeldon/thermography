@@ -49,6 +49,15 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(angle_diff(angle1, angle3), np.pi * 0.5)
         self.assertAlmostEqual(angle_diff(angle3, angle1), np.pi * 0.5)
 
+    def test_mean_segment_angle(self):
+        segment1 = [0, 0, 1, 0]
+        segment2 = [0, -1, 1, -1]
+        segment3 = [0, 0, 1, 1]
+        segment4 = [0, 0, 1, -1]
+
+        segments = np.array([segment1, segment2, segment3, segment4])
+        self.assertAlmostEqual(mean_segment_angle(segments), 0.0)
+
     def test_segment_min_distance(self):
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([0, 1, 1, 1])
@@ -118,6 +127,11 @@ class TestGeometryUtils(unittest.TestCase):
         line3 = [-1, 0]
         self.assertFalse(segment_line_intersection(segment1, line3[0], line3[1]))
         self.assertFalse(segment_line_intersection(segment2, line3[0], line3[1]))
+
+    def test_segment_sorting(self):
+        segments = np.array([[0, 0, 1, 0], [0, 1, 1, 1], [0, 1, 1, 1.1], [0, -1, 1, -0.5]])
+        sorted_segments_indices = sort_segments(segments)
+        self.assertTrue((sorted_segments_indices == [2, 1, 0, 3]).all())
 
 
 if __name__ == '__main__':

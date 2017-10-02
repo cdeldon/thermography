@@ -7,6 +7,7 @@ import numpy as np
 import os
 
 if __name__ == '__main__':
+
     # Data input parameters.
     THERMOGRAPHY_ROOT_DIR = tg.settings.get_thermography_root_dir()
     tg.settings.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
@@ -94,4 +95,4 @@ if __name__ == '__main__':
         cv2.imshow("Skeleton", edge_detector.edge_image)
         cv2.imshow("Segments on input image", edges)
         cv2.imshow("Cleaned segments on input image", edges_cleaned)
-        cv2.waitKey(0)
+        cv2.waitKey(200)
