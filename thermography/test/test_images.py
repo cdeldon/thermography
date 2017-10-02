@@ -1,7 +1,7 @@
 import numpy as np
 import unittest
 
-from thermography.utils.images import scale_image
+from thermography.utils.images import *
 
 
 class TestImageUtils(unittest.TestCase):

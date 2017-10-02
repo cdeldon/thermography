@@ -28,5 +28,13 @@ def set_data_dir(data_dir):
     global DATA_DIR
     DATA_DIR = data_dir
 
+
 def get_test_dir():
     return TEST_DIR
+
+
+__all__ = ["get_data_dir",
+           "get_settings_dir",
+           "get_thermography_root_dir",
+           "get_test_dir",
+           "set_data_dir"]

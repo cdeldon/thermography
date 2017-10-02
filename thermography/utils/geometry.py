@@ -1,19 +1,192 @@
 import numpy as np
 
+__all__ = ["angle",
+           "angle_diff",
+           "area_between_segment_and_line",
+           "line_estimate",
+           "mean_segment_angle",
+           "merge_segments",
+           "point_line_distance",
+           "segments_collinear",
+           "segment_line_intersection",
+           "segment_min_distance",
+           "segment_segment_intersection",
+           "sort_segments"]
+
 
 def angle(pt1, pt2):
     """
     Computes the angle (in radiants) between a segment specified by the two points and the x-axis.
+    Note that this function assumes the input are pixel coordinates, and thus negates the y-difference between the two
+    points to get a consistent angle with the one seen by the user.
     :param pt1: First point of the segment.
     :param pt2: Second point of the segment.
     :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]
     """
-    a = np.arctan2(pt2[1] - pt1[1], pt2[0] - pt1[0])
-    if a >= np.pi:
-        a -= np.pi
+    a = np.arctan2(-(pt2[1] - pt1[1]), pt2[0] - pt1[0])
+    if np.abs(a % np.pi) <= 0.00001:
+        return 0
     elif a < 0:
         a += np.pi
     return a
+
+
+def angle_diff(angle1, angle2):
+    """
+    Computes the angle difference between the input arguments. The resulting angle difference is in [0, pi * 0.5]
+    :param angle1: First angle expressed in radiants.
+    :param angle2: Second angle expressed in radiants.
+    :return: Angle difference between the input parameters. This angle represents the smallest positive angle between
+    the input parameters.
+    """
+    d_angle = np.abs(angle1 - angle2)
+    d_angle = d_angle % np.pi
+    if d_angle > np.pi * 0.5:
+        d_angle -= np.pi
+    return np.abs(d_angle)
+
+
+def area_between_segment_and_line(seg, slope, intercept):
+    # TODO: implement this function
+    raise NotImplementedError("Function {} must be implemented.".format(area_between_segment_and_line.__name__))
+
+
+def line_estimate(seg1, seg2):
+    x = [*seg1[0::2], *seg2[0::2]]
+    y = [*seg1[1::2], *seg2[1::2]]
+
+    [slope, intercept] = np.polyfit(x, y, 1)
+
+    return slope, intercept
+
+
+def mean_segment_angle(segment_list):
+    """
+    Computes the mean angle of a list of segments.
+    :param segment_list: A list of segments of the form [[x0, y0, x1, y1], [...], .... ]
+    :return: The mean angle of the segments passed as argument. The angle lies in [0, pi]
+    """
+    complex_coordinates = []
+    for segment in segment_list:
+        a = angle(segment[0:2], segment[2:4]) * 2
+
+        # Compute complex representation of angle.
+        complex_coordinate = np.array([np.cos(a), np.sin(a)])
+        complex_coordinates.append(complex_coordinate)
+
+    mean_coordinate = np.mean(complex_coordinates, axis=0)
+    a = np.arctan2(mean_coordinate[1], mean_coordinate[0]) / 2
+    if a < 0:
+        a += np.pi
+    return a
+
+
+def merge_segments(segment_list, verticality_thresh=2):
+    """
+    Computes a unique segments as a representation of the almost collinear segments passed as argument.
+    :param segment_list: List of almost collinear segments to be merged into a single segment.
+    :param verticality_thresh: Verticality threshold, i.e. if std(y) > verticality_thresh * std(x) then the segment is
+    merged by using a a vertical fitting, otherwise an horizontal fitting.
+    :return: A new segment defined on the line estimation over the segments passed as argument.
+    """
+    x = []
+    y = []
+    for segment in segment_list:
+        x.append(segment[0])
+        x.append(segment[2])
+        y.append(segment[1])
+        y.append(segment[3])
+
+    std_x = np.std(x)
+    std_y = np.std(y)
+
+    # Vertical case.
+    if std_x == 0:
+        merged_segment = np.array([x[0], np.min(y), x[0], np.max(y)])
+        return merged_segment
+    else:
+        verticality = std_y / std_x
+        # Data is almost vertical aligned.
+        if verticality > verticality_thresh:
+            [slope_inv, intercept_inv] = np.polyfit(y, x, 1)
+            slope = 1.0 / slope_inv
+            intercept = -intercept_inv / slope_inv
+        # Data is horizontally aligned.
+        else:
+            [slope, intercept] = np.polyfit(x, y, 1)
+
+        x0 = np.min(x)
+        x1 = np.max(x)
+        y0 = intercept + slope * x0
+        y1 = intercept + slope * x1
+
+        return np.array([x0, y0, x1, y1])
+
+
+def point_line_distance(point, slope, intercept):
+    """
+    Computes the shortest distance between a point and a line defined by its slope and intercept.
+    :param point: Point given by a 2D coordinate in the form of [x, y]
+    :param slope: Slope of the line
+    :param intercept: Intercept of the line
+    :return: Positive minimal distance between the point passed as argument and the line defined by the slope and
+    intercept passed as arguments.
+    """
+    return np.abs(-slope * point[0] + point[1] - intercept) / np.sqrt(1 + slope * slope)
+
+
+def segments_collinear(seg1, seg2, max_angle=5.0 / 180 * np.pi, max_endpoint_distance=50):
+    """
+    Tests whether two segments are collinear given some thresholds for collinearity.
+    :param seg1: First segment to be tested.
+    :param seg2: Second segment to be tested.
+    :param max_angle: Maximal angle between segments to be accepted as collinear.
+    :param max_endpoint_distance: Max sum of euclidean distance between the endpoints of the passed segments and the
+    line estimate computed between the segments.
+    This parameter discards almost parallel segments with different intercept.
+    :return: True if the segments are almost collinear, False otherwise.
+    """
+    # Compute the angle between the segments.
+    a = angle_diff(angle(seg1[0:2], seg1[2:4]), angle(seg2[0:2], seg2[2:4]))
+    if a > max_angle:
+        return False
+
+    intersection = segment_segment_intersection(np.array(seg1), np.array(seg2))
+    if intersection:
+        return True
+    else:
+        slope, intercept = line_estimate(seg1, seg2)
+        dist_sum = 0
+        for point in [seg1[0:2], seg1[2:4], seg2[0:2], seg2[2:4]]:
+            dist_sum += point_line_distance(point, slope, intercept)
+        if dist_sum >= max_endpoint_distance:
+            return False
+        return True
+
+
+def segment_line_intersection(seg, slope, intercept):
+    pt1 = seg[0:2]
+    pt2 = seg[2:4]
+
+    x0 = np.array([0, intercept])
+    x1 = np.array([1, slope + intercept])
+    r = x1 - x0
+    r = r / np.linalg.norm(r)
+
+    d1 = pt1 - x0
+    d2 = pt2 - x0
+
+    if np.cross(d1, r).dot(np.cross(r, d2)) < 0:
+        return False
+
+    d1_proj = x0 + r * np.dot(d1, r)
+    d2_proj = x0 + r * np.dot(d2, r)
+
+    # If segment was perpendicular to line.
+    if (d1_proj == d2_proj).all():
+        return d1_proj
+
+    return segment_segment_intersection(seg, np.array([d1_proj[0], d1_proj[1], d2_proj[0], d2_proj[1]]))
 
 
 def segment_min_distance(seg1, seg2):
@@ -100,16 +273,9 @@ def segment_min_distance(seg1, seg2):
     return distance
 
 
-def line_estimate(seg1, seg2):
-    x = [*seg1[0::2], *seg2[0::2]]
-    y = [*seg1[1::2], *seg2[1::2]]
-
-    [slope, intercept] = np.polyfit(x, y, 1)
-
-    return slope, intercept
-
-
 def segment_segment_intersection(seg1, seg2):
+    if (seg1 == seg2).all():
+        return False
     s1_x = seg1[2] - seg1[0]
     s1_y = seg1[3] - seg1[1]
     s2_x = seg2[2] - seg2[0]
@@ -129,30 +295,23 @@ def segment_segment_intersection(seg1, seg2):
     return False
 
 
-def segment_line_intersection(seg, slope, intercept):
-    pt1 = seg[0:2]
-    pt2 = seg[2:4]
+def sort_segments(segment_list):
+    """
+    Sorts the segments passed as argument based on the normal associated to the mean angle.
+    :param segment_list:  A list of segments of the form [[x0, y0, x1, y1], [...], .... ]
+    :return: A list of indices in the segment list passed as argument which sorts the segments.
+    """
+    # Compute the mean angle of the segments in the list.
+    mean_angle = mean_segment_angle(segment_list)
 
-    x0 = np.array([0, intercept])
-    x1 = np.array([1, slope + intercept])
-    r = x1 - x0
-    r = r / np.linalg.norm(r)
+    # Compute the associated segment centers.
+    segment_centers = [(s[0:2] + s[2:4]) * 0.5 for s in segment_list]
 
-    d1 = pt1 - x0
-    d2 = pt2 - x0
+    # Compute the normal associated to the angle.
+    direction = np.array([np.cos(mean_angle), np.sin(mean_angle)])
+    normal = np.array([-direction[1], direction[0]])
 
-    if np.cross(d1, r).dot(np.cross(r, d2)) < 0:
-        return False
+    # Project those coordinates along the normal defined by the mean angle.
+    projected_centers = [np.dot(center, normal) for center in segment_centers]
 
-    d1_proj = x0 + r * np.dot(d1, r)
-    d2_proj = x0 + r * np.dot(d2, r)
-
-    # If segment was perpendicular to line.
-    if (d1_proj == d2_proj).all():
-        return d1_proj
-
-    return segment_segment_intersection(seg, np.array([d1_proj[0], d1_proj[1], d2_proj[0], d2_proj[1]]))
-
-
-def area_between_segment_and_line(seg, slope, intercept):
-    pass
+    return np.argsort(projected_centers)

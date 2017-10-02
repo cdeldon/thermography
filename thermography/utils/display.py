@@ -1,5 +1,6 @@
 import numpy as np
 
+__all__ = ["random_color"]
 
 def random_color():
     """
