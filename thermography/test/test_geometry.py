@@ -91,6 +91,39 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertListAlmostEqual(line_estimate(segment4, segment5), (1, 0), places=3)
         self.assertListAlmostEqual(line_estimate(segment5, segment4), (1, 0), places=3)
 
+    def test_point_line_distance(self):
+        slope = 1
+        intercept = 0
+        point1 = [0, 0]
+        point2 = [1.5, 1.5]
+        point3 = [-0.5, -0.5]
+        self.assertAlmostEqual(point_line_distance(point1, slope, intercept), 0.0)
+        self.assertAlmostEqual(point_line_distance(point2, slope, intercept), 0.0)
+        self.assertAlmostEqual(point_line_distance(point3, slope, intercept), 0.0)
+
+        point4 = [0, 1]
+        self.assertAlmostEqual(point_line_distance(point4, slope, intercept), np.sqrt(2) * 0.5)
+
+        slope = 0.5
+        intercept = 1
+        self.assertAlmostEqual(point_line_distance(point1, slope, intercept), 0.894427190)
+        self.assertAlmostEqual(point_line_distance(point2, slope, intercept), 0.223606797)
+        self.assertAlmostEqual(point_line_distance(point3, slope, intercept), 1.118033989)
+        self.assertAlmostEqual(point_line_distance(point4, slope, intercept), 0.0)
+
+    def test_segments_collinear(self):
+        segment1 = [0, 0, 1, 0]
+        segment2 = [0.5, 0, 1.5, 0]
+        self.assertTrue(segments_collinear(segment1, segment2, max_angle=0.05 / 180 * np.pi, max_endpoint_distance=0.1))
+
+        segment3 = [0, 1, 1, 1]
+        self.assertFalse(segments_collinear(segment1, segment3, max_angle=5 / 180 * np.pi, max_endpoint_distance=0.1))
+        self.assertTrue(segments_collinear(segment1, segment3, max_angle=0.05 / 180 * np.pi, max_endpoint_distance=3))
+
+        segment4 = [0.5, -1, 0.5, 1]
+        self.assertFalse(segments_collinear(segment1, segment4, max_angle=10.0 / 180 * np.pi, max_endpoint_distance=5))
+        self.assertTrue(segments_collinear(segment1, segment4, max_angle=np.pi, max_endpoint_distance=5))
+
     def test_segment_segment_intersection(self):
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([0, 0, 0, 1])

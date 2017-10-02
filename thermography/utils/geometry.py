@@ -5,6 +5,8 @@ __all__ = ["angle",
            "area_between_segment_and_line",
            "line_estimate",
            "mean_segment_angle",
+           "point_line_distance",
+           "segments_collinear",
            "segment_line_intersection",
            "segment_min_distance",
            "segment_segment_intersection",
@@ -76,6 +78,47 @@ def mean_segment_angle(segment_list):
     if a < 0:
         a += np.pi
     return a
+
+
+def point_line_distance(point, slope, intercept):
+    """
+    Computes the shortest distance between a point and a line defined by its slope and intercept.
+    :param point: Point given by a 2D coordinate in the form of [x, y]
+    :param slope: Slope of the line
+    :param intercept: Intercept of the line
+    :return: Positive minimal distance between the point passed as argument and the line defined by the slope and
+    intercept passed as arguments.
+    """
+    return np.abs(-slope * point[0] + point[1] - intercept) / np.sqrt(1 + slope * slope)
+
+
+def segments_collinear(seg1, seg2, max_angle=5.0 / 180 * np.pi, max_endpoint_distance=50):
+    """
+    Tests whether two segments are collinear given some thresholds for collinearity.
+    :param seg1: First segment to be tested.
+    :param seg2: Second segment to be tested.
+    :param max_angle: Maximal angle between segments to be accepted as collinear.
+    :param max_endpoint_distance: Max sum of euclidean distance between the endpoints of the passed segments and the
+    line estimate computed between the segments.
+    This parameter discards almost parallel segments with different intercept.
+    :return: True if the segments are almost collinear, False otherwise.
+    """
+    # Compute the angle between the segments.
+    a = angle_diff(angle(seg1[0:2], seg1[2:4]), angle(seg2[0:2], seg2[2:4]))
+    if a > max_angle:
+        return False
+
+    intersection = segment_segment_intersection(seg1, seg2)
+    if intersection:
+        return True
+    else:
+        slope, intercept = line_estimate(seg1, seg2)
+        dist_sum = 0
+        for point in [seg1[0:2], seg1[2:4], seg2[0:2], seg2[2:4]]:
+            dist_sum += point_line_distance(point, slope, intercept)
+        if dist_sum >= max_endpoint_distance:
+            return False
+        return True
 
 
 def segment_line_intersection(seg, slope, intercept):

@@ -143,29 +143,15 @@ class SegmentClusterer:
                         segment_i = cluster[segment_index_i]
                         for segment_index_j in range(segment_index_i + 1, len(cluster)):
                             segment_j = cluster[segment_index_j]
-                            slope, intercept = tg.line_estimate(segment_index_i, segment_index_j)
+                            slope, intercept = tg.utils.line_estimate(segment_i, segment_j)
 
-                    selected_indices = np.where(label == self.clusters)[0]
-
-    def clean_clusters_too_close(self, min_intra_distance):
-        for cluster_index, (cluster, features) in enumerate(zip(self.cluster_list, self.cluster_features)):
-            invalid_indices = []
-            for segment_index_i in range(len(cluster)):
-                segment_i = cluster[segment_index_i, :]
-                angle_i = tg.angle(segment_i[0:2], segment_i[2:4])
-                for segment_index_j in range(segment_index_i + 1, len(cluster)):
-                    segment_j = cluster[segment_index_j, :]
-                    angle_j = tg.angle(segment_j[0:2], segment_j[2:4])
-
-                    dist = tg.segment_min_distance(segment_i, segment_j)
-                    if dist < min_intra_distance and np.abs(angle_i - angle_j) < np.pi / 180:
-                        invalid_indices.append(segment_index_j)
-
-            self.cluster_list[cluster_index] = np.delete(cluster, invalid_indices, axis=0)
-            self.cluster_features[cluster_index] = np.delete(features, invalid_indices, axis=0)
+                    # selected_indices = np.where(label == self.clusters)[0]
 
     def clean_clusters(self, mean_angles, max_angle_variation_mean=np.pi / 180 * 20, min_intra_distance=0):
+        for cluster_index, (cluster, features) in enumerate(zip(self.cluster_list, self.cluster_features)):
+            cluster_order = tg.utils.sort_segments(cluster)
+            self.cluster_list[cluster_index] = cluster[cluster_order]
+            self.cluster_features[cluster_index] = features[cluster_order]
 
         self.clean_clusters_angle(mean_angles, max_angle_variation_mean)
-        # self.merge_collinear_segments()
-        # self.clean_clusters_too_close(min_intra_distance)
+        self.merge_collinear_segments()
