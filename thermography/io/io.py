@@ -3,8 +3,6 @@ import os
 import progressbar
 from .modes import Modality
 
-from thermography.utils.images import scale_image
-from thermography.settings import Camera
 
 __all__ = ["ImageLoader", "VideoLoader"]
 
@@ -44,23 +42,18 @@ class ImageLoader:
 
 
 class VideoLoader:
-    def __init__(self, video_path: str, camera: Camera, start_frame: int = 0, end_frame: int = None,
-                 scale_factor: float = 1.0):
+    def __init__(self, video_path: str, start_frame: int = 0, end_frame: int = None):
         """
         Loads the frames associated to the video indicated by the path passed as argument.
         :param video_path: Absolute path to the video to be loaded.
-        :param camera: Camera parameters associated to the video.
         :param start_frame: Start frame of the video to be considered (inclusive).
         :param end_frame: End frame of the video to be considered (non inclusive).
         :param scale_factor: Scaling factor to apply to each frame inside the loaded video.
         """
         self.video_path = video_path
-        self.camera = camera
 
         self.start_frame = start_frame
         self.end_frame = end_frame
-
-        self.scale_factor = scale_factor
 
         self.frames = []
         self.__load_video(cv2.VideoCapture(self.video_path))
@@ -115,12 +108,7 @@ class VideoLoader:
             if not ret:
                 raise ValueError("Could not load frame {}".format(i + self.start_frame))
 
-            distorted_image = video_raw.retrieve()[1]
-
-            undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=self.camera.camera_matrix,
-                                              distCoeffs=self.camera.distortion_coeff)
-
-            self.frames.append(scale_image(undistorted_image, self.scale_factor))
+            self.frames.append(video_raw.retrieve()[1])
             num_frames += 1
             bar.update(num_frames)
 

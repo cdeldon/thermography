@@ -21,16 +21,19 @@ if __name__ == '__main__':
     IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input and preprocessing.
-    scale_factor = 1.0
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, camera=camera, start_frame=1200, end_frame=1300,
-                               scale_factor=scale_factor)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1200, end_frame=1300)
     # video_loader.show_video(fps=25)
 
     for i, frame in enumerate(video_loader.frames):
-        # frame = cv2.imread("C:/Users/Carlo/Desktop/vertical.jpg")
-        gray = cv2.cvtColor(src=frame, code=cv2.COLOR_BGR2GRAY)
 
-        gray = tg.utils.scale_image(gray, scale_factor)
+        distorted_image = frame.copy()
+        undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=camera.camera_matrix,
+                                          distCoeffs=camera.distortion_coeff)
+
+        scale_factor = 1.0
+        scaled_image = tg.utils.scale_image(undistorted_image, scale_factor)
+
+        gray = cv2.cvtColor(src=scaled_image, code=cv2.COLOR_BGR2GRAY)
         gray = cv2.blur(gray, (3, 3))
 
         # Edge detection.
@@ -67,11 +70,11 @@ if __name__ == '__main__':
         intersection_detector.detect()
 
         # Displaying.
-        edges = frame.copy()
-        edges_filtered = frame.copy()
+        edges = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
+        edges_filtered = edges.copy()
 
         # Fix colors for first two clusters, choose the next randomly.
-        colors = [(0, 255, 255), (255, 255, 0)]
+        colors = [(29, 247, 240), (255, 180, 50)]
         for cluster_number in range(2, len(unfiltered_segments)):
             colors.append(tg.utils.random_color())
 
@@ -86,7 +89,8 @@ if __name__ == '__main__':
                          color=color, thickness=1, lineType=cv2.LINE_AA)
 
         for intersection in intersection_detector.raw_intersections:
-            cv2.circle(edges_filtered, (int(intersection[0]), int(intersection[1])), 3, (0, 0, 255), 1, cv2.LINE_AA)
+            cv2.circle(edges_filtered, (int(intersection[0]), int(intersection[1])), radius=1, color=(0, 0, 255),
+                       thickness=2, lineType=cv2.LINE_AA)
 
         cv2.imshow("Skeleton", edge_detector.edge_image)
         cv2.imshow("Segments on input image", edges)
