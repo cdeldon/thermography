@@ -1,6 +1,7 @@
 import numpy as np
 
 __all__ = ["angle",
+           "angle_diff",
            "area_between_segment_and_line",
            "line_estimate",
            "segment_line_intersection",
@@ -15,13 +16,29 @@ def angle(pt1, pt2):
     points to get a consistent angle with the one seen by the user.
     :param pt1: First point of the segment.
     :param pt2: Second point of the segment.
-    :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, 2*pi]
+    :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]
     """
     a = np.arctan2(-(pt2[1] - pt1[1]), pt2[0] - pt1[0])
-    if a < 0:
+    if np.abs(a % np.pi) <= 0.00001:
+        return 0
+    elif a < 0:
         a += np.pi
     return a
 
+
+def angle_diff(angle1, angle2):
+    """
+    Computes the angle difference between the input arguments. The resulting angle difference is in [0, pi * 0.5]
+    :param angle1: First angle expressed in radiants.
+    :param angle2: Second angle expressed in radiants.
+    :return: Angle difference between the input parameters. This angle represents the smallest positive angle between
+    the input parameters.
+    """
+    d_angle = np.abs(angle1 - angle2)
+    d_angle = d_angle % np.pi
+    if d_angle > np.pi * 0.5:
+        d_angle -= np.pi
+    return np.abs(d_angle)
 
 def segment_min_distance(seg1, seg2):
     """

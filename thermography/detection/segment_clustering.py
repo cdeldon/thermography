@@ -32,7 +32,7 @@ class SegmentClusterer:
             center = (pt1 + pt2) * 0.5
             centers.append(center)
 
-            # Segment angle lies in [0, 2pi], multiply by 2 such that complex number associated to similar angles are
+            # Segment angle lies in [0, pi], multiply by 2 such that complex number associated to similar angles are
             # close on the complex plane (e.g. 180° and 0°)
             angle = tg.utils.angle(pt1, pt2) * 2
 
@@ -134,10 +134,11 @@ class SegmentClusterer:
                 zip(self.cluster_list, self.cluster_features, mean_angles)):
             invalid_indices = []
             for segment_index, segment in enumerate(cluster):
+                # Retrieve angle in [0, pi] of current segment.
                 angle = tg.utils.angle(segment[0:2], segment[2:4])
-                d_angle = np.arctan2(np.sin(angle - mean_angle), np.cos(angle - mean_angle))
-                if d_angle > max_angle_variation_mean and np.abs(d_angle - np.pi) > max_angle_variation_mean:
-                    print(d_angle / np.pi * 180)
+                # Compute angle difference between current segment and mean angle of cluster.
+                d_angle = tg.utils.angle_diff(angle, mean_angle)
+                if d_angle > max_angle_variation_mean:
                     invalid_indices.append(segment_index)
             self.cluster_list[cluster_index] = np.delete(cluster, invalid_indices, axis=0)
             self.cluster_features[cluster_index] = np.delete(features, invalid_indices, axis=0)

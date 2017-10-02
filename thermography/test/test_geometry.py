@@ -16,25 +16,38 @@ class TestGeometryUtils(unittest.TestCase):
             self.assertAlmostEqual(f, s, places=places, msg=msg, delta=delta)
 
     def test_segment_angle(self):
+        # Note that we test the angle based on pixel coordinates, i.e. with negated y coordinates.
         segment1 = [0, 0, 1, 0]
         self.assertAlmostEqual(angle(segment1[0:2], segment1[2:4]), 0.0 / 180 * np.pi)
         self.assertAlmostEqual(angle(segment1[2:4], segment1[0:2]), 0.0 / 180 * np.pi)
 
         segment2 = [0, 0, 1, 1]
-        self.assertAlmostEqual(angle(segment2[0:2], segment2[2:4]), 45.0 / 180 * np.pi)
-        self.assertAlmostEqual(angle(segment2[2:4], segment2[0:2]), 45.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment2[0:2], segment2[2:4]), 135.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment2[2:4], segment2[0:2]), 135.0 / 180 * np.pi)
 
         segment3 = [0, 0, 0, 1]
         self.assertAlmostEqual(angle(segment3[0:2], segment3[2:4]), 90.0 / 180 * np.pi)
         self.assertAlmostEqual(angle(segment3[2:4], segment3[0:2]), 90.0 / 180 * np.pi)
 
         segment4 = [0, 0, -1, 1]
-        self.assertAlmostEqual(angle(segment4[0:2], segment4[2:4]), 135.0 / 180 * np.pi)
-        self.assertAlmostEqual(angle(segment4[2:4], segment4[0:2]), 135.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment4[0:2], segment4[2:4]), 45.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment4[2:4], segment4[0:2]), 45.0 / 180 * np.pi)
 
         segment5 = [1.5, 1.5, 2.5, 2.5]
-        self.assertAlmostEqual(angle(segment5[0:2], segment5[2:4]), 45.0 / 180 * np.pi)
-        self.assertAlmostEqual(angle(segment5[2:4], segment5[0:2]), 45.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment5[0:2], segment5[2:4]), 135.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment5[2:4], segment5[0:2]), 135.0 / 180 * np.pi)
+
+    def test_angle_difference(self):
+        angle1 = 0.0
+        self.assertAlmostEqual(angle_diff(angle1, angle1), 0.0)
+
+        angle2 = np.pi * 0.5
+        self.assertAlmostEqual(angle_diff(angle1, angle2), np.pi * 0.5)
+        self.assertAlmostEqual(angle_diff(angle2, angle1), np.pi * 0.5)
+
+        angle3 = -np.pi * 0.5
+        self.assertAlmostEqual(angle_diff(angle1, angle3), np.pi * 0.5)
+        self.assertAlmostEqual(angle_diff(angle3, angle1), np.pi * 0.5)
 
     def test_segment_min_distance(self):
         segment1 = np.array([0, 0, 1, 0])

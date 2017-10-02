@@ -13,10 +13,11 @@ if __name__ == '__main__':
     IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1200, end_frame=1300)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1200, end_frame=1210)
     # video_loader.show_video(fps=25)
 
     for i, frame in enumerate(video_loader.frames):
+        # frame = cv2.imread("C:/Users/Carlo/Desktop/vertical.jpg")
         gray = cv2.cvtColor(src=frame, code=cv2.COLOR_BGR2GRAY)
 
         scale_factor = 1
@@ -45,7 +46,7 @@ if __name__ == '__main__':
 
         # Segment clustering.
         segment_clusterer = SegmentClusterer(input_segments=segment_detector.segments)
-        segment_clusterer.cluster_segments(num_clusters=2, n_init=8, cluster_type="gmm", swipe_clusters=False)
+        segment_clusterer.cluster_segments(num_clusters=2, n_init=8, cluster_type="knn", swipe_clusters=False)
         # segment_clusterer.plot_segment_features()
         mean_angles, mean_centers = segment_clusterer.compute_cluster_mean()
 
@@ -53,10 +54,12 @@ if __name__ == '__main__':
         edges = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
         edges_cleaned = edges.copy()
 
-        colors = []
-        for cluster in segment_clusterer.cluster_list:
-            color = tg.utils.random_color()
-            colors.append(color)
+        # Fix colors for first two clusters, choose the next randomly.
+        colors = [(0, 255, 255), (255, 255, 0)]
+        for cluster_number in range(2, len(segment_clusterer.cluster_list)):
+            colors.append(tg.utils.random_color())
+
+        for cluster, color in zip(segment_clusterer.cluster_list, colors):
             for segment in cluster:
                 cv2.line(img=edges, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
                          color=color, thickness=1, lineType=cv2.LINE_AA)
@@ -64,7 +67,7 @@ if __name__ == '__main__':
         for intersection in intersection_detector.raw_intersections:
             cv2.circle(edges, (int(intersection[0]), int(intersection[1])), 3, (0, 0, 255), 1, cv2.LINE_AA)
 
-        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 5,
+        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 10,
                                          min_intra_distance=20)
         for cluster, color in zip(segment_clusterer.cluster_list, colors):
             for segment in cluster:
@@ -91,4 +94,4 @@ if __name__ == '__main__':
         cv2.imshow("Skeleton", edge_detector.edge_image)
         cv2.imshow("Segments on input image", edges)
         cv2.imshow("Cleaned segments on input image", edges_cleaned)
-        cv2.waitKey(40)
+        cv2.waitKey(0)
