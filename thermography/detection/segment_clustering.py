@@ -18,8 +18,21 @@ class SegmentClusterer:
         self.cluster_list = None
         self.cluster_features = None
 
-    def cluster_segments(self, num_clusters=15, n_init=10, cluster_type="gmm", swipe_clusters=True, use_angles=True,
-                         use_centers=False):
+    def cluster_segments(self, num_clusters: int = 15, n_init: int = 10, cluster_type: str = "gmm",
+                         swipe_clusters: bool = True, use_angles: bool = True, use_centers: bool = False):
+        """
+        Clusters the input segments based on the parameters passed as argument. The features that can be used to cluster
+        the segments are their mean coordinates, and their angle.
+        :param num_clusters: Number of clusters to extract from the parameter space.
+        :param n_init: Number of initializations to be performed when clustering.
+        :param cluster_type: Clustering algorithm to be used, must be in ['gmm', 'knn'] which correspond to a full
+        gaussian mixture model, and k-nearest-neighbors respectively.
+        :param swipe_clusters: Boolean flag, if set to 'True' and 'cluster_type' is 'gmm', then the algorithm iterates
+        the clustering procedure over a range of number of clusters from 1 to 'num_clusters' and retains the best
+        result.
+        :param use_angles: Boolean flag indicating whether to consider angles in the clustering process.
+        :param use_centers: Boolean flag indicating whether to consider segment centroids in the clustering process.
+        """
         if cluster_type not in ["gmm", "knn"]:
             raise ValueError("Invalid value for 'cluster_type': {} "
                              "'cluster_type' should be in ['gmm', 'knn']".format(cluster_type))
@@ -45,9 +58,8 @@ class SegmentClusterer:
         centers = normalize(centers, axis=0)
         angles = np.array(angles)
 
-        features = None
         if use_angles and use_centers:
-            features = np.hstack((centers, angles))
+            features = np.hstack((angles, centers))
         elif use_angles:
             features = angles
         elif use_centers:
@@ -92,6 +104,9 @@ class SegmentClusterer:
         self.cluster_features = cluster_feature_list
 
     def plot_segment_features(self):
+        """
+        Plots the first two dimensions of the features used for clustering.
+        """
         fig = plt.figure()
         ax = fig.add_subplot(111)
         for features in self.cluster_features:
@@ -105,7 +120,11 @@ class SegmentClusterer:
         plt.title('Segment clustering, {} components'.format(len(self.cluster_features)))
         plt.show()
 
-    def compute_cluster_mean(self):
+    def compute_cluster_mean(self) -> tuple:
+        """
+        Computes the mean values (coordinates and angles) for each one of the identified clusters.
+        :return: The mean angles, and mean coordinates of each cluster.
+        """
         mean_centers = []
         mean_angles = []
         for cluster in self.cluster_list:
@@ -118,7 +137,13 @@ class SegmentClusterer:
 
         return np.array(mean_angles), np.array(mean_centers)
 
-    def clean_clusters_angle(self, mean_angles, max_angle_variation_mean):
+    def clean_clusters_angle(self, mean_angles: np.ndarray, max_angle_variation_mean: float):
+        """
+        Removes all segments whose angle deviates more than the passed parameter from the mean cluster angle.
+        :param mean_angles: List of cluster means.
+        :param max_angle_variation_mean: Maximal angle variation to allow between the cluster segments and the
+        associated mean angle.
+        """
         for cluster_index, (cluster, mean_angle) in enumerate(zip(self.cluster_list, mean_angles)):
             invalid_indices = []
             for segment_index, segment in enumerate(cluster):
@@ -130,7 +155,13 @@ class SegmentClusterer:
                     invalid_indices.append(segment_index)
             self.cluster_list[cluster_index] = np.delete(cluster, invalid_indices, axis=0)
 
-    def merge_collinear_segments(self):
+    def merge_collinear_segments(self, max_merging_angle : float, max_endpoint_distance: float):
+        """
+        Merges all collinear segments belonging to the same cluster.
+        :param max_merging_angle: Maximal angle to allow between segments to be merged.
+        :param max_endpoint_distance: Maximal summed distance between segments endpoints and fitted line for merging
+        segments.
+        """
         for cluster_index, cluster in enumerate(self.cluster_list):
             merged = []
             merged_segments = []
@@ -138,9 +169,10 @@ class SegmentClusterer:
                 if i in merged:
                     continue
                 collinears = [i]
-                for j in range(i+1, len(cluster)):
+                for j in range(i + 1, len(cluster)):
                     segment_j = cluster[j]
-                    if tg.utils.segments_collinear(segment_i, segment_j, max_angle= 5.0 / 180 * np.pi, max_endpoint_distance=50):
+                    if tg.utils.segments_collinear(segment_i, segment_j, max_angle=max_merging_angle,
+                                                   max_endpoint_distance=max_endpoint_distance):
                         collinears.append(j)
 
                 merged_segment = tg.utils.merge_segments(cluster[collinears])
@@ -153,12 +185,23 @@ class SegmentClusterer:
 
             self.cluster_list[cluster_index] = np.array(merged_segments)
 
+    def clean_clusters(self, mean_angles : np.ndarray, max_angle_variation_mean:float=np.pi / 180 * 20,
+                       max_merging_angle: float = 5.0 / 180 * np.pi, max_endpoint_distance: float = 50):
+        """
+        Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging
+        almost collinear segments into a single segment.
+        :param mean_angles: List of mean angles computed for each cluster.
+        :param max_angle_variation_mean: Maximal allowed angle between each segment and corresponding cluster mean angle.
+        :param max_merging_angle: Maximal allowed angle between two segments in order to merge them into a single one.
+        :param max_endpoint_distance: Maximal summed distance between segments endpoints and fitted line for merging
+        segments.
+        """
 
-    def clean_clusters(self, mean_angles, max_angle_variation_mean=np.pi / 180 * 20, min_intra_distance=0):
+        # Reorder the segments inside the clusters.
         for cluster_index, (cluster, features) in enumerate(zip(self.cluster_list, self.cluster_features)):
             cluster_order = tg.utils.sort_segments(cluster)
             self.cluster_list[cluster_index] = cluster[cluster_order]
             self.cluster_features[cluster_index] = features[cluster_order]
 
-        self.clean_clusters_angle(mean_angles, max_angle_variation_mean)
-        self.merge_collinear_segments()
+        self.clean_clusters_angle(mean_angles=mean_angles, max_angle_variation_mean=max_angle_variation_mean)
+        self.merge_collinear_segments(max_merging_angle=max_merging_angle, max_endpoint_distance=max_endpoint_distance)

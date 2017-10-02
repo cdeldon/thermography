@@ -8,14 +8,25 @@ class TestGeometryUtils(unittest.TestCase):
     def setUp(self):
         pass
 
-    def assertListAlmostEqual(self, first, second, places=None, msg=None, delta=None):
+    def assertListAlmostEqual(self, first, second, places=None, msg=None):
+        """
+        Tests whether the elements of two lists are almost equal.
+        :param first: The first list to compare.
+        :param second: The second list to compare.
+        :param places: Decimal places to be checked for comparison.
+        :param msg: Optional error message in case comparison failure.
+        :return: True if the two lists passed as argument are almost equal, False otherwise.
+        """
         self.assertEqual(len(first), len(second),
                          msg="Compared lists are not of the same size. Give sizes: first = {}, second = {}".format(
                              len(first), len(second)))
         for f, s in zip(first, second):
-            self.assertAlmostEqual(f, s, places=places, msg=msg, delta=delta)
+            self.assertAlmostEqual(f, s, places=places, msg=msg)
 
     def test_segment_angle(self):
+        """
+        Tests the 'angle' function which computes the angle for a segment.
+        """
         # Note that we test the angle based on pixel coordinates, i.e. with negated y coordinates.
         segment1 = [0, 0, 1, 0]
         self.assertAlmostEqual(angle(segment1[0:2], segment1[2:4]), 0.0 / 180 * np.pi)
@@ -38,6 +49,9 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(angle(segment5[2:4], segment5[0:2]), 135.0 / 180 * np.pi)
 
     def test_angle_difference(self):
+        """
+        Tests the 'angle_diff' function which computes the angle difference between two segments.
+        """
         angle1 = 0.0
         self.assertAlmostEqual(angle_diff(angle1, angle1), 0.0)
 
@@ -50,6 +64,9 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(angle_diff(angle3, angle1), np.pi * 0.5)
 
     def test_mean_segment_angle(self):
+        """
+        Tests the 'mean_segment_angle' function which computes the mean angle from a set of segments.
+        """
         segment1 = [0, 0, 1, 0]
         segment2 = [0, -1, 1, -1]
         segment3 = [0, 0, 1, 1]
@@ -59,6 +76,9 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(mean_segment_angle(segments), 0.0)
 
     def test_segment_min_distance(self):
+        """
+        Tests the 'segment_min_distance' function which computes the minimal distance between two segments.
+        """
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([0, 1, 1, 1])
         self.assertAlmostEqual(segment_min_distance(segment1, segment1), 0.0)
@@ -77,6 +97,9 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(segment_min_distance(segment1, segment6), 1)
 
     def test_line_estimate(self):
+        """
+        Tests the 'line_estimate' function which computes a line estimate from two segments.
+        """
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([1, 0, 2, 0])
         self.assertListAlmostEqual(line_estimate(segment1, segment2), (0, 0))
@@ -92,8 +115,16 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertListAlmostEqual(line_estimate(segment5, segment4), (1, 0), places=3)
 
     def test_merge_segments(self):
+        """
+        Tests the 'merge_segments' function which merges two segments into a single segment.
+        """
 
         def sort_points(segment):
+            """
+            Sorts the endpoints of the segment passed as argument in lexicographical order.
+            :param segment: Segment to be sorted.
+            :return: Sorted segment.
+            """
             pt1 = segment[0:2]
             pt2 = segment[2:4]
             if pt1[0] > pt2[0]:
@@ -129,6 +160,9 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertListAlmostEqual(merged_segment, [0, 0.16666666, 0.1, 2.33333333])
 
     def test_point_line_distance(self):
+        """
+        Tests the 'point_line_distance' function which computes the distance between a point and a line.
+        """
         slope = 1
         intercept = 0
         point1 = [0, 0]
@@ -149,6 +183,9 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(point_line_distance(point4, slope, intercept), 0.0)
 
     def test_segments_collinear(self):
+        """
+        Tests the 'segments_collinear' function which computes whether two segments are almost collinear or not.
+        """
         segment1 = [0, 0, 1, 0]
         segment2 = [0.5, 0, 1.5, 0]
         self.assertTrue(segments_collinear(segment1, segment2, max_angle=0.05 / 180 * np.pi, max_endpoint_distance=0.1))
@@ -162,6 +199,9 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertTrue(segments_collinear(segment1, segment4, max_angle=np.pi, max_endpoint_distance=5))
 
     def test_segment_segment_intersection(self):
+        """
+        Tests the 'segment_segment_intersection' function which computes the intersection point between two segments.
+        """
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([0, 0, 0, 1])
         self.assertListAlmostEqual(segment_segment_intersection(segment1, segment2), [0, 0])
@@ -184,6 +224,10 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertFalse(segment_segment_intersection(segment6, segment1))
 
     def test_segment_line_intersection(self):
+        """
+        Tests the 'segment_line_intersection' function which computes the intersection point between a segment and a
+        line.
+        """
         segment1 = np.array([0, 1, 1, 0])
         segment2 = np.array([1, 0, 0, 1])
         line1 = [1, 0]
@@ -199,6 +243,10 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertFalse(segment_line_intersection(segment2, line3[0], line3[1]))
 
     def test_segment_sorting(self):
+        """
+        Tests the 'sort_segments' function which sorts a set of almost collinear segments based on their mean normal
+        direction.
+        """
         segments = np.array([[0, 0, 1, 0], [0, 1, 1, 1], [0, 1, 1, 1.1], [0, -1, 1, -0.5]])
         sorted_segments_indices = sort_segments(segments)
         self.assertTrue((sorted_segments_indices == [2, 1, 0, 3]).all())

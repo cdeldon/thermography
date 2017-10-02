@@ -14,7 +14,7 @@ __all__ = ["angle",
            "sort_segments"]
 
 
-def angle(pt1, pt2):
+def angle(pt1: np.ndarray, pt2: np.ndarray) -> float:
     """
     Computes the angle (in radiants) between a segment specified by the two points and the x-axis.
     Note that this function assumes the input are pixel coordinates, and thus negates the y-difference between the two
@@ -23,7 +23,8 @@ def angle(pt1, pt2):
     :param pt2: Second point of the segment.
     :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]
     """
-    a = np.arctan2(-(pt2[1] - pt1[1]), pt2[0] - pt1[0])
+    diff = pt2 - pt1
+    a = np.arctan2(-diff[1], diff[0])
     if np.abs(a % np.pi) <= 0.00001:
         return 0
     elif a < 0:
@@ -31,7 +32,7 @@ def angle(pt1, pt2):
     return a
 
 
-def angle_diff(angle1, angle2):
+def angle_diff(angle1: float, angle2: float) -> float:
     """
     Computes the angle difference between the input arguments. The resulting angle difference is in [0, pi * 0.5]
     :param angle1: First angle expressed in radiants.
@@ -46,12 +47,18 @@ def angle_diff(angle1, angle2):
     return np.abs(d_angle)
 
 
-def area_between_segment_and_line(seg, slope, intercept):
+def area_between_segment_and_line(seg: np.ndarray, slope: float, intercept: float):
     # TODO: implement this function
     raise NotImplementedError("Function {} must be implemented.".format(area_between_segment_and_line.__name__))
 
 
-def line_estimate(seg1, seg2):
+def line_estimate(seg1: np.ndarray, seg2: np.ndarray) -> tuple:
+    """
+    Computes the line estimation (regression) using the endpoints of the segments passed as argument.
+    :param seg1: First segment.
+    :param seg2: Second segment.
+    :return: The slope and intercept of the estimated line.
+    """
     x = [*seg1[0::2], *seg2[0::2]]
     y = [*seg1[1::2], *seg2[1::2]]
 
@@ -60,10 +67,10 @@ def line_estimate(seg1, seg2):
     return slope, intercept
 
 
-def mean_segment_angle(segment_list):
+def mean_segment_angle(segment_list: list) -> float:
     """
     Computes the mean angle of a list of segments.
-    :param segment_list: A list of segments of the form [[x0, y0, x1, y1], [...], .... ]
+    :param segment_list: A list of segments of the form [np.array([x0, y0, x1, y1]), np.array([...]), .... ]
     :return: The mean angle of the segments passed as argument. The angle lies in [0, pi]
     """
     complex_coordinates = []
@@ -81,7 +88,7 @@ def mean_segment_angle(segment_list):
     return a
 
 
-def merge_segments(segment_list, verticality_thresh=2):
+def merge_segments(segment_list: list, verticality_thresh: float = 2.0) -> np.ndarray:
     """
     Computes a unique segments as a representation of the almost collinear segments passed as argument.
     :param segment_list: List of almost collinear segments to be merged into a single segment.
@@ -123,7 +130,7 @@ def merge_segments(segment_list, verticality_thresh=2):
         return np.array([x0, y0, x1, y1])
 
 
-def point_line_distance(point, slope, intercept):
+def point_line_distance(point: np.ndarray, slope: float, intercept: float) -> float:
     """
     Computes the shortest distance between a point and a line defined by its slope and intercept.
     :param point: Point given by a 2D coordinate in the form of [x, y]
@@ -135,7 +142,8 @@ def point_line_distance(point, slope, intercept):
     return np.abs(-slope * point[0] + point[1] - intercept) / np.sqrt(1 + slope * slope)
 
 
-def segments_collinear(seg1, seg2, max_angle=5.0 / 180 * np.pi, max_endpoint_distance=50):
+def segments_collinear(seg1: np.ndarray, seg2: np.ndarray, max_angle: float = 5.0 / 180 * np.pi,
+                       max_endpoint_distance: float = 50.0) -> bool:
     """
     Tests whether two segments are collinear given some thresholds for collinearity.
     :param seg1: First segment to be tested.
@@ -152,7 +160,7 @@ def segments_collinear(seg1, seg2, max_angle=5.0 / 180 * np.pi, max_endpoint_dis
         return False
 
     intersection = segment_segment_intersection(np.array(seg1), np.array(seg2))
-    if intersection:
+    if intersection is not False:
         return True
     else:
         slope, intercept = line_estimate(seg1, seg2)
@@ -164,7 +172,14 @@ def segments_collinear(seg1, seg2, max_angle=5.0 / 180 * np.pi, max_endpoint_dis
         return True
 
 
-def segment_line_intersection(seg, slope, intercept):
+def segment_line_intersection(seg: np.ndarray, slope: float, intercept: float) -> np.ndarray:
+    """
+    Computes the intersection point between a segment and a line.
+    :param seg: Segment to be intersected with the line.
+    :param slope: Slope of the intersecting line.
+    :param intercept: Intercept of the intersecting line.
+    :return: Coordinates of the intersection point, or False if no intersection point is found.
+    """
     pt1 = seg[0:2]
     pt2 = seg[2:4]
 
@@ -189,7 +204,7 @@ def segment_line_intersection(seg, slope, intercept):
     return segment_segment_intersection(seg, np.array([d1_proj[0], d1_proj[1], d2_proj[0], d2_proj[1]]))
 
 
-def segment_min_distance(seg1, seg2):
+def segment_min_distance(seg1 : np.ndarray, seg2 : np.ndarray) -> float:
     """
     Computes the minimal distance between two segments.
     Implementation taken form "https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&tab=function"
@@ -273,7 +288,13 @@ def segment_min_distance(seg1, seg2):
     return distance
 
 
-def segment_segment_intersection(seg1, seg2):
+def segment_segment_intersection(seg1 : np.ndarray, seg2 : np.ndarray) -> np.ndarray:
+    """
+    Computes the intersection point between two segments.
+    :param seg1: First segment of intersection.
+    :param seg2: Second segment of intersection.
+    :return: Coordinates of intersection point, or False if no intersection is found.
+    """
     if (seg1 == seg2).all():
         return False
     s1_x = seg1[2] - seg1[0]
@@ -291,11 +312,11 @@ def segment_segment_intersection(seg1, seg2):
     if 0 <= s <= 1 and 0 <= t <= 1:
         x = seg1[0] + (t * s1_x)
         y = seg1[1] + (t * s1_y)
-        return x, y
+        return np.array([x, y])
     return False
 
 
-def sort_segments(segment_list):
+def sort_segments(segment_list : list) -> np.ndarray:
     """
     Sorts the segments passed as argument based on the normal associated to the mean angle.
     :param segment_list:  A list of segments of the form [[x0, y0, x1, y1], [...], .... ]
