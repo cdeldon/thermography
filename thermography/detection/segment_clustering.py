@@ -154,4 +154,4 @@ class SegmentClusterer:
             self.cluster_features[cluster_index] = features[cluster_order]
 
         self.clean_clusters_angle(mean_angles, max_angle_variation_mean)
-        self.merge_collinear_segments()
+        # self.merge_collinear_segments()

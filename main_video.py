@@ -10,15 +10,16 @@ if __name__ == '__main__':
 
     # Data input parameters.
     THERMOGRAPHY_ROOT_DIR = tg.settings.get_thermography_root_dir()
-    tg.settings.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
-    IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
+    #tg.settings.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
+    #IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1200, end_frame=1210)
+    #video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1200, end_frame=1210)
     # video_loader.show_video(fps=25)
 
-    for i, frame in enumerate(video_loader.frames):
-        # frame = cv2.imread("C:/Users/Carlo/Desktop/vertical.jpg")
+    #for i, frame in enumerate(video_loader.frames):
+    for frame in range(1):
+        frame = cv2.imread("C:/Users/Carlo/Desktop/vertical.jpg")
         gray = cv2.cvtColor(src=frame, code=cv2.COLOR_BGR2GRAY)
 
         scale_factor = 1
@@ -54,6 +55,7 @@ if __name__ == '__main__':
         # Displaying.
         edges = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
         edges_cleaned = edges.copy()
+        edges_merged = edges.copy()
 
         # Fix colors for first two clusters, choose the next randomly.
         colors = [(0, 255, 255), (255, 255, 0)]
@@ -75,6 +77,26 @@ if __name__ == '__main__':
                 cv2.line(img=edges_cleaned, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
                          color=color, thickness=1, lineType=cv2.LINE_AA)
 
+        for cluster, color in zip(segment_clusterer.cluster_list, colors):
+            merged = []
+            for i, segment_i in enumerate(cluster):
+                if i in merged:
+                    continue
+                collinears = [i]
+                for j in range(i+1, len(cluster)):
+                    segment_j = cluster[j]
+                    if tg.utils.segments_collinear(segment_i, segment_j, max_angle=5.0 / 180 * np.pi, max_endpoint_distance=50):
+                        collinears.append(j)
+
+                merged_segment = tg.utils.merge_segments(cluster[collinears])
+                merged_segment = [int(m) for m in merged_segment]
+                cv2.line(img=edges_merged, pt1=(merged_segment[0], merged_segment[1]), pt2=(merged_segment[2], merged_segment[3]),
+                         color=color, thickness=1, lineType=cv2.LINE_AA)
+
+                for index in collinears:
+                    if index not in merged:
+                        merged.append(index)
+
         for angle, center, color in zip(mean_angles, mean_centers, colors):
             cv2.circle(img=edges, center=(int(center[0]), int(center[1])), radius=5, color=color,
                        thickness=-1, lineType=cv2.LINE_AA)
@@ -95,4 +117,5 @@ if __name__ == '__main__':
         cv2.imshow("Skeleton", edge_detector.edge_image)
         cv2.imshow("Segments on input image", edges)
         cv2.imshow("Cleaned segments on input image", edges_cleaned)
-        cv2.waitKey(200)
+        cv2.imshow("Merged segments on input image", edges_merged)
+        cv2.waitKey(0)
