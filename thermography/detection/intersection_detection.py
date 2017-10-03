@@ -14,23 +14,32 @@ class IntersectionDetector:
         self.segments = input_segments
         self.params = params
 
-        self.raw_intersections = None
+        # Collection of intersections divided by clusters:
+        # self.cluster_cluster_intersections[i,j] contains the intersections between cluster i and cluster j.
+        # Note that i must be smaller-equal than j.
+        self.cluster_cluster_intersections = {}
+        self.raw_intersections = []
 
     def detect(self):
         """
         Detects the intersections between the segments passed to the constructor using the parameters passed to the
         constructor.
         """
-        intersections = []
+        self.cluster_cluster_intersections = {}
+        self.raw_intersections = []
         num_clusters = len(self.segments)
         for cluster_index_i in range(num_clusters):
             cluster_i = self.segments[cluster_index_i]
             for cluster_index_j in range(cluster_index_i, num_clusters):
                 cluster_j = self.segments[cluster_index_j]
-                for segment_i in cluster_i:
-                    for segment_j in cluster_j:
+                cluster_cluster_intersections = {}
+                cluster_cluster_intersections_raw = []
+                for i, segment_i in enumerate(cluster_i):
+                    for j, segment_j in enumerate(cluster_j):
                         intersection = segment_segment_intersection(seg1=segment_i, seg2=segment_j)
                         if intersection is not False:
-                            intersections.append(intersection)
+                            cluster_cluster_intersections[i,j] = intersection
+                            cluster_cluster_intersections_raw.append(intersection)
+                self.cluster_cluster_intersections[cluster_index_i,cluster_index_j] = cluster_cluster_intersections
+                self.raw_intersections.extend(cluster_cluster_intersections_raw)
 
-        self.raw_intersections = np.array(intersections)

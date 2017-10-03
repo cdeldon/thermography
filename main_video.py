@@ -88,11 +88,14 @@ if __name__ == '__main__':
                 cv2.line(img=edges_filtered, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
                          color=color, thickness=1, lineType=cv2.LINE_AA)
 
-        for intersection in intersection_detector.raw_intersections:
+        intersections_0_1 = intersection_detector.cluster_cluster_intersections[0,1]
+        for segment_pair, intersection in intersections_0_1.items():
+            if segment_pair[0] != 0 and segment_pair[0] != 1:
+                continue
             cv2.circle(edges_filtered, (int(intersection[0]), int(intersection[1])), radius=1, color=(0, 0, 255),
                        thickness=2, lineType=cv2.LINE_AA)
 
         cv2.imshow("Skeleton", edge_detector.edge_image)
         cv2.imshow("Segments on input image", edges)
         cv2.imshow("Filtered segments on input image", edges_filtered)
-        cv2.waitKey(1)
+        cv2.waitKey(5000)
