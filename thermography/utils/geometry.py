@@ -88,7 +88,7 @@ def mean_segment_angle(segment_list: list) -> float:
     return a
 
 
-def merge_segments(segment_list: list, verticality_thresh: float = 2.0) -> np.ndarray:
+def merge_segments(segment_list: list, verticality_thresh: float = 10.0) -> np.ndarray:
     """
     Computes a unique segments as a representation of the almost collinear segments passed as argument.
     :param segment_list: List of almost collinear segments to be merged into a single segment.

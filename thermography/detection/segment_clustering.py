@@ -96,6 +96,8 @@ class SegmentClusterer:
         num_labels = np.max(cluster_prediction) + 1
         for label in range(num_labels):
             cluster_segments = self.raw_segments[cluster_prediction == label]
+            if len(cluster_segments) == 0:
+                continue
             cluster_features = features[cluster_prediction == label]
             cluster_segment_list.append(cluster_segments)
             cluster_feature_list.append(cluster_features)
@@ -155,7 +157,7 @@ class SegmentClusterer:
                     invalid_indices.append(segment_index)
             self.cluster_list[cluster_index] = np.delete(cluster, invalid_indices, axis=0)
 
-    def merge_collinear_segments(self, max_merging_angle : float, max_endpoint_distance: float):
+    def merge_collinear_segments(self, max_merging_angle: float, max_endpoint_distance: float):
         """
         Merges all collinear segments belonging to the same cluster.
         :param max_merging_angle: Maximal angle to allow between segments to be merged.
@@ -185,7 +187,7 @@ class SegmentClusterer:
 
             self.cluster_list[cluster_index] = np.array(merged_segments)
 
-    def clean_clusters(self, mean_angles : np.ndarray, max_angle_variation_mean:float=np.pi / 180 * 20,
+    def clean_clusters(self, mean_angles: np.ndarray, max_angle_variation_mean: float = np.pi / 180 * 20,
                        max_merging_angle: float = 5.0 / 180 * np.pi, max_endpoint_distance: float = 50):
         """
         Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging

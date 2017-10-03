@@ -3,23 +3,20 @@ import os
 import progressbar
 from .modes import Modality
 
-
 __all__ = ["ImageLoader", "VideoLoader"]
 
 
 class ImageLoader:
-    def __init__(self, image_path: str, scale_factor: float = 1.0, mode: Modality = Modality.DEFAULT):
+    def __init__(self, image_path: str, mode: Modality = Modality.DEFAULT):
         """
         Initializes and loads the image associated to the file indicated by the path passed as argument.
         :param image_path: Absolute path to the image file to be loaded.
-        :param scale_factor: Scaling factor to apply to the input image.
         :param mode: Modality to be used when loading the image.
         """
 
         self.image_path = image_path
-        self.scale_factor = scale_factor
         self.mode = mode
-        self.image_raw = scale_image(cv2.imread(self.image_path, self.mode), scale_factor)
+        self.image_raw = cv2.imread(self.image_path, self.mode)
 
     def show_raw(self, title: str = "", wait: int = 0):
         """

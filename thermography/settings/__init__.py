@@ -1,5 +1,6 @@
 import os
 from .camera import Camera
+from .modules import Modules
 
 SETTINGS_DIR = os.path.dirname(os.path.abspath(__file__))
 THERMOGRAPHY_ROOT_DIR = os.path.dirname(SETTINGS_DIR)
