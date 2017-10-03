@@ -30,6 +30,7 @@ if __name__ == '__main__':
 
     for i, frame in enumerate(video_loader.frames):
         print(i + video_loader.start_frame)
+        frame = tg.utils.rotate_image(frame, 0)
         distorted_image = frame.copy()
         undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=camera.camera_matrix,
                                           distCoeffs=camera.distortion_coeff)
@@ -103,8 +104,14 @@ if __name__ == '__main__':
                 cv2.line(img=edges_filtered, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
                          color=color, thickness=1, lineType=cv2.LINE_AA)
 
+        default_rect =  np.float32([[629,10], [10, 10], [10, 501], [629, 501]])
         for rectangle in rectangle_detector.rectangles:
+            M = cv2.getPerspectiveTransform(np.float32(rectangle), default_rect)
+            extracted = cv2.warpPerspective(rectangles,M,(640,512))
+            cv2.imshow("Extracted", extracted)
             cv2.polylines(rectangles, np.int32([rectangle]), True, (0, 0, 255), 1, cv2.LINE_AA)
+            cv2.imshow("Rectangles", rectangles)
+            cv2.waitKey(0)
 
         cv2.imshow("Skeleton", edge_detector.edge_image)
         cv2.imshow("Segments on input image", edges)
