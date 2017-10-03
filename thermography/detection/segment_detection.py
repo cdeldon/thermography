@@ -33,3 +33,5 @@ class SegmentDetector:
                                         minLineLength=self.params.min_line_length,
                                         maxLineGap=self.params.max_line_gap)
         self.segments = np.squeeze(self.segments)
+        if len(self.segments.shape) <= 1:
+            self.segments = np.array([self.segments])

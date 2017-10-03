@@ -3,24 +3,22 @@ import os
 import progressbar
 from .modes import Modality
 
-from thermography.utils.images import scale_image
-
 __all__ = ["ImageLoader", "VideoLoader"]
 
 
 class ImageLoader:
-    def __init__(self, image_path, mode=None):
+    def __init__(self, image_path: str, mode: Modality = Modality.DEFAULT):
         """
         Initializes and loads the image associated to the file indicated by the path passed as argument.
         :param image_path: Absolute path to the image file to be loaded.
-        :param mode: Modality to be used when laoding the image.
+        :param mode: Modality to be used when loading the image.
         """
 
         self.image_path = image_path
         self.mode = mode
         self.image_raw = cv2.imread(self.image_path, self.mode)
 
-    def show_raw(self, title="", wait=0):
+    def show_raw(self, title: str = "", wait: int = 0):
         """
         Displays the raw image associated with the calling instance.
         :param title: Title to be added to the displayed image.
@@ -34,33 +32,14 @@ class ImageLoader:
         return self.__image_path
 
     @image_path.setter
-    def image_path(self, path):
+    def image_path(self, path: str):
         if not os.path.exists(path):
-            raise FileExistsError("Image {} not found".format(self.image_path))
+            raise FileExistsError("Image file {} not found".format(self.image_path))
         self.__image_path = path
-
-    @property
-    def mode(self):
-        return self.__mode
-
-    @mode.setter
-    def mode(self, mode):
-        if mode is None:
-            self.__mode = Modality.DEFAULT
-        else:
-            self.__mode = mode
-
-    @property
-    def image_raw(self):
-        return self.__image_raw
-
-    @image_raw.setter
-    def image_raw(self, image_raw):
-        self.__image_raw = image_raw
 
 
 class VideoLoader:
-    def __init__(self, video_path, start_frame=0, end_frame=None, scale_factor=1.0):
+    def __init__(self, video_path: str, start_frame: int = 0, end_frame: int = None):
         """
         Loads the frames associated to the video indicated by the path passed as argument.
         :param video_path: Absolute path to the video to be loaded.
@@ -73,14 +52,14 @@ class VideoLoader:
         self.start_frame = start_frame
         self.end_frame = end_frame
 
-        self.scale_factor = scale_factor
-
         self.frames = []
         self.__load_video(cv2.VideoCapture(self.video_path))
 
-        cv2.VideoCapture()
-
-    def show_video(self, fps=60):
+    def show_video(self, fps: int = 60):
+        """
+        Shows the loaded frames.
+        :param fps: Frames per second to be used when showing the images.
+        """
         seconds_per_frame = 1.0 / fps
         for i, frame in enumerate(self.frames):
             cv2.imshow("Frame", frame)
@@ -92,9 +71,9 @@ class VideoLoader:
         return self.__video_path
 
     @video_path.setter
-    def video_path(self, path):
+    def video_path(self, path: str):
         if not os.path.exists(path):
-            raise FileExistsError("Video {} not found".format(self.video_path))
+            raise FileExistsError("Video file {} not found".format(self.video_path))
         self.__video_path = path
 
     def __load_video(self, video_raw: cv2.VideoCapture):
@@ -126,7 +105,7 @@ class VideoLoader:
             if not ret:
                 raise ValueError("Could not load frame {}".format(i + self.start_frame))
 
-            self.frames.append(scale_image(video_raw.retrieve()[1], self.scale_factor))
+            self.frames.append(video_raw.retrieve()[1])
             num_frames += 1
             bar.update(num_frames)
 
