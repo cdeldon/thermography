@@ -2,6 +2,11 @@ language: python
 python:
   - "3.6"
 
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install scikit-learn
+
 # command to run tests
 script:
   - python -m unittest
