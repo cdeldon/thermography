@@ -1,2 +1,2 @@
-Thermography  <a target="_blank" href="https://travis-ci.org/cdeldon/thermography">![Travis status][TravisCI.Badge]</a>
+Thermography  [![Build Status](https://travis-ci.org/cdeldon/thermography.svg?branch=master)](https://travis-ci.org/cdeldon)
 ============

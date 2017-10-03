@@ -1,10 +1,7 @@
-import matplotlib.pylab as plt
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import normalize
-import cmath
 
 import thermography as tg
 
@@ -105,22 +102,22 @@ class SegmentClusterer:
         self.cluster_list = cluster_segment_list
         self.cluster_features = cluster_feature_list
 
-    def plot_segment_features(self):
-        """
-        Plots the first two dimensions of the features used for clustering.
-        """
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        for features in self.cluster_features:
-            ax.scatter(features[:, 0], features[:, 1])
-
-        ax.set_xlabel('X coordinate')
-        ax.set_ylabel('Y coordinate')
-        plt.xlim([-1, 1])
-        plt.ylim([-1, 1])
-
-        plt.title('Segment clustering, {} components'.format(len(self.cluster_features)))
-        plt.show()
+    # def plot_segment_features(self):
+    #     """
+    #     Plots the first two dimensions of the features used for clustering.
+    #     """
+    #     fig = plt.figure()
+    #     ax = fig.add_subplot(111)
+    #     for features in self.cluster_features:
+    #         ax.scatter(features[:, 0], features[:, 1])
+    #
+    #     ax.set_xlabel('X coordinate')
+    #     ax.set_ylabel('Y coordinate')
+    #     plt.xlim([-1, 1])
+    #     plt.ylim([-1, 1])
+    #
+    #     plt.title('Segment clustering, {} components'.format(len(self.cluster_features)))
+    #     plt.show()
 
     def compute_cluster_mean(self) -> tuple:
         """
