@@ -2,7 +2,7 @@ import numpy as np
 
 __all__ = ["angle",
            "angle_diff",
-           "area_between_segment_and_line",
+           "aspect_ratio",
            "line_estimate",
            "mean_segment_angle",
            "merge_segments",
@@ -47,9 +47,26 @@ def angle_diff(angle1: float, angle2: float) -> float:
     return np.abs(d_angle)
 
 
-def area_between_segment_and_line(seg: np.ndarray, slope: float, intercept: float):
-    # TODO: implement this function
-    raise NotImplementedError("Function {} must be implemented.".format(area_between_segment_and_line.__name__))
+def aspect_ratio(rectangle: np.ndarray) -> float:
+    """
+    Computes the aspect ratio of a rectangle of the form.
+       3      s2     2
+       *-------------*
+       |             |
+    s4 |             | s3
+       |             |
+       *-------------*
+       0     s1      1
+    :param rectangle: Rectangle is a numpy array of coordinates ordered as shown in the diagram.
+    :return: Aspect ratio of the rectangle.
+    """
+    s1 = rectangle[1] - rectangle[0]
+    s2 = rectangle[2] - rectangle[3]
+    s3 = rectangle[2] - rectangle[1]
+    s4 = rectangle[3] - rectangle[0]
+    dx = np.mean([np.linalg.norm(s1), np.linalg.norm(s2)])
+    dy = np.mean([np.linalg.norm(s3), np.linalg.norm(s4)])
+    return dx / dy
 
 
 def line_estimate(seg1: np.ndarray, seg2: np.ndarray) -> tuple:
@@ -204,7 +221,7 @@ def segment_line_intersection(seg: np.ndarray, slope: float, intercept: float) -
     return segment_segment_intersection(seg, np.array([d1_proj[0], d1_proj[1], d2_proj[0], d2_proj[1]]))
 
 
-def segment_min_distance(seg1 : np.ndarray, seg2 : np.ndarray) -> float:
+def segment_min_distance(seg1: np.ndarray, seg2: np.ndarray) -> float:
     """
     Computes the minimal distance between two segments.
     Implementation taken form "https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&tab=function"
@@ -288,7 +305,7 @@ def segment_min_distance(seg1 : np.ndarray, seg2 : np.ndarray) -> float:
     return distance
 
 
-def segment_segment_intersection(seg1 : np.ndarray, seg2 : np.ndarray) -> np.ndarray:
+def segment_segment_intersection(seg1: np.ndarray, seg2: np.ndarray) -> np.ndarray:
     """
     Computes the intersection point between two segments.
     :param seg1: First segment of intersection.
@@ -316,7 +333,7 @@ def segment_segment_intersection(seg1 : np.ndarray, seg2 : np.ndarray) -> np.nda
     return False
 
 
-def sort_segments(segment_list : list) -> np.ndarray:
+def sort_segments(segment_list: list) -> np.ndarray:
     """
     Sorts the segments passed as argument based on the normal associated to the mean angle.
     :param segment_list:  A list of segments of the form [[x0, y0, x1, y1], [...], .... ]
