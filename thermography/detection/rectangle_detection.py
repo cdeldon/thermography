@@ -47,7 +47,7 @@ class IntersectionDetector:
 class RectangleDetectorParams:
     def __init__(self):
         self.aspect_ratio = 1.0
-        self.aspect_ratio_relative_deviation = 0.3
+        self.aspect_ratio_relative_deviation = 0.5
 
 
 class RectangleDetector:

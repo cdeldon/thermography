@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     for i, frame in enumerate(video_loader.frames):
         bar.update(i)
-        frame = tg.utils.rotate_image(frame, np.pi * 0)
+        frame = tg.utils.rotate_image(frame, np.pi * 0.25)
         distorted_image = frame.copy()
         undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=camera.camera_matrix,
                                           distCoeffs=camera.distortion_coeff)
@@ -90,39 +90,21 @@ if __name__ == '__main__':
         rectangle_detector.detect()
 
         # Displaying.
-        edges = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
-        edges_filtered = edges.copy()
-        intersections = edges.copy()
-        rectangles = edges.copy()
+        base_image = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
+        tg.utils.draw_segments(segments=unfiltered_segments, base_image=base_image.copy(),
+                               windows_name="Unfiltered segments", render_indices=False)
+        tg.utils.draw_segments(segments=filtered_segments, base_image=base_image.copy(),
+                               windows_name="Filtered segments")
+        tg.utils.draw_intersections(intersections=intersection_detector.raw_intersections, base_image=base_image.copy(),
+                                    windows_name="Intersections")
+        tg.utils.draw_rectangles(rectangles=rectangle_detector.rectangles, base_image=base_image.copy(),
+                                 windows_name="Detected rectangles")
+        # cv2.imshow("Canny edges", edge_detector.edge_image)
 
-        # Fix colors for first two clusters, choose the next randomly.
-        colors = [(29, 247, 240), (255, 180, 50)]
-        for cluster_number in range(2, len(unfiltered_segments)):
-            colors.append(tg.utils.random_color())
+        cv2.waitKey(1)
 
-        for cluster, color in zip(unfiltered_segments, colors):
-            for segment in cluster:
-                cv2.line(img=edges, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
-                         color=color, thickness=1, lineType=cv2.LINE_AA)
-
-        for cluster, color in zip(filtered_segments, colors):
-            for segment_index, segment in enumerate(cluster):
-                cv2.line(img=edges_filtered, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
-                         color=color, thickness=1, lineType=cv2.LINE_AA)
-                cv2.putText(edges_filtered, str(segment_index), (segment[0], segment[1]), cv2.FONT_HERSHEY_PLAIN, 0.8, (255, 255, 255), 1)
-
-        for intersection in intersection_detector.raw_intersections:
-            cv2.circle(intersections, (int(intersection[0]), int(intersection[1])), 2, (0, 0, 255), 2, cv2.LINE_4)
-
+        # Rectangle extraction.
         default_rect = np.float32([[629, 10], [10, 10], [10, 501], [629, 501]])
         for rectangle in rectangle_detector.rectangles:
             M = cv2.getPerspectiveTransform(np.float32(rectangle), default_rect)
-            extracted = cv2.warpPerspective(rectangles, M, (640, 512))
-            cv2.polylines(rectangles, np.int32([rectangle]), True, (0, 0, 255), 1, cv2.LINE_AA)
-
-        cv2.imshow("Skeleton", edge_detector.edge_image)
-        cv2.imshow("Segments on input image", edges)
-        cv2.imshow("Filtered segments on input image", edges_filtered)
-        cv2.imshow("Intersections", intersections)
-        cv2.imshow("Rectangles", rectangles)
-        cv2.waitKey(1)
+            extracted = cv2.warpPerspective(rectangle, M, (640, 512))

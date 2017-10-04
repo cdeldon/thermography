@@ -3,6 +3,7 @@ import numpy as np
 
 __all__ = ["EdgeDetectorParams", "EdgeDetector"]
 
+
 class EdgeDetectorParams:
     def __init__(self):
         self.hysteresis_min_thresh = 40
@@ -13,7 +14,7 @@ class EdgeDetectorParams:
 
 
 class EdgeDetector:
-    def __init__(self, input_image: np.ndarray, params : EdgeDetectorParams=EdgeDetectorParams()):
+    def __init__(self, input_image: np.ndarray, params: EdgeDetectorParams = EdgeDetectorParams()):
         self.input_image = input_image
         self.params = params
 
