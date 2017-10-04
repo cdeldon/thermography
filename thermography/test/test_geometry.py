@@ -63,14 +63,40 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(angle_diff(angle1, angle3), np.pi * 0.5)
         self.assertAlmostEqual(angle_diff(angle3, angle1), np.pi * 0.5)
 
+    def test_aspect_ratio(self):
+        """
+        Tests the 'aspect_ratio' function which computes the aspect ratio of a rectangle.
+        """
+        ratios = np.linspace(0.5, 3, 10)
+        angles = np.linspace(0, np.pi, 10)
+
+        def rotate(rectangle: np.ndarray, a: float) -> np.ndarray:
+            def rotation_matrix(a: float) -> np.ndarray:
+                c = np.cos(a)
+                s = np.sin(a)
+                return np.array([[c, -s], [s, c]])
+
+            return np.dot(rectangle, rotation_matrix(a).T)
+
+        for ratio in ratios:
+            p0 = np.array([0, 0])
+            p1 = np.array([1 * ratio, 0])
+            p2 = np.array([1 * ratio, 1])
+            p3 = np.array([0, 1])
+            rectangle = np.array([p0, p1, p2, p3])
+            for a in angles:
+                rectangle = rotate(rectangle, a)
+                computed_ratio = aspect_ratio(rectangle)
+                self.assertAlmostEqual(ratio, computed_ratio)
+
     def test_mean_segment_angle(self):
         """
         Tests the 'mean_segment_angle' function which computes the mean angle from a set of segments.
         """
-        segment1 = [0, 0, 1, 0]
-        segment2 = [0, -1, 1, -1]
-        segment3 = [0, 0, 1, 1]
-        segment4 = [0, 0, 1, -1]
+        segment1 = np.array([0, 0, 1, 0])
+        segment2 = np.array([0, -1, 1, -1])
+        segment3 = np.array([0, 0, 1, 1])
+        segment4 = np.array([0, 0, 1, -1])
 
         segments = np.array([segment1, segment2, segment3, segment4])
         self.assertAlmostEqual(mean_segment_angle(segments), 0.0)
