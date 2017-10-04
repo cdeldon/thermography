@@ -61,8 +61,13 @@ def draw_rectangles(rectangles: list, base_image: np.ndarray, windows_name: str)
     :param base_image: Base image over which to render the rectangles.
     :param windows_name: Title to give to the rendered image.
     """
+    mean_color = np.mean(base_image, axis=(0,1))
+    if mean_color[0] == mean_color[1] == mean_color[2]:
+        mean_color = np.array([255, 255, 0])
+    opposite_color = np.array([255, 255, 255]) - mean_color
+    opposite_color = (int(opposite_color[0]), int(opposite_color[1]),int(opposite_color[2]))
     for rectangle in rectangles:
-        cv2.polylines(base_image, np.int32([rectangle]), True, (0, 0, 255), 1, cv2.LINE_AA)
+        cv2.polylines(base_image, np.int32([rectangle]), True, opposite_color, 1, cv2.LINE_AA)
 
     cv2.imshow(windows_name, base_image)
 

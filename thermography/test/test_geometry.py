@@ -62,6 +62,21 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(angle_diff(angle1, angle3), np.pi * 0.5)
         self.assertAlmostEqual(angle_diff(angle3, angle1), np.pi * 0.5)
 
+    def test_area(self):
+        """
+        Tests the 'area' function which computes the surface enclosed by a set of points.
+        """
+        point1 = np.array([0, 0])
+        point2 = np.array([1, 0])
+        point3 = np.array([1, 1])
+        point4 = np.array([0, 1])
+        polygon = np.array([point1, point2, point3, point4])
+        self.assertEqual(area(points=polygon), 1.0)
+
+        point5 = np.array([2, 0])
+        polygon = np.array([point1, point5, point3, point4])
+        self.assertEqual(area(points=polygon), 1.5)
+
     def test_aspect_ratio(self):
         """
         Tests the 'aspect_ratio' function which computes the aspect ratio of a rectangle.

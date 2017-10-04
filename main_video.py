@@ -1,5 +1,5 @@
 import thermography as tg
-from thermography.io import *
+from thermography.io import VideoLoader
 from thermography.detection import *
 
 import cv2
@@ -23,10 +23,10 @@ if __name__ == '__main__':
     # Data input parameters.
     THERMOGRAPHY_ROOT_DIR = tg.settings.get_thermography_root_dir()
     tg.settings.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
-    IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Bellotti iniziale.mov")
+    IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input and preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=150, end_frame=2000)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=400, end_frame=800)
     # video_loader.show_video(fps=25)
 
     bar = progressbar.ProgressBar(maxval=video_loader.num_frames,
@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     for i, frame in enumerate(video_loader.frames):
         bar.update(i)
-        frame = tg.utils.rotate_image(frame, np.pi * 0.25)
+        frame = tg.utils.rotate_image(frame, np.pi * 0)
         distorted_image = frame.copy()
         undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=camera.camera_matrix,
                                           distCoeffs=camera.distortion_coeff)
@@ -68,7 +68,6 @@ if __name__ == '__main__':
         # Segment clustering.
         segment_clusterer = SegmentClusterer(input_segments=segment_detector.segments)
         segment_clusterer.cluster_segments(num_clusters=2, n_init=8, cluster_type="gmm", swipe_clusters=False)
-        # segment_clusterer.plot_segment_features()
         mean_angles, mean_centers = segment_clusterer.compute_cluster_mean()
 
         unfiltered_segments = segment_clusterer.cluster_list.copy()
@@ -79,7 +78,10 @@ if __name__ == '__main__':
         filtered_segments = segment_clusterer.cluster_list.copy()
 
         # Intersection detection
-        intersection_detector = IntersectionDetector(input_segments=filtered_segments)
+        intersection_detector_params = IntersectionDetectorParams()
+        intersection_detector_params.angle_threshold = np.pi / 180 * 25
+        intersection_detector = IntersectionDetector(input_segments=filtered_segments,
+                                                     params=intersection_detector_params)
         intersection_detector.detect()
 
         # Detect the rectangles associated to the intersections.
@@ -91,6 +93,7 @@ if __name__ == '__main__':
 
         # Displaying.
         base_image = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
+        base_image = scaled_image
         tg.utils.draw_segments(segments=unfiltered_segments, base_image=base_image.copy(),
                                windows_name="Unfiltered segments", render_indices=False)
         tg.utils.draw_segments(segments=filtered_segments, base_image=base_image.copy(),
@@ -99,12 +102,12 @@ if __name__ == '__main__':
                                     windows_name="Intersections")
         tg.utils.draw_rectangles(rectangles=rectangle_detector.rectangles, base_image=base_image.copy(),
                                  windows_name="Detected rectangles")
-        # cv2.imshow("Canny edges", edge_detector.edge_image)
+        cv2.imshow("Canny edges", edge_detector.edge_image)
 
         cv2.waitKey(1)
 
         # Rectangle extraction.
-        default_rect = np.float32([[629, 10], [10, 10], [10, 501], [629, 501]])
-        for rectangle in rectangle_detector.rectangles:
-            M = cv2.getPerspectiveTransform(np.float32(rectangle), default_rect)
-            extracted = cv2.warpPerspective(rectangle, M, (640, 512))
+        # default_rect = np.float32([[629, 10], [10, 10], [10, 501], [629, 501]])
+        # for rectangle in rectangle_detector.rectangles:
+        #     M = cv2.getPerspectiveTransform(np.float32(rectangle), default_rect)
+        #     extracted = cv2.warpPerspective(rectangle, M, (640, 512))

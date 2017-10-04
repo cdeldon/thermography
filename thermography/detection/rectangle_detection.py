@@ -1,14 +1,20 @@
-from thermography.utils.geometry import aspect_ratio, segment_segment_intersection
+from thermography.utils.geometry import aspect_ratio, angle, angle_diff, area, segment_segment_intersection
 import numpy as np
 
-__all__ = ["IntersectionDetector",
-           "RectangleDetector",
-           "RectangleDetectorParams"]
+__all__ = ["IntersectionDetector", "IntersectionDetectorParams",
+           "RectangleDetector", "RectangleDetectorParams"]
+
+
+class IntersectionDetectorParams:
+    def __init__(self):
+        # All intersections between segments whose relative angle is larger than this threshold are ignored.
+        self.angle_threshold = np.pi / 180 * 10
 
 
 class IntersectionDetector:
-    def __init__(self, input_segments: np.ndarray):
+    def __init__(self, input_segments: np.ndarray, params: IntersectionDetectorParams = IntersectionDetectorParams()):
         self.segments = input_segments
+        self.params = params
 
         # Collection of intersections divided by clusters:
         # self.cluster_cluster_intersections[i,j] contains the intersections between cluster i and cluster j.
@@ -34,7 +40,12 @@ class IntersectionDetector:
         cluster_cluster_intersections_raw = []
         for i, segment_i in enumerate(cluster_i):
             intersections_with_i = {}
+            angle_i = angle(segment_i[0:2], segment_i[2:4])
             for j, segment_j in enumerate(cluster_j):
+                angle_j = angle(segment_j[0:2], segment_j[2:4])
+                d_angle = angle_diff(angle_i, angle_j)
+                if np.pi / 2 - d_angle > self.params.angle_threshold:
+                    continue
                 intersection = segment_segment_intersection(seg1=segment_i, seg2=segment_j)
                 if intersection is not False:
                     intersections_with_i[j] = intersection
@@ -48,6 +59,8 @@ class RectangleDetectorParams:
     def __init__(self):
         self.aspect_ratio = 1.0
         self.aspect_ratio_relative_deviation = 0.5
+
+        self.min_area = 20 * 40
 
 
 class RectangleDetector:
@@ -93,7 +106,7 @@ class RectangleDetector:
                     coord4 = intersections_with_i_plus[segment_index_j + 1]
                     rectangle = np.array([coord1, coord2, coord4, coord3])
                     if self.fulfills_ratio(rectangle, self.params.aspect_ratio,
-                                           self.params.aspect_ratio_relative_deviation):
+                                           self.params.aspect_ratio_relative_deviation) and area(rectangle) >= self.params.min_area:
                         rectangles.append(rectangle)
 
         self.rectangles.extend(rectangles)
