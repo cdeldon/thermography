@@ -27,26 +27,25 @@ class TestGeometryUtils(unittest.TestCase):
         """
         Tests the 'angle' function which computes the angle for a segment.
         """
-        # Note that we test the angle based on pixel coordinates, i.e. with negated y coordinates.
         segment1 = np.array([0, 0, 1, 0])
         self.assertAlmostEqual(angle(segment1[0:2], segment1[2:4]), 0.0 / 180 * np.pi)
         self.assertAlmostEqual(angle(segment1[2:4], segment1[0:2]), 0.0 / 180 * np.pi)
 
         segment2 = np.array([0, 0, 1, 1])
-        self.assertAlmostEqual(angle(segment2[0:2], segment2[2:4]), 135.0 / 180 * np.pi)
-        self.assertAlmostEqual(angle(segment2[2:4], segment2[0:2]), 135.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment2[0:2], segment2[2:4]), 45.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment2[2:4], segment2[0:2]), 45.0 / 180 * np.pi)
 
         segment3 = np.array([0, 0, 0, 1])
         self.assertAlmostEqual(angle(segment3[0:2], segment3[2:4]), 90.0 / 180 * np.pi)
         self.assertAlmostEqual(angle(segment3[2:4], segment3[0:2]), 90.0 / 180 * np.pi)
 
         segment4 = np.array([0, 0, -1, 1])
-        self.assertAlmostEqual(angle(segment4[0:2], segment4[2:4]), 45.0 / 180 * np.pi)
-        self.assertAlmostEqual(angle(segment4[2:4], segment4[0:2]), 45.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment4[0:2], segment4[2:4]), 135.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment4[2:4], segment4[0:2]), 135.0 / 180 * np.pi)
 
         segment5 = np.array([1.5, 1.5, 2.5, 2.5])
-        self.assertAlmostEqual(angle(segment5[0:2], segment5[2:4]), 135.0 / 180 * np.pi)
-        self.assertAlmostEqual(angle(segment5[2:4], segment5[0:2]), 135.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment5[0:2], segment5[2:4]), 45.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment5[2:4], segment5[0:2]), 45.0 / 180 * np.pi)
 
     def test_angle_difference(self):
         """
@@ -63,14 +62,55 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(angle_diff(angle1, angle3), np.pi * 0.5)
         self.assertAlmostEqual(angle_diff(angle3, angle1), np.pi * 0.5)
 
+    def test_area(self):
+        """
+        Tests the 'area' function which computes the surface enclosed by a set of points.
+        """
+        point1 = np.array([0, 0])
+        point2 = np.array([1, 0])
+        point3 = np.array([1, 1])
+        point4 = np.array([0, 1])
+        polygon = np.array([point1, point2, point3, point4])
+        self.assertEqual(area(points=polygon), 1.0)
+
+        point5 = np.array([2, 0])
+        polygon = np.array([point1, point5, point3, point4])
+        self.assertEqual(area(points=polygon), 1.5)
+
+    def test_aspect_ratio(self):
+        """
+        Tests the 'aspect_ratio' function which computes the aspect ratio of a rectangle.
+        """
+        ratios = np.linspace(0.5, 3, 10)
+        angles = np.linspace(0, np.pi, 10)
+
+        def rotate(rectangle: np.ndarray, a: float) -> np.ndarray:
+            def rotation_matrix(a: float) -> np.ndarray:
+                c = np.cos(a)
+                s = np.sin(a)
+                return np.array([[c, -s], [s, c]])
+
+            return np.dot(rectangle, rotation_matrix(a).T)
+
+        for ratio in ratios:
+            p0 = np.array([0, 0])
+            p1 = np.array([1 * ratio, 0])
+            p2 = np.array([1 * ratio, 1])
+            p3 = np.array([0, 1])
+            rectangle = np.array([p0, p1, p2, p3])
+            for a in angles:
+                rectangle = rotate(rectangle, a)
+                computed_ratio = aspect_ratio(rectangle)
+                self.assertAlmostEqual(ratio, computed_ratio)
+
     def test_mean_segment_angle(self):
         """
         Tests the 'mean_segment_angle' function which computes the mean angle from a set of segments.
         """
-        segment1 = [0, 0, 1, 0]
-        segment2 = [0, -1, 1, -1]
-        segment3 = [0, 0, 1, 1]
-        segment4 = [0, 0, 1, -1]
+        segment1 = np.array([0, 0, 1, 0])
+        segment2 = np.array([0, -1, 1, -1])
+        segment3 = np.array([0, 0, 1, 1])
+        segment4 = np.array([0, 0, 1, -1])
 
         segments = np.array([segment1, segment2, segment3, segment4])
         self.assertAlmostEqual(mean_segment_angle(segments), 0.0)
@@ -249,7 +289,7 @@ class TestGeometryUtils(unittest.TestCase):
         """
         segments = np.array([[0, 0, 1, 0], [0, 1, 1, 1], [0, 1, 1, 1.1], [0, -1, 1, -0.5]])
         sorted_segments_indices = sort_segments(segments)
-        self.assertTrue((sorted_segments_indices == [2, 1, 0, 3]).all())
+        self.assertListEqual([*sorted_segments_indices] , [3, 0, 1, 2])
 
 
 if __name__ == '__main__':

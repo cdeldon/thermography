@@ -1,10 +1,11 @@
 import thermography as tg
-from thermography.io import *
+from thermography.io import VideoLoader
 from thermography.detection import *
 
 import cv2
 import numpy as np
 import os
+import progressbar
 
 if __name__ == '__main__':
 
@@ -25,12 +26,16 @@ if __name__ == '__main__':
     IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input and preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=2000, end_frame=3000)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=400, end_frame=800)
     # video_loader.show_video(fps=25)
 
+    bar = progressbar.ProgressBar(maxval=video_loader.num_frames,
+                                  widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
+    bar.start()
+
     for i, frame in enumerate(video_loader.frames):
-        print(i + video_loader.start_frame)
-        frame = tg.utils.rotate_image(frame, 0)
+        bar.update(i)
+        frame = tg.utils.rotate_image(frame, np.pi * 0)
         distorted_image = frame.copy()
         undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=camera.camera_matrix,
                                           distCoeffs=camera.distortion_coeff)
@@ -51,9 +56,9 @@ if __name__ == '__main__':
 
         # Segment detection.
         segment_detector_params = SegmentDetectorParams()
-        segment_detector_params.min_line_length = 150
-        segment_detector_params.min_num_votes = 100
-        segment_detector_params.max_line_gap = 250
+        segment_detector_params.min_line_length = 50
+        segment_detector_params.min_num_votes = 50
+        segment_detector_params.max_line_gap = 150
         segment_detector = SegmentDetector(input_image=edge_detector.edge_image, params=segment_detector_params)
         segment_detector.detect()
 
@@ -63,18 +68,20 @@ if __name__ == '__main__':
         # Segment clustering.
         segment_clusterer = SegmentClusterer(input_segments=segment_detector.segments)
         segment_clusterer.cluster_segments(num_clusters=2, n_init=8, cluster_type="gmm", swipe_clusters=False)
-        # segment_clusterer.plot_segment_features()
         mean_angles, mean_centers = segment_clusterer.compute_cluster_mean()
 
         unfiltered_segments = segment_clusterer.cluster_list.copy()
 
-        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 20,
+        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 90,
                                          max_merging_angle=10.0 / 180 * np.pi, max_endpoint_distance=10.0)
 
         filtered_segments = segment_clusterer.cluster_list.copy()
 
         # Intersection detection
-        intersection_detector = IntersectionDetector(input_segments=filtered_segments)
+        intersection_detector_params = IntersectionDetectorParams()
+        intersection_detector_params.angle_threshold = np.pi / 180 * 25
+        intersection_detector = IntersectionDetector(input_segments=filtered_segments,
+                                                     params=intersection_detector_params)
         intersection_detector.detect()
 
         # Detect the rectangles associated to the intersections.
@@ -85,36 +92,22 @@ if __name__ == '__main__':
         rectangle_detector.detect()
 
         # Displaying.
-        edges = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
-        edges_filtered = edges.copy()
-        rectangles = edges.copy()
+        base_image = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
+        base_image = scaled_image
+        tg.utils.draw_segments(segments=unfiltered_segments, base_image=base_image.copy(),
+                               windows_name="Unfiltered segments", render_indices=False)
+        tg.utils.draw_segments(segments=filtered_segments, base_image=base_image.copy(),
+                               windows_name="Filtered segments")
+        tg.utils.draw_intersections(intersections=intersection_detector.raw_intersections, base_image=base_image.copy(),
+                                    windows_name="Intersections")
+        tg.utils.draw_rectangles(rectangles=rectangle_detector.rectangles, base_image=base_image.copy(),
+                                 windows_name="Detected rectangles")
+        cv2.imshow("Canny edges", edge_detector.edge_image)
 
-        # Fix colors for first two clusters, choose the next randomly.
-        colors = [(29, 247, 240), (255, 180, 50)]
-        for cluster_number in range(2, len(unfiltered_segments)):
-            colors.append(tg.utils.random_color())
-
-        for cluster, color in zip(unfiltered_segments, colors):
-            for segment in cluster:
-                cv2.line(img=edges, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
-                         color=color, thickness=1, lineType=cv2.LINE_AA)
-
-        for cluster, color in zip(filtered_segments, colors):
-            for segment in cluster:
-                cv2.line(img=edges_filtered, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
-                         color=color, thickness=1, lineType=cv2.LINE_AA)
-
-        default_rect =  np.float32([[629,10], [10, 10], [10, 501], [629, 501]])
-        for rectangle in rectangle_detector.rectangles:
-            M = cv2.getPerspectiveTransform(np.float32(rectangle), default_rect)
-            extracted = cv2.warpPerspective(rectangles,M,(640,512))
-            cv2.imshow("Extracted", extracted)
-            cv2.polylines(rectangles, np.int32([rectangle]), True, (0, 0, 255), 1, cv2.LINE_AA)
-            cv2.imshow("Rectangles", rectangles)
-            cv2.waitKey(0)
-
-        cv2.imshow("Skeleton", edge_detector.edge_image)
-        cv2.imshow("Segments on input image", edges)
-        cv2.imshow("Filtered segments on input image", edges_filtered)
-        cv2.imshow("Rectangles", rectangles)
         cv2.waitKey(1)
+
+        # Rectangle extraction.
+        # default_rect = np.float32([[629, 10], [10, 10], [10, 501], [629, 501]])
+        # for rectangle in rectangle_detector.rectangles:
+        #     M = cv2.getPerspectiveTransform(np.float32(rectangle), default_rect)
+        #     extracted = cv2.warpPerspective(rectangle, M, (640, 512))

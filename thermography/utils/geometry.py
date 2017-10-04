@@ -2,7 +2,8 @@ import numpy as np
 
 __all__ = ["angle",
            "angle_diff",
-           "area_between_segment_and_line",
+           "aspect_ratio",
+           "area",
            "line_estimate",
            "mean_segment_angle",
            "merge_segments",
@@ -24,7 +25,7 @@ def angle(pt1: np.ndarray, pt2: np.ndarray) -> float:
     :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]
     """
     diff = pt2 - pt1
-    a = np.arctan2(-diff[1], diff[0])
+    a = np.arctan2(diff[1], diff[0])
     if np.abs(a % np.pi) <= 0.00001:
         return 0
     elif a < 0:
@@ -47,9 +48,37 @@ def angle_diff(angle1: float, angle2: float) -> float:
     return np.abs(d_angle)
 
 
-def area_between_segment_and_line(seg: np.ndarray, slope: float, intercept: float):
-    # TODO: implement this function
-    raise NotImplementedError("Function {} must be implemented.".format(area_between_segment_and_line.__name__))
+def area(points: np.ndarray) -> float:
+    """
+    Computes the surface of the polygon defined by the coordinates passed as argument.
+    :param points: List of coordinates defining  the polygon's vertices.
+    :return: The surface contained by the polygon.
+    """
+    x = points[:, 0]
+    y = points[:, 1]
+    return 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
+
+
+def aspect_ratio(rectangle: np.ndarray) -> float:
+    """
+    Computes the aspect ratio of a rectangle of the form.
+       3      s2     2
+       *-------------*
+       |             |
+    s4 |             | s3
+       |             |
+       *-------------*
+       0     s1      1
+    :param rectangle: Rectangle is a numpy array of coordinates ordered as shown in the diagram.
+    :return: Aspect ratio of the rectangle.
+    """
+    s1 = rectangle[1] - rectangle[0]
+    s2 = rectangle[2] - rectangle[3]
+    s3 = rectangle[2] - rectangle[1]
+    s4 = rectangle[3] - rectangle[0]
+    dx = np.mean([np.linalg.norm(s1), np.linalg.norm(s2)])
+    dy = np.mean([np.linalg.norm(s3), np.linalg.norm(s4)])
+    return dx / dy
 
 
 def line_estimate(seg1: np.ndarray, seg2: np.ndarray) -> tuple:
@@ -204,7 +233,7 @@ def segment_line_intersection(seg: np.ndarray, slope: float, intercept: float) -
     return segment_segment_intersection(seg, np.array([d1_proj[0], d1_proj[1], d2_proj[0], d2_proj[1]]))
 
 
-def segment_min_distance(seg1 : np.ndarray, seg2 : np.ndarray) -> float:
+def segment_min_distance(seg1: np.ndarray, seg2: np.ndarray) -> float:
     """
     Computes the minimal distance between two segments.
     Implementation taken form "https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&tab=function"
@@ -288,7 +317,7 @@ def segment_min_distance(seg1 : np.ndarray, seg2 : np.ndarray) -> float:
     return distance
 
 
-def segment_segment_intersection(seg1 : np.ndarray, seg2 : np.ndarray) -> np.ndarray:
+def segment_segment_intersection(seg1: np.ndarray, seg2: np.ndarray) -> np.ndarray:
     """
     Computes the intersection point between two segments.
     :param seg1: First segment of intersection.
@@ -316,7 +345,7 @@ def segment_segment_intersection(seg1 : np.ndarray, seg2 : np.ndarray) -> np.nda
     return False
 
 
-def sort_segments(segment_list : list) -> np.ndarray:
+def sort_segments(segment_list: list) -> np.ndarray:
     """
     Sorts the segments passed as argument based on the normal associated to the mean angle.
     :param segment_list:  A list of segments of the form [[x0, y0, x1, y1], [...], .... ]
@@ -326,13 +355,14 @@ def sort_segments(segment_list : list) -> np.ndarray:
     mean_angle = mean_segment_angle(segment_list)
 
     # Compute the associated segment centers.
-    segment_centers = [(s[0:2] + s[2:4]) * 0.5 for s in segment_list]
+    segment_centers = np.array([(s[0:2] + s[2:4]) * 0.5 for s in segment_list])
 
-    # Compute the normal associated to the angle.
+    # Compute the normal associated to the mean angle.
     direction = np.array([np.cos(mean_angle), np.sin(mean_angle)])
     normal = np.array([-direction[1], direction[0]])
 
-    # Project those coordinates along the normal defined by the mean angle.
-    projected_centers = [np.dot(center, normal) for center in segment_centers]
+    # Project the segment centers along the normal defined by the mean angle.
+    projected_centers = np.array([np.dot(center, normal) for center in segment_centers])
+    order = np.argsort(projected_centers)
 
-    return np.argsort(projected_centers)
+    return order

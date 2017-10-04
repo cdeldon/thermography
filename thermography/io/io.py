@@ -67,6 +67,10 @@ class VideoLoader:
             cv2.waitKey(int(1000 * seconds_per_frame))
 
     @property
+    def num_frames(self):
+        return self.end_frame - self.start_frame
+
+    @property
     def video_path(self):
         return self.__video_path
 

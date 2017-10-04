@@ -4,7 +4,7 @@ from .segment_clustering import *
 from .segment_detection import *
 
 __all__ = ["EdgeDetector", "EdgeDetectorParams",
-           "IntersectionDetector",
+           "IntersectionDetector", "IntersectionDetectorParams",
            "RectangleDetector", "RectangleDetectorParams",
            "SegmentClusterer",
            "SegmentDetector", "SegmentDetectorParams"]
