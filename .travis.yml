@@ -1,11 +1,28 @@
+sudo: required
 language: python
-python:
-  - "3.6"
 
-# command to install dependencies
+python:
+  - "3.6-dev"
+
+# Command to install dependencies.
 install:
+  - sudo apt-get install python3-dev
   - pip install -r requirements.txt
 
-# command to run tests
+# Command to run tests.
 script:
-  - python -m unittest
+  - python -m unittest -v
+
+# Branches to be built.
+branches:
+  only:
+  - master
+  - devel
+
+# Notifications for failing tests
+notifications:
+  email:
+    recipients:
+      - carlo.deldon@gmail.com
+    on_success: never
+    on_failure: always
