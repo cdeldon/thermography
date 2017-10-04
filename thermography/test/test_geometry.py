@@ -27,26 +27,25 @@ class TestGeometryUtils(unittest.TestCase):
         """
         Tests the 'angle' function which computes the angle for a segment.
         """
-        # Note that we test the angle based on pixel coordinates, i.e. with negated y coordinates.
         segment1 = np.array([0, 0, 1, 0])
         self.assertAlmostEqual(angle(segment1[0:2], segment1[2:4]), 0.0 / 180 * np.pi)
         self.assertAlmostEqual(angle(segment1[2:4], segment1[0:2]), 0.0 / 180 * np.pi)
 
         segment2 = np.array([0, 0, 1, 1])
-        self.assertAlmostEqual(angle(segment2[0:2], segment2[2:4]), 135.0 / 180 * np.pi)
-        self.assertAlmostEqual(angle(segment2[2:4], segment2[0:2]), 135.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment2[0:2], segment2[2:4]), 45.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment2[2:4], segment2[0:2]), 45.0 / 180 * np.pi)
 
         segment3 = np.array([0, 0, 0, 1])
         self.assertAlmostEqual(angle(segment3[0:2], segment3[2:4]), 90.0 / 180 * np.pi)
         self.assertAlmostEqual(angle(segment3[2:4], segment3[0:2]), 90.0 / 180 * np.pi)
 
         segment4 = np.array([0, 0, -1, 1])
-        self.assertAlmostEqual(angle(segment4[0:2], segment4[2:4]), 45.0 / 180 * np.pi)
-        self.assertAlmostEqual(angle(segment4[2:4], segment4[0:2]), 45.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment4[0:2], segment4[2:4]), 135.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment4[2:4], segment4[0:2]), 135.0 / 180 * np.pi)
 
         segment5 = np.array([1.5, 1.5, 2.5, 2.5])
-        self.assertAlmostEqual(angle(segment5[0:2], segment5[2:4]), 135.0 / 180 * np.pi)
-        self.assertAlmostEqual(angle(segment5[2:4], segment5[0:2]), 135.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment5[0:2], segment5[2:4]), 45.0 / 180 * np.pi)
+        self.assertAlmostEqual(angle(segment5[2:4], segment5[0:2]), 45.0 / 180 * np.pi)
 
     def test_angle_difference(self):
         """
@@ -275,7 +274,7 @@ class TestGeometryUtils(unittest.TestCase):
         """
         segments = np.array([[0, 0, 1, 0], [0, 1, 1, 1], [0, 1, 1, 1.1], [0, -1, 1, -0.5]])
         sorted_segments_indices = sort_segments(segments)
-        self.assertTrue((sorted_segments_indices == [2, 1, 0, 3]).all())
+        self.assertListEqual([*sorted_segments_indices] , [3, 0, 1, 2])
 
 
 if __name__ == '__main__':

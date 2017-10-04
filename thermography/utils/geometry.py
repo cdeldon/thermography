@@ -24,7 +24,7 @@ def angle(pt1: np.ndarray, pt2: np.ndarray) -> float:
     :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]
     """
     diff = pt2 - pt1
-    a = np.arctan2(-diff[1], diff[0])
+    a = np.arctan2(diff[1], diff[0])
     if np.abs(a % np.pi) <= 0.00001:
         return 0
     elif a < 0:
@@ -333,6 +333,9 @@ def segment_segment_intersection(seg1: np.ndarray, seg2: np.ndarray) -> np.ndarr
     return False
 
 
+import cv2
+
+
 def sort_segments(segment_list: list) -> np.ndarray:
     """
     Sorts the segments passed as argument based on the normal associated to the mean angle.
@@ -343,13 +346,39 @@ def sort_segments(segment_list: list) -> np.ndarray:
     mean_angle = mean_segment_angle(segment_list)
 
     # Compute the associated segment centers.
-    segment_centers = [(s[0:2] + s[2:4]) * 0.5 for s in segment_list]
+    segment_centers = np.array([(s[0:2] + s[2:4]) * 0.5 for s in segment_list])
 
-    # Compute the normal associated to the angle.
+    # Compute the normal associated to the mean angle.
     direction = np.array([np.cos(mean_angle), np.sin(mean_angle)])
     normal = np.array([-direction[1], direction[0]])
 
-    # Project those coordinates along the normal defined by the mean angle.
+    # Project the segment centers along the normal defined by the mean angle.
     projected_centers = [np.dot(center, normal) for center in segment_centers]
 
-    return np.argsort(projected_centers)
+    order = np.argsort(projected_centers)
+
+    img = np.ndarray(shape=(512, 700, 3), dtype=np.uint8)
+    img.fill(255)
+
+    cluster_center = np.mean(segment_centers, axis=0)
+    cluster_mean_segment = np.array([*cluster_center, *cluster_center])
+    cluster_mean_segment[0:2] += 100 * direction
+    cluster_mean_segment[2:4] -= 100 * direction
+    cluster_normal_segment = np.array([*cluster_center, *cluster_center])
+    cluster_normal_segment[0:2] += 100 * normal
+    cluster_normal_segment[2:4] -= 100 * normal
+
+    cv2.line(img, (int(cluster_mean_segment[0]), int(cluster_mean_segment[1])),
+             (int(cluster_mean_segment[2]), int(cluster_mean_segment[3])), (255, 0, 0), 1, cv2.LINE_4)
+    cv2.line(img, (int(cluster_normal_segment[0]), int(cluster_normal_segment[1])),
+             (int(cluster_normal_segment[2]), int(cluster_normal_segment[3])), (0, 0, 255), 1, cv2.LINE_4)
+    cv2.circle(img, (int(cluster_center[0]), int(cluster_center[1])), 2, (255, 0, 0), 2, cv2.LINE_4)
+
+    cv2.imshow("sorted lines (normal)", img)
+    for segment, center in zip(segment_list[order], segment_centers[order, :]):
+        cv2.line(img, (int(segment[0]), int(segment[1])), (int(segment[2]), int(segment[3])), (0, 0, 0), 1, cv2.LINE_AA)
+        cv2.circle(img, (int(center[0]), int(center[1])), 2, (0, 0, 255), 2, cv2.LINE_4)
+        cv2.imshow("sorted lines", img)
+        cv2.waitKey(0)
+
+    return order

@@ -205,3 +205,9 @@ class SegmentClusterer:
 
         self.clean_clusters_angle(mean_angles=mean_angles, max_angle_variation_mean=max_angle_variation_mean)
         self.merge_collinear_segments(max_merging_angle=max_merging_angle, max_endpoint_distance=max_endpoint_distance)
+
+        # Reorder the segments inside the clusters.
+        for cluster_index, (cluster, features) in enumerate(zip(self.cluster_list, self.cluster_features)):
+            cluster_order = tg.utils.sort_segments(cluster)
+            self.cluster_list[cluster_index] = cluster[cluster_order]
+            self.cluster_features[cluster_index] = features[cluster_order]

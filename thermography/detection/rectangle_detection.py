@@ -1,4 +1,4 @@
-from thermography.utils.geometry import segment_segment_intersection
+from thermography.utils.geometry import aspect_ratio, segment_segment_intersection
 import numpy as np
 
 __all__ = ["IntersectionDetector",
@@ -62,13 +62,12 @@ class RectangleDetector:
         num_clusters = int((np.sqrt(8 * len(self.intersections) + 1) - 1) / 2)
         for cluster_index_i in range(num_clusters):
             for cluster_index_j in range(cluster_index_i + 1, num_clusters):
-                self.__detect_rectangles_between_clusters(cluster_index_i, cluster_index_j)
+                if (cluster_index_i, cluster_index_j) in self.intersections:
+                    self.__detect_rectangles_between_clusters(cluster_index_i, cluster_index_j)
 
     @staticmethod
     def fulfills_ratio(rectangle: np.ndarray, expected_ratio: float, deviation: float) -> bool:
-        dx = np.mean(np.linalg.norm(rectangle[[1, 2]] - rectangle[[0, 3]], axis=1))
-        dy = np.mean(np.linalg.norm(rectangle[[2, 3]] - rectangle[[1, 0]], axis=1))
-        ratio = dx / dy
+        ratio = aspect_ratio(rectangle)
 
         if np.abs(expected_ratio - ratio) / expected_ratio < deviation:
             return True
