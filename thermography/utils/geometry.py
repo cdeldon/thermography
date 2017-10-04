@@ -3,6 +3,7 @@ import numpy as np
 __all__ = ["angle",
            "angle_diff",
            "aspect_ratio",
+           "area",
            "line_estimate",
            "mean_segment_angle",
            "merge_segments",
@@ -45,6 +46,17 @@ def angle_diff(angle1: float, angle2: float) -> float:
     if d_angle > np.pi * 0.5:
         d_angle -= np.pi
     return np.abs(d_angle)
+
+
+def area(points: np.ndarray) -> float:
+    """
+    Computes the surface of the polygon defined by the coordinates passed as argument.
+    :param points: List of coordinates defining  the polygon's vertices.
+    :return: The surface contained by the polygon.
+    """
+    x = points[:, 0]
+    y = points[:, 1]
+    return 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
 
 
 def aspect_ratio(rectangle: np.ndarray) -> float:
