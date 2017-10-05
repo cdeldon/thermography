@@ -33,6 +33,8 @@ if __name__ == '__main__':
                                   widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
     bar.start()
 
+    motion_detector = MotionDetector(scaling=0.3)
+
     for i, frame in enumerate(video_loader.frames):
         bar.update(i)
         frame = tg.utils.rotate_image(frame, np.pi * 0)
@@ -45,6 +47,8 @@ if __name__ == '__main__':
 
         gray = cv2.cvtColor(src=scaled_image, code=cv2.COLOR_BGR2GRAY)
         gray = cv2.blur(gray, (3, 3))
+
+        motion = motion_detector.motion_estimate(gray)
 
         # Edge detection.
         edge_detector_params = EdgeDetectorParams()
@@ -103,6 +107,14 @@ if __name__ == '__main__':
         tg.utils.draw_rectangles(rectangles=rectangle_detector.rectangles, base_image=base_image.copy(),
                                  windows_name="Detected rectangles")
         cv2.imshow("Canny edges", edge_detector.edge_image)
+
+        motion_estimate = base_image.copy()
+
+        def totuple(a, t):
+            return tuple(t(i) for i in a)
+        center = np.array([motion_estimate.shape[1-i] * 0.5 for i in range(2)])
+        cv2.line(motion_estimate, totuple(center, int), totuple(center + 20 * motion, int), (0, 255, 0), 2, cv2.LINE_4)
+        cv2.imshow("Motion estimate", motion_estimate)
 
         cv2.waitKey(1)
 
