@@ -4,4 +4,8 @@ opencv-python==3.3.0.9
 scikit-learn==0.19.0
 scipy==1.0.0b1
 
+
+
+sphinx_rtd_theme
+
 git+git://github.com/coagulant/progressbar-python3.git

@@ -11,6 +11,7 @@ class TestGeometryUtils(unittest.TestCase):
     def assertListAlmostEqual(self, first, second, places=None, msg=None):
         """
         Tests whether the elements of two lists are almost equal.
+
         :param first: The first list to compare.
         :param second: The second list to compare.
         :param places: Decimal places to be checked for comparison.
@@ -162,6 +163,7 @@ class TestGeometryUtils(unittest.TestCase):
         def sort_points(segment):
             """
             Sorts the endpoints of the segment passed as argument in lexicographical order.
+
             :param segment: Segment to be sorted.
             :return: Sorted segment.
             """
@@ -205,14 +207,14 @@ class TestGeometryUtils(unittest.TestCase):
         """
         slope = 1
         intercept = 0
-        point1 = [0, 0]
-        point2 = [1.5, 1.5]
-        point3 = [-0.5, -0.5]
+        point1 = np.array([0, 0])
+        point2 = np.array([1.5, 1.5])
+        point3 = np.array([-0.5, -0.5])
         self.assertAlmostEqual(point_line_distance(point1, slope, intercept), 0.0)
         self.assertAlmostEqual(point_line_distance(point2, slope, intercept), 0.0)
         self.assertAlmostEqual(point_line_distance(point3, slope, intercept), 0.0)
 
-        point4 = [0, 1]
+        point4 = np.array([0, 1])
         self.assertAlmostEqual(point_line_distance(point4, slope, intercept), np.sqrt(2) * 0.5)
 
         slope = 0.5
