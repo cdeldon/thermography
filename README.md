@@ -34,11 +34,4 @@ $ python main_test.py
 ```
 
 ### Documentation
-Build the documentation as follows:
-```lang=bash
-$ cd docs/
-$ make html
-```
-
-This generates an *html* documentation of the source code in `docs/_build/html`
-and the root `.html` file is indicated by `docs/_build/html/index.html`.
+The documentation of the code is available [here](https://cdeldon.github.io/thermography/html/html/index.html).
