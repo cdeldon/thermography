@@ -19,6 +19,20 @@ Install the prerequisites:
 $ pip install -r requirements.txt
 ```
 
+### Tests
+The functionalities of the *thermography* project are tests as "unittest".
+Those tests can be run as follows:
+```lang=bash
+$ cd thermography/
+$ python -m unittest [-v]
+```
+
+The same tests can be run as a normal python script as follows:
+```lang=bash
+$ cd thermography/
+$ python main_test.py
+```
+
 ### Documentation
 Build the documentation as follows:
 ```lang=bash
