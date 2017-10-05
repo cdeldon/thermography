@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Thermography documentation build configuration file, created by
-# sphinx-quickstart on Thu Oct  5 08:11:07 2017.
+# sphinx-quickstart on Thu Oct  5 11:21:54 2017.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -20,8 +20,6 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
-print("=========== added {} to path ================".format(os.path.abspath("../")))
-
 
 # -- General configuration ------------------------------------------------
 
@@ -32,7 +30,8 @@ print("=========== added {} to path ================".format(os.path.abspath("..
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc',
+    'sphinx.ext.githubpages']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -84,11 +83,8 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-
 import sphinx_rtd_theme
-
 html_theme = "sphinx_rtd_theme"
-
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -101,22 +97,6 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
-# Custom sidebar templates, must be a dictionary that maps document names
-# to template names.
-#
-# This is required for the alabaster theme
-# refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
-html_sidebars = {
-    '**': [
-        'about.html',
-        'navigation.html',
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-        'donate.html',
-    ]
-}
-
 
 # -- Options for HTMLHelp output ------------------------------------------
 

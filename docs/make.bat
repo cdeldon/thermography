@@ -8,7 +8,7 @@ if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=python -msphinx
 )
 set SOURCEDIR=.
-set BUILDDIR=_build
+set BUILDDIR=html
 set SPHINXPROJ=Thermography
 
 if "%1" == "" goto help
