@@ -9,24 +9,24 @@ import progressbar
 
 if __name__ == '__main__':
 
-    # Camera parameters.
+    # Load camera parameters.
     SETTINGS_DIR = tg.settings.get_settings_dir()
     camera_param_file = os.path.join(SETTINGS_DIR, "camera_parameters.json")
     camera = tg.settings.Camera(camera_path=camera_param_file)
     print("Using camera parameters:\n{}".format(camera))
 
-    # Module parameters.
+    # Load module parameters.
     module_param_file = os.path.join(SETTINGS_DIR, "module_parameters.json")
     modules = tg.settings.Modules(module_path=module_param_file)
     print("Using module paramters:\n{}".format(modules))
 
-    # Data input parameters.
+    # Load data input parameters.
     THERMOGRAPHY_ROOT_DIR = tg.settings.get_thermography_root_dir()
     tg.settings.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
     IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input and preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=400, end_frame=800)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=0, end_frame=1200)
     # video_loader.show_video(fps=25)
 
     bar = progressbar.ProgressBar(maxval=video_loader.num_frames,
