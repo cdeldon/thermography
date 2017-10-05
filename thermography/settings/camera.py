@@ -7,6 +7,7 @@ class Camera:
     def __init__(self, camera_path: str):
         """
         Loads the camera parameters into the object.
+
         :param camera_path: Absolute path to the camera file parameter.
         """
 

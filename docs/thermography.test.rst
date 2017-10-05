@@ -1,0 +1,30 @@
+thermography\.test package
+==========================
+
+Submodules
+----------
+
+thermography\.test\.test\_geometry module
+-----------------------------------------
+
+.. automodule:: thermography.test.test_geometry
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+thermography\.test\.test\_images module
+---------------------------------------
+
+.. automodule:: thermography.test.test_images
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: thermography.test
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -12,6 +12,7 @@ def draw_intersections(intersections: list, base_image: np.ndarray, windows_name
     """
     Draws the intersections contained in the first parameter onto the base image passed as second parameter and displays
     the image using the third parameter as title.
+
     :param intersections: List of intersection coordinates.
     :param base_image: Base image over which to render the intersections.
     :param windows_name: Title to give to the rendered image.
@@ -26,15 +27,15 @@ def draw_segments(segments: list, base_image: np.ndarray, windows_name: str, ren
                   colors: list = None):
     """
     Draws the segments contained in the first parameter onto the base image passed as second parameter and displays
-    the image using the third parameter as title. The indices associated to the segments are rendere on the image
+    the image using the third parameter as title. The indices associated to the segments are rendered on the image
     depending on 'render_indices'.
     A list of colors can be passed as argument to specify the colors to be used for different segment clusters.
+
     :param segments: List of segment clusters.
     :param base_image: Base image over which to render the segments.
     :param windows_name: Title to give to the rendered image.
     :param render_indices: Boolean flag indicating whether to render the segment indices or not.
-    :param colors: Color list to be used for segment rendering, such that segments belonging to the same cluster are of
-    the same color.
+    :param colors: Color list to be used for segment rendering, such that segments belonging to the same cluster are of the same color.
     """
     if colors is None:
         # Fix colors for first two clusters, choose the next randomly.
@@ -57,6 +58,7 @@ def draw_rectangles(rectangles: list, base_image: np.ndarray, windows_name: str)
     """
     Draws the rectangles contained in the first parameter onto the base image passed as second parameter and displays
     the image using the third parameter as title.
+
     :param rectangles: List of rectangles.
     :param base_image: Base image over which to render the rectangles.
     :param windows_name: Title to give to the rendered image.
@@ -75,6 +77,7 @@ def draw_rectangles(rectangles: list, base_image: np.ndarray, windows_name: str)
 def rotate_image(image: np.ndarray, a: float):
     """
     Rotates the input image by a radiants in counter-clock-wise direction.
+
     :param image: Image to be rotated.
     :param a: Rotation angle expressed in radiants.
     :return: Rotated version of the input image.
@@ -91,6 +94,7 @@ def rotate_image(image: np.ndarray, a: float):
 def scale_image(input_image: np.ndarray, s: float):
     """
     Scales an input image by the value passed as parameter.
+
     :param input_image: Image to be scaled.
     :param s: Scalar value to be applied to the scaling procedure.
     :return: A copy of the input image scaled by the passed parameter.
