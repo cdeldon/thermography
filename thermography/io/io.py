@@ -10,6 +10,7 @@ class ImageLoader:
     def __init__(self, image_path: str, mode: Modality = Modality.DEFAULT):
         """
         Initializes and loads the image associated to the file indicated by the path passed as argument.
+
         :param image_path: Absolute path to the image file to be loaded.
         :param mode: Modality to be used when loading the image.
         """
@@ -21,6 +22,7 @@ class ImageLoader:
     def show_raw(self, title: str = "", wait: int = 0):
         """
         Displays the raw image associated with the calling instance.
+
         :param title: Title to be added to the displayed image.
         :param wait: Time to wait until displayed windows is closed. If set to 0, then the image does not close.
         """
@@ -42,10 +44,10 @@ class VideoLoader:
     def __init__(self, video_path: str, start_frame: int = 0, end_frame: int = None):
         """
         Loads the frames associated to the video indicated by the path passed as argument.
+
         :param video_path: Absolute path to the video to be loaded.
         :param start_frame: Start frame of the video to be considered (inclusive).
         :param end_frame: End frame of the video to be considered (non inclusive).
-        :param scale_factor: Scaling factor to apply to each frame inside the loaded video.
         """
         self.video_path = video_path
 
@@ -58,6 +60,7 @@ class VideoLoader:
     def show_video(self, fps: int = 60):
         """
         Shows the loaded frames.
+
         :param fps: Frames per second to be used when showing the images.
         """
         seconds_per_frame = 1.0 / fps

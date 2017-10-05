@@ -7,6 +7,7 @@ class Modules:
     def __init__(self, module_path: str):
         """
         Loads the modules parameters into the object.
+
         :param module_path: Absolute path to the module file parameter.
         """
 

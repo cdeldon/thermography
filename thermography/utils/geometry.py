@@ -20,6 +20,7 @@ def angle(pt1: np.ndarray, pt2: np.ndarray) -> float:
     Computes the angle (in radiants) between a segment specified by the two points and the x-axis.
     Note that this function assumes the input are pixel coordinates, and thus negates the y-difference between the two
     points to get a consistent angle with the one seen by the user.
+
     :param pt1: First point of the segment.
     :param pt2: Second point of the segment.
     :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]
@@ -36,10 +37,10 @@ def angle(pt1: np.ndarray, pt2: np.ndarray) -> float:
 def angle_diff(angle1: float, angle2: float) -> float:
     """
     Computes the angle difference between the input arguments. The resulting angle difference is in [0, pi * 0.5]
+
     :param angle1: First angle expressed in radiants.
     :param angle2: Second angle expressed in radiants.
-    :return: Angle difference between the input parameters. This angle represents the smallest positive angle between
-    the input parameters.
+    :return: Angle difference between the input parameters. This angle represents the smallest positive angle between the input parameters.
     """
     d_angle = np.abs(angle1 - angle2)
     d_angle = d_angle % np.pi
@@ -51,6 +52,7 @@ def angle_diff(angle1: float, angle2: float) -> float:
 def area(points: np.ndarray) -> float:
     """
     Computes the surface of the polygon defined by the coordinates passed as argument.
+
     :param points: List of coordinates defining  the polygon's vertices.
     :return: The surface contained by the polygon.
     """
@@ -61,14 +63,19 @@ def area(points: np.ndarray) -> float:
 
 def aspect_ratio(rectangle: np.ndarray) -> float:
     """
-    Computes the aspect ratio of a rectangle of the form.
-       3      s2     2
-       *-------------*
-       |             |
-    s4 |             | s3
-       |             |
-       *-------------*
-       0     s1      1
+    Computes the aspect ratio of a rectangle.
+
+    The aspect ratio is computed based on the following rectangle.
+    ::
+
+         3      s2     2
+         *-------------*
+         |             |
+      s4 |             | s3
+         |             |
+         *-------------*
+         0     s1      1
+
     :param rectangle: Rectangle is a numpy array of coordinates ordered as shown in the diagram.
     :return: Aspect ratio of the rectangle.
     """
@@ -84,6 +91,7 @@ def aspect_ratio(rectangle: np.ndarray) -> float:
 def line_estimate(seg1: np.ndarray, seg2: np.ndarray) -> tuple:
     """
     Computes the line estimation (regression) using the endpoints of the segments passed as argument.
+
     :param seg1: First segment.
     :param seg2: Second segment.
     :return: The slope and intercept of the estimated line.
@@ -99,6 +107,7 @@ def line_estimate(seg1: np.ndarray, seg2: np.ndarray) -> tuple:
 def mean_segment_angle(segment_list: list) -> float:
     """
     Computes the mean angle of a list of segments.
+
     :param segment_list: A list of segments of the form [np.array([x0, y0, x1, y1]), np.array([...]), .... ]
     :return: The mean angle of the segments passed as argument. The angle lies in [0, pi]
     """
@@ -120,9 +129,9 @@ def mean_segment_angle(segment_list: list) -> float:
 def merge_segments(segment_list: list, verticality_thresh: float = 10.0) -> np.ndarray:
     """
     Computes a unique segments as a representation of the almost collinear segments passed as argument.
+
     :param segment_list: List of almost collinear segments to be merged into a single segment.
-    :param verticality_thresh: Verticality threshold, i.e. if std(y) > verticality_thresh * std(x) then the segment is
-    merged by using a a vertical fitting, otherwise an horizontal fitting.
+    :param verticality_thresh: Verticality threshold, i.e. if std(y) > verticality_thresh * std(x) then the segment is merged by using a a vertical fitting, otherwise an horizontal fitting.
     :return: A new segment defined on the line estimation over the segments passed as argument.
     """
     x = []
@@ -162,11 +171,11 @@ def merge_segments(segment_list: list, verticality_thresh: float = 10.0) -> np.n
 def point_line_distance(point: np.ndarray, slope: float, intercept: float) -> float:
     """
     Computes the shortest distance between a point and a line defined by its slope and intercept.
+
     :param point: Point given by a 2D coordinate in the form of [x, y]
     :param slope: Slope of the line
     :param intercept: Intercept of the line
-    :return: Positive minimal distance between the point passed as argument and the line defined by the slope and
-    intercept passed as arguments.
+    :return: Positive minimal distance between the point passed as argument and the line defined by the slope and intercept passed as arguments.
     """
     return np.abs(-slope * point[0] + point[1] - intercept) / np.sqrt(1 + slope * slope)
 
@@ -175,12 +184,11 @@ def segments_collinear(seg1: np.ndarray, seg2: np.ndarray, max_angle: float = 5.
                        max_endpoint_distance: float = 50.0) -> bool:
     """
     Tests whether two segments are collinear given some thresholds for collinearity.
+
     :param seg1: First segment to be tested.
     :param seg2: Second segment to be tested.
     :param max_angle: Maximal angle between segments to be accepted as collinear.
-    :param max_endpoint_distance: Max sum of euclidean distance between the endpoints of the passed segments and the
-    line estimate computed between the segments.
-    This parameter discards almost parallel segments with different intercept.
+    :param max_endpoint_distance: Max sum of euclidean distance between the endpoints of the passed segments and the line estimate computed between the segments. This parameter discards almost parallel segments with different intercept.
     :return: True if the segments are almost collinear, False otherwise.
     """
     # Compute the angle between the segments.
@@ -204,6 +212,7 @@ def segments_collinear(seg1: np.ndarray, seg2: np.ndarray, max_angle: float = 5.
 def segment_line_intersection(seg: np.ndarray, slope: float, intercept: float) -> np.ndarray:
     """
     Computes the intersection point between a segment and a line.
+
     :param seg: Segment to be intersected with the line.
     :param slope: Slope of the intersecting line.
     :param intercept: Intercept of the intersecting line.
@@ -237,6 +246,7 @@ def segment_min_distance(seg1: np.ndarray, seg2: np.ndarray) -> float:
     """
     Computes the minimal distance between two segments.
     Implementation taken form "https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&tab=function"
+
     :param seg1: First segment defined as [x1, y1, x2, y2]
     :param seg2: Second segment defined as [x2, y3, x4, y4]
     :return: The minimal distance between the two segments
@@ -320,6 +330,7 @@ def segment_min_distance(seg1: np.ndarray, seg2: np.ndarray) -> float:
 def segment_segment_intersection(seg1: np.ndarray, seg2: np.ndarray) -> np.ndarray:
     """
     Computes the intersection point between two segments.
+
     :param seg1: First segment of intersection.
     :param seg2: Second segment of intersection.
     :return: Coordinates of intersection point, or False if no intersection is found.
@@ -348,6 +359,7 @@ def segment_segment_intersection(seg1: np.ndarray, seg2: np.ndarray) -> np.ndarr
 def sort_segments(segment_list: list) -> np.ndarray:
     """
     Sorts the segments passed as argument based on the normal associated to the mean angle.
+
     :param segment_list:  A list of segments of the form [[x0, y0, x1, y1], [...], .... ]
     :return: A list of indices in the segment list passed as argument which sorts the segments.
     """
