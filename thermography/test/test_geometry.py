@@ -224,6 +224,16 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(point_line_distance(point3, slope, intercept), 1.118033989)
         self.assertAlmostEqual(point_line_distance(point4, slope, intercept), 0.0)
 
+    def test_rectangle_contains(self):
+        """
+        Tests the 'rectangle_contains' function which computes whether a point is contained by a rectangle or not.
+        """
+        rectangle = np.array([[0, 0], [10, 0], [10, 10], [0, 10]])
+        self.assertTrue(rectangle_contains(rectangle, np.array([5, 5])))
+        self.assertFalse(rectangle_contains(rectangle, np.array([15, 5])))
+        self.assertTrue(rectangle_contains(rectangle, np.array([10, 5])))
+        self.assertTrue(rectangle_contains(rectangle, np.array([10, 10])))
+
     def test_segments_collinear(self):
         """
         Tests the 'segments_collinear' function which computes whether two segments are almost collinear or not.
@@ -291,7 +301,7 @@ class TestGeometryUtils(unittest.TestCase):
         """
         segments = np.array([[0, 0, 1, 0], [0, 1, 1, 1], [0, 1, 1, 1.1], [0, -1, 1, -0.5]])
         sorted_segments_indices = sort_segments(segments)
-        self.assertListEqual([*sorted_segments_indices] , [3, 0, 1, 2])
+        self.assertListEqual([*sorted_segments_indices], [3, 0, 1, 2])
 
 
 if __name__ == '__main__':

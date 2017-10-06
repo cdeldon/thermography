@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 
 __all__ = ["angle",
@@ -8,6 +9,7 @@ __all__ = ["angle",
            "mean_segment_angle",
            "merge_segments",
            "point_line_distance",
+           "rectangle_contains",
            "segments_collinear",
            "segment_line_intersection",
            "segment_min_distance",
@@ -178,6 +180,19 @@ def point_line_distance(point: np.ndarray, slope: float, intercept: float) -> fl
     :return: Positive minimal distance between the point passed as argument and the line defined by the slope and intercept passed as arguments.
     """
     return np.abs(-slope * point[0] + point[1] - intercept) / np.sqrt(1 + slope * slope)
+
+
+def rectangle_contains(rectangle : np.ndarray, point: np.ndarray) -> bool:
+    """
+    Computes whether a point is inside a rectangle or not.
+
+    :param rectangle: Rectangle to be tested against the query point.
+    :param point: Point to be tested against the rectangle.
+    :return: True if the point is inside or on the rectangle contours, False otherwise.
+    """
+    point = (int(point[0]), int(point[1]))
+    rectangle = np.array([(int(r[0]), int(r[1])) for r in rectangle])
+    return cv2.pointPolygonTest(rectangle, point, False) >= 0
 
 
 def segments_collinear(seg1: np.ndarray, seg2: np.ndarray, max_angle: float = 5.0 / 180 * np.pi,

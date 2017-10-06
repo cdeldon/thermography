@@ -26,8 +26,11 @@ if __name__ == '__main__':
     IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input and preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=500, end_frame=800)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=800, end_frame=803)
     # video_loader.show_video(fps=25)
+
+    # Global map of modules.
+    module_map = tg.ModuleMap()
 
     bar = progressbar.ProgressBar(maxval=video_loader.num_frames,
                                   widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
@@ -35,8 +38,8 @@ if __name__ == '__main__':
 
     motion_detector = MotionDetector(scaling=0.4)
 
-    for i, frame in enumerate(video_loader.frames):
-        bar.update(i)
+    for frame_id, frame in enumerate(video_loader.frames):
+        bar.update(frame_id)
         frame = tg.utils.rotate_image(frame, np.pi * 0)
         distorted_image = frame.copy()
         undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=camera.camera_matrix,
@@ -96,6 +99,9 @@ if __name__ == '__main__':
         # Motion estimate.
         mean_motion = motion_detector.motion_estimate(gray)
 
+        # Add the detected rectangles to the global map.
+        module_map.insert(rectangle_detector.rectangles, frame_id, mean_motion)
+
         # Displaying.
         base_image = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
         base_image = scaled_image
@@ -110,10 +116,12 @@ if __name__ == '__main__':
         tg.utils.draw_motion(flow=motion_detector.flow, base_image=motion_detector.frame, windows_name="Motion estimate")
         cv2.imshow("Canny edges", edge_detector.edge_image)
 
-        cv2.waitKey(1)
+        cv2.waitKey(10000)
 
         # Rectangle extraction.
         # default_rect = np.float32([[629, 10], [10, 10], [10, 501], [629, 501]])
         # for rectangle in rectangle_detector.rectangles:
         #     M = cv2.getPerspectiveTransform(np.float32(rectangle), default_rect)
         #     extracted = cv2.warpPerspective(rectangle, M, (640, 512))
+
+    print(module_map)
