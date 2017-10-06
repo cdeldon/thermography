@@ -26,14 +26,14 @@ if __name__ == '__main__':
     IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input and preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=0, end_frame=1200)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=500, end_frame=800)
     # video_loader.show_video(fps=25)
 
     bar = progressbar.ProgressBar(maxval=video_loader.num_frames,
                                   widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
     bar.start()
 
-    motion_detector = MotionDetector(scaling=0.3)
+    motion_detector = MotionDetector(scaling=0.4)
 
     for i, frame in enumerate(video_loader.frames):
         bar.update(i)
@@ -47,8 +47,6 @@ if __name__ == '__main__':
 
         gray = cv2.cvtColor(src=scaled_image, code=cv2.COLOR_BGR2GRAY)
         gray = cv2.blur(gray, (3, 3))
-
-        motion = motion_detector.motion_estimate(gray)
 
         # Edge detection.
         edge_detector_params = EdgeDetectorParams()
@@ -95,6 +93,9 @@ if __name__ == '__main__':
                                                params=rectangle_detector_params)
         rectangle_detector.detect()
 
+        # Motion estimate.
+        mean_motion = motion_detector.motion_estimate(gray)
+
         # Displaying.
         base_image = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
         base_image = scaled_image
@@ -113,7 +114,7 @@ if __name__ == '__main__':
         def totuple(a, t):
             return tuple(t(i) for i in a)
         center = np.array([motion_estimate.shape[1-i] * 0.5 for i in range(2)])
-        cv2.line(motion_estimate, totuple(center, int), totuple(center + 20 * motion, int), (0, 255, 0), 2, cv2.LINE_4)
+        cv2.line(motion_estimate, totuple(center, int), totuple(center + 20 * mean_motion, int), (0, 255, 0), 2, cv2.LINE_4)
         cv2.imshow("Motion estimate", motion_estimate)
 
         cv2.waitKey(1)

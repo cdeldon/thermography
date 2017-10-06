@@ -7,7 +7,11 @@ __all__ = ["MotionDetector"]
 
 
 class MotionDetector:
-    def __init__(self, scaling : float = 1.0):
+    """
+    Class responsible for estimating the motion between two consecutive frames.
+    """
+
+    def __init__(self, scaling: float = 1.0):
         """
         Initializes the motion detector object.
 
@@ -27,14 +31,15 @@ class MotionDetector:
         """
 
         frame = scale_image(frame, self.scaling)
+        cv2.imshow("Scaled flow", frame)
         if self.__last_frame is None:
             self.__last_frame = frame.copy()
             return np.array([0, 0])
 
         self.flow = cv2.calcOpticalFlowFarneback(self.__last_frame, frame, 1.0, 0.5, 5, 15, 3, 5, 1.1,
                                                  cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
-
         mean_flow = np.mean(self.flow, axis=(0, 1))
+
         self.__last_frame = frame.copy()
 
         return -(mean_flow / self.scaling)
