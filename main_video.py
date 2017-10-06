@@ -26,7 +26,7 @@ if __name__ == '__main__':
     IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input and preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=800, end_frame=803)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=750, end_frame=820)
     # video_loader.show_video(fps=25)
 
     # Global map of modules.
@@ -100,7 +100,7 @@ if __name__ == '__main__':
         mean_motion = motion_detector.motion_estimate(gray)
 
         # Add the detected rectangles to the global map.
-        module_map.insert(rectangle_detector.rectangles, frame_id, mean_motion)
+        # module_map.insert(rectangle_detector.rectangles, frame_id, mean_motion)
 
         # Displaying.
         base_image = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
@@ -115,6 +115,21 @@ if __name__ == '__main__':
                                  windows_name="Detected rectangles")
         tg.utils.draw_motion(flow=motion_detector.flow, base_image=motion_detector.frame, windows_name="Motion estimate")
         cv2.imshow("Canny edges", edge_detector.edge_image)
+
+        # global_map = base_image.copy()
+        # for rect_id, rectangle in module_map.global_rectangle_map.items():
+        #     rect = rectangle.last_rectangle
+        #     if rect_id != 8  :
+        #         continue
+        #     color = (0, 0, 255)
+        #     for frame_rec_id in rectangle.frame_id_history:
+        #         r = rectangle.rectangle_history[frame_rec_id]
+        #         cv2.polylines(global_map, np.int32([r]), True, color, 1, cv2.LINE_4)
+        #     cv2.polylines(global_map, np.int32([rect]), True, color, 2, cv2.LINE_AA)
+        #     cv2.putText(global_map, str(rect_id), (int(rect[0,0]), int(rect[0,1])), cv2.FONT_HERSHEY_PLAIN, 1,
+        #                     (255, 255, 255), 1)
+        #
+        # cv2.imshow("Global map", global_map)
 
         cv2.waitKey(10000)
 

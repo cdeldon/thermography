@@ -25,6 +25,7 @@ class RectangleDetector:
             for cluster_index_j in range(cluster_index_i + 1, num_clusters):
                 if (cluster_index_i, cluster_index_j) in self.intersections:
                     self.__detect_rectangles_between_clusters(cluster_index_i, cluster_index_j)
+                    exit(0)
 
     @staticmethod
     def fulfills_ratio(rectangle: np.ndarray, expected_ratio: float, deviation: float) -> bool:
@@ -40,6 +41,7 @@ class RectangleDetector:
         intersections_i_j = self.intersections[cluster_index_i, cluster_index_j]
         rectangles = []
         for segment_index_i, intersections_with_i in intersections_i_j.items():
+            print(segment_index_i, intersections_with_i)
             if segment_index_i + 1 not in intersections_i_j:
                 continue
 
