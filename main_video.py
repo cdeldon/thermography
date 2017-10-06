@@ -107,15 +107,8 @@ if __name__ == '__main__':
                                     windows_name="Intersections")
         tg.utils.draw_rectangles(rectangles=rectangle_detector.rectangles, base_image=base_image.copy(),
                                  windows_name="Detected rectangles")
+        tg.utils.draw_motion(flow=motion_detector.flow, base_image=motion_detector.frame, windows_name="Motion estimate")
         cv2.imshow("Canny edges", edge_detector.edge_image)
-
-        motion_estimate = base_image.copy()
-
-        def totuple(a, t):
-            return tuple(t(i) for i in a)
-        center = np.array([motion_estimate.shape[1-i] * 0.5 for i in range(2)])
-        cv2.line(motion_estimate, totuple(center, int), totuple(center + 20 * mean_motion, int), (0, 255, 0), 2, cv2.LINE_4)
-        cv2.imshow("Motion estimate", motion_estimate)
 
         cv2.waitKey(1)
 

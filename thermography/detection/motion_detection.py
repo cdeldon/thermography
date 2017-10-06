@@ -19,7 +19,7 @@ class MotionDetector:
         """
         self.scaling = scaling
 
-        self.__last_frame = None
+        self.frame = None
         self.flow = None
 
     def motion_estimate(self, frame: np.ndarray) -> np.ndarray:
@@ -31,15 +31,14 @@ class MotionDetector:
         """
 
         frame = scale_image(frame, self.scaling)
-        cv2.imshow("Scaled flow", frame)
-        if self.__last_frame is None:
-            self.__last_frame = frame.copy()
+        if self.frame is None:
+            self.frame = frame.copy()
             return np.array([0, 0])
 
-        self.flow = cv2.calcOpticalFlowFarneback(self.__last_frame, frame, 1.0, 0.5, 5, 15, 3, 5, 1.1,
+        self.flow = cv2.calcOpticalFlowFarneback(self.frame, frame, 1.0, 0.5, 5, 15, 3, 5, 1.1,
                                                  cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
         mean_flow = np.mean(self.flow, axis=(0, 1))
 
-        self.__last_frame = frame.copy()
+        self.frame = frame.copy()
 
         return -(mean_flow / self.scaling)
