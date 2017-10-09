@@ -53,9 +53,9 @@ if __name__ == '__main__':
 
         # Edge detection.
         edge_detector_params = EdgeDetectorParams()
-        edge_detector_params.dilation_steps = 2
-        edge_detector_params.hysteresis_min_thresh = 30
-        edge_detector_params.hysteresis_max_thresh = 100
+        edge_detector_params.dilation_steps = 4
+        edge_detector_params.hysteresis_min_thresh = 60
+        edge_detector_params.hysteresis_max_thresh = 180
         edge_detector = EdgeDetector(input_image=gray, params=edge_detector_params)
         edge_detector.detect()
 
@@ -77,8 +77,8 @@ if __name__ == '__main__':
 
         unfiltered_segments = segment_clusterer.cluster_list.copy()
 
-        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 90,
-                                         max_merging_angle=10.0 / 180 * np.pi, max_endpoint_distance=20.0)
+        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 20,
+                                         max_merging_angle=np.pi / 180 * 10, max_endpoint_distance=20.0)
 
         filtered_segments = segment_clusterer.cluster_list.copy()
 

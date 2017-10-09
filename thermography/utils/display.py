@@ -14,8 +14,12 @@ def draw_intersections(intersections: list, base_image: np.ndarray, windows_name
     :param base_image: Base image over which to render the intersections.
     :param windows_name: Title to give to the rendered image.
     """
+    mean_color = np.mean(base_image, axis=(0, 1))
+    if mean_color[0] == mean_color[1] == mean_color[2]:
+        mean_color = np.array([255, 255, 0])
+    opposite_color = np.array([255, 255, 255]) - mean_color
     for intersection in intersections:
-        cv2.circle(base_image, (int(intersection[0]), int(intersection[1])), 2, (0, 0, 255), 2, cv2.FILLED)
+        cv2.circle(base_image, (int(intersection[0]), int(intersection[1])), 2, opposite_color, 3, cv2.LINE_4)
 
     cv2.imshow(windows_name, base_image)
 
@@ -100,12 +104,16 @@ def draw_rectangles(rectangles: list, base_image: np.ndarray, windows_name: str)
     :param windows_name: Title to give to the rendered image.
     """
     mean_color = np.mean(base_image, axis=(0, 1))
+    mask = np.zeros_like(base_image)
     if mean_color[0] == mean_color[1] == mean_color[2]:
         mean_color = np.array([255, 255, 0])
     opposite_color = np.array([255, 255, 255]) - mean_color
     opposite_color = (int(opposite_color[0]), int(opposite_color[1]), int(opposite_color[2]))
     for rectangle in rectangles:
         cv2.polylines(base_image, np.int32([rectangle]), True, opposite_color, 1, cv2.LINE_AA)
+        cv2.fillConvexPoly(mask, np.int32([rectangle]), (255, 0, 0), cv2.LINE_4)
+
+    cv2.addWeighted(base_image, 1, mask, 0.3, 0, base_image)
 
     cv2.imshow(windows_name, base_image)
 
