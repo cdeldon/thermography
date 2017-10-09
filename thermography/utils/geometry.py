@@ -93,17 +93,28 @@ def aspect_ratio(rectangle: np.ndarray) -> float:
 def line_estimate(seg1: np.ndarray, seg2: np.ndarray) -> tuple:
     """
     Computes the line estimation (regression) using the endpoints of the segments passed as argument.
+    Depending on the points' distribution, the line estimate is computed in the x-y plane as usual, or on the y-x plane
+    (i.e. with inverted coordinates).
 
     :param seg1: First segment.
     :param seg2: Second segment.
-    :return: The slope and intercept of the estimated line.
+    :return: The slope and intercept of the estimated line, a boolean indicating whether the slope and intercept refer to a vertical or horizontal polyfit.
     """
     x = [*seg1[0::2], *seg2[0::2]]
     y = [*seg1[1::2], *seg2[1::2]]
 
-    [slope, intercept] = np.polyfit(x, y, 1)
+    # Compute vertical polyfit if standard deviation of y coordinates is larger than the one of x coordinates.
+    std_x = np.std(x)
+    std_y = np.std(y)
 
-    return slope, intercept
+    vertical = std_y > std_x
+
+    if vertical:
+        [slope, intercept] = np.polyfit(y, x, 1)
+    else:
+        [slope, intercept] = np.polyfit(x, y, 1)
+
+    return (slope, intercept), vertical
 
 
 def mean_segment_angle(segment_list: list) -> float:
@@ -128,14 +139,17 @@ def mean_segment_angle(segment_list: list) -> float:
     return a
 
 
-def merge_segments(segment_list: list, verticality_thresh: float = 10.0) -> np.ndarray:
+def merge_segments(segment_list: list) -> np.ndarray:
     """
     Computes a unique segments as a representation of the almost collinear segments passed as argument.
 
     :param segment_list: List of almost collinear segments to be merged into a single segment.
-    :param verticality_thresh: Verticality threshold, i.e. if std(y) > verticality_thresh * std(x) then the segment is merged by using a a vertical fitting, otherwise an horizontal fitting.
     :return: A new segment defined on the line estimation over the segments passed as argument.
     """
+
+    if len(segment_list) == 1:
+        return segment_list[0]
+
     x = []
     y = []
     for segment in segment_list:
@@ -147,38 +161,36 @@ def merge_segments(segment_list: list, verticality_thresh: float = 10.0) -> np.n
     std_x = np.std(x)
     std_y = np.std(y)
 
-    # Vertical case.
-    if std_x == 0:
-        merged_segment = np.array([x[0], np.min(y), x[0], np.max(y)])
-        return merged_segment
-    else:
-        verticality = std_y / std_x
-        # Data is almost vertical aligned.
-        if verticality > verticality_thresh:
-            [slope_inv, intercept_inv] = np.polyfit(y, x, 1)
-            slope = 1.0 / slope_inv
-            intercept = -intercept_inv / slope_inv
-        # Data is horizontally aligned.
-        else:
-            [slope, intercept] = np.polyfit(x, y, 1)
+    vertical = std_y > std_x
 
+    if vertical:
+        [slope, intercept] = np.polyfit(y, x, 1)
+        y0 = np.min(y)
+        y1 = np.max(y)
+        x0 = intercept + slope * y0
+        x1 = intercept + slope * y1
+    else:
+        [slope, intercept] = np.polyfit(x, y, 1)
         x0 = np.min(x)
         x1 = np.max(x)
         y0 = intercept + slope * x0
         y1 = intercept + slope * x1
 
-        return np.array([x0, y0, x1, y1])
+    return np.array([x0, y0, x1, y1])
 
 
-def point_line_distance(point: np.ndarray, slope: float, intercept: float) -> float:
+def point_line_distance(point: np.ndarray, slope: float, intercept: float, vertical : bool) -> float:
     """
     Computes the shortest distance between a point and a line defined by its slope and intercept.
 
     :param point: Point given by a 2D coordinate in the form of [x, y]
     :param slope: Slope of the line
     :param intercept: Intercept of the line
+    :param vertical: Boolean indicating if the slope and intercept refer to a vertical or horizontal polyfit.
     :return: Positive minimal distance between the point passed as argument and the line defined by the slope and intercept passed as arguments.
     """
+    if vertical:
+        point = [point[1], point[0]]
     return np.abs(-slope * point[0] + point[1] - intercept) / np.sqrt(1 + slope * slope)
 
 
@@ -215,11 +227,11 @@ def segments_collinear(seg1: np.ndarray, seg2: np.ndarray, max_angle: float = 5.
     if intersection is not False:
         return True
     else:
-        slope, intercept = line_estimate(seg1, seg2)
-        dist_sum = 0
+        (slope, intercept), vertical = line_estimate(seg1, seg2)
+        dist_sum_2 = 0
         for point in [seg1[0:2], seg1[2:4], seg2[0:2], seg2[2:4]]:
-            dist_sum += point_line_distance(point, slope, intercept)
-        if dist_sum >= max_endpoint_distance:
+            dist_sum_2 += point_line_distance(point, slope, intercept, vertical)**2
+        if dist_sum_2 >= max_endpoint_distance**2:
             return False
         return True
 

@@ -227,4 +227,4 @@ class SegmentClusterer:
 
         self.clean_clusters_angle(mean_angles=mean_angles, max_angle_variation_mean=max_angle_variation_mean)
         self.merge_collinear_segments(max_merging_angle=max_merging_angle, max_endpoint_distance=max_endpoint_distance)
-        self.clean_angle_consistency(max_neighbor_angle=max_neighbor_angle)
+        # self.clean_angle_consistency(max_neighbor_angle=max_neighbor_angle)

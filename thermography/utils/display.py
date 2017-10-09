@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from scipy import interpolate
 
 __all__ = ["draw_intersections", "draw_motion", "draw_rectangles", "draw_segments",
            "random_color"]
