@@ -5,7 +5,6 @@ from thermography.detection import *
 import cv2
 import numpy as np
 import os
-import progressbar
 
 if __name__ == '__main__':
 
@@ -26,15 +25,21 @@ if __name__ == '__main__':
     IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input and preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=0, end_frame=1200)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1500, end_frame=1720)
     # video_loader.show_video(fps=25)
 
-    bar = progressbar.ProgressBar(maxval=video_loader.num_frames,
-                                  widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
-    bar.start()
+    # Global map of modules.
+    module_map = tg.ModuleMap()
 
-    for i, frame in enumerate(video_loader.frames):
-        bar.update(i)
+    motion_detector = MotionDetector(scaling=0.25)
+
+    # cap = cv2.VideoCapture(1)
+    # frame_id = -1
+    # while True:
+    #     frame_id += 1
+    #     ret, frame = cap.read()
+
+    for frame_id, frame in enumerate(video_loader.frames):
         frame = tg.utils.rotate_image(frame, np.pi * 0)
         distorted_image = frame.copy()
         undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=camera.camera_matrix,
@@ -48,9 +53,9 @@ if __name__ == '__main__':
 
         # Edge detection.
         edge_detector_params = EdgeDetectorParams()
-        edge_detector_params.dilation_steps = 2
-        edge_detector_params.hysteresis_min_thresh = 30
-        edge_detector_params.hysteresis_max_thresh = 100
+        edge_detector_params.dilation_steps = 4
+        edge_detector_params.hysteresis_min_thresh = 60
+        edge_detector_params.hysteresis_max_thresh = 180
         edge_detector = EdgeDetector(input_image=gray, params=edge_detector_params)
         edge_detector.detect()
 
@@ -72,8 +77,8 @@ if __name__ == '__main__':
 
         unfiltered_segments = segment_clusterer.cluster_list.copy()
 
-        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 90,
-                                         max_merging_angle=10.0 / 180 * np.pi, max_endpoint_distance=10.0)
+        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 20,
+                                         max_merging_angle=np.pi / 180 * 10, max_endpoint_distance=20.0)
 
         filtered_segments = segment_clusterer.cluster_list.copy()
 
@@ -87,9 +92,16 @@ if __name__ == '__main__':
         # Detect the rectangles associated to the intersections.
         rectangle_detector_params = RectangleDetectorParams()
         rectangle_detector_params.aspect_ratio = modules.aspect_ratio
+        rectangle_detector_params.aspect_ratio_relative_deviation = 0.5
         rectangle_detector = RectangleDetector(input_intersections=intersection_detector.cluster_cluster_intersections,
                                                params=rectangle_detector_params)
         rectangle_detector.detect()
+
+        # Motion estimate.
+        mean_motion = motion_detector.motion_estimate(gray)
+
+        # Add the detected rectangles to the global map.
+        # module_map.insert(rectangle_detector.rectangles, frame_id, mean_motion)
 
         # Displaying.
         base_image = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
@@ -98,11 +110,25 @@ if __name__ == '__main__':
                                windows_name="Unfiltered segments", render_indices=False)
         tg.utils.draw_segments(segments=filtered_segments, base_image=base_image.copy(),
                                windows_name="Filtered segments")
-        tg.utils.draw_intersections(intersections=intersection_detector.raw_intersections, base_image=base_image.copy(),
-                                    windows_name="Intersections")
+        tg.utils.draw_intersections(intersections=intersection_detector.raw_intersections,
+                                    base_image=base_image.copy(), windows_name="Intersections")
         tg.utils.draw_rectangles(rectangles=rectangle_detector.rectangles, base_image=base_image.copy(),
                                  windows_name="Detected rectangles")
+        tg.utils.draw_motion(flow=motion_detector.flow, base_image=motion_detector.last_frame,
+                             windows_name="Motion estimate")
         cv2.imshow("Canny edges", edge_detector.edge_image)
+
+        global_map = base_image.copy()
+        for rect_id, rectangle in module_map.global_rectangle_map.items():
+            rect = rectangle.last_rectangle
+            rect -= np.int32(rectangle.cumulated_motion)
+            color = (0, 0, 255)
+            cv2.polylines(global_map, np.int32([rect]), True, color, 2, cv2.LINE_4)
+            center = np.mean(rect, axis=0)
+            cv2.putText(global_map, str(rect_id), (int(center[0]), int(center[1])), cv2.FONT_HERSHEY_PLAIN, 1,
+                        (255, 255, 255), 1)
+
+        cv2.imshow("Global map", global_map)
 
         cv2.waitKey(1)
 
@@ -111,3 +137,5 @@ if __name__ == '__main__':
         # for rectangle in rectangle_detector.rectangles:
         #     M = cv2.getPerspectiveTransform(np.float32(rectangle), default_rect)
         #     extracted = cv2.warpPerspective(rectangle, M, (640, 512))
+
+    print(module_map)

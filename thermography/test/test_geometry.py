@@ -1,3 +1,4 @@
+import collections
 import numpy as np
 import unittest
 
@@ -22,7 +23,10 @@ class TestGeometryUtils(unittest.TestCase):
                          msg="Compared lists are not of the same size. Give sizes: first = {}, second = {}".format(
                              len(first), len(second)))
         for f, s in zip(first, second):
-            self.assertAlmostEqual(f, s, places=places, msg=msg)
+            if isinstance(f, collections.Iterable):
+                self.assertListAlmostEqual(f, s, places, msg)
+            else:
+                self.assertAlmostEqual(f, s, places=places, msg=msg)
 
     def test_segment_angle(self):
         """
@@ -141,19 +145,36 @@ class TestGeometryUtils(unittest.TestCase):
         """
         Tests the 'line_estimate' function which computes a line estimate from two segments.
         """
+
+        # Horizontal line estimate.
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([1, 0, 2, 0])
-        self.assertListAlmostEqual(line_estimate(segment1, segment2), (0, 0))
-        self.assertListAlmostEqual(line_estimate(segment2, segment1), (0, 0))
+        self.assertListAlmostEqual(line_estimate(segment1, segment2), ((0, 0), False))
+        self.assertListAlmostEqual(line_estimate(segment2, segment1), ((0, 0), False))
 
         segment3 = np.array([0, 0, 1, 0.001])
-        self.assertListAlmostEqual(line_estimate(segment1, segment3), (0, 0), places=3)
-        self.assertListAlmostEqual(line_estimate(segment3, segment1), (0, 0), places=3)
+        self.assertListAlmostEqual(line_estimate(segment1, segment3), ((0, 0), False), places=3)
+        self.assertListAlmostEqual(line_estimate(segment3, segment1), ((0, 0), False), places=3)
 
         segment4 = np.array([0, 0, 1, 1])
         segment5 = np.array([0.5, 0.5001, 1.5, 1.4999])
-        self.assertListAlmostEqual(line_estimate(segment4, segment5), (1, 0), places=3)
-        self.assertListAlmostEqual(line_estimate(segment5, segment4), (1, 0), places=3)
+        self.assertListAlmostEqual(line_estimate(segment4, segment5), ((1, 0), False), places=3)
+        self.assertListAlmostEqual(line_estimate(segment5, segment4), ((1, 0), False), places=3)
+
+        # Vertical line estimate.
+        segment1 = np.array([0, 0, 0, 1])
+        segment2 = np.array([0, 1, 0, 2])
+        self.assertListAlmostEqual(line_estimate(segment1, segment2), ((0, 0), True))
+        self.assertListAlmostEqual(line_estimate(segment2, segment1), ((0, 0), True))
+
+        segment3 = np.array([0, 0, 0.001, 1])
+        self.assertListAlmostEqual(line_estimate(segment1, segment3), ((0, 0), True), places=3)
+        self.assertListAlmostEqual(line_estimate(segment3, segment1), ((0, 0), True), places=3)
+
+        segment4 = np.array([0, 0, 1, 1])
+        segment5 = np.array([0.5001, 0.5, 1.4999, 1.5])
+        self.assertListAlmostEqual(line_estimate(segment4, segment5), ((1, 0), True), places=3)
+        self.assertListAlmostEqual(line_estimate(segment5, segment4), ((1, 0), True), places=3)
 
     def test_merge_segments(self):
         """
@@ -199,7 +220,7 @@ class TestGeometryUtils(unittest.TestCase):
         merged_segment = merge_segments([segment4, segment5])
         merged_segment = sort_points(merged_segment)
 
-        self.assertListAlmostEqual(merged_segment, [0, 0.16666666, 0.1, 2.33333333])
+        self.assertListAlmostEqual(merged_segment, [-0.00769, 0, 0.10769, 2.5], places=4)
 
     def test_point_line_distance(self):
         """
@@ -207,22 +228,53 @@ class TestGeometryUtils(unittest.TestCase):
         """
         slope = 1
         intercept = 0
+        vertical = False
         point1 = np.array([0, 0])
         point2 = np.array([1.5, 1.5])
         point3 = np.array([-0.5, -0.5])
-        self.assertAlmostEqual(point_line_distance(point1, slope, intercept), 0.0)
-        self.assertAlmostEqual(point_line_distance(point2, slope, intercept), 0.0)
-        self.assertAlmostEqual(point_line_distance(point3, slope, intercept), 0.0)
+        self.assertAlmostEqual(point_line_distance(point1, slope, intercept, vertical), 0.0)
+        self.assertAlmostEqual(point_line_distance(point2, slope, intercept, vertical), 0.0)
+        self.assertAlmostEqual(point_line_distance(point3, slope, intercept, vertical), 0.0)
 
         point4 = np.array([0, 1])
-        self.assertAlmostEqual(point_line_distance(point4, slope, intercept), np.sqrt(2) * 0.5)
+        self.assertAlmostEqual(point_line_distance(point4, slope, intercept, vertical), np.sqrt(2) * 0.5)
 
         slope = 0.5
         intercept = 1
-        self.assertAlmostEqual(point_line_distance(point1, slope, intercept), 0.894427190)
-        self.assertAlmostEqual(point_line_distance(point2, slope, intercept), 0.223606797)
-        self.assertAlmostEqual(point_line_distance(point3, slope, intercept), 1.118033989)
-        self.assertAlmostEqual(point_line_distance(point4, slope, intercept), 0.0)
+        self.assertAlmostEqual(point_line_distance(point1, slope, intercept, vertical), 0.894427190)
+        self.assertAlmostEqual(point_line_distance(point2, slope, intercept, vertical), 0.223606797)
+        self.assertAlmostEqual(point_line_distance(point3, slope, intercept, vertical), 1.118033989)
+        self.assertAlmostEqual(point_line_distance(point4, slope, intercept, vertical), 0.0)
+
+        slope = 1
+        intercept = 0
+        vertical = True
+        point1 = np.array([0, 0])
+        point2 = np.array([1.5, 1.5])
+        point3 = np.array([-0.5, -0.5])
+        self.assertAlmostEqual(point_line_distance(point1, slope, intercept, vertical), 0.0)
+        self.assertAlmostEqual(point_line_distance(point2, slope, intercept, vertical), 0.0)
+        self.assertAlmostEqual(point_line_distance(point3, slope, intercept, vertical), 0.0)
+
+        point4 = np.array([0, 1])
+        self.assertAlmostEqual(point_line_distance(point4, slope, intercept, vertical), np.sqrt(2) * 0.5)
+
+        slope = 0.5
+        intercept = 1
+        self.assertAlmostEqual(point_line_distance(point1, slope, intercept, vertical), 0.894427190)
+        self.assertAlmostEqual(point_line_distance(point2, slope, intercept, vertical), 0.223606797)
+        self.assertAlmostEqual(point_line_distance(point3, slope, intercept, vertical), 1.118033989)
+        self.assertAlmostEqual(point_line_distance(point4, slope, intercept, vertical), 1.341640786)
+
+    def test_rectangle_contains(self):
+        """
+        Tests the 'rectangle_contains' function which computes whether a point is contained by a rectangle or not.
+        """
+        rectangle = np.array([[0, 0], [10, 0], [10, 10], [0, 10]])
+        self.assertTrue(rectangle_contains(rectangle, np.array([5, 5])))
+        self.assertFalse(rectangle_contains(rectangle, np.array([15, 5])))
+        self.assertTrue(rectangle_contains(rectangle, np.array([10, 5])))
+        self.assertTrue(rectangle_contains(rectangle, np.array([10, 10])))
 
     def test_segments_collinear(self):
         """
@@ -291,7 +343,7 @@ class TestGeometryUtils(unittest.TestCase):
         """
         segments = np.array([[0, 0, 1, 0], [0, 1, 1, 1], [0, 1, 1, 1.1], [0, -1, 1, -0.5]])
         sorted_segments_indices = sort_segments(segments)
-        self.assertListEqual([*sorted_segments_indices] , [3, 0, 1, 2])
+        self.assertListEqual([*sorted_segments_indices], [3, 0, 1, 2])
 
 
 if __name__ == '__main__':
