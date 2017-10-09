@@ -3,6 +3,7 @@ import numpy as np
 
 __all__ = ["RectangleDetector", "RectangleDetectorParams"]
 
+
 class RectangleDetectorParams:
     def __init__(self):
         self.aspect_ratio = 1.0
@@ -38,7 +39,8 @@ class RectangleDetector:
 
     def __detect_rectangles_between_clusters(self, cluster_index_i: int, cluster_index_j: int):
         intersections_i_j = self.intersections[cluster_index_i, cluster_index_j]
-        rectangles = []
+        rectangles_between_cluster_i_j = []
+        # Iterate over all segments in cluster i, and all intersections between that segment and cluster j.
         for segment_index_i, intersections_with_i in intersections_i_j.items():
             if segment_index_i + 1 not in intersections_i_j:
                 continue
@@ -54,7 +56,8 @@ class RectangleDetector:
                     coord4 = intersections_with_i_plus[segment_index_j + 1]
                     rectangle = np.array([coord1, coord2, coord4, coord3])
                     if self.fulfills_ratio(rectangle, self.params.aspect_ratio,
-                                           self.params.aspect_ratio_relative_deviation) and area(rectangle) >= self.params.min_area:
-                        rectangles.append(rectangle)
+                                           self.params.aspect_ratio_relative_deviation) and area(
+                        rectangle) >= self.params.min_area:
+                        rectangles_between_cluster_i_j.append(rectangle)
 
-        self.rectangles.extend(rectangles)
+        self.rectangles.extend(rectangles_between_cluster_i_j)

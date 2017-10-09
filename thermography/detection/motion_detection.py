@@ -19,26 +19,26 @@ class MotionDetector:
         """
         self.scaling = scaling
 
-        self.frame = None
+        self.last_frame = None
         self.flow = None
 
     def motion_estimate(self, frame: np.ndarray) -> np.ndarray:
         """
-        Estimates the motion between the frame passed as parameter and the one stored in self.__last_frame.
+        Estimates the motion between the frame passed as parameter and the one stored in self.last_frame.
 
         :param frame: New frame of the sequence.
-        :return: The estimation of the mean motion between self.__last_frame and the frame passed as argument. The motion estimate is expressed in pixel units.
+        :return: The estimation of the mean motion between self.last_frame and the frame passed as argument. The motion estimate is expressed in pixel units.
         """
 
         frame = scale_image(frame, self.scaling)
-        if self.frame is None:
-            self.frame = frame.copy()
+        if self.last_frame is None:
+            self.last_frame = frame.copy()
             return np.array([0, 0])
 
-        self.flow = cv2.calcOpticalFlowFarneback(self.frame, frame, 1.0, 0.5, 5, 15, 3, 5, 1.1,
+        self.flow = cv2.calcOpticalFlowFarneback(self.last_frame, frame, 1.0, 0.5, 5, 15, 3, 5, 1.1,
                                                  cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
         mean_flow = np.mean(self.flow, axis=(0, 1))
 
-        self.frame = frame.copy()
+        self.last_frame = frame.copy()
 
         return -(mean_flow / self.scaling)
