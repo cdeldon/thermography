@@ -25,13 +25,13 @@ if __name__ == '__main__':
     IN_FILE_NAME = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     # Input and preprocessing.
-    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=1500, end_frame=1720)
+    video_loader = VideoLoader(video_path=IN_FILE_NAME, start_frame=0, end_frame=2000)
     # video_loader.show_video(fps=25)
 
     # Global map of modules.
     module_map = tg.ModuleMap()
 
-    motion_detector = MotionDetector(scaling=0.25)
+    motion_detector = MotionDetector(scaling=0.15)
 
     # cap = cv2.VideoCapture(1)
     # frame_id = -1
@@ -54,15 +54,15 @@ if __name__ == '__main__':
         # Edge detection.
         edge_detector_params = EdgeDetectorParams()
         edge_detector_params.dilation_steps = 4
-        edge_detector_params.hysteresis_min_thresh = 60
-        edge_detector_params.hysteresis_max_thresh = 120
+        edge_detector_params.hysteresis_min_thresh = 70
+        edge_detector_params.hysteresis_max_thresh = 130
         edge_detector = EdgeDetector(input_image=gray, params=edge_detector_params)
         edge_detector.detect()
 
         # Segment detection.
         segment_detector_params = SegmentDetectorParams()
         segment_detector_params.min_line_length = 50
-        segment_detector_params.min_num_votes = 50
+        segment_detector_params.min_num_votes = 60
         segment_detector_params.max_line_gap = 150
         segment_detector = SegmentDetector(input_image=edge_detector.edge_image, params=segment_detector_params)
         segment_detector.detect()
@@ -101,17 +101,17 @@ if __name__ == '__main__':
         mean_motion = motion_detector.motion_estimate(gray)
 
         # Add the detected rectangles to the global map.
-        # module_map.insert(rectangle_detector.rectangles, frame_id, mean_motion)
+        module_map.insert(rectangle_detector.rectangles, frame_id, mean_motion)
 
         # Displaying.
         base_image = cv2.cvtColor(src=gray, code=cv2.COLOR_GRAY2BGR)
         base_image = scaled_image
-        tg.utils.draw_segments(segments=unfiltered_segments, base_image=base_image.copy(),
-                               windows_name="Unfiltered segments", render_indices=False)
-        tg.utils.draw_segments(segments=filtered_segments, base_image=base_image.copy(),
-                               windows_name="Filtered segments")
-        tg.utils.draw_intersections(intersections=intersection_detector.raw_intersections,
-                                    base_image=base_image.copy(), windows_name="Intersections")
+        # tg.utils.draw_segments(segments=unfiltered_segments, base_image=base_image.copy(),
+        #                        windows_name="Unfiltered segments", render_indices=False)
+        # tg.utils.draw_segments(segments=filtered_segments, base_image=base_image.copy(),
+        #                        windows_name="Filtered segments")
+        # tg.utils.draw_intersections(intersections=intersection_detector.raw_intersections,
+        #                             base_image=base_image.copy(), windows_name="Intersections")
         tg.utils.draw_rectangles(rectangles=rectangle_detector.rectangles, base_image=base_image.copy(),
                                  windows_name="Detected rectangles")
         tg.utils.draw_motion(flow=motion_detector.flow, base_image=motion_detector.last_frame,
@@ -119,14 +119,19 @@ if __name__ == '__main__':
         cv2.imshow("Canny edges", edge_detector.edge_image)
 
         global_map = base_image.copy()
-        for rect_id, rectangle in module_map.global_rectangle_map.items():
-            rect = rectangle.last_rectangle
-            rect -= np.int32(rectangle.cumulated_motion)
-            color = (0, 0, 255)
-            cv2.polylines(global_map, np.int32([rect]), True, color, 2, cv2.LINE_4)
-            center = np.mean(rect, axis=0)
-            cv2.putText(global_map, str(rect_id), (int(center[0]), int(center[1])), cv2.FONT_HERSHEY_PLAIN, 1,
-                        (255, 255, 255), 1)
+        for rect_id, rectangle in module_map.global_module_map.items():
+            rect_shift = rectangle.last_rectangle - np.int32(rectangle.cumulated_motion)
+            if rectangle.frame_id_history[-1] == frame_id:
+                color = (0, 0, 255)
+                thickness = 2
+            else:
+                color = (255, 0, 0)
+                thickness = 1
+            cv2.polylines(global_map, np.int32([rect_shift]), True, color, thickness, cv2.LINE_AA)
+            center = np.mean(rect_shift, axis=0)
+            if thickness > 1:
+                cv2.putText(global_map, str(rect_id), (int(center[0]), int(center[1])), cv2.FONT_HERSHEY_PLAIN, 1,
+                            (255, 255, 255), 1)
 
         cv2.imshow("Global map", global_map)
 
