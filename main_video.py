@@ -44,7 +44,7 @@ if __name__ == '__main__':
         distorted_image = frame.copy()
         undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=camera.camera_matrix,
                                           distCoeffs=camera.distortion_coeff)
-
+        # undistorted_image = distorted_image
         scale_factor = 1.0
         scaled_image = tg.utils.scale_image(undistorted_image, scale_factor)
 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         edge_detector_params = EdgeDetectorParams()
         edge_detector_params.dilation_steps = 4
         edge_detector_params.hysteresis_min_thresh = 60
-        edge_detector_params.hysteresis_max_thresh = 180
+        edge_detector_params.hysteresis_max_thresh = 120
         edge_detector = EdgeDetector(input_image=gray, params=edge_detector_params)
         edge_detector.detect()
 
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         unfiltered_segments = segment_clusterer.cluster_list.copy()
 
         segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 20,
-                                         max_merging_angle=np.pi / 180 * 10, max_endpoint_distance=20.0)
+                                         max_merging_angle=np.pi / 180 * 10, max_endpoint_distance=10.0)
 
         filtered_segments = segment_clusterer.cluster_list.copy()
 
@@ -92,7 +92,7 @@ if __name__ == '__main__':
         # Detect the rectangles associated to the intersections.
         rectangle_detector_params = RectangleDetectorParams()
         rectangle_detector_params.aspect_ratio = modules.aspect_ratio
-        rectangle_detector_params.aspect_ratio_relative_deviation = 0.5
+        rectangle_detector_params.aspect_ratio_relative_deviation = 0.35
         rectangle_detector = RectangleDetector(input_intersections=intersection_detector.cluster_cluster_intersections,
                                                params=rectangle_detector_params)
         rectangle_detector.detect()

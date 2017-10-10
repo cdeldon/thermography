@@ -44,7 +44,7 @@ def draw_motion(flow: np.ndarray, base_image: np.ndarray, windows_name: str, dra
         y, x = np.mgrid[step_y / 2:h:step_y, step_x / 2:w:step_x].reshape(2, -1)
         x = x.astype(int)
         y = y.astype(int)
-        fx, fy = -flow[y, x].T * 5
+        fx, fy = flow[y, x].T * 5
         lines = np.vstack([x, y, x + fx, y + fy]).T.reshape(-1, 2, 2)
         lines = np.int32(lines + 0.5)
 
@@ -53,8 +53,8 @@ def draw_motion(flow: np.ndarray, base_image: np.ndarray, windows_name: str, dra
             cv2.circle(base_image, (x1, y1), 1, (0, 255, 0), cv2.FILLED)
 
         if draw_mean_motion:
-            mean_flow_x = np.mean(fx) * 5
-            mean_flow_y = np.mean(fy) * 5
+            mean_flow_x = -np.mean(fx) * 5
+            mean_flow_y = -np.mean(fy) * 5
             center = (np.array([w, h]) * 0.5 + 0.5).astype(int)
             cv2.arrowedLine(base_image, (center[0], center[1]),
                             (int(mean_flow_x + center[0]), int(mean_flow_y + center[1])),
