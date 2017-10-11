@@ -6,11 +6,11 @@ __all__ = ["EdgeDetectorParams", "EdgeDetector"]
 
 class EdgeDetectorParams:
     def __init__(self):
-        self.hysteresis_min_thresh = 40
-        self.hysteresis_max_thresh = 160
+        self.hysteresis_min_thresh = 70
+        self.hysteresis_max_thresh = 130
 
         self.kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
-        self.dilation_steps = 0
+        self.dilation_steps = 4
 
 
 class EdgeDetector:

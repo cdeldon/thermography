@@ -11,11 +11,11 @@ class SegmentDetectorParams:
         # Angular resolution in radians of the Hough grid.
         self.d_theta = np.pi / 180
         # Minimum number of votes (intersections in Hough grid cell).
-        self.min_num_votes = 15
+        self.min_num_votes = 60
         # Minimum number of pixels making up a line.
         self.min_line_length = 50
         # Maximum gap in pixels between connectible line segments.
-        self.max_line_gap = 20
+        self.max_line_gap = 150
         # Number of pixels to extend each segment on each side.
         self.extension_pixels = 10
 
