@@ -54,22 +54,24 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         super(self.__class__, self).__init__()
         self.setupUi(self)
 
-        self.thermo_thread = None
+        self.thermo_thread = ThermoGuiThread()
 
         self.load_video_button.clicked.connect(self.load_video_from_file)
 
+        self.reset_button.clicked.connect(self.reset_app)
         self.play_video_button.clicked.connect(self.play_all_frames)
         self.stop_video_button.clicked.connect(self.stop_all_frames)
         self.image_scaling_slider.valueChanged.connect(self.update_image_scaling)
 
+    def reset_app(self):
+        self.thermo_thread.terminate()
+        self.thermo_thread = ThermoGuiThread()
+        self.image_scaling_slider.setValue(10)
+
     def load_video_from_file(self):
         video_file_name = QtGui.QFileDialog.getOpenFileName(caption="Select a video",
                                                             filter="Videos (*.mov *.mp4 *.avi)")
-        if self.thermo_thread is not None:
-            self.thermo_thread.terminate()
-            del self.thermo_thread
 
-        self.thermo_thread = ThermoGuiThread()
         self.thermo_thread.input_file_name = video_file_name
 
         start_frame = self.video_from_index.value()
@@ -79,7 +81,7 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.thermo_thread.load_video(start_frame=start_frame, end_frame=end_frame)
 
     def play_all_frames(self):
-        self.thermo_thread.app.image_scaling = self.image_scaling_slider.value() * 0.01
+        self.update_image_scaling()
         self.image_scaling_label.setText("Scaling: {}".format(self.thermo_thread.app.image_scaling))
         self.play_video_button.setEnabled(False)
         self.stop_video_button.setEnabled(True)
