@@ -184,30 +184,8 @@ class SegmentClusterer:
 
             self.cluster_list[cluster_index] = np.array(merged_segments)
 
-    def clean_angle_consistency(self, max_neighbor_angle: float):
-        """
-        Removes the segments whose angle differs more than the passed threshold to the mean angle of its two neighbors.
-
-        :param max_neighbor_angle: Maximal angle allowed between each segments and its two neighbors. If their angle differs more than this parameter, the central segment is discarded.
-        """
-        for cluster_index, cluster in enumerate(self.cluster_list):
-            num_segments = len(cluster)
-            invalid_indices = []
-            for segment_index_i in range(0, num_segments):
-                segment_i_min_1 = cluster[((segment_index_i - 1) + num_segments) % num_segments]
-                segment_i = cluster[segment_index_i]
-                segment_i_plus_1 = cluster[(segment_index_i + 1) % num_segments]
-                angle_i_min_1 = tg.utils.angle(segment_i_min_1[0:2], segment_i_min_1[2:4])
-                angle_i = tg.utils.angle(segment_i[0:2], segment_i[2:4])
-                angle_i_plus_1 = tg.utils.angle(segment_i_plus_1[0:2], segment_i_plus_1[2:4])
-                mean_angle_neighbors = np.mean([angle_i_min_1, angle_i_plus_1])
-                if tg.utils.angle_diff(angle_i, mean_angle_neighbors) > max_neighbor_angle:
-                    invalid_indices.append(segment_index_i)
-            self.cluster_list[cluster_index] = np.delete(cluster, invalid_indices, axis=0)
-
     def clean_clusters(self, mean_angles: np.ndarray, max_angle_variation_mean: float = np.pi / 180 * 20,
-                       max_merging_angle: float = 5.0 / 180 * np.pi, max_endpoint_distance: float = 50,
-                       max_neighbor_angle=np.pi / 180 * 3):
+                       max_merging_angle: float = 5.0 / 180 * np.pi, max_endpoint_distance: float = 50):
         """
         Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging
         almost collinear segments into a single segment.
@@ -216,7 +194,6 @@ class SegmentClusterer:
         :param max_angle_variation_mean: Maximal allowed angle between each segment and corresponding cluster mean angle.
         :param max_merging_angle: Maximal allowed angle between two segments in order to merge them into a single one.
         :param max_endpoint_distance: Maximal summed distance between segments endpoints and fitted line for merging segments.
-        :param max_neighbor_angle: Maximal angle allowed between each segments and its two neighbors. If their angle differs more than this parameter, the central segment is discarded.
         """
 
         # Reorder the segments inside the clusters.
@@ -227,4 +204,3 @@ class SegmentClusterer:
 
         self.clean_clusters_angle(mean_angles=mean_angles, max_angle_variation_mean=max_angle_variation_mean)
         self.merge_collinear_segments(max_merging_angle=max_merging_angle, max_endpoint_distance=max_endpoint_distance)
-        self.clean_angle_consistency(max_neighbor_angle=max_neighbor_angle)

@@ -37,6 +37,7 @@ class MotionDetector:
 
         self.flow = cv2.calcOpticalFlowFarneback(self.last_frame, frame, 1.0, 0.5, 5, 15, 3, 5, 1.1,
                                                  cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
+
         mean_flow = np.mean(self.flow, axis=(0, 1))
 
         self.last_frame = frame.copy()
