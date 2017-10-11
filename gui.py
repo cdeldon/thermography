@@ -1,52 +1,50 @@
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QImage, QPixmap
 from PyQt4.QtCore import QThread, SIGNAL
-import sys, cv2
+import sys, cv2, os
 import numpy as np
 from gui import design
+import thermography as tg
 from thermography.io import VideoLoader
 from thermography.utils.images import scale_image
 
 
-class VideoLoaderThread(QThread):
-    numpy_signal = QtCore.pyqtSignal(np.ndarray)
-
-    def __init__(self, video_file_name, start_frame, end_frame):
-        super(VideoLoaderThread, self).__init__()
-        self.video_file_name = video_file_name
-        self.start_frame = start_frame
-        self.end_frame = end_frame
-
-    def run(self):
-        video_loader = VideoLoader(video_path=self.video_file_name, start_frame=self.start_frame,
-                                   end_frame=self.end_frame)
-        for frame_index, frame in enumerate(video_loader.frames):
-            self.numpy_signal.emit(frame)
-
-
-class ThermographyThread(QThread):
-    size_signal = QtCore.pyqtSignal(tuple)
-    finish_signal = QtCore.pyqtSignal(bool)
+class ThermoGuiThread(QThread):
     iteration_signal = QtCore.pyqtSignal(int)
+    finish_signal = QtCore.pyqtSignal(bool)
+    last_frame_signal = QtCore.pyqtSignal(np.ndarray)
 
-    def __init__(self, frames, image_size: tuple = (640, 512)):
-        super(ThermographyThread, self).__init__()
-        self.frames = frames
-        self.image_size = image_size
-        self.paused = False
+    def __init__(self):
+        super(ThermoGuiThread, self).__init__()
+
+        self.camera_param_file_name = None
+        self.module_param_file_name = None
+        self.input_file_name = None
+
+        self.load_default_paths()
+
+        self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name,
+                          module_param_file=self.module_param_file_name)
+
+    def load_default_paths(self):
+        # Load camera parameters.
+        settings_dir = tg.settings.get_settings_dir()
+
+        self.camera_param_file_name = os.path.join(settings_dir, "camera_parameters.json")
+        self.module_param_file_name = os.path.join(settings_dir, "module_parameters.json")
+        tg.settings.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
+        self.input_file_name = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
+
+    def load_video(self, start_frame: int, end_frame: int):
+        self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name,
+                          module_param_file=self.module_param_file_name)
+        self.app.load_video(start_frame=start_frame, end_frame=end_frame)
 
     def run(self):
-        for frame_id, frame in enumerate(self.frames):
-            scaling_factor = np.mean([float(self.image_size[1 - i]) / frame.shape[i] for i in range(2)])
-            frame_scale = scale_image(frame, scaling_factor)
-            cv2.putText(frame_scale, str(frame_id), (20, 50), cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 2,
-                        cv2.LINE_AA)
-            image = QImage(frame_scale.data, frame_scale.shape[1], frame_scale.shape[0], frame_scale.strides[0],
-                           QImage.Format_RGB888)
-            self.emit(SIGNAL('newImage(QImage)'), image)
-            self.size_signal.emit((frame_scale.shape[1], frame_scale.shape[0]))
+        for frame_id, frame in enumerate(self.app.frames):
+            self.app.step(frame_id, frame)
+            self.last_frame_signal.emit(self.app.last_scaled_frame_rgb)
             self.iteration_signal.emit(frame_id)
-            self.msleep(200)
 
         self.finish_signal.emit(True)
 
@@ -56,59 +54,67 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         super(self.__class__, self).__init__()
         self.setupUi(self)
 
-        self.frames = []
+        self.thermo_thread = None
 
-        self.video_loader_thread = None
         self.load_video_button.clicked.connect(self.load_video_from_file)
 
-        self.video_player_thread = None
         self.play_video_button.clicked.connect(self.play_all_frames)
         self.stop_video_button.clicked.connect(self.stop_all_frames)
+        self.image_scaling_slider.valueChanged.connect(self.update_image_scaling)
 
     def load_video_from_file(self):
-        self.frames = []
         video_file_name = QtGui.QFileDialog.getOpenFileName(caption="Select a video",
                                                             filter="Videos (*.mov *.mp4 *.avi)")
+        if self.thermo_thread is not None:
+            self.thermo_thread.terminate()
+            del self.thermo_thread
+
+        self.thermo_thread = ThermoGuiThread()
+        self.thermo_thread.input_file_name = video_file_name
+
         start_frame = self.video_from_index.value()
         end_frame = self.video_to_index.value()
         if end_frame == -1:
             end_frame = None
-        self.video_loader_thread = VideoLoaderThread(video_file_name, start_frame, end_frame)
-        self.video_loader_thread.numpy_signal.connect(self.add_frame)
-        self.video_loader_thread.start()
+        self.thermo_thread.load_video(start_frame=start_frame, end_frame=end_frame)
 
     def play_all_frames(self):
+        self.thermo_thread.app.image_scaling = self.image_scaling_slider.value() * 0.01
+        self.image_scaling_label.setText("Scaling: {}".format(self.thermo_thread.app.image_scaling))
         self.play_video_button.setEnabled(False)
         self.stop_video_button.setEnabled(True)
-        self.thermography_thread = ThermographyThread(self.frames)
-        self.video_view.connect(self.thermography_thread, SIGNAL('newImage(QImage)'), self.display_image)
-        self.canny_edges_video.connect(self.thermography_thread, SIGNAL('newImage(QImage'), self.display_image)
+
+        self.thermo_thread.last_frame_signal.connect(self.display_image)
 
         self.global_progress_bar.setMinimum(0)
-        self.global_progress_bar.setMaximum(len(self.frames))
-        self.thermography_thread.iteration_signal.connect(self.update_global_progress_bar)
+        self.global_progress_bar.setMaximum(len(self.thermo_thread.app.frames)-1)
+        self.thermo_thread.iteration_signal.connect(self.update_global_progress_bar)
 
-        self.thermography_thread.size_signal.connect(self.resize_video_view)
-        self.thermography_thread.finish_signal.connect(self.video_finished)
-        self.thermography_thread.start()
+        self.thermo_thread.finish_signal.connect(self.video_finished)
+        self.thermo_thread.start()
 
     def stop_all_frames(self):
-        self.thermography_thread.terminate()
+        self.thermo_thread.terminate()
         self.video_finished(True)
-
-    def add_frame(self, frame):
-        self.frames.append(frame)
 
     def update_global_progress_bar(self, frame_index: int):
         self.global_progress_bar.setValue(frame_index)
 
-    def display_image(self, image):
+    def update_image_scaling(self):
+        image_scaling = self.image_scaling_slider.value() * 0.1
+        if self.thermo_thread is not None:
+            self.thermo_thread.app.image_scaling = image_scaling
+        self.image_scaling_label.setText("Scaling: {:0.2f}".format(image_scaling))
+
+    def display_image(self, frame: np.ndarray):
+        self.resize_video_view(frame.shape)
+        image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(image)
         self.video_view.setPixmap(pixmap)
-        self.canny_edges_video.setPixmap(pixmap)
 
     def resize_video_view(self, size):
-        self.video_view.setFixedSize(size[0], size[1])
+        print(size)
+        self.video_view.setFixedSize(size[1], size[0])
 
     def video_finished(self, finished: bool):
         self.play_video_button.setEnabled(finished)

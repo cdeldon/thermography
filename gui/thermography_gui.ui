@@ -69,7 +69,7 @@
           <cursorShape>CrossCursor</cursorShape>
          </property>
          <property name="mouseTracking">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="autoFillBackground">
           <bool>true</bool>
@@ -134,55 +134,6 @@
          </property>
          <property name="format">
           <string>%p%</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QFrame" name="processed_video_panel">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QLabel" name="canny_edges_video">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="cursor">
-          <cursorShape>CrossCursor</cursorShape>
-         </property>
-         <property name="autoFillBackground">
-          <bool>true</bool>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::Box</enum>
-         </property>
-         <property name="midLineWidth">
-          <number>0</number>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Canny Edges&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="wordWrap">
-          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -313,6 +264,61 @@
            </property>
            <property name="checked">
             <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="image_scaling_panel">
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="image_scaling_label">
+           <property name="text">
+            <string>Scaling: 1.0</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="image_scaling_slider">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>19</number>
+           </property>
+           <property name="singleStep">
+            <number>0</number>
+           </property>
+           <property name="pageStep">
+            <number>1</number>
+           </property>
+           <property name="value">
+            <number>10</number>
+           </property>
+           <property name="sliderPosition">
+            <number>10</number>
+           </property>
+           <property name="tracking">
+            <bool>true</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::TicksAbove</enum>
+           </property>
+           <property name="tickInterval">
+            <number>2</number>
            </property>
           </widget>
          </item>

@@ -40,6 +40,7 @@ class ThermoApp:
 
         # Objects referring to the items computed during the last frame.
         self.last_input_frame = None
+        self.last_scaled_frame_rgb = None
         self.last_scaled_frame = None
         self.last_edges_frame = None
         self.last_raw_intersections = None
@@ -63,6 +64,10 @@ class ThermoApp:
 
         # Load the camera and module parameters.
         self.__load_params()
+
+    @property
+    def frames(self):
+        return self.video_loader.frames
 
     def __load_params(self):
         """
@@ -122,66 +127,74 @@ class ThermoApp:
         rectangle_detector.detect()
         self.last_rectangles = rectangle_detector.rectangles
 
+    def step(self, frame_id, frame):
+        print("Using image scaling: {}".format(self.image_scaling))
+        self.last_input_frame = frame
+        rotated_frame = rotate_image(frame, self.image_rotating_angle)
+        distorted_image = rotated_frame
+        if self.should_undistort_image:
+            undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=self.camera.camera_matrix,
+                                              distCoeffs=self.camera.distortion_coeff)
+        else:
+            undistorted_image = distorted_image
+
+        self.last_scaled_frame_rgb = scale_image(undistorted_image, self.image_scaling)
+
+        gray = cv2.cvtColor(src=self.last_scaled_frame_rgb, code=cv2.COLOR_BGR2GRAY)
+        gray = cv2.blur(gray, (self.gaussian_blur, self.gaussian_blur))
+
+        self.last_scaled_frame = gray
+
+        self.detect_edges()
+        self.detect_segments()
+        if len(self.last_segments) < 3:
+            return False
+
+        self.cluster_segments()
+        self.detect_intersections()
+        self.detect_rectangles()
+
+        # Motion estimate.
+        self.last_mean_motion = self.motion_detector.motion_estimate(self.last_scaled_frame)
+
+        # Add the detected rectangles to the global map.
+        self.module_map.insert(self.last_rectangles, frame_id, self.last_mean_motion)
+
+        return True
+
     def run(self):
         for frame_id, frame in enumerate(self.video_loader.frames):
-            self.last_input_frame = frame
-            rotated_frame = rotate_image(frame, self.image_rotating_angle)
-            distorted_image = rotated_frame
-            if self.should_undistort_image:
-                undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=self.camera.camera_matrix,
-                                                  distCoeffs=self.camera.distortion_coeff)
-            else:
-                undistorted_image = distorted_image
 
-            scaled_image = scale_image(undistorted_image, self.image_scaling)
+            if self.step(frame_id, frame):
+                # Displaying.
+                base_image = self.last_scaled_frame_rgb
 
-            gray = cv2.cvtColor(src=scaled_image, code=cv2.COLOR_BGR2GRAY)
-            gray = cv2.blur(gray, (self.gaussian_blur, self.gaussian_blur))
+                draw_segments(segments=self.last_segments, base_image=base_image.copy(),
+                              windows_name="Filtered segments")
+                draw_intersections(intersections=self.last_raw_intersections,
+                                   base_image=base_image.copy(), windows_name="Intersections")
+                draw_rectangles(rectangles=self.last_rectangles, base_image=base_image.copy(),
+                                windows_name="Detected rectangles")
+                draw_motion(flow=self.motion_detector.flow, base_image=self.motion_detector.last_frame,
+                            windows_name="Motion estimate")
+                cv2.imshow("Canny edges", self.last_edges_frame)
 
-            self.last_scaled_frame = gray
+                global_map = base_image.copy()
+                for rect_id, rectangle in self.module_map.global_module_map.items():
+                    rect_shift = rectangle.last_rectangle - np.int32(rectangle.cumulated_motion)
+                    if rectangle.frame_id_history[-1] == frame_id:
+                        color = (0, 0, 255)
+                        thickness = 2
+                    else:
+                        color = (255, 0, 0)
+                        thickness = 1
+                    cv2.polylines(global_map, np.int32([rect_shift]), True, color, thickness, cv2.LINE_AA)
+                    center = np.mean(rect_shift, axis=0)
+                    if thickness > 1:
+                        cv2.putText(global_map, str(rect_id), (int(center[0]), int(center[1])), cv2.FONT_HERSHEY_PLAIN,
+                                    1,
+                                    (255, 255, 255), 1)
 
-            self.detect_edges()
-            self.detect_segments()
-            if len(self.last_segments) < 3:
-                continue
+                cv2.imshow("Global map", global_map)
 
-            self.cluster_segments()
-            self.detect_intersections()
-            self.detect_rectangles()
-
-            # Motion estimate.
-            self.last_mean_motion = self.motion_detector.motion_estimate(self.last_scaled_frame)
-
-            # Add the detected rectangles to the global map.
-            self.module_map.insert(self.last_rectangles, frame_id, self.last_mean_motion)
-
-            # Displaying.
-            base_image = scaled_image
-            draw_segments(segments=self.last_segments, base_image=base_image.copy(),
-                          windows_name="Filtered segments")
-            draw_intersections(intersections=self.last_raw_intersections,
-                               base_image=base_image.copy(), windows_name="Intersections")
-            draw_rectangles(rectangles=self.last_rectangles, base_image=base_image.copy(),
-                            windows_name="Detected rectangles")
-            draw_motion(flow=self.motion_detector.flow, base_image=self.motion_detector.last_frame,
-                        windows_name="Motion estimate")
-            cv2.imshow("Canny edges", self.last_edges_frame)
-
-            global_map = base_image.copy()
-            for rect_id, rectangle in self.module_map.global_module_map.items():
-                rect_shift = rectangle.last_rectangle - np.int32(rectangle.cumulated_motion)
-                if rectangle.frame_id_history[-1] == frame_id:
-                    color = (0, 0, 255)
-                    thickness = 2
-                else:
-                    color = (255, 0, 0)
-                    thickness = 1
-                cv2.polylines(global_map, np.int32([rect_shift]), True, color, thickness, cv2.LINE_AA)
-                center = np.mean(rect_shift, axis=0)
-                if thickness > 1:
-                    cv2.putText(global_map, str(rect_id), (int(center[0]), int(center[1])), cv2.FONT_HERSHEY_PLAIN, 1,
-                                (255, 255, 255), 1)
-
-            cv2.imshow("Global map", global_map)
-
-            cv2.waitKey(1)
+                cv2.waitKey(1)
