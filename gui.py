@@ -82,6 +82,7 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.stop_video_button.setEnabled(True)
         self.thermography_thread = ThermographyThread(self.frames)
         self.video_view.connect(self.thermography_thread, SIGNAL('newImage(QImage)'), self.display_image)
+        self.canny_edges_video.connect(self.thermography_thread, SIGNAL('newImage(QImage'), self.display_image)
 
         self.global_progress_bar.setMinimum(0)
         self.global_progress_bar.setMaximum(len(self.frames))
@@ -104,6 +105,7 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
     def display_image(self, image):
         pixmap = QPixmap.fromImage(image)
         self.video_view.setPixmap(pixmap)
+        self.canny_edges_video.setPixmap(pixmap)
 
     def resize_video_view(self, size):
         self.video_view.setFixedSize(size[0], size[1])
