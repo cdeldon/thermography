@@ -68,6 +68,13 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
 
         self.image_scaling_slider.valueChanged.connect(self.update_image_scaling)
 
+        self.undistort_image_box.clicked.connect(self.update_image_distortion)
+        self.angle_value.valueChanged.connect(self.update_image_angle)
+        self.blur_value.valueChanged.connect(self.update_blur_value)
+        self.max_histeresis_value.valueChanged.connect(self.update_histeresis_params)
+        self.min_histeresis_value.valueChanged.connect(self.update_histeresis_params)
+        self.dilation_value.valueChanged.connect(self.update_dilation_steps)
+
     def connect_thermo_thread(self):
         self.thermo_thread.last_frame_signal.connect(self.display_image)
         self.thermo_thread.processed_frame_signal.connect(self.display_canny_edges)
@@ -112,6 +119,29 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         if self.thermo_thread is not None:
             self.thermo_thread.app.image_scaling = image_scaling
         self.image_scaling_label.setText("Input image scaling: {:0.2f}".format(image_scaling))
+
+    def update_histeresis_params(self):
+        min_value = self.min_histeresis_value.value()
+        max_value = self.max_histeresis_value.value()
+        if max_value <= min_value:
+            max_value = min_value + 1
+        self.max_histeresis_value.setValue(max_value)
+        self.thermo_thread.app.edge_detection_parameters.hysteresis_max_thresh = max_value
+        self.thermo_thread.app.edge_detection_parameters.hysteresis_min_thresh = min_value
+
+    def update_dilation_steps(self):
+        self.thermo_thread.app.edge_detection_parameters.dilation_steps = self.dilation_value.value()
+
+    def update_image_distortion(self):
+        self.thermo_thread.app.should_undistort_image = self.undistort_image_box.isChecked()
+
+    def update_image_angle(self):
+        self.thermo_thread.app.image_rotating_angle = self.angle_value.value() * np.pi / 180
+        if self.angle_value.value() == 360:
+            self.angle_value.setValue(0)
+
+    def update_blur_value(self):
+        self.thermo_thread.app.gaussian_blur = self.blur_value.value()
 
     def display_image(self, frame: np.ndarray):
         self.resize_video_view(frame.shape, self.video_view)

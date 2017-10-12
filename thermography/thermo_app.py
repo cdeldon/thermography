@@ -128,19 +128,20 @@ class ThermoApp:
         self.last_rectangles = rectangle_detector.rectangles
 
     def step(self, frame_id, frame):
-        print("Using image scaling: {}".format(self.image_scaling))
         self.last_input_frame = frame
-        rotated_frame = rotate_image(frame, self.image_rotating_angle)
-        distorted_image = rotated_frame
+        distorted_image = frame
         if self.should_undistort_image:
             undistorted_image = cv2.undistort(src=distorted_image, cameraMatrix=self.camera.camera_matrix,
                                               distCoeffs=self.camera.distortion_coeff)
         else:
             undistorted_image = distorted_image
 
-        self.last_scaled_frame_rgb = scale_image(undistorted_image, self.image_scaling)
+        scaled_image = scale_image(undistorted_image, self.image_scaling)
 
-        gray = cv2.cvtColor(src=self.last_scaled_frame_rgb, code=cv2.COLOR_BGR2GRAY)
+        rotated_frame = rotate_image(scaled_image, self.image_rotating_angle)
+        self.last_scaled_frame_rgb = rotated_frame
+
+        gray = cv2.cvtColor(src=rotated_frame, code=cv2.COLOR_BGR2GRAY)
         gray = cv2.blur(gray, (self.gaussian_blur, self.gaussian_blur))
 
         self.last_scaled_frame = gray
