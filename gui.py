@@ -3,8 +3,70 @@ from PyQt4.QtGui import QImage, QPixmap
 from PyQt4.QtCore import QThread
 import sys, os, cv2
 import numpy as np
-from gui import design
+from gui import design, webcam_gui
 import thermography as tg
+
+
+class WebCamWindow(QtGui.QMainWindow, webcam_gui.Ui_MainWindow):
+    def __init__(self, parent=None):
+        super(self.__class__, self).__init__(parent=parent)
+        self.setupUi(self)
+
+        self.webcam_value = 0
+        self.cap = cv2.VideoCapture(self.webcam_value)
+
+        self.next_button.clicked.connect(self.increase_webcam_value)
+        self.previous_button.clicked.connect(self.decrease_webcam_value)
+        self.ok_button.clicked.connect(self.current_webcam_value_found)
+
+    def increase_webcam_value(self):
+        self.webcam_value += 1
+        self.previous_button.setEnabled(True)
+        self.set_webcam()
+
+    def decrease_webcam_value(self):
+        self.webcam_value -= 1
+        if self.webcam_value == 0:
+            self.previous_button.setEnabled(False)
+        self.set_webcam()
+
+    def current_webcam_value_found(self):
+        self.deleteLater()
+        self.close()
+        return self.webcam_value
+
+    def set_webcam(self):
+        self.stop()
+        self.cap.release()
+        self.cap = cv2.VideoCapture(self.webcam_value)
+        self.start()
+
+    def start(self):
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.nextFrameSlot)
+        self.timer.start(1000. / 30)
+
+    def nextFrameSlot(self):
+        ret, frame = self.cap.read()
+        if ret:
+            # My webcam yields frames in BGR format
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            img = QtGui.QImage(frame, frame.shape[1], frame.shape[0], QtGui.QImage.Format_RGB888)
+            pix = QtGui.QPixmap.fromImage(img)
+            self.webcam_view.setPixmap(pix)
+        else:
+            font = QtGui.QFont()
+            font.setPointSize(15)
+            self.webcam_view.setFont(font)
+            self.webcam_view.setAlignment(QtCore.Qt.AlignCenter)
+            self.webcam_view.setText("No webcam found")
+
+    def stop(self):
+        self.timer.stop()
+
+    def deleteLater(self):
+        self.cap.release()
+        super(QtGui.QWidget, self).deleteLater()
 
 
 class ThermoGuiThread(QThread):
@@ -14,6 +76,7 @@ class ThermoGuiThread(QThread):
     edge_frame_signal = QtCore.pyqtSignal(np.ndarray)
     segment_frame_signal = QtCore.pyqtSignal(np.ndarray)
     rectangle_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    module_map_frame_signal = QtCore.pyqtSignal(np.ndarray)
 
     def __init__(self):
         super(ThermoGuiThread, self).__init__()
@@ -25,10 +88,19 @@ class ThermoGuiThread(QThread):
         self.pause_time = 50
         self.is_paused = False
 
+        self.webcam_port = None
+        self.cap = None
+        self.should_use_webcam = False
+
         self.load_default_paths()
 
         self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name,
                           module_param_file=self.module_param_file_name)
+
+    def use_webcam(self, webcam_port : int):
+        self.webcam_port = webcam_port
+        self.cap = cv2.VideoCapture(self.webcam_port)
+        self.should_use_webcam = True
 
     def load_default_paths(self):
         # Load camera parameters.
@@ -45,18 +117,38 @@ class ThermoGuiThread(QThread):
         self.app.load_video(start_frame=start_frame, end_frame=end_frame)
 
     def run(self):
-        for frame_id, frame in enumerate(self.app.frames):
-            while self.is_paused:
-                self.msleep(self.pause_time)
+        if self.should_use_webcam:
+            frame_id = 0
+            while True:
+                while self.is_paused:
+                    self.msleep(self.pause_time)
 
-            self.app.step(frame_id, frame)
-            self.last_frame_signal.emit(self.app.last_scaled_frame_rgb)
-            self.edge_frame_signal.emit(self.app.last_edges_frame)
-            self.segment_frame_signal.emit(self.app.create_segment_image())
-            self.rectangle_frame_signal.emit(self.app.create_rectangle_image())
-            self.iteration_signal.emit(frame_id)
+                ret, frame = self.cap.read()
+                if ret:
+                    self.app.step(frame_id, frame)
 
-            self.app.reset()
+                    self.last_frame_signal.emit(self.app.last_scaled_frame_rgb)
+                    self.edge_frame_signal.emit(self.app.last_edges_frame)
+                    self.segment_frame_signal.emit(self.app.create_segment_image())
+                    self.rectangle_frame_signal.emit(self.app.create_rectangle_image())
+                    self.module_map_frame_signal.emit(self.app.create_module_map_image())
+                    frame_id += 1
+
+                    self.app.reset()
+        else:
+            for frame_id, frame in enumerate(self.app.frames):
+                while self.is_paused:
+                    self.msleep(self.pause_time)
+
+                self.app.step(frame_id, frame)
+                self.last_frame_signal.emit(self.app.last_scaled_frame_rgb)
+                self.edge_frame_signal.emit(self.app.last_edges_frame)
+                self.segment_frame_signal.emit(self.app.create_segment_image())
+                self.rectangle_frame_signal.emit(self.app.create_rectangle_image())
+                self.module_map_frame_signal.emit(self.app.create_module_map_image())
+                self.iteration_signal.emit(frame_id)
+
+                self.app.reset()
 
         self.finish_signal.emit(True)
 
@@ -67,9 +159,15 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.setupUi(self)
 
         self.thermo_thread = ThermoGuiThread()
+        self.is_stoppable = True
+
+        self.last_folder_opened = None
 
         self.connect_widgets()
         self.connect_thermo_thread()
+
+        self.capture = None
+        self.webcam_port = None
 
     def connect_widgets(self):
         self.load_video_button.clicked.connect(self.load_video_from_file)
@@ -78,6 +176,8 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.play_video_button.clicked.connect(self.play_all_frames)
         self.stop_video_button.clicked.connect(self.stop_all_frames)
         self.pause_video_button.clicked.connect(self.pause_all_frames)
+
+        self.detect_webcam_button.clicked.connect(self.load_webcam)
 
         self.image_scaling_slider.valueChanged.connect(self.update_image_scaling)
 
@@ -120,16 +220,23 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.thermo_thread.edge_frame_signal.connect(self.display_canny_edges)
         self.thermo_thread.segment_frame_signal.connect(self.display_segment_image)
         self.thermo_thread.rectangle_frame_signal.connect(self.display_rectangle_image)
+        self.thermo_thread.module_map_frame_signal.connect(self.display_module_map_image)
 
         self.thermo_thread.finish_signal.connect(self.video_finished)
 
     def load_video_from_file(self):
+        open_directory = ""
+        if self.last_folder_opened is not None:
+            open_directory = self.last_folder_opened
         video_file_name = QtGui.QFileDialog.getOpenFileName(caption="Select a video",
-                                                            filter="Videos (*.mov *.mp4 *.avi)")
+                                                            filter="Videos (*.mov *.mp4 *.avi)", directory=open_directory)
         if video_file_name == "":
             return
+        self.last_folder_opened = os.path.dirname(video_file_name)
 
         self.thermo_thread.input_file_name = video_file_name
+        self.is_stoppable = True
+        self.setWindowTitle("Thermography: {}".format(video_file_name))
 
         start_frame = self.video_from_index.value()
         end_frame = self.video_to_index.value()
@@ -147,7 +254,8 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.image_scaling_label.setText("Input image scaling: {:0.2f}".format(self.thermo_thread.app.image_scaling))
         self.play_video_button.setEnabled(False)
         self.pause_video_button.setEnabled(True)
-        self.stop_video_button.setEnabled(True)
+        if self.is_stoppable:
+            self.stop_video_button.setEnabled(True)
 
         self.thermo_thread.start()
 
@@ -158,7 +266,8 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
     def pause_all_frames(self):
         self.thermo_thread.is_paused = True
         self.play_video_button.setEnabled(True)
-        self.stop_video_button.setEnabled(True)
+        if self.is_stoppable:
+            self.stop_video_button.setEnabled(True)
         self.pause_video_button.setEnabled(False)
 
     def update_global_progress_bar(self, frame_index: int):
@@ -226,25 +335,31 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.thermo_thread.app.rectangle_detection_parameters.min_area = self.min_area_value.value()
 
     def display_image(self, frame: np.ndarray):
-        self.resize_video_view(frame.shape, self.video_view)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
+        image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         pixmap = QPixmap.fromImage(image)
         self.video_view.setPixmap(pixmap)
 
     def display_canny_edges(self, frame: np.ndarray):
         frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
-        self.resize_video_view(frame.shape, self.canny_edges_view)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
+        image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         pixmap = QPixmap.fromImage(image)
         self.canny_edges_view.setPixmap(pixmap)
 
     def display_segment_image(self, frame: np.ndarray):
-        self.resize_video_view(frame.shape, self.segment_image_view)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
+        image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         pixmap = QPixmap.fromImage(image)
         self.segment_image_view.setPixmap(pixmap)
 
     def display_rectangle_image(self, frame: np.ndarray):
+        image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
+        image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        pixmap = QPixmap.fromImage(image)
+        self.rectangle_image_view.setPixmap(pixmap)
+
+    def display_module_map_image(self, frame: np.ndarray):
         self.resize_video_view(frame.shape, self.module_image_view)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(image)
@@ -259,6 +374,20 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pause_video_button.setEnabled(not finished)
         self.stop_video_button.setEnabled(not finished)
 
+    def set_webcam_port(self):
+        self.webcam_port = self.capture.webcam_value
+        self.thermo_thread.use_webcam(self.webcam_port)
+        self.is_stoppable = False
+        self.setWindowTitle("Thermography: Webcam")
+        self.play_all_frames()
+
+    def load_webcam(self):
+        self.capture = WebCamWindow(parent=self)
+        self.capture.show()
+        self.capture.start()
+
+        self.capture.ok_button.clicked.connect(self.set_webcam_port)
+
     def reset_app(self):
         self.thermo_thread.terminate()
         self.thermo_thread = ThermoGuiThread()
@@ -268,8 +397,17 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.video_view.setText("Input Image")
         self.canny_edges_view.setText("Edges Image")
         self.segment_image_view.setText("Segment Image")
+        self.rectangle_image_view.setText("Rectangle Image")
+        self.module_image_view.setText("Module Map")
+        self.module_image_view.setAlignment(QtCore.Qt.AlignCenter)
+        self.capture = None
+        self.webcam_port = None
+
+        self.setWindowTitle("Thermography")
 
         self.connect_thermo_thread()
+
+        print(self.webcam_port)
 
 
 def main():

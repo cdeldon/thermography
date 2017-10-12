@@ -86,10 +86,25 @@ class ThermoApp:
                          color=color, thickness=1, lineType=cv2.LINE_AA)
                 cv2.putText(base_image, str(segment_index), (segment[0], segment[1]), cv2.FONT_HERSHEY_PLAIN, 0.8,
                             (255, 255, 255), 1)
-
         return base_image
 
     def create_rectangle_image(self):
+        base_image = self.last_scaled_frame_rgb.copy()
+        if self.last_rectangles is not None and len(self.last_rectangles) > 0:
+            mean_color = np.mean(base_image, axis=(0, 1))
+            mask = np.zeros_like(base_image)
+            if mean_color[0] == mean_color[1] == mean_color[2]:
+                mean_color = np.array([255, 255, 0])
+            opposite_color = np.array([255, 255, 255]) - mean_color
+            opposite_color = (int(opposite_color[0]), int(opposite_color[1]), int(opposite_color[2]))
+            for rectangle in self.last_rectangles:
+                cv2.polylines(base_image, np.int32([rectangle]), True, opposite_color, 1, cv2.LINE_AA)
+                cv2.fillConvexPoly(mask, np.int32([rectangle]), (255, 0, 0), cv2.LINE_4)
+
+            cv2.addWeighted(base_image, 1, mask, 0.3, 0, base_image)
+        return base_image
+
+    def create_module_map_image(self):
         base_image = self.last_scaled_frame_rgb.copy()
         for rect_id, rectangle in self.module_map.global_module_map.items():
             rect_shift = rectangle.last_rectangle - np.int32(rectangle.cumulated_motion)

@@ -71,14 +71,15 @@ if __name__ == '__main__':
             continue
 
         # Segment clustering.
-        segment_clusterer = SegmentClusterer(input_segments=segment_detector.segments)
-        segment_clusterer.cluster_segments(num_clusters=2, n_init=8, cluster_type="gmm", swipe_clusters=False)
+        segment_clusterer_params = SegmentClustererParams()
+        segment_clusterer = SegmentClusterer(input_segments=segment_detector.segments, params=segment_clusterer_params)
+        segment_clusterer.cluster_segments()
         mean_angles, mean_centers = segment_clusterer.compute_cluster_mean()
 
         unfiltered_segments = segment_clusterer.cluster_list.copy()
 
-        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 20,
-                                         max_merging_angle=np.pi / 180 * 10, max_endpoint_distance=10.0)
+        cluster_cleaning_params = ClusterCleaningParams()
+        segment_clusterer.clean_clusters(mean_angles=mean_angles, params=cluster_cleaning_params)
 
         filtered_segments = segment_clusterer.cluster_list.copy()
 
