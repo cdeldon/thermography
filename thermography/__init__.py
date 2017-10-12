@@ -5,6 +5,7 @@ from . import settings
 from . import utils
 
 from .module_map import ModuleMap
+from .thermo_app import ThermoApp as App
 
 # Seed all random number generators.
 import random

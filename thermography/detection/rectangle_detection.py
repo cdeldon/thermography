@@ -6,8 +6,8 @@ __all__ = ["RectangleDetector", "RectangleDetectorParams"]
 
 class RectangleDetectorParams:
     def __init__(self):
-        self.aspect_ratio = 1.0
-        self.aspect_ratio_relative_deviation = 0.5
+        self.aspect_ratio = 1.5
+        self.aspect_ratio_relative_deviation =  0.35
 
         self.min_area = 20 * 40
 

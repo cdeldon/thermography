@@ -7,7 +7,7 @@ __all__ = ["IntersectionDetector", "IntersectionDetectorParams"]
 class IntersectionDetectorParams:
     def __init__(self):
         # All intersections between segments whose relative angle is larger than this threshold are ignored.
-        self.angle_threshold = np.pi / 180 * 10
+        self.angle_threshold = np.pi / 180 * 25
 
 
 class IntersectionDetector:

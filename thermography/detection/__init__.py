@@ -9,5 +9,5 @@ __all__ = ["EdgeDetector", "EdgeDetectorParams",
            "IntersectionDetector", "IntersectionDetectorParams",
            "MotionDetector",
            "RectangleDetector", "RectangleDetectorParams",
-           "SegmentClusterer",
+           "SegmentClusterer", "SegmentClustererParams", "ClusterCleaningParams",
            "SegmentDetector", "SegmentDetectorParams"]
