@@ -49,6 +49,7 @@ class ThermoApp:
         self.last_cluster_list = None
         self.last_rectangles = None
         self.last_mean_motion = None
+        self.last_frame_id = 0
 
         # Runtime parameters for detection.
         self.should_undistort_image = True
@@ -70,7 +71,7 @@ class ThermoApp:
         return self.video_loader.frames
 
     def create_segment_image(self):
-        base_image = self.last_scaled_frame_rgb
+        base_image = self.last_scaled_frame_rgb.copy()
         if self.last_cluster_list is None:
             return base_image
 
@@ -85,6 +86,24 @@ class ThermoApp:
                          color=color, thickness=1, lineType=cv2.LINE_AA)
                 cv2.putText(base_image, str(segment_index), (segment[0], segment[1]), cv2.FONT_HERSHEY_PLAIN, 0.8,
                             (255, 255, 255), 1)
+
+        return base_image
+
+    def create_rectangle_image(self):
+        base_image = self.last_scaled_frame_rgb.copy()
+        for rect_id, rectangle in self.module_map.global_module_map.items():
+            rect_shift = rectangle.last_rectangle - np.int32(rectangle.cumulated_motion)
+            if rectangle.frame_id_history[-1] == self.last_frame_id:
+                color = (0, 0, 255)
+                thickness = 2
+            else:
+                color = (255, 0, 0)
+                thickness = 1
+            cv2.polylines(base_image, np.int32([rect_shift]), True, color, thickness, cv2.LINE_AA)
+            center = np.mean(rect_shift, axis=0)
+            if thickness > 1:
+                cv2.putText(base_image, str(rect_id), (int(center[0]), int(center[1])), cv2.FONT_HERSHEY_PLAIN,
+                            1, (255, 255, 255), 1)
 
         return base_image
 
@@ -145,6 +164,7 @@ class ThermoApp:
         self.last_rectangles = rectangle_detector.rectangles
 
     def step(self, frame_id, frame):
+        self.last_frame_id = frame_id
         self.last_input_frame = frame
         distorted_image = frame
         if self.should_undistort_image:

@@ -13,6 +13,7 @@ class ThermoGuiThread(QThread):
     last_frame_signal = QtCore.pyqtSignal(np.ndarray)
     edge_frame_signal = QtCore.pyqtSignal(np.ndarray)
     segment_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    rectangle_frame_signal = QtCore.pyqtSignal(np.ndarray)
 
     def __init__(self):
         super(ThermoGuiThread, self).__init__()
@@ -52,6 +53,7 @@ class ThermoGuiThread(QThread):
             self.last_frame_signal.emit(self.app.last_scaled_frame_rgb)
             self.edge_frame_signal.emit(self.app.last_edges_frame)
             self.segment_frame_signal.emit(self.app.create_segment_image())
+            self.rectangle_frame_signal.emit(self.app.create_rectangle_image())
             self.iteration_signal.emit(frame_id)
 
             self.app.reset()
@@ -109,10 +111,15 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.max_merging_angle_value.valueChanged.connect(self.update_cluster_cleaning_params)
         self.max_merging_distance_value.valueChanged.connect(self.update_cluster_cleaning_params)
 
+        # Rectangle detection.
+        self.ratio_max_deviation_value.valueChanged.connect(self.update_rectangle_detection_params)
+        self.min_area_value.valueChanged.connect(self.update_rectangle_detection_params)
+
     def connect_thermo_thread(self):
         self.thermo_thread.last_frame_signal.connect(self.display_image)
         self.thermo_thread.edge_frame_signal.connect(self.display_canny_edges)
         self.thermo_thread.segment_frame_signal.connect(self.display_segment_image)
+        self.thermo_thread.rectangle_frame_signal.connect(self.display_rectangle_image)
 
         self.thermo_thread.finish_signal.connect(self.video_finished)
 
@@ -214,6 +221,10 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         self.thermo_thread.app.cluster_cleaning_parameters.max_merging_angle = np.pi / 180 * self.max_merging_angle_value.value()
         self.thermo_thread.app.cluster_cleaning_parameters.max_endpoint_distance = np.pi / 180 * self.max_merging_distance_value.value()
 
+    def update_rectangle_detection_params(self):
+        self.thermo_thread.app.rectangle_detection_parameters.aspect_ratio_relative_deviation = self.ratio_max_deviation_value.value()
+        self.thermo_thread.app.rectangle_detection_parameters.min_area = self.min_area_value.value()
+
     def display_image(self, frame: np.ndarray):
         self.resize_video_view(frame.shape, self.video_view)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
@@ -232,6 +243,12 @@ class ThermoGUI(QtGui.QMainWindow, design.Ui_MainWindow):
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(image)
         self.segment_image_view.setPixmap(pixmap)
+
+    def display_rectangle_image(self, frame: np.ndarray):
+        self.resize_video_view(frame.shape, self.module_image_view)
+        image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(image)
+        self.module_image_view.setPixmap(pixmap)
 
     @staticmethod
     def resize_video_view(size, view):
