@@ -6,32 +6,53 @@ from sklearn.preprocessing import normalize
 
 import thermography as tg
 
-__all__ = ["SegmentClusterer"]
+__all__ = ["SegmentClusterer", "SegmentClustererParams", "ClusterCleaningParams"]
+
+
+class SegmentClustererParams:
+    def __init__(self):
+        #  Number of initializations to be performed when clustering.
+        self.num_init = 10
+        # Number of clusters to extract from the parameter space.
+        self.num_clusters = 2
+        # Boolean flag, if set to 'True' and 'cluster_type' is 'gmm', then the algorithm iterates the clustering
+        # procedure over a range of number of clusters from 1 to 'num_clusters' and retains the best result.
+        self.swipe_clusters = False
+        # Clustering algorithm to be used, must be in ['gmm', 'knn'] which correspond to a full gaussian mixture model,
+        # and k-nearest-neighbors respectively.
+        self.cluster_type = "gmm"
+        # Boolean flag indicating whether to consider angles in the clustering process.
+        self.use_angles = True
+        # Boolean flag indicating whether to consider segment centroids in the clustering process.
+        self.use_centers = False
+
+
+class ClusterCleaningParams:
+    def __init__(self):
+        # Maximal allowed angle between each segment and corresponding cluster mean angle.
+        self.max_angle_variation_mean = np.pi / 180 * 20
+        # Maximal allowed angle between two segments in order to merge them into a single one.
+        self.max_merging_angle = np.pi / 180 * 10
+        # Maximal summed distance between segments endpoints and fitted line for merging segments.
+        self.max_endpoint_distance = 10.0
 
 
 class SegmentClusterer:
-    def __init__(self, input_segments: np.ndarray):
+    def __init__(self, input_segments: np.ndarray, params: SegmentClustererParams = SegmentClustererParams()):
         self.raw_segments = input_segments
+        self.params = params
 
         self.cluster_list = None
         self.cluster_features = None
 
-    def cluster_segments(self, num_clusters: int = 15, n_init: int = 10, cluster_type: str = "gmm",
-                         swipe_clusters: bool = True, use_angles: bool = True, use_centers: bool = False):
+    def cluster_segments(self):
         """
         Clusters the input segments based on the parameters passed as argument. The features that can be used to cluster
         the segments are their mean coordinates, and their angle.
-
-        :param num_clusters: Number of clusters to extract from the parameter space.
-        :param n_init: Number of initializations to be performed when clustering.
-        :param cluster_type: Clustering algorithm to be used, must be in ['gmm', 'knn'] which correspond to a full gaussian mixture model, and k-nearest-neighbors respectively.
-        :param swipe_clusters: Boolean flag, if set to 'True' and 'cluster_type' is 'gmm', then the algorithm iterates the clustering procedure over a range of number of clusters from 1 to 'num_clusters' and retains the best result.
-        :param use_angles: Boolean flag indicating whether to consider angles in the clustering process.
-        :param use_centers: Boolean flag indicating whether to consider segment centroids in the clustering process.
         """
-        if cluster_type not in ["gmm", "knn"]:
+        if self.params.cluster_type not in ["gmm", "knn"]:
             raise ValueError("Invalid value for 'cluster_type': {} "
-                             "'cluster_type' should be in ['gmm', 'knn']".format(cluster_type))
+                             "'cluster_type' should be in ['gmm', 'knn']".format(self.params.cluster_type))
 
         centers = []
         angles = []
@@ -54,11 +75,11 @@ class SegmentClusterer:
         centers = normalize(centers, axis=0)
         angles = np.array(angles)
 
-        if use_angles and use_centers:
+        if self.params.use_angles and self.params.use_centers:
             features = np.hstack((angles, centers))
-        elif use_angles:
+        elif self.params.use_angles:
             features = angles
-        elif use_centers:
+        elif self.params.use_centers:
             features = centers
         else:
             raise RuntimeError("Can not perform segment clustering without any feature. "
@@ -66,15 +87,16 @@ class SegmentClusterer:
 
         cluster_prediction = None
 
-        if cluster_type is "knn":
-            cluster_prediction = KMeans(n_clusters=num_clusters, n_init=n_init, random_state=0).fit_predict(features)
-        elif cluster_type is "gmm":
+        if self.params.cluster_type is "knn":
+            cluster_prediction = KMeans(n_clusters=self.params.num_clusters, n_init=self.params.num_init,
+                                        random_state=0).fit_predict(features)
+        elif self.params.cluster_type is "gmm":
             best_gmm = None
             lowest_bic = np.infty
             bic = []
-            n_components_range = range(1, num_clusters + 1)
-            if not swipe_clusters:
-                n_components_range = [num_clusters]
+            n_components_range = range(1, self.params.num_clusters + 1)
+            if not self.params.swipe_clusters:
+                n_components_range = [self.params.num_clusters]
             for n_components in n_components_range:
                 # Fit a Gaussian mixture with EM.
                 gmm = GaussianMixture(n_components=n_components, covariance_type='full')
@@ -184,16 +206,13 @@ class SegmentClusterer:
 
             self.cluster_list[cluster_index] = np.array(merged_segments)
 
-    def clean_clusters(self, mean_angles: np.ndarray, max_angle_variation_mean: float = np.pi / 180 * 20,
-                       max_merging_angle: float = 5.0 / 180 * np.pi, max_endpoint_distance: float = 50):
+    def clean_clusters(self, mean_angles, params: ClusterCleaningParams):
         """
         Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging
         almost collinear segments into a single segment.
 
         :param mean_angles: List of mean angles computed for each cluster.
-        :param max_angle_variation_mean: Maximal allowed angle between each segment and corresponding cluster mean angle.
-        :param max_merging_angle: Maximal allowed angle between two segments in order to merge them into a single one.
-        :param max_endpoint_distance: Maximal summed distance between segments endpoints and fitted line for merging segments.
+        :param params: Parameters used to clean the clusters.
         """
 
         # Reorder the segments inside the clusters.
@@ -202,5 +221,6 @@ class SegmentClusterer:
             self.cluster_list[cluster_index] = cluster[cluster_order]
             self.cluster_features[cluster_index] = features[cluster_order]
 
-        self.clean_clusters_angle(mean_angles=mean_angles, max_angle_variation_mean=max_angle_variation_mean)
-        self.merge_collinear_segments(max_merging_angle=max_merging_angle, max_endpoint_distance=max_endpoint_distance)
+        self.clean_clusters_angle(mean_angles=mean_angles, max_angle_variation_mean=params.max_angle_variation_mean)
+        self.merge_collinear_segments(max_merging_angle=params.max_merging_angle,
+                                      max_endpoint_distance=params.max_endpoint_distance)

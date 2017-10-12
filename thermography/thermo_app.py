@@ -46,6 +46,7 @@ class ThermoApp:
         self.last_raw_intersections = None
         self.last_intersections = None
         self.last_segments = None
+        self.last_cluster_list = None
         self.last_rectangles = None
         self.last_mean_motion = None
 
@@ -56,9 +57,8 @@ class ThermoApp:
         self.gaussian_blur = 3
         self.edge_detection_parameters = EdgeDetectorParams()
         self.segment_detection_parameters = SegmentDetectorParams()
-        self.num_segment_clusters = 2
-        self.swipe_clusters = False
-        self.cluster_type = "gmm"
+        self.segment_clustering_parameters = SegmentClustererParams()
+        self.cluster_cleaning_parameters = ClusterCleaningParams()
         self.intersection_detection_parameters = IntersectionDetectorParams()
         self.rectangle_detection_parameters = RectangleDetectorParams()
 
@@ -68,6 +68,25 @@ class ThermoApp:
     @property
     def frames(self):
         return self.video_loader.frames
+
+    def create_segment_image(self):
+        base_image = self.last_scaled_frame_rgb
+        if self.last_cluster_list is None:
+            return base_image
+
+        # Fix colors for first two clusters, choose the next randomly.
+        colors = [(29, 247, 240), (255, 180, 50)]
+        for cluster_number in range(2, len(self.last_cluster_list)):
+            colors.append(random_color())
+
+        for cluster, color in zip(self.last_cluster_list, colors):
+            for segment_index, segment in enumerate(cluster):
+                cv2.line(img=base_image, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
+                         color=color, thickness=1, lineType=cv2.LINE_AA)
+                cv2.putText(base_image, str(segment_index), (segment[0], segment[1]), cv2.FONT_HERSHEY_PLAIN, 0.8,
+                            (255, 255, 255), 1)
+
+        return base_image
 
     def __load_params(self):
         """
@@ -103,18 +122,16 @@ class ThermoApp:
         self.last_segments = segment_detector.segments
 
     def cluster_segments(self):
-        segment_clusterer = SegmentClusterer(input_segments=self.last_segments)
-        segment_clusterer.cluster_segments(num_clusters=self.num_segment_clusters, n_init=8,
-                                           cluster_type=self.cluster_type, swipe_clusters=self.swipe_clusters)
+        segment_clusterer = SegmentClusterer(input_segments=self.last_segments, params=self.segment_clustering_parameters)
+        segment_clusterer.cluster_segments()
 
         mean_angles, mean_centers = segment_clusterer.compute_cluster_mean()
-        segment_clusterer.clean_clusters(mean_angles=mean_angles, max_angle_variation_mean=np.pi / 180 * 20,
-                                         max_merging_angle=np.pi / 180 * 10, max_endpoint_distance=10.0)
+        segment_clusterer.clean_clusters(mean_angles=mean_angles, params=self.cluster_cleaning_parameters)
 
-        self.last_segments = segment_clusterer.cluster_list
+        self.last_cluster_list = segment_clusterer.cluster_list
 
     def detect_intersections(self):
-        intersection_detector = IntersectionDetector(input_segments=self.last_segments,
+        intersection_detector = IntersectionDetector(input_segments=self.last_cluster_list,
                                                      params=self.intersection_detection_parameters)
         intersection_detector.detect()
         self.last_raw_intersections = intersection_detector.raw_intersections
@@ -163,6 +180,18 @@ class ThermoApp:
 
         return True
 
+    def reset(self):
+        self.last_input_frame = None
+        self.last_scaled_frame_rgb = None
+        self.last_scaled_frame = None
+        self.last_edges_frame = None
+        self.last_raw_intersections = None
+        self.last_intersections = None
+        self.last_segments = None
+        self.last_cluster_list = None
+        self.last_rectangles = None
+        self.last_mean_motion = None
+
     def run(self):
         for frame_id, frame in enumerate(self.video_loader.frames):
 
@@ -170,7 +199,7 @@ class ThermoApp:
                 # Displaying.
                 base_image = self.last_scaled_frame_rgb
 
-                draw_segments(segments=self.last_segments, base_image=base_image.copy(),
+                draw_segments(segments=self.last_cluster_list, base_image=base_image.copy(),
                               windows_name="Filtered segments")
                 draw_intersections(intersections=self.last_raw_intersections,
                                    base_image=base_image.copy(), windows_name="Intersections")
@@ -199,3 +228,5 @@ class ThermoApp:
                 cv2.imshow("Global map", global_map)
 
                 cv2.waitKey(1)
+
+            self.reset()
