@@ -263,4 +263,10 @@ class ThermoApp:
 
                 cv2.waitKey(1)
 
+                # Rectangle extraction.
+                # default_rect = np.float32([[629, 10], [10, 10], [10, 501], [629, 501]])
+                # for rectangle in rectangle_detector.rectangles:
+                #     M = cv2.getPerspectiveTransform(np.float32(rectangle), default_rect)
+                #     extracted = cv2.warpPerspective(rectangle, M, (640, 512))
+
             self.reset()

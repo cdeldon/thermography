@@ -33,5 +33,25 @@ $ cd thermography/
 $ python main_test.py
 ```
 
+### GUI
+The application is also runnable through a graphical interface.
+
+![GUI](./docs/_static/gui_video.PNG?raw=true "GUI")
+
+The GUI presents different views of the processed input video, in particular the following views are available:
+
+![EdgeImage](./docs/_static/edge_image.PNG?raw=true "Edge image") | ![SegmentImage](./docs/_static/segments_image.PNG?raw=true "Segment Image") | ![RectangleImage](./docs/_static/rectangle_image.PNG?raw=true "Rectangle Image")
+:----------------------------------------------------------------:|:---------------------------------------------------------------------------:|:-------------------------:
+Edge image                                                        | Segment image                                                               | Rectangle image
+
+
+The lateral toolbar offers runtime parameter tuning with immediate application:
+
+![VideoTab](./docs/_static/video_tab.PNG?raw=true "Video tab") | ![PreprocessingTab](./docs/_static/preprocessing_tab.PNG?raw=true "Preprocessing Tab") | ![SegmentsTab](./docs/_static/segments_tab.PNG?raw=true "Segments Tab") | ![ModulesTab](./docs/_static/modules_tab.PNG?raw=true "Modules Tab")
+:-------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------:|:-------------------------------------------------------------------:
+Video tab                                                      | Preprocessing tab                                                                      | Segments tab                                                            | Modules tab
+
+
+
 ### Documentation
 The documentation of the code is available [here](https://cdeldon.github.io/thermography/html/html/index.html).
