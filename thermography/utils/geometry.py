@@ -179,7 +179,7 @@ def merge_segments(segment_list: list) -> np.ndarray:
     return np.array([x0, y0, x1, y1])
 
 
-def point_line_distance(point: np.ndarray, slope: float, intercept: float, vertical : bool) -> float:
+def point_line_distance(point: np.ndarray, slope: float, intercept: float, vertical: bool) -> float:
     """
     Computes the shortest distance between a point and a line defined by its slope and intercept.
 
@@ -194,7 +194,7 @@ def point_line_distance(point: np.ndarray, slope: float, intercept: float, verti
     return np.abs(-slope * point[0] + point[1] - intercept) / np.sqrt(1 + slope * slope)
 
 
-def rectangle_contains(rectangle : np.ndarray, point: np.ndarray) -> bool:
+def rectangle_contains(rectangle: np.ndarray, point: np.ndarray) -> bool:
     """
     Computes whether a point is inside a rectangle or not.
 
@@ -230,8 +230,8 @@ def segments_collinear(seg1: np.ndarray, seg2: np.ndarray, max_angle: float = 5.
         (slope, intercept), vertical = line_estimate(seg1, seg2)
         dist_sum_2 = 0
         for point in [seg1[0:2], seg1[2:4], seg2[0:2], seg2[2:4]]:
-            dist_sum_2 += point_line_distance(point, slope, intercept, vertical)**2
-        if dist_sum_2 >= max_endpoint_distance**2:
+            dist_sum_2 += point_line_distance(point, slope, intercept, vertical) ** 2
+        if dist_sum_2 >= max_endpoint_distance ** 2:
             return False
         return True
 

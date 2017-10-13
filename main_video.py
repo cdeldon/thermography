@@ -15,8 +15,7 @@ if __name__ == '__main__':
     print("Using camera parameters:\n{}".format(camera))
 
     # Load module parameters.
-    module_param_file = os.path.join(SETTINGS_DIR, "module_parameters.json")
-    modules = tg.settings.Modules(module_path=module_param_file)
+    modules = tg.settings.Modules()
     print("Using module paramters:\n{}".format(modules))
 
     # Load data input parameters.

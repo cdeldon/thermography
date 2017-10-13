@@ -14,18 +14,16 @@ class ThermoApp:
     Application implementing the routines for module detections and analysis under the form of an object.
     """
 
-    def __init__(self, input_video_path, camera_param_file, module_param_file):
+    def __init__(self, input_video_path, camera_param_file):
         """
         Initializes the ThermoApp object by defining default parameters.
 
         :param input_video_path: Absolute path to the input video.
         :param camera_param_file: Parameter file of the camera.
-        :param module_param_file: Parameter file of the modules.
         """
 
         self.input_video_path = input_video_path
         self.camera_param_file = camera_param_file
-        self.module_param_file = module_param_file
 
         # Camera and Modules object containing the corresponding parameters.
         self.camera = None
@@ -83,9 +81,9 @@ class ThermoApp:
         for cluster, color in zip(self.last_cluster_list, colors):
             for segment_index, segment in enumerate(cluster):
                 cv2.line(img=base_image, pt1=(segment[0], segment[1]), pt2=(segment[2], segment[3]),
-                         color=color, thickness=1, lineType=cv2.LINE_AA)
-                cv2.putText(base_image, str(segment_index), (segment[0], segment[1]), cv2.FONT_HERSHEY_PLAIN, 0.8,
-                            (255, 255, 255), 1)
+                         color=color, thickness=2, lineType=cv2.LINE_AA)
+                cv2.putText(base_image, str(segment_index), (segment[0], segment[1]), cv2.FONT_HERSHEY_PLAIN, 1.7,
+                            (255, 255, 255), 2)
         return base_image
 
     def create_rectangle_image(self):
@@ -127,7 +125,7 @@ class ThermoApp:
         Load the parameters related to camera and modules.
         """
         self.camera = Camera(camera_path=self.camera_param_file)
-        self.modules = Modules(module_path=self.module_param_file)
+        self.modules = Modules()
 
         print("Using camera parameters:\n{}".format(self.camera))
         print()
@@ -156,7 +154,8 @@ class ThermoApp:
         self.last_segments = segment_detector.segments
 
     def cluster_segments(self):
-        segment_clusterer = SegmentClusterer(input_segments=self.last_segments, params=self.segment_clustering_parameters)
+        segment_clusterer = SegmentClusterer(input_segments=self.last_segments,
+                                             params=self.segment_clustering_parameters)
         segment_clusterer.cluster_segments()
 
         mean_angles, mean_centers = segment_clusterer.compute_cluster_mean()

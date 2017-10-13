@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>893</width>
-    <height>608</height>
+    <height>627</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -276,7 +276,7 @@
              <cursorShape>ArrowCursor</cursorShape>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>0</number>
             </property>
             <property name="usesScrollButtons">
              <bool>true</bool>
@@ -1448,14 +1448,7 @@
              <property name="topMargin">
               <number>0</number>
              </property>
-             <item row="0" column="0">
-              <widget class="QLabel" name="ratio_max_deviation_label">
-               <property name="text">
-                <string>ratio max deviation</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
+             <item row="1" column="1">
               <widget class="QDoubleSpinBox" name="ratio_max_deviation_value">
                <property name="maximum">
                 <double>10.000000000000000</double>
@@ -1469,13 +1462,13 @@
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="min_area_label">
+              <widget class="QLabel" name="ratio_max_deviation_label">
                <property name="text">
-                <string>min area</string>
+                <string>ratio max deviation</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
+             <item row="2" column="1">
               <widget class="QSpinBox" name="min_area_value">
                <property name="maximum">
                 <number>1000000</number>
@@ -1485,6 +1478,36 @@
                </property>
                <property name="value">
                 <number>800</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="min_area_label">
+               <property name="text">
+                <string>min area</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="expected_ratio_label">
+               <property name="text">
+                <string>expected ratio</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QDoubleSpinBox" name="expected_ratio_value">
+               <property name="minimum">
+                <double>0.100000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>5.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+               <property name="value">
+                <double>1.500000000000000</double>
                </property>
               </widget>
              </item>

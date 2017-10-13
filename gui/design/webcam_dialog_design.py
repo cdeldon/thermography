@@ -16,11 +16,14 @@ except AttributeError:
 
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_WebCam(object):
     def setupUi(self, WebCam):
@@ -71,8 +74,9 @@ class Ui_WebCam(object):
 
     def retranslateUi(self, WebCam):
         WebCam.setWindowTitle(_translate("WebCam", "ThermoGUI - Webcam", None))
-        self.webcam_view.setText(_translate("WebCam", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">WebCam</span></p></body></html>", None))
+        self.webcam_view.setText(_translate("WebCam",
+                                            "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">WebCam</span></p></body></html>",
+                                            None))
         self.previous_button.setText(_translate("WebCam", "Previous", None))
         self.ok_button.setText(_translate("WebCam", "OK!", None))
         self.next_button.setText(_translate("WebCam", "Next", None))
-

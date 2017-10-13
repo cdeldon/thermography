@@ -23,7 +23,6 @@ class ThermoGuiThread(QThread):
         super(ThermoGuiThread, self).__init__()
 
         self.camera_param_file_name = None
-        self.module_param_file_name = None
         self.input_file_name = None
 
         self.pause_time = 50
@@ -35,8 +34,7 @@ class ThermoGuiThread(QThread):
 
         self.load_default_paths()
 
-        self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name,
-                          module_param_file=self.module_param_file_name)
+        self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name)
 
     def use_webcam(self, webcam_port: int):
         self.webcam_port = webcam_port
@@ -48,13 +46,11 @@ class ThermoGuiThread(QThread):
         settings_dir = tg.settings.get_settings_dir()
 
         self.camera_param_file_name = os.path.join(settings_dir, "camera_parameters.json")
-        self.module_param_file_name = os.path.join(settings_dir, "module_parameters.json")
         tg.settings.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
         self.input_file_name = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
 
     def load_video(self, start_frame: int, end_frame: int):
-        self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name,
-                          module_param_file=self.module_param_file_name)
+        self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name)
         self.app.load_video(start_frame=start_frame, end_frame=end_frame)
 
     def run(self):
@@ -98,6 +94,7 @@ class ThermoGUI(QtGui.QMainWindow, Ui_ThermoGUI_main_window):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)
+        self.set_logo_icon()
 
         self.thermo_thread = ThermoGuiThread()
         self.is_stoppable = True
@@ -110,11 +107,18 @@ class ThermoGUI(QtGui.QMainWindow, Ui_ThermoGUI_main_window):
         self.capture = None
         self.webcam_port = None
 
+    def set_logo_icon(self):
+        gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
+        logo_path = os.path.join(gui_path, "img/logo.png")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(logo_path), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
+
     def connect_widgets(self):
 
         # File buttons
         self.file_about.triggered.connect(self.open_about_window)
-        self.file_exit.triggered.connect(self.close)
+        self.file_exit.triggered.connect(self.deleteLater)
 
         # Main buttons.
         self.load_video_button.clicked.connect(self.load_video_from_file)
@@ -159,6 +163,7 @@ class ThermoGUI(QtGui.QMainWindow, Ui_ThermoGUI_main_window):
         self.max_merging_distance_value.valueChanged.connect(self.update_cluster_cleaning_params)
 
         # Rectangle detection.
+        self.expected_ratio_value.valueChanged.connect(self.update_rectangle_detection_params)
         self.ratio_max_deviation_value.valueChanged.connect(self.update_rectangle_detection_params)
         self.min_area_value.valueChanged.connect(self.update_rectangle_detection_params)
 
@@ -213,7 +218,7 @@ class ThermoGUI(QtGui.QMainWindow, Ui_ThermoGUI_main_window):
         self.thermo_thread.start()
 
     def stop_all_frames(self):
-        self.thermo_thread.terminate()
+        self.thermo_thread.deleteLater()
         self.video_finished(True)
 
     def pause_all_frames(self):
@@ -284,6 +289,7 @@ class ThermoGUI(QtGui.QMainWindow, Ui_ThermoGUI_main_window):
         self.thermo_thread.app.cluster_cleaning_parameters.max_endpoint_distance = np.pi / 180 * self.max_merging_distance_value.value()
 
     def update_rectangle_detection_params(self):
+        self.thermo_thread.app.rectangle_detection_parameters.aspect_ratio = self.expected_ratio_value.value()
         self.thermo_thread.app.rectangle_detection_parameters.aspect_ratio_relative_deviation = self.ratio_max_deviation_value.value()
         self.thermo_thread.app.rectangle_detection_parameters.min_area = self.min_area_value.value()
 
