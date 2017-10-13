@@ -141,7 +141,7 @@ class ThermoGUI(QtGui.QMainWindow, Ui_ThermoGUI_main_window):
         self.image_scaling_slider.valueChanged.connect(self.update_image_scaling)
 
         # Preprocessing and Edge extraction.
-        self.undistort_image_box.clicked.connect(self.update_image_distortion)
+        self.undistort_image_box.stateChanged.connect(self.update_image_distortion)
         self.angle_value.valueChanged.connect(self.update_image_angle)
         self.blur_value.valueChanged.connect(self.update_blur_value)
         self.max_histeresis_value.valueChanged.connect(self.update_histeresis_params)
@@ -226,7 +226,7 @@ class ThermoGUI(QtGui.QMainWindow, Ui_ThermoGUI_main_window):
         self.thermo_thread.start()
 
     def stop_all_frames(self):
-        self.thermo_thread.deleteLater()
+        self.thermo_thread.terminate()
         self.video_finished(True)
 
     def pause_all_frames(self):
@@ -355,8 +355,8 @@ class ThermoGUI(QtGui.QMainWindow, Ui_ThermoGUI_main_window):
         self.capture.start()
 
         self.capture.ok_button.clicked.connect(self.set_webcam_port)
-        if self.undistort_image_box.isChecked():
-            self.undistort_image_box.click()
+        self.undistort_image_box.setChecked(True)
+        self.undistort_image_box.setChecked(False)
 
     def reset_app(self):
         self.thermo_thread.terminate()
