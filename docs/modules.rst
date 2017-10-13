@@ -4,7 +4,8 @@ thermography
 .. toctree::
    :maxdepth: 4
 
-   main_image
+   gui
+   gui
+   main_app
    main_test
-   main_video
    thermography

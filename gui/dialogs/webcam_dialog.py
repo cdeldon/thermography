@@ -3,10 +3,10 @@ import os
 from PyQt4 import QtGui, QtCore
 
 import thermography as tg
-from .design import webcam_dialog_design
+from gui.design import Ui_WebCam
 
 
-class WebCamWindow(QtGui.QMainWindow, webcam_dialog_design.Ui_WebCam):
+class WebCamWindow(QtGui.QMainWindow, Ui_WebCam):
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent=parent)
         self.setupUi(self)

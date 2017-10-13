@@ -4,6 +4,14 @@ thermography\.test package
 Submodules
 ----------
 
+thermography\.test\.test\_ID module
+-----------------------------------
+
+.. automodule:: thermography.test.test_ID
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 thermography\.test\.test\_geometry module
 -----------------------------------------
 

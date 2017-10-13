@@ -37,6 +37,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Thermography 1.0.0 documentation" href="index.html"/>
         <link rel="up" title="thermography package" href="thermography.html"/>
+        <link rel="next" title="gui module" href="gui.html"/>
         <link rel="prev" title="thermography.test package" href="thermography.test.html"/> 
 
   
@@ -100,6 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="thermography.test.html">thermography.test package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">thermography.utils package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-thermography.utils.ID">thermography.utils.ID module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-thermography.utils.display">thermography.utils.display module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-thermography.utils.geometry">thermography.utils.geometry module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-thermography.utils.images">thermography.utils.images module</a></li>
@@ -111,6 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui module</a></li>
 </ul>
 
             
@@ -181,8 +184,125 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-thermography.utils.ID">
+<span id="thermography-utils-id-module"></span><h2>thermography.utils.ID module<a class="headerlink" href="#module-thermography.utils.ID" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="thermography.utils.ID.next_id">
+<code class="descclassname">thermography.utils.ID.</code><code class="descname">next_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#thermography.utils.ID.next_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the next unique id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The generated ID</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.utils.ID.reset_id">
+<code class="descclassname">thermography.utils.ID.</code><code class="descname">reset_id</code><span class="sig-paren">(</span><em>value: int = 0</em><span class="sig-paren">)</span><a class="headerlink" href="#thermography.utils.ID.reset_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the id of the ID generator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – New start value of the ID generator.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-thermography.utils.display">
 <span id="thermography-utils-display-module"></span><h2>thermography.utils.display module<a class="headerlink" href="#module-thermography.utils.display" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="thermography.utils.display.draw_intersections">
+<code class="descclassname">thermography.utils.display.</code><code class="descname">draw_intersections</code><span class="sig-paren">(</span><em>intersections: list</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#thermography.utils.display.draw_intersections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the intersections contained in the first parameter onto the base image passed as second parameter and displays
+the image using the third parameter as title.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>intersections</strong> – List of intersection coordinates.</li>
+<li><strong>base_image</strong> – Base image over which to render the intersections.</li>
+<li><strong>windows_name</strong> – Title to give to the rendered image.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.utils.display.draw_motion">
+<code class="descclassname">thermography.utils.display.</code><code class="descname">draw_motion</code><span class="sig-paren">(</span><em>flow: numpy.ndarray</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em>, <em>draw_mean_motion: bool = True</em>, <em>nums=10</em><span class="sig-paren">)</span><a class="headerlink" href="#thermography.utils.display.draw_motion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the motion flow contained in the first parameter onto the base image passed as second argument and displays
+the image using the third argument as title.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>flow</strong> – Numpy array of flow computed by the motion estimator.</li>
+<li><strong>base_image</strong> – Base image over which to render the intersection. Note that this image must have the dimensions used for the flow computation.</li>
+<li><strong>windows_name</strong> – Title to give to the rendered image.</li>
+<li><strong>draw_mean_motion</strong> – Boolean flag indicating whether to render also the mean motion estimate.</li>
+<li><strong>nums</strong> – Number of samples in each dimension to be rendered.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.utils.display.draw_rectangles">
+<code class="descclassname">thermography.utils.display.</code><code class="descname">draw_rectangles</code><span class="sig-paren">(</span><em>rectangles: list</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#thermography.utils.display.draw_rectangles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the rectangles contained in the first parameter onto the base image passed as second parameter and displays
+the image using the third parameter as title.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rectangles</strong> – List of rectangles.</li>
+<li><strong>base_image</strong> – Base image over which to render the rectangles.</li>
+<li><strong>windows_name</strong> – Title to give to the rendered image.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.utils.display.draw_segments">
+<code class="descclassname">thermography.utils.display.</code><code class="descname">draw_segments</code><span class="sig-paren">(</span><em>segments: list</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em>, <em>render_indices: bool = True</em>, <em>colors: list = None</em><span class="sig-paren">)</span><a class="headerlink" href="#thermography.utils.display.draw_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the segments contained in the first parameter onto the base image passed as second parameter and displays
+the image using the third parameter as title. The indices associated to the segments are rendered on the image
+depending on ‘render_indices’.
+A list of colors can be passed as argument to specify the colors to be used for different segment clusters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>segments</strong> – List of segment clusters.</li>
+<li><strong>base_image</strong> – Base image over which to render the segments.</li>
+<li><strong>windows_name</strong> – Title to give to the rendered image.</li>
+<li><strong>render_indices</strong> – Boolean flag indicating whether to render the segment indices or not.</li>
+<li><strong>colors</strong> – Color list to be used for segment rendering, such that segments belonging to the same cluster are of the same color.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="function">
 <dt id="thermography.utils.display.random_color">
 <code class="descclassname">thermography.utils.display.</code><code class="descname">random_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#thermography.utils.display.random_color" title="Permalink to this definition">¶</a></dt>
@@ -289,7 +409,9 @@ points to get a consistent angle with the one seen by the user.</p>
 <dl class="function">
 <dt id="thermography.utils.geometry.line_estimate">
 <code class="descclassname">thermography.utils.geometry.</code><code class="descname">line_estimate</code><span class="sig-paren">(</span><em>seg1: numpy.ndarray</em>, <em>seg2: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#thermography.utils.geometry.line_estimate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the line estimation (regression) using the endpoints of the segments passed as argument.</p>
+<dd><p>Computes the line estimation (regression) using the endpoints of the segments passed as argument.
+Depending on the points’ distribution, the line estimate is computed in the x-y plane as usual, or on the y-x plane
+(i.e. with inverted coordinates).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -300,7 +422,7 @@ points to get a consistent angle with the one seen by the user.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The slope and intercept of the estimated line.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The slope and intercept of the estimated line, a boolean indicating whether the slope and intercept refer to a vertical or horizontal polyfit.</p>
 </td>
 </tr>
 </tbody>
@@ -325,20 +447,15 @@ points to get a consistent angle with the one seen by the user.</p>
 
 <dl class="function">
 <dt id="thermography.utils.geometry.merge_segments">
-<code class="descclassname">thermography.utils.geometry.</code><code class="descname">merge_segments</code><span class="sig-paren">(</span><em>segment_list: list</em>, <em>verticality_thresh: float = 10.0</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#thermography.utils.geometry.merge_segments" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">thermography.utils.geometry.</code><code class="descname">merge_segments</code><span class="sig-paren">(</span><em>segment_list: list</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#thermography.utils.geometry.merge_segments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes a unique segments as a representation of the almost collinear segments passed as argument.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>segment_list</strong> – List of almost collinear segments to be merged into a single segment.</li>
-<li><strong>verticality_thresh</strong> – Verticality threshold, i.e. if std(y) &gt; verticality_thresh * std(x) then the segment is merged by using a a vertical fitting, otherwise an horizontal fitting.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>segment_list</strong> – List of almost collinear segments to be merged into a single segment.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A new segment defined on the line estimation over the segments passed as argument.</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new segment defined on the line estimation over the segments passed as argument.</td>
 </tr>
 </tbody>
 </table>
@@ -346,7 +463,7 @@ points to get a consistent angle with the one seen by the user.</p>
 
 <dl class="function">
 <dt id="thermography.utils.geometry.point_line_distance">
-<code class="descclassname">thermography.utils.geometry.</code><code class="descname">point_line_distance</code><span class="sig-paren">(</span><em>point: numpy.ndarray</em>, <em>slope: float</em>, <em>intercept: float</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#thermography.utils.geometry.point_line_distance" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">thermography.utils.geometry.</code><code class="descname">point_line_distance</code><span class="sig-paren">(</span><em>point: numpy.ndarray</em>, <em>slope: float</em>, <em>intercept: float</em>, <em>vertical: bool</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#thermography.utils.geometry.point_line_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the shortest distance between a point and a line defined by its slope and intercept.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -356,10 +473,32 @@ points to get a consistent angle with the one seen by the user.</p>
 <li><strong>point</strong> – Point given by a 2D coordinate in the form of [x, y]</li>
 <li><strong>slope</strong> – Slope of the line</li>
 <li><strong>intercept</strong> – Intercept of the line</li>
+<li><strong>vertical</strong> – Boolean indicating if the slope and intercept refer to a vertical or horizontal polyfit.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Positive minimal distance between the point passed as argument and the line defined by the slope and intercept passed as arguments.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.utils.geometry.rectangle_contains">
+<code class="descclassname">thermography.utils.geometry.</code><code class="descname">rectangle_contains</code><span class="sig-paren">(</span><em>rectangle: numpy.ndarray</em>, <em>point: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#thermography.utils.geometry.rectangle_contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes whether a point is inside a rectangle or not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>rectangle</strong> – Rectangle to be tested against the query point.</li>
+<li><strong>point</strong> – Point to be tested against the rectangle.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if the point is inside or on the rectangle contours, False otherwise.</p>
 </td>
 </tr>
 </tbody>
@@ -474,70 +613,6 @@ Implementation taken form “<a class="reference external" href="https://ch.math
 <div class="section" id="module-thermography.utils.images">
 <span id="thermography-utils-images-module"></span><h2>thermography.utils.images module<a class="headerlink" href="#module-thermography.utils.images" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="thermography.utils.images.draw_intersections">
-<code class="descclassname">thermography.utils.images.</code><code class="descname">draw_intersections</code><span class="sig-paren">(</span><em>intersections: list</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#thermography.utils.images.draw_intersections" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draws the intersections contained in the first parameter onto the base image passed as second parameter and displays
-the image using the third parameter as title.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>intersections</strong> – List of intersection coordinates.</li>
-<li><strong>base_image</strong> – Base image over which to render the intersections.</li>
-<li><strong>windows_name</strong> – Title to give to the rendered image.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="thermography.utils.images.draw_rectangles">
-<code class="descclassname">thermography.utils.images.</code><code class="descname">draw_rectangles</code><span class="sig-paren">(</span><em>rectangles: list</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#thermography.utils.images.draw_rectangles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draws the rectangles contained in the first parameter onto the base image passed as second parameter and displays
-the image using the third parameter as title.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>rectangles</strong> – List of rectangles.</li>
-<li><strong>base_image</strong> – Base image over which to render the rectangles.</li>
-<li><strong>windows_name</strong> – Title to give to the rendered image.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="thermography.utils.images.draw_segments">
-<code class="descclassname">thermography.utils.images.</code><code class="descname">draw_segments</code><span class="sig-paren">(</span><em>segments: list</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em>, <em>render_indices: bool = True</em>, <em>colors: list = None</em><span class="sig-paren">)</span><a class="headerlink" href="#thermography.utils.images.draw_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draws the segments contained in the first parameter onto the base image passed as second parameter and displays
-the image using the third parameter as title. The indices associated to the segments are rendered on the image
-depending on ‘render_indices’.
-A list of colors can be passed as argument to specify the colors to be used for different segment clusters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>segments</strong> – List of segment clusters.</li>
-<li><strong>base_image</strong> – Base image over which to render the segments.</li>
-<li><strong>windows_name</strong> – Title to give to the rendered image.</li>
-<li><strong>render_indices</strong> – Boolean flag indicating whether to render the segment indices or not.</li>
-<li><strong>colors</strong> – Color list to be used for segment rendering, such that segments belonging to the same cluster are of the same color.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="thermography.utils.images.rotate_image">
 <code class="descclassname">thermography.utils.images.</code><code class="descname">rotate_image</code><span class="sig-paren">(</span><em>image: numpy.ndarray</em>, <em>a: float</em><span class="sig-paren">)</span><a class="headerlink" href="#thermography.utils.images.rotate_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rotates the input image by a radiants in counter-clock-wise direction.</p>
@@ -594,6 +669,8 @@ A list of colors can be passed as argument to specify the colors to be used for 
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="gui.html" class="btn btn-neutral float-right" title="gui module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="thermography.test.html" class="btn btn-neutral" title="thermography.test package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

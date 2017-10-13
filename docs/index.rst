@@ -7,11 +7,11 @@ Welcome to Thermography's documentation!
 ========================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
    
    thermography
-
+   gui
 
 
 Indices and tables

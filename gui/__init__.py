@@ -1,1 +1,1 @@
-from .thermo_gui import ThermoGUI
+from .dialogs import ThermoGUI

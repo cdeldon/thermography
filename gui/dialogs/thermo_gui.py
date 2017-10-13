@@ -1,13 +1,15 @@
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QImage, QPixmap
-from PyQt4.QtCore import QThread
-import os, cv2
+import os
+
+import cv2
 import numpy as np
-from .design.thermo_gui_design import Ui_ThermoGUI_main_window
-from .webcam_dialog import WebCamWindow
-from .about_dialog import AboutDialog
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import QThread
+from PyQt4.QtGui import QImage, QPixmap
 
 import thermography as tg
+from gui.design import Ui_ThermoGUI_main_window
+from gui.dialogs.about_dialog import AboutDialog
+from gui.dialogs.webcam_dialog import WebCamWindow
 
 
 class ThermoGuiThread(QThread):
@@ -20,6 +22,9 @@ class ThermoGuiThread(QThread):
     module_map_frame_signal = QtCore.pyqtSignal(np.ndarray)
 
     def __init__(self):
+        """
+        Initializes the Thermo Thread.
+        """
         super(ThermoGuiThread, self).__init__()
 
         self.camera_param_file_name = None
@@ -91,6 +96,9 @@ class ThermoGuiThread(QThread):
 
 
 class ThermoGUI(QtGui.QMainWindow, Ui_ThermoGUI_main_window):
+    """
+    Main GUI window.
+    """
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)

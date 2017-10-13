@@ -12,6 +12,22 @@ thermography\.detection\.edge\_detection module
     :undoc-members:
     :show-inheritance:
 
+thermography\.detection\.intersection\_detection module
+-------------------------------------------------------
+
+.. automodule:: thermography.detection.intersection_detection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+thermography\.detection\.motion\_detection module
+-------------------------------------------------
+
+.. automodule:: thermography.detection.motion_detection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 thermography\.detection\.rectangle\_detection module
 ----------------------------------------------------
 
