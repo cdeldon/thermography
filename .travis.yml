@@ -11,7 +11,7 @@ install:
 
 # Command to run tests.
 script:
-  - python -m unittest -v
+  - python -m unittest discover thermography/test -v
 
 # Branches to be built.
 branches:
