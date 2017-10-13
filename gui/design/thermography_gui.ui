@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>ThermoGUI_main_window</class>
+ <widget class="QMainWindow" name="ThermoGUI_main_window">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,11 +17,14 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Thermography</string>
+   <string>ThermoGUI</string>
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>img/thermography.png</normaloff>img/thermography.png</iconset>
+    <normaloff>img/logo.png</normaloff>img/logo.png</iconset>
+  </property>
+  <property name="whatsThis">
+   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tool Bar&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
@@ -152,6 +155,9 @@
                   <height>0</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Play the current video/Webcam.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
                 <property name="text">
                  <string>Play</string>
                 </property>
@@ -177,6 +183,9 @@
                   <height>0</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pause the current video/Webcam.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
                 <property name="text">
                  <string>Pause</string>
                 </property>
@@ -201,6 +210,9 @@
                   <width>20</width>
                   <height>0</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Resets the current video to the start.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
                  <string>Stop</string>
@@ -229,6 +241,9 @@
                 <italic>false</italic>
                 <bold>true</bold>
                </font>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Resets the state of the ThermoGUI.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="autoFillBackground">
                <bool>false</bool>
@@ -628,6 +643,9 @@
                <property name="focusPolicy">
                 <enum>Qt::WheelFocus</enum>
                </property>
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Initial frame of the video to be loaded.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
                <property name="maximum">
                 <number>100000</number>
                </property>
@@ -661,6 +679,9 @@
              </item>
              <item row="1" column="1">
               <widget class="QSpinBox" name="video_to_index">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Final frame of the video to be loaded.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
                <property name="layoutDirection">
                 <enum>Qt::LeftToRight</enum>
                </property>
@@ -687,6 +708,9 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads the frames from the selected video file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
               <string>Choose Video</string>
@@ -721,6 +745,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="detect_webcam_button">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Detects the correct port for the Webcam&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
              <property name="text">
               <string>Detect</string>
              </property>
@@ -1498,6 +1525,40 @@
     </item>
    </layout>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>893</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="FileMenu">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="file_about"/>
+    <addaction name="separator"/>
+    <addaction name="file_exit"/>
+   </widget>
+   <addaction name="FileMenu"/>
+  </widget>
+  <action name="actionLoad">
+   <property name="text">
+    <string>Load</string>
+   </property>
+  </action>
+  <action name="file_about">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="file_exit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

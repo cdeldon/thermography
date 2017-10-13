@@ -22,17 +22,20 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(310, 265)
+class Ui_WebCam(object):
+    def setupUi(self, WebCam):
+        WebCam.setObjectName(_fromUtf8("WebCam"))
+        WebCam.resize(310, 265)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
-        MainWindow.setSizePolicy(sizePolicy)
-        MainWindow.setMinimumSize(QtCore.QSize(200, 200))
-        self.centralwidget = QtGui.QWidget(MainWindow)
+        sizePolicy.setHeightForWidth(WebCam.sizePolicy().hasHeightForWidth())
+        WebCam.setSizePolicy(sizePolicy)
+        WebCam.setMinimumSize(QtCore.QSize(200, 200))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("img/logo-webcam.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        WebCam.setWindowIcon(icon)
+        self.centralwidget = QtGui.QWidget(WebCam)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
@@ -61,15 +64,15 @@ class Ui_MainWindow(object):
         self.next_button.setObjectName(_fromUtf8("next_button"))
         self.horizontalLayout.addWidget(self.next_button)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        MainWindow.setCentralWidget(self.centralwidget)
+        WebCam.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(WebCam)
+        QtCore.QMetaObject.connectSlotsByName(WebCam)
 
-    def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
-        self.webcam_view.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">WebCam</span></p></body></html>", None))
-        self.previous_button.setText(_translate("MainWindow", "Previous", None))
-        self.ok_button.setText(_translate("MainWindow", "OK!", None))
-        self.next_button.setText(_translate("MainWindow", "Next", None))
+    def retranslateUi(self, WebCam):
+        WebCam.setWindowTitle(_translate("WebCam", "ThermoGUI - Webcam", None))
+        self.webcam_view.setText(_translate("WebCam", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">WebCam</span></p></body></html>", None))
+        self.previous_button.setText(_translate("WebCam", "Previous", None))
+        self.ok_button.setText(_translate("WebCam", "OK!", None))
+        self.next_button.setText(_translate("WebCam", "Next", None))
 
