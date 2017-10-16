@@ -1,12 +1,14 @@
 import cv2
 import os
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 
 import thermography as tg
 from gui.design import Ui_WebCam
 
 
-class WebCamWindow(QtGui.QMainWindow, Ui_WebCam):
+class WebCamWindow(QtWidgets.QMainWindow, Ui_WebCam):
+    webcam_port_signal = QtCore.pyqtSignal(int)
+
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent=parent)
         self.setupUi(self)
@@ -40,9 +42,8 @@ class WebCamWindow(QtGui.QMainWindow, Ui_WebCam):
         self.set_webcam()
 
     def current_webcam_value_found(self):
-        self.deleteLater()
+        self.webcam_port_signal.emit(self.webcam_value)
         self.close()
-        return self.webcam_value
 
     def set_webcam(self):
         self.stop()
