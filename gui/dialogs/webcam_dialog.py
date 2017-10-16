@@ -49,6 +49,7 @@ class WebCamWindow(QtGui.QMainWindow, Ui_WebCam):
         self.cap.release()
         self.cap = cv2.VideoCapture(self.webcam_value)
         self.start()
+        self.ok_button.setText("Use port {}!".format(self.webcam_value))
 
     def start(self):
         self.timer = QtCore.QTimer()
