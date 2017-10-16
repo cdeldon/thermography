@@ -774,7 +774,7 @@ class Ui_ThermoGUI_main_window(object):
         self.menuBar.addAction(self.FileMenu.menuAction())
 
         self.retranslateUi(ThermoGUI_main_window)
-        self.tabWidget.setCurrentIndex(3)
+        self.tabWidget.setCurrentIndex(0)
         self.tab_widget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(ThermoGUI_main_window)
 
@@ -853,4 +853,14 @@ class Ui_ThermoGUI_main_window(object):
         self.actionLoad.setText(_translate("ThermoGUI_main_window", "Load"))
         self.file_about.setText(_translate("ThermoGUI_main_window", "About"))
         self.file_exit.setText(_translate("ThermoGUI_main_window", "Exit"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    ThermoGUI_main_window = QtWidgets.QMainWindow()
+    ui = Ui_ThermoGUI_main_window()
+    ui.setupUi(ThermoGUI_main_window)
+    ThermoGUI_main_window.show()
+    sys.exit(app.exec_())
 
