@@ -1,3 +1,4 @@
 from .thermo_thread import ThermoGuiThread
+from .thermo_thread_dataset_creation import ThermoDatasetCreationThread
 from .thermo_gui import ThermoGUI
 from .create_dataset_dialog import CreateDatasetGUI

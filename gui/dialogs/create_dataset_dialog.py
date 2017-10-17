@@ -6,10 +6,23 @@ from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QImage
 
 import thermography as tg
+from gui.dialogs import ThermoDatasetCreationThread
 from gui.design import Ui_CreateDataset_main_window
 from gui.dialogs.about_dialog import AboutDialog
-from gui.dialogs.webcam_dialog import WebCamWindow
-from gui.dialogs import ThermoGuiThread
+
+
+class VideoLoaderThread(QtCore.QThread):
+    finish_signal = QtCore.pyqtSignal(list)
+
+    def __init__(self, video_path: str, from_index: int, to_index: int, parent=None):
+        super(self.__class__, self).__init__(parent=parent)
+        self.video_path = video_path
+        self.from_index = from_index
+        self.to_index = to_index
+
+    def run(self):
+        video_loader = tg.io.VideoLoader(self.video_path, self.from_index, self.to_index)
+        self.finish_signal.emit(video_loader.frames)
 
 
 class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
@@ -22,17 +35,15 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.setupUi(self)
         self.set_logo_icon()
 
-        self.thermo_thread = ThermoGuiThread()
-        self.is_stoppable = True
-
         self.last_folder_opened = None
         self.output_folder = None
+        self.frames = []
+        self.current_frame_id = 0
+        self.current_module_id_in_frame = 0
+
+        self.thermo_thread = None
 
         self.connect_widgets()
-        self.connect_thermo_thread()
-
-        self.capture = None
-        self.webcam_port = None
 
     def set_logo_icon(self):
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
@@ -51,8 +62,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.load_video_button.clicked.connect(self.load_video_from_file)
         self.output_path_button.clicked.connect(self.select_output_path)
 
-        self.play_video_button.clicked.connect(self.play_all_frames)
-        self.stop_video_button.clicked.connect(self.stop_all_frames)
+        self.play_video_button.clicked.connect(self.start_playing_frames)
 
         self.image_scaling_slider.valueChanged.connect(self.update_image_scaling)
 
@@ -83,7 +93,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.thermo_thread.rectangle_frame_signal.connect(lambda x: self.display_rectangle_image(x))
         self.thermo_thread.module_list_signal.connect(lambda x: self.display_all_modules(x))
 
-        self.thermo_thread.finish_signal.connect(self.video_finished)
+        self.thermo_thread.finish_signal.connect(self.frame_finished)
 
     def open_about_window(self):
         about = AboutDialog(parent=self)
@@ -99,21 +109,29 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         if video_file_name == "":
             return
         self.last_folder_opened = os.path.dirname(video_file_name)
-
-        self.thermo_thread.input_file_name = video_file_name
-        self.is_stoppable = True
         self.setWindowTitle("Thermography: {}".format(video_file_name))
 
         start_frame = self.video_from_index.value()
         end_frame = self.video_to_index.value()
         if end_frame == -1:
             end_frame = None
-        self.thermo_thread.load_video(start_frame=start_frame, end_frame=end_frame)
 
+        video_loader_thread = VideoLoaderThread(video_path=video_file_name, from_index=start_frame, to_index=end_frame,
+                                                parent=self)
+        video_loader_thread.start()
+        video_loader_thread.finish_signal.connect(self.video_loader_finished)
+
+    def video_loader_finished(self, frame_list: list):
+        self.frames = frame_list.copy()
         self.global_progress_bar.setMinimum(0)
-        self.global_progress_bar.setMaximum(len(self.thermo_thread.app.frames) - 1)
+        self.global_progress_bar.setMaximum(len(self.frames) - 1)
 
-        self.thermo_thread.iteration_signal.connect(self.update_global_progress_bar)
+        self.play_video_button.setEnabled(True)
+        self.module_working_button.setEnabled(True)
+        self.module_broken_button.setEnabled(True)
+
+        self.current_frame_id = 0
+        self.current_module_id_in_frame = 0
 
     def select_output_path(self):
         output_directory = QtWidgets.QFileDialog.getExistingDirectory(caption="Select output directory")
@@ -129,33 +147,25 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         else:
             self.selected_output_path_label.setText('Selected output path: "{}"'.format(self.output_folder))
 
-    def play_all_frames(self):
-        self.thermo_thread.is_paused = False
+    def start_playing_frames(self):
+        self.thermo_thread = ThermoDatasetCreationThread()
+        self.connect_thermo_thread()
         self.image_scaling_slider.setEnabled(False)
         self.update_image_scaling()
 
-        self.image_scaling_label.setText("Input image scaling: {:0.2f}".format(self.thermo_thread.app.image_scaling))
         self.play_video_button.setEnabled(False)
-        if self.is_stoppable:
-            self.stop_video_button.setEnabled(True)
+        self.stop_video_button.setEnabled(True)
+
+        self.thermo_thread.processing_frame_id = self.current_frame_id
+        self.thermo_thread.processing_frame = self.frames[self.current_frame_id]
 
         self.thermo_thread.start()
 
-    def stop_all_frames(self):
-        self.thermo_thread.terminate()
-        self.video_finished(True)
-
-    def pause_all_frames(self):
-        self.thermo_thread.is_paused = True
-        self.play_video_button.setEnabled(True)
-        if self.is_stoppable:
-            self.stop_video_button.setEnabled(True)
-
     def current_module_is_working(self):
-        pass
+        self.display_next_module()
 
     def current_module_is_broken(self):
-        pass
+        self.display_next_module()
 
     def update_global_progress_bar(self, frame_index: int):
         self.global_progress_bar.setValue(frame_index)
@@ -230,59 +240,38 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.rectangle_image_view.setPixmap(pixmap)
 
     def display_all_modules(self, module_list: list):
-        self.thermo_thread.is_paused = True
-        for d in module_list:
-            coordinates = d["coordinates"]
-            module_image = d["image"]
-            self.resize_video_view(module_image.shape, self.current_module_view)
-            image = QImage(module_image.data, module_image.shape[1], module_image.shape[0], module_image.strides[0],
-                           QImage.Format_RGB888)
-            pixmap = QtGui.QPixmap.fromImage(image)
-            self.current_module_view.setPixmap(pixmap)
-            self.current_module_view.repaint()
-            input("Hello")
+        self.modules = module_list.copy()
+        self.current_module_id_in_frame = -1
+        self.display_next_module()
 
-        self.thermo_thread.is_paused = False
+    def display_next_module(self):
+        if self.current_module_id_in_frame == len(self.modules) or len(self.modules) == 0:
+            print("Finished all modules")
+            self.thermo_thread.start()
+            return
+
+        d = self.modules[self.current_module_id_in_frame]
+        coordinates = d["coordinates"]
+        module_image = d["image"]
+        self.resize_video_view(module_image.shape, self.current_module_view)
+        image = QImage(module_image.data, module_image.shape[1], module_image.shape[0], module_image.strides[0],
+                       QImage.Format_RGB888)
+        pixmap = QtGui.QPixmap.fromImage(image)
+        self.current_module_view.setPixmap(pixmap)
+        self.current_module_view.repaint()
+
+        self.current_module_id_in_frame += 1
+
 
     @staticmethod
     def resize_video_view(size, view):
         view.setFixedSize(size[1], size[0])
 
-    def video_finished(self, finished: bool):
-        self.play_video_button.setEnabled(finished)
-        self.stop_video_button.setEnabled(not finished)
-        self.image_scaling_slider.setEnabled(finished)
+    def frame_finished(self):
+        print("Frame finished")
+        self.current_frame_id += 1
+        self.current_module_id_in_frame = 0
+        self.global_progress_bar.setValue(self.current_frame_id)
 
-    def set_webcam_port(self, port):
-        self.webcam_port = port
-        self.thermo_thread.use_webcam(self.webcam_port)
-        self.is_stoppable = False
-        self.setWindowTitle("Thermography: Webcam")
-        self.play_all_frames()
-
-    def load_webcam(self):
-        self.capture = WebCamWindow(parent=self)
-        self.capture.webcam_port_signal.connect(lambda port: self.set_webcam_port(port))
-        self.capture.show()
-        self.capture.start()
-        self.undistort_image_box.setChecked(True)
-        self.undistort_image_box.setChecked(False)
-
-    def reset_app(self):
-        self.thermo_thread.terminate()
-        self.thermo_thread = ThermoGuiThread()
-        self.image_scaling_slider.setValue(10)
-        self.video_finished(True)
-        self.global_progress_bar.setValue(0)
-        self.video_view.setText("Input Image")
-        self.canny_edges_view.setText("Edges Image")
-        self.segment_image_view.setText("Segment Image")
-        self.rectangle_image_view.setText("Rectangle Image")
-        self.module_image_view.setText("Module Map")
-        self.module_image_view.setAlignment(QtCore.Qt.AlignCenter)
-        self.capture = None
-        self.webcam_port = None
-
-        self.setWindowTitle("Thermography")
-
-        self.connect_thermo_thread()
+        self.thermo_thread.processing_frame = self.frames[self.current_frame_id]
+        self.thermo_thread.processing_frame_id = self.current_frame_id
