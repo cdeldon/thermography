@@ -6,7 +6,7 @@ import thermography as tg
 from gui.design import Ui_WebCam
 
 
-class WebCamWindow(QtWidgets.QMainWindow, Ui_WebCam):
+class WebcamDialog(QtWidgets.QMainWindow, Ui_WebCam):
     webcam_port_signal = QtCore.pyqtSignal(int)
 
     def __init__(self, parent=None):

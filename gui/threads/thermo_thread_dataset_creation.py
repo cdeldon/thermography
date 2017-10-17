@@ -9,7 +9,6 @@ import numpy as np
 
 class ThermoDatasetCreationThread(QThread):
     iteration_signal = QtCore.pyqtSignal(int)
-    finish_signal = QtCore.pyqtSignal()
     last_frame_signal = QtCore.pyqtSignal(np.ndarray)
     edge_frame_signal = QtCore.pyqtSignal(np.ndarray)
     segment_frame_signal = QtCore.pyqtSignal(np.ndarray)
@@ -58,5 +57,3 @@ class ThermoDatasetCreationThread(QThread):
         self.module_list_signal.emit(self.app.create_module_list())
 
         self.app.reset()
-
-        self.finish_signal.emit()

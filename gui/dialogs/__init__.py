@@ -1,4 +1,5 @@
-from .thermo_thread import ThermoGuiThread
-from .thermo_thread_dataset_creation import ThermoDatasetCreationThread
-from .thermo_gui import ThermoGUI
+from .about_dialog import AboutDialog
+from .webcam_dialog import WebcamDialog
+
 from .create_dataset_dialog import CreateDatasetGUI
+from .thermo_gui_dialog import ThermoGUI

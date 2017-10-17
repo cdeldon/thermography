@@ -7,10 +7,9 @@ from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QImage
 
 import thermography as tg
+from gui.threads import ThermoGuiThread
 from gui.design import Ui_ThermoGUI_main_window
-from gui.dialogs.about_dialog import AboutDialog
-from gui.dialogs.webcam_dialog import WebCamWindow
-from gui.dialogs import ThermoGuiThread
+from gui.dialogs import AboutDialog, WebcamDialog
 
 
 class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
@@ -270,7 +269,7 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.play_all_frames()
 
     def load_webcam(self):
-        self.capture = WebCamWindow(parent=self)
+        self.capture = WebcamDialog(parent=self)
         self.capture.webcam_port_signal.connect(lambda port: self.set_webcam_port(port))
         self.capture.show()
         self.capture.start()
