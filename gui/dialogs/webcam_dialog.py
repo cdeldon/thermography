@@ -21,8 +21,6 @@ class WebcamDialog(QtWidgets.QMainWindow, Ui_WebCam):
         self.previous_button.clicked.connect(self.decrease_webcam_value)
         self.ok_button.clicked.connect(self.current_webcam_value_found)
 
-        self.set_logo_icon()
-
     def set_logo_icon(self):
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
         logo_path = os.path.join(gui_path, "img/logo-webcam.png")

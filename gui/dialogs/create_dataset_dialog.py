@@ -8,7 +8,7 @@ from PyQt5.QtGui import QImage
 import thermography as tg
 from gui.threads import ThermoDatasetCreationThread
 from gui.design import Ui_CreateDataset_main_window
-from gui.dialogs.about_dialog import AboutDialog
+from gui.dialogs import AboutDialog, SaveImageDialog
 
 
 class VideoLoaderThread(QtCore.QThread):
@@ -36,7 +36,6 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.set_logo_icon()
 
         self.last_folder_opened = None
-        self.output_folder = None
         self.frames = []
         self.last_frame_image = None
         self.current_frame_id = 0
@@ -64,8 +63,6 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
         # Main buttons.
         self.load_video_button.clicked.connect(self.load_video_from_file)
-        self.output_path_button.clicked.connect(self.select_output_path)
-        self.save_module_dataset_button.clicked.connect(self.save_module_dataset)
 
         self.play_video_button.clicked.connect(self.start_playing_frames)
 
@@ -136,53 +133,9 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.module_working_button.setEnabled(True)
         self.module_broken_button.setEnabled(True)
 
-    def select_output_path(self):
-        output_directory = QtWidgets.QFileDialog.getExistingDirectory(caption="Select dataset output directory")
-        if output_directory == "":
-            return
-
-        self.output_folder = output_directory
-
-        if len(os.listdir(self.output_folder)) > 0:
-            QtWidgets.QMessageBox.warning(self, "Non empty directory",
-                                          "Directory {} not empty! Select an empty directory!".format(
-                                              self.output_folder), QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
-            self.select_output_path()
-        else:
-            self.selected_output_path_label.setText('Selected output path: "{}"'.format(self.output_folder))
-
     def save_module_dataset(self):
-        if self.output_folder is None:
-            self.select_output_path()
-
-        buttonReply = QtWidgets.QMessageBox.question(self, 'Save dataset',
-                                                     "Want to save dataset to {}?".format(self.output_folder),
-                                                     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                                                     QtWidgets.QMessageBox.No)
-        if buttonReply == QtWidgets.QMessageBox.No:
-            self.output_folder = None
-            self.save_module_dataset()
-        else:
-            working_modules_output_dir = os.path.join(self.output_folder, "working")
-            broken_modules_output_dir = os.path.join(self.output_folder, "broken")
-
-            def save_modules_into_directory(module_dict: dict, directory: str):
-                os.mkdir(os.path.abspath(directory))
-                for module_number, (module_id, registered_modules) in enumerate(module_dict.items()):
-                    print("Saving all views of module {} ({}/{})".format(module_id, module_number,
-                                                                         len(module_dict.keys()) - 1))
-                    for m_index, m in enumerate(registered_modules):
-                        name = "id_{0:05d}_frame_{1:05d}.jpg".format(module_id, m["frame_id"])
-                        path = os.path.join(directory, name)
-                        img = cv2.cvtColor(m["image"], cv2.COLOR_RGB2BGR)
-                        cv2.imwrite(path, img)
-
-            save_modules_into_directory(self.accepted_modules, working_modules_output_dir)
-            save_modules_into_directory(self.discarded_modules, broken_modules_output_dir)
-
-        _ = QtWidgets.QMessageBox.information(self, "Saved!", "Saved all modules to {}".format(self.output_folder),
-                                              QtWidgets.QMessageBox.Ok)
-        self.close()
+        save_dialog = SaveImageDialog(working_modules=self.accepted_modules, broken_modules=self.discarded_modules, parent=self)
+        save_dialog.show()
 
     def start_playing_frames(self):
         self.thermo_thread = ThermoDatasetCreationThread()
