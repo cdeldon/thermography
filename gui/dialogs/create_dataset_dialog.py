@@ -66,6 +66,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.load_video_button.clicked.connect(self.load_video_from_file)
 
         self.play_video_button.clicked.connect(self.start_playing_frames)
+        self.stop_video_button.clicked.connect(self.save_module_dataset)
 
         self.image_scaling_slider.valueChanged.connect(self.update_image_scaling)
 
@@ -93,7 +94,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.min_area_value.valueChanged.connect(self.update_rectangle_detection_params)
 
     def connect_thermo_thread(self):
-        self.thermo_thread.module_map_frame_signal.connect(lambda x: self.store_last_frame_image(x))
+        self.thermo_thread.last_frame_signal.connect(lambda x: self.store_last_frame_image(x))
         self.thermo_thread.module_list_signal.connect(lambda x: self.display_all_modules(x))
 
     def store_last_frame_image(self, img: np.ndarray):

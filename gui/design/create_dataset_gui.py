@@ -665,7 +665,7 @@ class Ui_CreateDataset_main_window(object):
         self.play_video_button.setToolTip(_translate("CreateDataset_main_window", "<html><head/><body><p>Play the current video/Webcam.</p></body></html>"))
         self.play_video_button.setText(_translate("CreateDataset_main_window", "Play"))
         self.stop_video_button.setToolTip(_translate("CreateDataset_main_window", "<html><head/><body><p>Resets the current video to the start.</p></body></html>"))
-        self.stop_video_button.setText(_translate("CreateDataset_main_window", "Stop"))
+        self.stop_video_button.setText(_translate("CreateDataset_main_window", "Stop & Save"))
         self.current_module_view.setText(_translate("CreateDataset_main_window", "<html><head/><body><p align=\"center\">Current Module</p></body></html>"))
         self.label_2.setText(_translate("CreateDataset_main_window", "Module Detected:"))
         self.module_working_button.setText(_translate("CreateDataset_main_window", "Working"))

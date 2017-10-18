@@ -380,7 +380,7 @@
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Resets the current video to the start.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="text">
-                   <string>Stop</string>
+                   <string>Stop &amp; Save</string>
                   </property>
                   <property name="checkable">
                    <bool>false</bool>
