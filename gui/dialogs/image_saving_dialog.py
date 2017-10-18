@@ -6,7 +6,7 @@ import thermography as tg
 from gui.design import Ui_Save_images_dialog
 
 
-class SaveImageDialog(QtWidgets.QMainWindow, Ui_Save_images_dialog):
+class SaveImageDialog(QtWidgets.QDialog, Ui_Save_images_dialog):
     def __init__(self, working_modules: dict, broken_modules: dict, misdetected_modules: dict, parent=None):
         super(self.__class__, self).__init__(parent=parent)
         self.setupUi(self)

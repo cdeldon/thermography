@@ -66,7 +66,8 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.load_video_button.clicked.connect(self.load_video_from_file)
 
         self.play_video_button.clicked.connect(self.start_playing_frames)
-        self.stop_video_button.clicked.connect(self.save_module_dataset)
+        self.stop_video_button.clicked.connect(self.save_and_close)
+        self.quick_save_button.clicked.connect(self.save_module_dataset)
 
         self.image_scaling_slider.valueChanged.connect(self.update_image_scaling)
 
@@ -137,9 +138,13 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.misdetection_button.setEnabled(True)
 
     def save_module_dataset(self):
-        save_dialog = SaveImageDialog(working_modules=self.accepted_modules, broken_modules=self.discarded_modules,
+        self.save_dialog = SaveImageDialog(working_modules=self.accepted_modules, broken_modules=self.discarded_modules,
                                       misdetected_modules=self.misdetected_modules, parent=self)
-        save_dialog.show()
+        self.save_dialog.exec_()
+
+    def save_and_close(self):
+        self.save_module_dataset()
+        self.close()
 
     def start_playing_frames(self):
         self.thermo_thread = ThermoDatasetCreationThread()
@@ -149,6 +154,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
         self.play_video_button.setEnabled(False)
         self.stop_video_button.setEnabled(True)
+        self.quick_save_button.setEnabled(True)
 
         self.current_frame_id = 0
         self.current_module_id_in_frame = 0
@@ -245,6 +251,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.thermo_thread.app.rectangle_detection_parameters.min_area = self.min_area_value.value()
 
     def display_all_modules(self, module_list: list):
+        print("We have {} modules".format(len(module_list)))
         self.current_frame_modules = module_list.copy()
         self.current_module_id_in_frame = -1
         if len(self.current_frame_modules) == 0:
@@ -301,5 +308,5 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.thermo_thread.processing_frame = self.frames[self.current_frame_id]
         self.thermo_thread.processing_frame_id = self.current_frame_id
 
-        print("Starting new frame {}".format(self.current_frame_id))
+        self.thermo_thread.terminate()
         self.thermo_thread.start()
