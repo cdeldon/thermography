@@ -122,7 +122,7 @@ class ThermoApp:
 
     def create_module_list(self):
         module_list = []
-        default_rect = np.float32([[629, 10], [10, 10], [10, 501], [629, 501]])
+        default_rect = np.float32([[639, 0], [0,0], [0, 511], [639, 511]])
         for rectangle_id, rectangle in self.module_map.global_module_map.items():
             if rectangle.frame_id_history[-1] != self.last_frame_id:
                 continue

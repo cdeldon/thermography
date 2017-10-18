@@ -95,7 +95,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.min_area_value.valueChanged.connect(self.update_rectangle_detection_params)
 
     def connect_thermo_thread(self):
-        self.thermo_thread.rectangle_frame_signal.connect(lambda x: self.store_last_frame_image(x))
+        self.thermo_thread.module_map_frame_signal.connect(lambda x: self.store_last_frame_image(x))
         self.thermo_thread.module_list_signal.connect(lambda x: self.display_all_modules(x))
 
     def store_last_frame_image(self, img: np.ndarray):
@@ -136,11 +136,8 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.module_working_button.setEnabled(True)
         self.module_broken_button.setEnabled(True)
 
-        self.current_frame_id = 0
-        self.current_module_id_in_frame = 0
-
     def select_output_path(self):
-        output_directory = QtWidgets.QFileDialog.getExistingDirectory(caption="Select output directory")
+        output_directory = QtWidgets.QFileDialog.getExistingDirectory(caption="Select dataset output directory")
         if output_directory == "":
             return
 
@@ -166,7 +163,26 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
             self.output_folder = None
             self.save_module_dataset()
         else:
-            print("Saving all files to {}".format(self.output_folder))
+            working_modules_output_dir = os.path.join(self.output_folder, "working")
+            broken_modules_output_dir = os.path.join(self.output_folder, "broken")
+
+            def save_modules_into_directory(module_dict: dict, directory: str):
+                os.mkdir(os.path.abspath(directory))
+                for module_number, (module_id, registered_modules) in enumerate(module_dict.items()):
+                    print("Saving all views of module {} ({}/{})".format(module_id, module_number,
+                                                                         len(module_dict.keys()) - 1))
+                    for m_index, m in enumerate(registered_modules):
+                        name = "id_{0:05d}_frame_{1:05d}.jpg".format(module_id, m["frame_id"])
+                        path = os.path.join(directory, name)
+                        img = cv2.cvtColor(m["image"], cv2.COLOR_RGB2BGR)
+                        cv2.imwrite(path, img)
+
+            save_modules_into_directory(self.accepted_modules, working_modules_output_dir)
+            save_modules_into_directory(self.discarded_modules, broken_modules_output_dir)
+
+        _ = QtWidgets.QMessageBox.information(self, "Saved!", "Saved all modules to {}".format(self.output_folder),
+                                              QtWidgets.QMessageBox.Ok)
+        self.close()
 
     def start_playing_frames(self):
         self.thermo_thread = ThermoDatasetCreationThread()
@@ -177,25 +193,23 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.play_video_button.setEnabled(False)
         self.stop_video_button.setEnabled(True)
 
+        self.current_frame_id = 0
+        self.current_module_id_in_frame = 0
+
         self.thermo_thread.processing_frame_id = self.current_frame_id
         self.thermo_thread.processing_frame = self.frames[self.current_frame_id]
 
         self.thermo_thread.start()
 
-    # FIXME : showing module and registering modules at different indices!!
     def current_module_is_working(self):
-        if self.register_module(self.accepted_modules):
-            self.display_current_module()
+        self.register_module(self.accepted_modules)
+        self.display_next_module()
 
     def current_module_is_broken(self):
-        if self.register_module(self.discarded_modules):
-            self.display_current_module()
+        self.register_module(self.discarded_modules)
+        self.display_next_module()
 
     def register_module(self, m: dict):
-        if self.current_module_id_in_frame == len(self.current_frame_modules):
-            print("Register module should never happen")
-            return False
-
         current_module = self.current_frame_modules[self.current_module_id_in_frame]
         image = current_module["image"]
         coords = current_module["coordinates"]
@@ -203,8 +217,6 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         if moduel_id not in m:
             m[moduel_id] = []
         m[moduel_id].append({"image": image, "coordinates": coords, "frame_id": self.current_frame_id})
-
-        return True
 
     def update_global_progress_bar(self, frame_index: int):
         self.global_progress_bar.setValue(frame_index)
@@ -273,13 +285,19 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
     def display_all_modules(self, module_list: list):
         self.current_frame_modules = module_list.copy()
-        self.current_module_id_in_frame = 0
+        self.current_module_id_in_frame = -1
         if len(self.current_frame_modules) == 0:
+            self.rectangle_image_view.setText("No Module detected")
+            self.rectangle_image_view.setAlignment(QtCore.Qt.AlignCenter)
             self.frame_finished()
             return
-        self.display_current_module()
+        self.display_next_module()
 
-    def display_current_module(self):
+    def display_next_module(self):
+        self.current_module_id_in_frame += 1
+        if len(self.current_frame_modules) == self.current_module_id_in_frame:
+            self.frame_finished()
+            return
 
         d = self.current_frame_modules[self.current_module_id_in_frame]
         coordinates = d["coordinates"]
@@ -288,7 +306,8 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         cv2.polylines(tmp_image, np.int32([coordinates]), True, (0, 0, 255), 2, cv2.LINE_AA)
         cv2.fillConvexPoly(mask, np.int32([coordinates]), (0, 0, 255), cv2.LINE_4)
         cv2.addWeighted(tmp_image, 0.8, mask, 0.5, 0, tmp_image)
-        image = QImage(tmp_image.data, tmp_image.shape[1], tmp_image.shape[0], tmp_image.strides[0], QImage.Format_RGB888)
+        image = QImage(tmp_image.data, tmp_image.shape[1], tmp_image.shape[0], tmp_image.strides[0],
+                       QImage.Format_RGB888)
         image = image.scaled(self.rectangle_image_view.size(), QtCore.Qt.KeepAspectRatio,
                              QtCore.Qt.SmoothTransformation)
         pixmap = QtGui.QPixmap.fromImage(image)
@@ -302,29 +321,24 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.current_module_view.setPixmap(pixmap)
         self.current_module_view.repaint()
 
-        self.current_module_id_in_frame += 1
-        if self.current_module_id_in_frame == len(self.current_frame_modules):
-            self.frame_finished()
-            return
-
     @staticmethod
     def resize_video_view(size, view):
         view.setFixedSize(size[1], size[0])
 
     def frame_finished(self):
         print("Frame finished")
-        print(self.accepted_modules)
         self.current_frame_id += 1
         self.current_module_id_in_frame = 0
+
         self.global_progress_bar.setValue(self.current_frame_id)
+
+        if self.current_frame_id == len(self.frames):
+            _ = QtWidgets.QMessageBox.information(self, "Finished", "Analyzed all frames", QtWidgets.QMessageBox.Ok)
+            self.save_module_dataset()
+            return
 
         self.thermo_thread.processing_frame = self.frames[self.current_frame_id]
         self.thermo_thread.processing_frame_id = self.current_frame_id
 
-        if self.current_frame_id == len(self.frames):
-            print("Analyzed all {} frames. quitting".format(len(self.frames)))
-            QtWidgets.QMessageBox.critical(self, "All modules analyzed", QtWidgets.QMessageBox.Ok)
-            self.save_module_dataset_button
-
-        print("Startin new frame {}".format(self.current_frame_id))
+        print("Starting new frame {}".format(self.current_frame_id))
         self.thermo_thread.start()
