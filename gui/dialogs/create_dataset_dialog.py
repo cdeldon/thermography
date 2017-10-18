@@ -43,6 +43,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.current_frame_modules = []
         self.discarded_modules = {}
         self.accepted_modules = {}
+        self.misdetected_modules = {}
 
         self.thermo_thread = None
 
@@ -71,7 +72,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         # Working and Broken module buttons.
         self.module_working_button.clicked.connect(self.current_module_is_working)
         self.module_broken_button.clicked.connect(self.current_module_is_broken)
-
+        self.misdetection_button.clicked.connect(self.current_module_misdetection)
         # Segment clustering.
         self.gmm_value.clicked.connect(self.update_clustering_params)
         self.knn_value.clicked.connect(self.update_clustering_params)
@@ -132,9 +133,11 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.play_video_button.setEnabled(True)
         self.module_working_button.setEnabled(True)
         self.module_broken_button.setEnabled(True)
+        self.misdetection_button.setEnabled(True)
 
     def save_module_dataset(self):
-        save_dialog = SaveImageDialog(working_modules=self.accepted_modules, broken_modules=self.discarded_modules, parent=self)
+        save_dialog = SaveImageDialog(working_modules=self.accepted_modules, broken_modules=self.discarded_modules,
+                                      misdetected_modules=self.misdetected_modules, parent=self)
         save_dialog.show()
 
     def start_playing_frames(self):
@@ -160,6 +163,10 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
     def current_module_is_broken(self):
         self.register_module(self.discarded_modules)
+        self.display_next_module()
+
+    def current_module_misdetection(self):
+        self.register_module(self.misdetected_modules)
         self.display_next_module()
 
     def register_module(self, m: dict):

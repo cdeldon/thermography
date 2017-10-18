@@ -7,20 +7,23 @@ from gui.design import Ui_Save_images_dialog
 
 
 class SaveImageDialog(QtWidgets.QMainWindow, Ui_Save_images_dialog):
-    def __init__(self, working_modules: dict, broken_modules: dict, parent=None):
+    def __init__(self, working_modules: dict, broken_modules: dict, misdetected_modules: dict, parent=None):
         super(self.__class__, self).__init__(parent=parent)
         self.setupUi(self)
         self.set_logo_icon()
 
         self.working_modules = working_modules
         self.broken_modules = broken_modules
+        self.misdetected_modules = misdetected_modules
 
         self.output_directory = " "
 
         self.choose_directory_button.clicked.connect(self.open_directory_dialog)
         self.save_button.clicked.connect(self.save_module_dataset)
         self.progress_bar_all_frames.setMinimum(0)
-        self.progress_bar_all_frames.setMaximum(len(self.working_modules.keys()) + len(self.broken_modules.keys()) - 1)
+        self.progress_bar_all_frames.setMaximum(
+            len(self.working_modules.keys()) + len(self.broken_modules.keys()) + len(
+                self.misdetected_modules.keys()) - 1)
 
     def set_logo_icon(self):
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
@@ -59,6 +62,7 @@ class SaveImageDialog(QtWidgets.QMainWindow, Ui_Save_images_dialog):
         else:
             working_modules_output_dir = os.path.join(self.output_directory, "working")
             broken_modules_output_dir = os.path.join(self.output_directory, "broken")
+            misdetected_modules_output_dir = os.path.join(self.output_directory, "misdetected")
 
             overall_iter = 0
 
@@ -69,7 +73,7 @@ class SaveImageDialog(QtWidgets.QMainWindow, Ui_Save_images_dialog):
                 for module_number, (module_id, registered_modules) in enumerate(module_dict.items()):
                     print("Saving all views of module {} ({}/{})".format(module_id, module_number,
                                                                          len(module_dict.keys()) - 1))
-                    self.progress_bar_all_frames.setValue(self.progress_bar_all_frames.value()+1)
+                    self.progress_bar_all_frames.setValue(self.progress_bar_all_frames.value() + 1)
                     self.progress_bar_intra_frame.setValue(0)
                     self.progress_bar_intra_frame.setMaximum(len(registered_modules))
                     for m_index, m in enumerate(registered_modules):
@@ -77,10 +81,11 @@ class SaveImageDialog(QtWidgets.QMainWindow, Ui_Save_images_dialog):
                         path = os.path.join(directory, name)
                         img = cv2.cvtColor(m["image"], cv2.COLOR_RGB2BGR)
                         cv2.imwrite(path, img)
-                        self.progress_bar_intra_frame.setValue(m_index+1)
+                        self.progress_bar_intra_frame.setValue(m_index + 1)
 
             save_modules_into_directory(self.working_modules, working_modules_output_dir)
             save_modules_into_directory(self.broken_modules, broken_modules_output_dir)
+            save_modules_into_directory(self.misdetected_modules, misdetected_modules_output_dir)
 
         _ = QtWidgets.QMessageBox.information(self, "Saved!", "Saved all modules to {}".format(self.output_directory),
                                               QtWidgets.QMessageBox.Ok)
