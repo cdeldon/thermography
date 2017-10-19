@@ -19,6 +19,7 @@ class ThermoDataset:
         self.__root_directory = None
         self.__thermo_class_list = None
         self.num_classes = None
+        self.__samples_per_class = []
 
         self.__train_fraction = 0.6
         self.__test_fraction = 0.2
@@ -26,6 +27,11 @@ class ThermoDataset:
 
         self.__image_file_names = None
         self.__labels = None
+
+    def get_class_weights(self):
+        weights = np.array([1.0 / v for v in self.__samples_per_class], dtype=np.float32)
+        weights /= np.sum(weights)
+        return weights
 
     @property
     def data_size(self):
@@ -77,12 +83,15 @@ class ThermoDataset:
 
         self.__image_file_names = np.array([], dtype=str)
         self.__labels = np.array([], dtype=np.int32)
+        sample_per_class = {}
         for thermo_class in class_list:
             directory = os.path.join(root_directory, thermo_class.class_folder)
             image_names = np.array([os.path.join(directory, img_name) for img_name in os.listdir(directory)], dtype=str)
             self.__image_file_names = np.concatenate((self.__image_file_names, image_names))
             self.__labels = np.concatenate(
                 (self.__labels, np.ones(shape=(len(image_names)), dtype=np.int8) * thermo_class.class_value))
+            sample_per_class[thermo_class.class_value] = len(image_names)
+        self.__samples_per_class = [sample_per_class[thermo_class.class_value] for thermo_class in class_list]
 
         if self.shuffle:
             permutation = np.random.permutation(len(self.__image_file_names))
@@ -111,11 +120,9 @@ class ThermoDataset:
         labels = convert_to_tensor(self.__labels, dtypes.int32)
 
         self.__dataset = Dataset.from_tensor_slices((images, labels))
-        self.__dataset = self.__dataset.map(self.__parse_image, num_threads=8, output_buffer_size=100 * self.batch_size)
-
-        # Shuffle the first `buffer_size` elements of the dataset
-        if self.shuffle:
-            self.__dataset = self.__dataset.shuffle(buffer_size=self.buffer_size)
+        self.__dataset = self.__dataset.map(self.__parse_image)
+        self.__dataset = self.__dataset.shuffle(self.buffer_size)
+        self.__dataset = self.__dataset.repeat()
 
         # Create a new dataset with batches of images
         self.__dataset = self.__dataset.batch(self.batch_size)

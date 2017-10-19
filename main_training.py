@@ -8,6 +8,8 @@ from datetime import datetime
 import tensorflow as tf
 from tensorflow.contrib.data import Iterator
 
+from progressbar import Bar, ETA, ProgressBar
+
 
 def main():
     path = "C:/Users/Carlo/Desktop/Ghidoni"
@@ -18,15 +20,15 @@ def main():
     thermo_class_list = [working_class, broken_class, misdetected_class]
 
     # Learning params
+    num_epochs = 1000
+    batch_size = 64
     learning_rate = 0.01
-    num_epochs = 10
-    batch_size = 24
 
     # Network params
-    dropout_rate = 0.8
+    keep_probability = 0.8
 
-    # How often we want to write the tf.summary data to disk
-    display_step = 20
+    # Summary params
+    write_every_n_steps = 20
 
     # Path for tf.summary.FileWriter and to store model checkpoints
     filewriter_path = os.path.join(path, "tensorboard")
@@ -34,61 +36,83 @@ def main():
 
     # Place data loading and preprocessing on the cpu
     with tf.device('/cpu:0'):
-        dataset = ThermoDataset(batch_size=batch_size, shuffle=True, buffer_size=1000)
-        dataset.load_dataset(root_directory=path, class_list=thermo_class_list)
+        with tf.name_scope("dataset"):
+            with tf.name_scope("loading"):
+                dataset = ThermoDataset(batch_size=batch_size, shuffle=True, buffer_size=1000)
+                dataset.load_dataset(root_directory=path, class_list=thermo_class_list)
 
-        # create an reinitializable iterator given the dataset structure
-        iterator = Iterator.from_structure(dataset.data.output_types,
-                                           dataset.data.output_shapes)
-        next_batch = iterator.get_next()
+            with tf.name_scope("iterator"):
+                # create an reinitializable iterator given the dataset structure
+                iterator = Iterator.from_structure(dataset.data.output_types,
+                                                   dataset.data.output_shapes)
+                next_batch = iterator.get_next()
 
-    # Ops for initializing the two different iterators
-    data_init_op = iterator.make_initializer(dataset.data)
+                # Ops for initializing the two different iterators
+                data_init_op = iterator.make_initializer(dataset.data)
 
-    # TF placeholder for graph input and output
-    x = tf.placeholder(tf.float32, [batch_size, 24, 30, 1])
-    y = tf.placeholder(tf.float32, [batch_size, dataset.num_classes])
-    keep_prob = tf.placeholder(tf.float32)
+    with tf.name_scope("placeholders"):
+        # TF placeholder for graph input and output
+        x = tf.placeholder(tf.float32, [batch_size, 24, 30, 1], name="input_image")
+        y = tf.placeholder(tf.float32, [batch_size, dataset.num_classes], name="input_labels")
+        keep_prob = tf.placeholder(tf.float32, name="keep_probab")
 
     # Initialize model
     model = SimpleNet(x, keep_prob, dataset.num_classes)
 
-    # Link variable to model output
-    score = model.y_conv
-
     # Op for calculating the loss
     with tf.name_scope("cross_ent"):
-        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=score,
-                                                                      labels=y))
+        # Link variable to model output
+        logits = model.y_conv
+
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y),
+                              name="cross_entropy_loss")
+
+    # Add the loss to summary
+    tf.summary.scalar('cross_entropy', loss)
+
+    # Gradient computation
+    with tf.name_scope("gradients"):
+        with tf.name_scope("all_gradients"):
+            all_gradients = tf.gradients(loss, tf.trainable_variables(), name="all_gradients")
+            all_gradients = list(zip(all_gradients, tf.trainable_variables()))
+
+        with tf.name_scope("conv_gradients"):
+            gradient_variables = [var for var in tf.trainable_variables() if "conv_" in var.name]
+            gradients = tf.gradients(loss, gradient_variables, name="gradients")
+            gradients = list(zip(gradients, gradient_variables))
+            for grad, var in gradients:
+                tf.summary.histogram(var.name + '_gradient', grad)
+
+        with tf.name_scope("full_conn_gradients"):
+            gradient_variables = [var for var in tf.trainable_variables() if "full_" in var.name]
+            gradients = tf.gradients(loss, gradient_variables, name="gradients")
+            gradients = list(zip(gradients, gradient_variables))
+            for grad, var in gradients:
+                tf.summary.histogram(var.name + '_gradient', grad)
 
     # Train op
     with tf.name_scope("train"):
-        # Get gradients of all trainable variables
-        gradients = tf.gradients(loss, tf.trainable_variables())
-        gradients = list(zip(gradients, tf.trainable_variables()))
+        optimizer = tf.train.AdagradOptimizer(learning_rate=learning_rate, name="optimizer")
+        train_op = optimizer.apply_gradients(grads_and_vars=all_gradients, name="apply_gradients")
 
-        # Create optimizer and apply gradient descent to the trainable variables
-        optimizer = tf.train.GradientDescentOptimizer(learning_rate)
-        train_op = optimizer.apply_gradients(grads_and_vars=gradients)
-
-    # Add gradients to summary
-    for gradient, var in gradients:
-        tf.summary.histogram(var.name + '/gradient', gradient)
+    # Predict op
+    with tf.name_scope("predict"):
+        predict_op = tf.argmax(logits, axis=1, name="model_predictions")
 
     # Add the variables we train to the summary
     for var in tf.trainable_variables():
         tf.summary.histogram(var.name, var)
 
-    # Add the loss to summary
-    tf.summary.scalar('cross_entropy', loss)
-
     # Evaluation op: Accuracy of the model
     with tf.name_scope("accuracy"):
-        correct_pred = tf.equal(tf.argmax(score, 1), tf.argmax(y, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+        correct_pred = tf.equal(predict_op, tf.argmax(y, 1), name="correct_predictions")
+        accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name="sccuracy")
 
     # Add the accuracy to the summary
     tf.summary.scalar('accuracy', accuracy)
+
+    with tf.name_scope('batch_input'):
+        tf.summary.image('input images', x, max_outputs=8)
 
     # Merge all summaries together
     merged_summary = tf.summary.merge_all()
@@ -108,20 +132,6 @@ def main():
         # Initialize all variables
         sess.run(tf.global_variables_initializer())
 
-        for epoch in range(num_epochs):
-            print("Starting epoch")
-            sess.run(data_init_op)
-            for step in range(batches_per_epoch):
-                print("Step {}".format(step))
-                img_batch, label_batch = sess.run(next_batch)
-                print("Loaded batch")
-                print(sess.run(tf.shape(img_batch)))
-                print(sess.run(tf.shape(label_batch)))
-            print("Epoch ended")
-
-        exit(0)
-
-
         # Add the model graph to TensorBoard
         writer.add_graph(sess.graph)
 
@@ -130,41 +140,43 @@ def main():
                                                           filewriter_path))
 
         # Loop over number of epochs
+        global_step = 0
         for epoch in range(num_epochs):
 
             print("{} Epoch number: {}".format(datetime.now(), epoch + 1))
 
-            # Initialize iterator with the training dataset
+            # Initialize iterator with the training dataset.
             sess.run(data_init_op)
 
-            test_acc = 0.
-            test_count = 0
+            pbar = ProgressBar(widgets=[Bar(), ' ', ETA()], maxval=batches_per_epoch).start()
             for step in range(batches_per_epoch):
-
+                global_step += 1
                 # get next batch of data
                 img_batch, label_batch = sess.run(next_batch)
 
                 # And run the training op
-                sess.run(train_op, feed_dict={x: img_batch,
-                                              y: label_batch,
-                                              keep_prob: dropout_rate})
+                _, predictions = sess.run([train_op, predict_op], feed_dict={x: img_batch,
+                                                                             y: label_batch,
+                                                                             keep_prob: keep_probability})
 
-                acc = sess.run(accuracy, feed_dict={x: img_batch,
-                                                    y: label_batch,
-                                                    keep_prob: 1.})
+                if (global_step + 1) % write_every_n_steps == 0:
+                    with tf.name_scope('image_prediction'):
+                        imgs = img_batch[:10]
+                        lab = np.argmax(label_batch[0:10, :], axis=1)
+                        pred = predictions[0:10]
+                        for im, l, p in zip(imgs, lab, pred):
+                            new_summary = tf.summary.image("True lab: {}, predicted: {}".format(l, p), np.array([im]))
+                            n_s = sess.run(new_summary, feed_dict={x: img_batch, y: label_batch, keep_prob: 1.})
+                            writer.add_summary(n_s, epoch * batches_per_epoch + step)
 
-                # Generate summary with the current batch of data and write to file
-                if step % display_step == 0:
                     s = sess.run(merged_summary, feed_dict={x: img_batch,
                                                             y: label_batch,
                                                             keep_prob: 1.})
 
                     writer.add_summary(s, epoch * batches_per_epoch + step)
-                test_acc += acc
-                test_count += 1
-            test_acc /= test_count
-            print("{} Validation Accuracy = {:.4f}".format(datetime.now(),
-                                                           test_acc))
+                pbar.update(step + 1)
+            pbar.finish()
+
             print("{} Saving checkpoint of model...".format(datetime.now()))
 
             # save checkpoint of the model
