@@ -10,12 +10,12 @@ import os
 
 
 class ThermoDataset:
-    def __init__(self, batch_size: int = 32, shuffle: bool = True, buffer_size: int = 1000):
+    def __init__(self, batch_size: int = 32):
         self.batch_size = batch_size
-        self.shuffle = shuffle
-        self.buffer_size = buffer_size
 
-        self.__dataset = None
+        self.__train_dataset = None
+        self.__test_dataset = None
+        self.__validation_dataset = None
         self.__root_directory = None
         self.__thermo_class_list = None
         self.num_classes = None
@@ -38,8 +38,23 @@ class ThermoDataset:
         return len(self.__labels)
 
     @property
-    def data(self):
-        return self.__dataset
+    def train(self):
+        return self.__train_dataset
+
+    @property
+    def test(self):
+        return self.__test_dataset
+
+    @property
+    def validation(self):
+        return self.__validation_dataset
+
+    @property
+    def split_fraction(self):
+        return np.array([self.__train_fraction, self.__test_fraction, self.__validation_fraction])
+
+    def dataset_from_id(self, index):
+        return {0: self.__train_dataset, 1: self.__test_dataset, 2: self.__validation_dataset}[index]
 
     @property
     def root_directory(self):
@@ -89,25 +104,24 @@ class ThermoDataset:
             image_names = np.array([os.path.join(directory, img_name) for img_name in os.listdir(directory)], dtype=str)
             self.__image_file_names = np.concatenate((self.__image_file_names, image_names))
             self.__labels = np.concatenate(
-                (self.__labels, np.ones(shape=(len(image_names)), dtype=np.int8) * thermo_class.class_value))
+                (self.__labels, np.ones(shape=(len(image_names)), dtype=np.int32) * thermo_class.class_value))
             sample_per_class[thermo_class.class_value] = len(image_names)
         self.__samples_per_class = [sample_per_class[thermo_class.class_value] for thermo_class in class_list]
 
-        if self.shuffle:
-            permutation = np.random.permutation(len(self.__image_file_names))
-            self.__image_file_names = self.__image_file_names[permutation]
-            self.__labels = self.__labels[permutation]
+        permutation = np.random.permutation(len(self.__image_file_names))
+        self.__image_file_names = self.__image_file_names[permutation]
+        self.__labels = self.__labels[permutation]
 
         self.__create_internal_dataset()
 
     def set_train_test_validation_fraction(self, train_fraction, test_fraction, validation_fraction):
         total = train_fraction + test_fraction + validation_fraction
         self.__train_fraction = float(train_fraction) / total
-        self.__test_fraction = float(train_fraction) / total
-        self.__validation_fraction = float(train_fraction) / total
+        self.__test_fraction = float(test_fraction) / total
+        self.__validation_fraction = float(validation_fraction) / total
 
     def __parse_image(self, image_path: str, image_label: int):
-        one_hot = tf.one_hot(image_label, self.num_classes)
+        one_hot = tf.one_hot(image_label, self.num_classes, dtype=dtypes.int32)
         img_file = tf.read_file(image_path)
         img_decoded = tf.image.decode_jpeg(img_file, channels=3)
         img_decoded = tf.image.rgb_to_grayscale(img_decoded)
@@ -116,13 +130,45 @@ class ThermoDataset:
         return img_decoded, one_hot
 
     def __create_internal_dataset(self):
-        images = convert_to_tensor(self.__image_file_names, dtypes.string)
-        labels = convert_to_tensor(self.__labels, dtypes.int32)
+        cumulative_fraction = 0.0
+        for dataset_id in range(3):
+            fraction = self.split_fraction[dataset_id]
+            min_index = int(np.floor(cumulative_fraction * self.data_size))
+            max_index = int(np.floor((cumulative_fraction + fraction) * self.data_size))
+            cumulative_fraction += fraction
 
-        self.__dataset = Dataset.from_tensor_slices((images, labels))
-        self.__dataset = self.__dataset.map(self.__parse_image)
-        self.__dataset = self.__dataset.shuffle(self.buffer_size)
-        self.__dataset = self.__dataset.repeat()
+            images = convert_to_tensor(self.__image_file_names[min_index:max_index], dtypes.string)
+            labels = convert_to_tensor(self.__labels[min_index:max_index], dtypes.int32)
 
-        # Create a new dataset with batches of images
-        self.__dataset = self.__dataset.batch(self.batch_size)
+            data = Dataset.from_tensor_slices((images, labels))
+            data = data.map(self.__parse_image)
+
+            # Create a new dataset with batches of images
+            data = data.batch(self.batch_size)
+            if dataset_id == 0:
+                self.__train_dataset = data
+            elif dataset_id == 1:
+                self.__test_dataset = data
+            else:
+                self.__validation_dataset = data
+
+    def get_train_iterator(self):
+        return self.train.make_initializable_iterator()
+
+    def get_test_iterator(self):
+        return self.test.make_initializable_iterator()
+
+    def get_validation_iterator(self):
+        return self.validation.make_initializable_iterator()
+
+    def print_info(self):
+        print("Num samples (train/test/val):  {} tot: {}\n"
+              "Sample type   {}\n"
+              "Sample shape: {}\n"
+              "Label type    {}\n"
+              "Label shape:  {}\n"
+              "Root dir:     {}".format([int(np.floor(frac * len(self.__labels))) for frac in self.split_fraction],
+                                        len(self.__labels),
+                                        self.train.output_types[0], self.train.output_shapes[0][1:],
+                                        self.train.output_types[1], self.train.output_shapes[1][1:],
+                                        self.__root_directory))
