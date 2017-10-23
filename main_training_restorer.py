@@ -1,13 +1,13 @@
-from training.simple_net import SimpleNet
-from training.thermo_class import ThermoClass
-from training.dataset import ThermoDataset
+import os
+import time
 
-import os, time
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib.data import Iterator
 
-import cv2
+from training.dataset import ThermoDataset
+from training.models.simple_net import SimpleNet
+from training.thermo_class import ThermoClass
 
 path = "C:/Users/Carlo/Desktop/Ghidoni"
 # Path for tf.summary.FileWriter and to store model checkpoints
@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     model = SimpleNet(x=x, keep_prob=0.8, num_classes=num_classes)
 
-    predict_op = tf.argmax(model.y_conv, axis=1, name="model_predictions")
+    predict_op = tf.argmax(model.logits, axis=1, name="model_predictions")
 
     correct_pred = tf.equal(predict_op, tf.argmax(y, 1), name="correct_predictions")
     accuracy_op = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name="accuracy")
@@ -78,7 +78,7 @@ if __name__ == '__main__':
             img, lab = sess.run(next_batch)
             ss = time.time()
             print("Fetched batch in {} s".format(ss - s))
-            acc, pred, logits = sess.run([accuracy_op, predict_op, model.y_conv], feed_dict={x: img, y: lab, keep_prob: 1.0})
+            acc, pred, logits = sess.run([accuracy_op, predict_op, model.logits], feed_dict={x: img, y: lab, keep_prob: 1.0})
             print("Inference in {} s".format(time.time() - ss))
 
             l = np.argmax(lab, axis=1)

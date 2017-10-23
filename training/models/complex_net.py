@@ -1,18 +1,17 @@
 import tensorflow as tf
+from .base_net import BaseNet
+from .operations import *
 
 
-class SimpleNet(object):
-    def __init__(self, x: tf.placeholder, keep_prob: float, num_classes: int):
-        # Parse input arguments into class variables
-        self.x = x
-        self.y_conv = None
-        self.num_classes = num_classes
+class ComplexNet(BaseNet):
+    def __init__(self, x: tf.placeholder, num_classes: int, keep_prob: float, *args, **kwargs):
+        super(self.__class__, self).__init__(x=x, num_classes=num_classes, name="ComplexNet")
         self.keep_probability = keep_prob
 
         self.create()
 
     def create(self):
-        with tf.variable_scope('simple_model'):
+        with tf.variable_scope(self.name):
             with tf.variable_scope('conv_1'):
                 h_conv1 = conv_relu(x=self.x, kernel_shape=[5, 5, 1, 5], bias_shape=[5])
                 h_pool1 = max_pool_2x2(name="max_pool", x=h_conv1)
@@ -51,26 +50,4 @@ class SimpleNet(object):
                 W_fc3 = weight_variable(name="W", shape=[16, self.num_classes])
                 b_fc3 = bias_variable(name="b", shape=[self.num_classes])
 
-                self.y_conv = tf.matmul(h_fc2_drop, W_fc3) + b_fc3
-
-
-def weight_variable(name, shape):
-    return tf.get_variable(name=name, shape=shape, initializer=tf.truncated_normal_initializer(mean=0.0, stddev=0.1))
-
-
-def bias_variable(name, shape):
-    return tf.get_variable(name=name, shape=shape, initializer=tf.constant_initializer(value=0.1))
-
-
-def conv2d(name, x, W):
-    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME', name=name)
-
-
-def conv_relu(x, kernel_shape, bias_shape):
-    weights = weight_variable(name="W", shape=kernel_shape)
-    biases = bias_variable(name="b", shape=bias_shape)
-    return tf.nn.relu(conv2d(name="conv2d", x=x, W=weights) + biases)
-
-
-def max_pool_2x2(name, x):
-    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name=name)
+                self.logits = tf.matmul(h_fc2_drop, W_fc3) + b_fc3

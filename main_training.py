@@ -1,12 +1,12 @@
-from training.thermo_class import ThermoClass
-from training.dataset import ThermoDataset
-from training.simple_net import SimpleNet
-
 import os
-import numpy as np
 from datetime import datetime
+
+import numpy as np
 import tensorflow as tf
-from matplotlib import pylab as plt
+
+from training.dataset import ThermoDataset
+from training.models import SimpleNet, ComplexNet
+from training.thermo_class import ThermoClass
 
 
 def main():
@@ -18,12 +18,12 @@ def main():
     thermo_class_list = [working_class, broken_class, misdetected_class]
 
     # Learning params
-    num_epochs = 100
+    num_epochs = 10000
     batch_size = 64
     learning_rate = 0.0025
 
     # Network params
-    keep_probability = 0.7
+    keep_probability = 0.8
 
     # Summary params
     write_train_summaries_every_n_steps = 10
@@ -58,13 +58,12 @@ def main():
         keep_prob = tf.placeholder(tf.float32, name="keep_probab")
 
     # Initialize model
-    model = SimpleNet(x, keep_prob, dataset.num_classes)
+    model = SimpleNet(x=x, num_classes=dataset.num_classes, keep_prob=keep_prob)
 
     # Op for calculating the loss
     with tf.name_scope("cross_ent"):
         # Link variable to model output
-        logits = model.y_conv
-
+        logits = model.logits
         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y),
                               name="cross_entropy_loss")
 
@@ -156,7 +155,7 @@ def main():
                     break
 
                 global_step += 1
-                print("Global step: {}".format(global_step))
+                print("{} Global step: {}".format(datetime.now(), global_step))
 
                 # And run the training op
                 _, predictions = sess.run([train_op, predict_op], feed_dict={x: img_batch,
@@ -167,13 +166,14 @@ def main():
                     confusion_matrix[l, p] += 1
 
                 if global_step % write_train_summaries_every_n_steps == 0:
+                    print("{} Writing training summary".format(datetime.now()))
                     train_s, gradient_s = sess.run(
                         [train_summaries, gradient_summaries],
                         feed_dict={x: img_batch, y: label_batch, keep_prob: keep_probability})
                     writer.add_summary(train_s, global_step)
 
                 if global_step % save_model_every_n_steps == 0:
-                    print("{} Saving checkpoint of model...".format(datetime.now()))
+                    print("{} Saving checkpoint of model".format(datetime.now()))
 
                     # save checkpoint of the model
                     checkpoint_name = os.path.join(checkpoint_path, 'simple_model')
@@ -182,8 +182,9 @@ def main():
 
                     print("{} Model checkpoint saved at {}".format(datetime.now(), save_path))
 
-            print("Training confusion matrix:\n{}".format(confusion_matrix))
+            print("{} Training confusion matrix:\n{}".format(datetime.now(), confusion_matrix))
 
+            print("{} Starting evaluation on test set.".format(datetime.now()))
             # Evaluate on test dataset
             confusion_matrix = np.zeros(shape=[3, 3])
             while True:
@@ -197,7 +198,7 @@ def main():
                 for l, p in zip(np.argmax(label_batch, axis=1), predictions):
                     confusion_matrix[l, p] += 1
 
-            print("Test confusion matrix:\n{}".format(confusion_matrix))
+            print("{} Test confusion matrix:\n{}".format(datetime.now(), confusion_matrix))
 
             if epoch % write_test_summaries_every_n_epochs:
                 s = sess.run(test_summaries, feed_dict={x: img_batch, y: label_batch, keep_prob: 1.0})
