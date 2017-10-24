@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import timeit
 
 import numpy as np
 import tensorflow as tf
@@ -148,7 +149,7 @@ def main():
             all_train_predictions = []
             all_train_labels = []
             while True:
-                step_start_time = datetime.now()
+                step_start_time = timeit.default_timer()
 
                 # get next batch of data
                 try:
@@ -184,19 +185,18 @@ def main():
 
                     print("{} Model checkpoint saved at {}".format(datetime.now(), save_path))
 
-                step_end_time = datetime.now()
-                print("{} Step {} took {} ms.".format(datetime.now(), global_step,
-                                                      (step_end_time - step_start_time).microseconds / 1000))
+                step_end_time = timeit.default_timer()
+                print("{} Step {} took {:.3g} s.".format(datetime.now(), global_step, (step_end_time - step_start_time)))
 
-            cm = tf.confusion_matrix(labels=all_train_labels, predictions=all_train_predictions,
-                                     num_classes=dataset.num_classes).eval()
-            print("{} Training confusion matrix:\n{}".format(datetime.now(), cm))
+                cm = tf.confusion_matrix(labels=all_train_labels, predictions=all_train_predictions,
+                                         num_classes=dataset.num_classes).eval()
+                print("{} Training confusion matrix:\n{}".format(datetime.now(), cm))
 
-            print("{} Starting evaluation on test set.".format(datetime.now()))
+                print("{} Starting evaluation on test set.".format(datetime.now()))
 
-            # Evaluate on test dataset
-            all_test_predictions = []
-            all_test_labels = []
+                # Evaluate on test dataset
+                all_test_predictions = []
+                all_test_labels = []
             while True:
                 try:
                     img_batch, label_batch = sess.run(next_test_batch)
