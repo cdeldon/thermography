@@ -148,6 +148,8 @@ def main():
             all_train_predictions = []
             all_train_labels = []
             while True:
+                step_start_time = datetime.now()
+
                 # get next batch of data
                 try:
                     img_batch, label_batch = sess.run(next_train_batch)
@@ -181,6 +183,10 @@ def main():
                                            global_step=int(global_step / save_model_every_n_steps))
 
                     print("{} Model checkpoint saved at {}".format(datetime.now(), save_path))
+
+                step_end_time = datetime.now()
+                print("{} Step {} took {} ms.".format(datetime.now(), global_step,
+                                                      (step_end_time - step_start_time).microseconds / 1000))
 
             cm = tf.confusion_matrix(labels=all_train_labels, predictions=all_train_predictions,
                                      num_classes=dataset.num_classes).eval()
