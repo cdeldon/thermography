@@ -59,7 +59,7 @@ def main():
         keep_prob = tf.placeholder(tf.float32, name="keep_probab")
 
     # Initialize model
-    model = SimpleNet(x=x, num_classes=dataset.num_classes, keep_prob=keep_prob)
+    model = ComplexNet(x=x, num_classes=dataset.num_classes, keep_prob=keep_prob)
 
     # Op for calculating the loss
     with tf.name_scope("cross_ent"):
@@ -188,15 +188,15 @@ def main():
                 step_end_time = timeit.default_timer()
                 print("{} Step {} took {:.3g} s.".format(datetime.now(), global_step, (step_end_time - step_start_time)))
 
-                cm = tf.confusion_matrix(labels=all_train_labels, predictions=all_train_predictions,
-                                         num_classes=dataset.num_classes).eval()
-                print("{} Training confusion matrix:\n{}".format(datetime.now(), cm))
+            cm = tf.confusion_matrix(labels=all_train_labels, predictions=all_train_predictions,
+                                     num_classes=dataset.num_classes).eval()
+            print("{} Training confusion matrix:\n{}".format(datetime.now(), cm))
 
-                print("{} Starting evaluation on test set.".format(datetime.now()))
+            print("{} Starting evaluation on test set.".format(datetime.now()))
 
-                # Evaluate on test dataset
-                all_test_predictions = []
-                all_test_labels = []
+            # Evaluate on test dataset
+            all_test_predictions = []
+            all_test_labels = []
             while True:
                 try:
                     img_batch, label_batch = sess.run(next_test_batch)
