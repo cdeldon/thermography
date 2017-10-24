@@ -10,7 +10,7 @@ from training.thermo_class import ThermoClass
 
 
 def main():
-    input_data_path = "C:/Users/Carlo/Desktop/Ghidoni"
+    input_data_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/dataset/Ghidoni"
 
     working_class = ThermoClass("working", 0)
     broken_class = ThermoClass("broken", 1)
