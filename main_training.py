@@ -106,8 +106,8 @@ def main():
         accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name="accuracy")
 
     # Add the accuracy to the summary
-    tf.summary.scalar('accuracy', accuracy, collections=["train"])
-    tf.summary.scalar('accuracy', accuracy, collections=["test"])
+    tf.summary.scalar('train accuracy', accuracy, collections=["train"])
+    tf.summary.scalar('test accuracy', accuracy, collections=["test"])
 
     # with tf.name_scope('batch_input'):
     #     tf.summary.image('input images', x, max_outputs=8, collections=["test"])
@@ -145,7 +145,8 @@ def main():
             sess.run(train_iterator.initializer)
             sess.run(test_iterator.initializer)
 
-            confusion_matrix = np.zeros(shape=[3, 3])
+            all_train_predictions = []
+            all_train_labels = []
             while True:
                 # get next batch of data
                 try:
@@ -161,9 +162,8 @@ def main():
                 _, predictions = sess.run([train_op, predict_op], feed_dict={x: img_batch,
                                                                              y: label_batch,
                                                                              keep_prob: keep_probability})
-
-                for l, p in zip(np.argmax(label_batch, axis=1), predictions):
-                    confusion_matrix[l, p] += 1
+                all_train_predictions.extend(predictions)
+                all_train_labels.extend(np.argmax(label_batch, axis=1))
 
                 if global_step % write_train_summaries_every_n_steps == 0:
                     print("{} Writing training summary".format(datetime.now()))
@@ -182,11 +182,15 @@ def main():
 
                     print("{} Model checkpoint saved at {}".format(datetime.now(), save_path))
 
-            print("{} Training confusion matrix:\n{}".format(datetime.now(), confusion_matrix))
+            cm = tf.confusion_matrix(labels=all_train_labels, predictions=all_train_predictions,
+                                     num_classes=dataset.num_classes).eval()
+            print("{} Training confusion matrix:\n{}".format(datetime.now(), cm))
 
             print("{} Starting evaluation on test set.".format(datetime.now()))
+
             # Evaluate on test dataset
-            confusion_matrix = np.zeros(shape=[3, 3])
+            all_test_predictions = []
+            all_test_labels = []
             while True:
                 try:
                     img_batch, label_batch = sess.run(next_test_batch)
@@ -195,10 +199,12 @@ def main():
                     break
 
                 predictions = sess.run(predict_op, feed_dict={x: img_batch, y: label_batch, keep_prob: 1.0})
-                for l, p in zip(np.argmax(label_batch, axis=1), predictions):
-                    confusion_matrix[l, p] += 1
+                all_test_predictions.extend(predictions)
+                all_test_labels.extend(np.argmax(label_batch, axis=1))
 
-            print("{} Test confusion matrix:\n{}".format(datetime.now(), confusion_matrix))
+            cm = tf.confusion_matrix(labels=all_test_labels, predictions=all_test_predictions,
+                                     num_classes=dataset.num_classes).eval()
+            print("{} Test confusion matrix:\n{}".format(datetime.now(), cm))
 
             if epoch % write_test_summaries_every_n_epochs:
                 s = sess.run(test_summaries, feed_dict={x: img_batch, y: label_batch, keep_prob: 1.0})

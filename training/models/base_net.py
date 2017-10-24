@@ -29,7 +29,7 @@ class BaseNet(ABC):
 
     @property
     def num_classes(self):
-        if self.__logits is None:
+        if self.__num_classes is None:
             raise RuntimeError("__num_classes in {} is has not been overridden!".format(self.__class__.__name__))
         return self.__num_classes
 
@@ -49,8 +49,6 @@ class BaseNet(ABC):
 
     @logits.setter
     def logits(self, l: tf.placeholder):
-        if type(l) is not tf.placeholder:
-            raise TypeError("Logits in {} must be a tf.placeholder".format(self.__class__.__name__))
         self.__logits = l
 
     @abstractmethod
