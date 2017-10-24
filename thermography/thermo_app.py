@@ -122,13 +122,15 @@ class ThermoApp:
 
     def create_module_list(self):
         module_list = []
-        default_rect = np.float32([[639, 0], [0,0], [0, 511], [639, 511]])
+        module_shape = (90, 64)
+        default_rect = np.float32(
+            [[module_shape[0] - 1, 0], [0, 0], [0, module_shape[1] - 1], [module_shape[0] - 1, module_shape[1] - 1]])
         for rectangle_id, rectangle in self.module_map.global_module_map.items():
             if rectangle.frame_id_history[-1] != self.last_frame_id:
                 continue
 
             M = cv2.getPerspectiveTransform(np.float32(rectangle.last_rectangle), default_rect)
-            extracted = cv2.warpPerspective(self.last_scaled_frame_rgb, M, (640, 512))
+            extracted = cv2.warpPerspective(self.last_scaled_frame_rgb, M, module_shape)
             module_list.append({"coordinates": rectangle.last_rectangle, "image": extracted, "id": rectangle.ID})
         return module_list
 
