@@ -186,7 +186,8 @@ def main():
                     print("{} Model checkpoint saved at {}".format(datetime.now(), save_path))
 
                 step_end_time = timeit.default_timer()
-                print("{} Step {} took {:.3g} s.".format(datetime.now(), global_step, (step_end_time - step_start_time)))
+                print(
+                    "{} Step {} took {:.3g} s.".format(datetime.now(), global_step, (step_end_time - step_start_time)))
 
                 cm = tf.confusion_matrix(labels=all_train_labels, predictions=all_train_predictions,
                                          num_classes=dataset.num_classes).eval()
@@ -197,6 +198,8 @@ def main():
                 # Evaluate on test dataset
                 all_test_predictions = []
                 all_test_labels = []
+
+            test_summaries_written = False
             while True:
                 try:
                     img_batch, label_batch = sess.run(next_test_batch)
@@ -208,23 +211,24 @@ def main():
                 all_test_predictions.extend(predictions)
                 all_test_labels.extend(np.argmax(label_batch, axis=1))
 
+                if not test_summaries_written and epoch % write_test_summaries_every_n_epochs == 0:
+                    test_summaries_written = True
+                    s = sess.run(test_summaries, feed_dict={x: img_batch, y: label_batch, keep_prob: 1.0})
+                    writer.add_summary(s, global_step)
+
+                    with tf.name_scope('image_prediction'):
+                        imgs = img_batch[:10]
+                        lab = np.argmax(label_batch[0:10, :], axis=1)
+                        pred = predictions[0:10]
+                        for im, l, p in zip(imgs, lab, pred):
+                            image_summary = tf.summary.image("True lab: {}, predicted: {}".format(l, p), np.array([im]))
+                            i_s = sess.run(image_summary,
+                                           feed_dict={x: img_batch, y: label_batch, keep_prob: keep_probability})
+                            writer.add_summary(i_s, global_step)
+
             cm = tf.confusion_matrix(labels=all_test_labels, predictions=all_test_predictions,
                                      num_classes=dataset.num_classes).eval()
             print("{} Test confusion matrix:\n{}".format(datetime.now(), cm))
-
-            if epoch % write_test_summaries_every_n_epochs:
-                s = sess.run(test_summaries, feed_dict={x: img_batch, y: label_batch, keep_prob: 1.0})
-                writer.add_summary(s, global_step)
-
-                with tf.name_scope('image_prediction'):
-                    imgs = img_batch[:10]
-                    lab = np.argmax(label_batch[0:10, :], axis=1)
-                    pred = predictions[0:10]
-                    for im, l, p in zip(imgs, lab, pred):
-                        image_summary = tf.summary.image("True lab: {}, predicted: {}".format(l, p), np.array([im]))
-                        i_s = sess.run(image_summary,
-                                       feed_dict={x: img_batch, y: label_batch, keep_prob: keep_probability})
-                        writer.add_summary(i_s, global_step)
 
 
 if __name__ == '__main__':
