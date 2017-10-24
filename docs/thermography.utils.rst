@@ -4,6 +4,14 @@ thermography\.utils package
 Submodules
 ----------
 
+thermography\.utils\.ID module
+------------------------------
+
+.. automodule:: thermography.utils.ID
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 thermography\.utils\.display module
 -----------------------------------
 

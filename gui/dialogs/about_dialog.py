@@ -1,9 +1,9 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 import os
 import thermography as tg
 
 
-class AboutDialog(QtGui.QMessageBox):
+class AboutDialog(QtWidgets.QMessageBox):
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent=parent)
         self.setWindowTitle("Thermography - About")

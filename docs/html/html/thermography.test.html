@@ -100,6 +100,7 @@
 <li class="toctree-l3"><a class="reference internal" href="thermography.settings.html">thermography.settings package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">thermography.test package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-thermography.test.test_ID">thermography.test.test_ID module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-thermography.test.test_geometry">thermography.test.test_geometry module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-thermography.test.test_images">thermography.test.test_images module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-thermography.test">Module contents</a></li>
@@ -111,6 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui module</a></li>
 </ul>
 
             
@@ -180,6 +182,21 @@
 <h1>thermography.test package<a class="headerlink" href="#thermography-test-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-thermography.test.test_ID">
+<span id="thermography-test-test-id-module"></span><h2>thermography.test.test_ID module<a class="headerlink" href="#module-thermography.test.test_ID" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="thermography.test.test_ID.TestIDUtils">
+<em class="property">class </em><code class="descclassname">thermography.test.test_ID.</code><code class="descname">TestIDUtils</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#thermography.test.test_ID.TestIDUtils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="thermography.test.test_ID.TestIDUtils.test_ID_generator">
+<code class="descname">test_ID_generator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#thermography.test.test_ID.TestIDUtils.test_ID_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the values of the generated IDs.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-thermography.test.test_geometry">
 <span id="thermography-test-test-geometry-module"></span><h2>thermography.test.test_geometry module<a class="headerlink" href="#module-thermography.test.test_geometry" title="Permalink to this headline">¶</a></h2>
@@ -255,6 +272,12 @@
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_point_line_distance">
 <code class="descname">test_point_line_distance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_point_line_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the ‘point_line_distance’ function which computes the distance between a point and a line.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="thermography.test.test_geometry.TestGeometryUtils.test_rectangle_contains">
+<code class="descname">test_rectangle_contains</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_rectangle_contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the ‘rectangle_contains’ function which computes whether a point is contained by a rectangle or not.</p>
 </dd></dl>
 
 <dl class="method">

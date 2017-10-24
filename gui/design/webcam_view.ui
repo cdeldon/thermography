@@ -74,7 +74,7 @@
       <item>
        <widget class="QPushButton" name="ok_button">
         <property name="text">
-         <string>OK!</string>
+         <string>Use port 0!</string>
         </property>
        </widget>
       </item>

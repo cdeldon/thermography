@@ -1,9 +1,9 @@
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import sys
-from gui import ThermoGUI
+from gui import ThermoGUI, CreateDatasetGUI
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
-    form = ThermoGUI()
+    app = QtWidgets.QApplication(sys.argv)
+    form = CreateDatasetGUI()
     form.show()
     app.exec_()

@@ -1,12 +1,14 @@
 import cv2
 import os
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 
 import thermography as tg
-from .design import webcam_dialog_design
+from gui.design import Ui_WebCam
 
 
-class WebCamWindow(QtGui.QMainWindow, webcam_dialog_design.Ui_WebCam):
+class WebcamDialog(QtWidgets.QMainWindow, Ui_WebCam):
+    webcam_port_signal = QtCore.pyqtSignal(int)
+
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent=parent)
         self.setupUi(self)
@@ -18,8 +20,6 @@ class WebCamWindow(QtGui.QMainWindow, webcam_dialog_design.Ui_WebCam):
         self.next_button.clicked.connect(self.increase_webcam_value)
         self.previous_button.clicked.connect(self.decrease_webcam_value)
         self.ok_button.clicked.connect(self.current_webcam_value_found)
-
-        self.set_logo_icon()
 
     def set_logo_icon(self):
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
@@ -40,15 +40,15 @@ class WebCamWindow(QtGui.QMainWindow, webcam_dialog_design.Ui_WebCam):
         self.set_webcam()
 
     def current_webcam_value_found(self):
-        self.deleteLater()
+        self.webcam_port_signal.emit(self.webcam_value)
         self.close()
-        return self.webcam_value
 
     def set_webcam(self):
         self.stop()
         self.cap.release()
         self.cap = cv2.VideoCapture(self.webcam_value)
         self.start()
+        self.ok_button.setText("Use port {}!".format(self.webcam_value))
 
     def start(self):
         self.timer = QtCore.QTimer()
