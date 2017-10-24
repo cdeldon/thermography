@@ -13,24 +13,24 @@ class ComplexNet(BaseNet):
     def create(self):
         with tf.variable_scope(self.name):
             with tf.variable_scope('conv_1'):
-                h_conv1 = conv_relu(x=self.x, kernel_shape=[5, 5, 1, 5], bias_shape=[5])
+                h_conv1 = conv_relu(x=self.x, kernel_shape=[3, 3, 1, 8], bias_shape=[8])
                 h_pool1 = max_pool_2x2(name="max_pool", x=h_conv1)
                 # 12 15
             with tf.variable_scope('conv_2'):
-                h_conv2 = conv_relu(x=h_pool1, kernel_shape=[5, 5, 5, 5], bias_shape=[5])
+                h_conv2 = conv_relu(x=h_pool1, kernel_shape=[3, 3, 8, 16], bias_shape=[16])
                 h_pool2 = max_pool_2x2(name="max_pool", x=h_conv2)
                 # 6 8
 
             with tf.variable_scope('conv_3'):
-                h_conv3 = conv_relu(x=h_pool2, kernel_shape=[5, 5, 5, 7], bias_shape=[7])
+                h_conv3 = conv_relu(x=h_pool2, kernel_shape=[3, 3, 16, 16], bias_shape=[16])
                 h_pool3 = max_pool_2x2(name="max_pool", x=h_conv3)
                 # 3 4
 
             with tf.variable_scope('full_connected_1'):
-                h_pool1_flat = tf.reshape(h_pool3, [-1, 3 * 4 * 7])
+                h_pool1_flat = tf.reshape(h_pool3, [-1, 3 * 4 * 16])
 
-                W_fc1 = weight_variable(name="W", shape=[3 * 4 * 7, 32])
-                b_fc1 = bias_variable(name="b", shape=[32])
+                W_fc1 = weight_variable(name="W", shape=[3 * 4 * 16, 256])
+                b_fc1 = bias_variable(name="b", shape=[256])
 
                 h_fc1 = tf.nn.relu(tf.matmul(h_pool1_flat, W_fc1 + b_fc1))
 
@@ -38,8 +38,8 @@ class ComplexNet(BaseNet):
                     h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob=self.keep_probability, name="dropout")
 
             with tf.variable_scope('full_connected_2'):
-                W_fc2 = weight_variable(name="W", shape=[32, 16])
-                b_fc2 = bias_variable(name="b", shape=[16])
+                W_fc2 = weight_variable(name="W", shape=[256, 32])
+                b_fc2 = bias_variable(name="b", shape=[32])
 
                 h_fc2 = tf.nn.relu(tf.matmul(h_fc1_drop, W_fc2 + b_fc2))
 
@@ -47,7 +47,7 @@ class ComplexNet(BaseNet):
                     h_fc2_drop = tf.nn.dropout(h_fc2, keep_prob=self.keep_probability, name="dropout")
 
             with tf.variable_scope('full_connected_3'):
-                W_fc3 = weight_variable(name="W", shape=[16, self.num_classes])
+                W_fc3 = weight_variable(name="W", shape=[32, self.num_classes])
                 b_fc3 = bias_variable(name="b", shape=[self.num_classes])
 
                 self.logits = tf.matmul(h_fc2_drop, W_fc3) + b_fc3

@@ -21,15 +21,15 @@ def main():
     # Learning params
     num_epochs = 10000
     batch_size = 64
-    learning_rate = 0.0025
+    learning_rate = 0.0005
 
     # Network params
     keep_probability = 0.8
 
     # Summary params
     write_train_summaries_every_n_steps = 10
-    write_test_summaries_every_n_epochs = 1
-    save_model_every_n_steps = 20
+    write_test_summaries_every_n_epochs = 4
+    save_model_every_n_epochs = 4
 
     # Path for tf.summary.FileWriter and to store model checkpoints
     summary_path = os.path.join(input_data_path, "tensorboard")
@@ -39,7 +39,7 @@ def main():
     with tf.device('/cpu:0'):
         with tf.name_scope("dataset"):
             with tf.name_scope("loading"):
-                dataset = ThermoDataset(batch_size=batch_size)
+                dataset = ThermoDataset(batch_size=batch_size, balance_data=True)
                 dataset.set_train_test_validation_fraction(train_fraction=0.8, test_fraction=0.2,
                                                            validation_fraction=0.0)
 
@@ -94,7 +94,7 @@ def main():
 
     # Train op
     with tf.name_scope("train"):
-        optimizer = tf.train.AdagradOptimizer(learning_rate=learning_rate, name="optimizer")
+        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name="optimizer")
         train_op = optimizer.apply_gradients(grads_and_vars=all_gradients, name="apply_gradients")
 
     # Predict op
@@ -158,9 +158,6 @@ def main():
                     print("{} Ended epoch {}".format(datetime.now(), epoch))
                     break
 
-                global_step += 1
-                print("{} Global step: {}".format(datetime.now(), global_step))
-
                 # And run the training op
                 _, predictions = sess.run([train_op, predict_op], feed_dict={x: img_batch,
                                                                              y: label_batch,
@@ -175,29 +172,21 @@ def main():
                         feed_dict={x: img_batch, y: label_batch, keep_prob: keep_probability})
                     writer.add_summary(train_s, global_step)
 
-                if global_step % save_model_every_n_steps == 0:
-                    print("{} Saving checkpoint of model".format(datetime.now()))
-
-                    # save checkpoint of the model
-                    checkpoint_name = os.path.join(checkpoint_path, 'simple_model')
-                    save_path = saver.save(sess, checkpoint_name,
-                                           global_step=int(global_step / save_model_every_n_steps))
-
-                    print("{} Model checkpoint saved at {}".format(datetime.now(), save_path))
-
                 step_end_time = timeit.default_timer()
-                print(
-                    "{} Step {} took {:.3g} s.".format(datetime.now(), global_step, (step_end_time - step_start_time)))
+
+                global_step += 1
+                print("{} Global step {}, ETA: {:-3g} s.".format(datetime.now(), global_step,
+                                                              step_end_time - step_start_time))
 
             cm = tf.confusion_matrix(labels=all_train_labels, predictions=all_train_predictions,
                                      num_classes=dataset.num_classes).eval()
             print("{} Training confusion matrix:\n{}".format(datetime.now(), cm))
 
             print("{} Starting evaluation on test set.".format(datetime.now()))
-
             # Evaluate on test dataset
             all_test_predictions = []
             all_test_labels = []
+            test_summaries_written = False
             while True:
                 try:
                     img_batch, label_batch = sess.run(next_test_batch)
@@ -210,6 +199,7 @@ def main():
                 all_test_labels.extend(np.argmax(label_batch, axis=1))
 
                 if not test_summaries_written and epoch % write_test_summaries_every_n_epochs == 0:
+                    print("# Writing test summary".format(datetime.now()))
                     test_summaries_written = True
                     s = sess.run(test_summaries, feed_dict={x: img_batch, y: label_batch, keep_prob: 1.0})
                     writer.add_summary(s, global_step)
@@ -227,6 +217,15 @@ def main():
             cm = tf.confusion_matrix(labels=all_test_labels, predictions=all_test_predictions,
                                      num_classes=dataset.num_classes).eval()
             print("{} Test confusion matrix:\n{}".format(datetime.now(), cm))
+
+            if epoch % save_model_every_n_epochs == 0:
+                print("{} Saving checkpoint of model".format(datetime.now()))
+
+                # save checkpoint of the model
+                checkpoint_name = os.path.join(checkpoint_path, model.name)
+                save_path = saver.save(sess, checkpoint_name, global_step=epoch)
+
+                print("{} Model checkpoint saved at {}".format(datetime.now(), save_path))
 
 
 if __name__ == '__main__':

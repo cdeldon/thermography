@@ -10,8 +10,9 @@ import os
 
 
 class ThermoDataset:
-    def __init__(self, batch_size: int = 32):
+    def __init__(self, batch_size: int = 32, balance_data=True):
         self.batch_size = batch_size
+        self.balance_data = balance_data
 
         self.__train_dataset = None
         self.__test_dataset = None
@@ -27,11 +28,6 @@ class ThermoDataset:
 
         self.__image_file_names = None
         self.__labels = None
-
-    def get_class_weights(self):
-        weights = np.array([1.0 / v for v in self.__samples_per_class], dtype=np.float32)
-        weights /= np.sum(weights)
-        return weights
 
     @property
     def data_size(self):
@@ -108,11 +104,30 @@ class ThermoDataset:
             sample_per_class[thermo_class.class_value] = len(image_names)
         self.__samples_per_class = [sample_per_class[thermo_class.class_value] for thermo_class in class_list]
 
+        if self.balance_data:
+            self.__balance_data()
+
         permutation = np.random.permutation(len(self.__image_file_names))
         self.__image_file_names = self.__image_file_names[permutation]
         self.__labels = self.__labels[permutation]
 
         self.__create_internal_dataset()
+
+    def __balance_data(self):
+        class_with_min_samples = np.argmin(self.__samples_per_class)
+        num_min_samples = self.__samples_per_class[class_with_min_samples]
+
+        start_index = 0
+        elements_to_delete = []
+        for class_type in range(self.num_classes):
+            num_elems_in_class = self.__samples_per_class[class_type]
+            elements_to_delete.extend(
+                [i for i in range(start_index + num_min_samples, start_index + num_elems_in_class)])
+            start_index += num_elems_in_class
+        self.__labels = np.delete(self.__labels, elements_to_delete)
+        self.__image_file_names = np.delete(self.__image_file_names, elements_to_delete)
+
+        self.__samples_per_class = [num_min_samples for _ in range(self.num_classes)]
 
     def set_train_test_validation_fraction(self, train_fraction, test_fraction, validation_fraction):
         total = train_fraction + test_fraction + validation_fraction
@@ -163,12 +178,14 @@ class ThermoDataset:
 
     def print_info(self):
         print("Num samples (train/test/val):  {} tot: {}\n"
-              "Sample type   {}\n"
-              "Sample shape: {}\n"
-              "Label type    {}\n"
-              "Label shape:  {}\n"
-              "Root dir:     {}".format([int(np.floor(frac * len(self.__labels))) for frac in self.split_fraction],
-                                        len(self.__labels),
-                                        self.train.output_types[0], self.train.output_shapes[0][1:],
-                                        self.train.output_types[1], self.train.output_shapes[1][1:],
-                                        self.__root_directory))
+              "Samples per class: {}\n"
+              "Sample type        {}\n"
+              "Sample shape:      {}\n"
+              "Label type         {}\n"
+              "Label shape:       {}\n"
+              "Root dir:          {}".format([int(np.floor(frac * len(self.__labels))) for frac in self.split_fraction],
+                                             len(self.__labels),
+                                             self.__samples_per_class,
+                                             self.train.output_types[0], self.train.output_shapes[0][1:],
+                                             self.train.output_types[1], self.train.output_shapes[1][1:],
+                                             self.__root_directory))
