@@ -268,11 +268,25 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
             return
 
         d = self.current_frame_modules[self.current_module_id_in_frame]
+        module_ID = d["id"]
         coordinates = d["coordinates"]
+        module_image = d["image"]
+        # If module_ID has already been classified, then there is no need to display it as we can directly classify it
+        # using the existing manual label.
+        was_already_classified = False
+        for module_class in [self.accepted_modules, self.discarded_modules, self.misdetected_modules]:
+            if not was_already_classified and module_ID in module_class:
+                module_class[module_ID].append({"image": module_image, "coordinates": coordinates, "frame_id": self.current_frame_id})
+                was_already_classified = True
+                print("Module {} was already classified!".format(module_ID))
+
         mask = np.zeros_like(self.last_frame_image)
         tmp_image = self.last_frame_image.copy()
-        cv2.polylines(tmp_image, np.int32([coordinates]), True, (0, 0, 255), 2, cv2.LINE_AA)
-        cv2.fillConvexPoly(mask, np.int32([coordinates]), (0, 0, 255), cv2.LINE_4)
+        module_color = (0, 0, 255)
+        if was_already_classified:
+            module_color = (255, 0, 0)
+        cv2.polylines(tmp_image, np.int32([coordinates]), True, module_color, 2, cv2.LINE_AA)
+        cv2.fillConvexPoly(mask, np.int32([coordinates]), module_color, cv2.LINE_4)
         cv2.addWeighted(tmp_image, 0.8, mask, 0.5, 0, tmp_image)
         image = QImage(tmp_image.data, tmp_image.shape[1], tmp_image.shape[0], tmp_image.strides[0],
                        QImage.Format_RGB888)
@@ -280,14 +294,16 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
                              QtCore.Qt.SmoothTransformation)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.rectangle_image_view.setPixmap(pixmap)
-
-        module_image = d["image"]
         self.resize_video_view(module_image.shape, self.current_module_view)
         image = QImage(module_image.data, module_image.shape[1], module_image.shape[0], module_image.strides[0],
                        QImage.Format_RGB888)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.current_module_view.setPixmap(pixmap)
         self.current_module_view.repaint()
+
+        if was_already_classified:
+            self.display_next_module()
+
 
     @staticmethod
     def resize_video_view(size, view):
