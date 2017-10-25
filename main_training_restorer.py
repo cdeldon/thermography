@@ -30,7 +30,7 @@ if __name__ == '__main__':
         with tf.name_scope("dataset"):
             with tf.name_scope("loading"):
                 dataset = ThermoDataset(batch_size=batch_size, shuffle=True, buffer_size=10)
-                dataset.load_dataset(root_directory=path, class_list=thermo_class_list)
+                dataset.load_dataset(root_directory_list=path, class_list=thermo_class_list)
 
             with tf.name_scope("iterator"):
                 # create an reinitializable iterator given the dataset structure

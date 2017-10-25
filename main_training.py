@@ -11,39 +11,56 @@ from training.thermo_class import ThermoClass
 
 
 def main():
-    input_data_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/dataset/Ghidoni"
+    dataset_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/dataset"
+    recording_path_list = [os.path.join(dataset_path, f) for f in os.listdir(dataset_path)]
+    input_data_path = []
+    for g in recording_path_list:
+        input_data_path.extend([os.path.join(g, f) for f in os.listdir(g)])
+
+    print("Input data path:")
+    for path_index, path in enumerate(input_data_path):
+        print("  ({}) {}".format(path_index, path))
+
+    print()
+    output_data_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/output"
+    print("Output data path:\n      {}".format(output_data_path))
+    print()
 
     working_class = ThermoClass("working", 0)
     broken_class = ThermoClass("broken", 1)
     misdetected_class = ThermoClass("misdetected", 2)
     thermo_class_list = [working_class, broken_class, misdetected_class]
 
+    load_all_data = True
+
     # Learning params
-    num_epochs = 10000
-    batch_size = 64
-    learning_rate = 0.0005
+    num_epochs = 100000
+    batch_size = 32
+    learning_rate = 0.0002
 
     # Network params
-    keep_probability = 0.8
+    image_shape = [96, 120]
+    keep_probability = 0.75
 
     # Summary params
-    write_train_summaries_every_n_steps = 10
-    write_test_summaries_every_n_epochs = 4
-    save_model_every_n_epochs = 4
+    write_train_summaries_every_n_steps = 100
+    write_test_summaries_every_n_epochs = 25
+    save_model_every_n_epochs = 1000
 
     # Path for tf.summary.FileWriter and to store model checkpoints
-    summary_path = os.path.join(input_data_path, "tensorboard")
-    checkpoint_path = os.path.join(input_data_path, "checkpoints")
+    summary_path = os.path.join(output_data_path, "tensorboard")
+    checkpoint_path = os.path.join(output_data_path, "checkpoints")
 
     # Place data loading and preprocessing on the cpu.
     with tf.device('/cpu:0'):
         with tf.name_scope("dataset"):
             with tf.name_scope("loading"):
-                dataset = ThermoDataset(batch_size=batch_size, balance_data=True)
+                dataset = ThermoDataset(batch_size=batch_size, balance_data=True, image_shape=image_shape)
                 dataset.set_train_test_validation_fraction(train_fraction=0.8, test_fraction=0.2,
                                                            validation_fraction=0.0)
 
-                dataset.load_dataset(root_directory=input_data_path, class_list=thermo_class_list)
+                dataset.load_dataset(root_directory_list=input_data_path, class_list=thermo_class_list,
+                                     load_all_data=load_all_data)
                 dataset.print_info()
 
             with tf.name_scope("iterator"):
@@ -54,12 +71,12 @@ def main():
 
     with tf.name_scope("placeholders"):
         # TF placeholder for graph input and output
-        x = tf.placeholder(tf.float32, [None, 24, 30, 1], name="input_image")
+        x = tf.placeholder(tf.float32, [None, *image_shape, 1], name="input_image")
         y = tf.placeholder(tf.int32, [None, dataset.num_classes], name="input_labels")
         keep_prob = tf.placeholder(tf.float32, name="keep_probab")
 
     # Initialize model
-    model = ComplexNet(x=x, num_classes=dataset.num_classes, keep_prob=keep_prob)
+    model = ComplexNet(x=x, image_shape=image_shape, num_classes=dataset.num_classes, keep_prob=keep_prob)
 
     # Op for calculating the loss
     with tf.name_scope("cross_ent"):
@@ -95,7 +112,7 @@ def main():
     # Train op
     with tf.name_scope("train"):
         optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name="optimizer")
-        train_op = optimizer.apply_gradients(grads_and_vars=all_gradients, name="apply_gradients")
+        train_op = optimizer.minimize(loss)
 
     # Predict op
     with tf.name_scope("predict"):
@@ -109,9 +126,6 @@ def main():
     # Add the accuracy to the summary
     tf.summary.scalar('train accuracy', accuracy, collections=["train"])
     tf.summary.scalar('test accuracy', accuracy, collections=["test"])
-
-    # with tf.name_scope('batch_input'):
-    #     tf.summary.image('input images', x, max_outputs=8, collections=["test"])
 
     # Merge all summaries together
     train_summaries = tf.summary.merge_all(key="train")
@@ -130,17 +144,25 @@ def main():
         # Initialize all variables
         sess.run(tf.global_variables_initializer())
 
-        # Add the model graph to TensorBoard
-        writer.add_graph(sess.graph)
+        # Add the model graph to TensorBoard only if we did not load the entire dataset!
+        if not load_all_data:
+            writer.add_graph(sess.graph)
 
         print("{} Start training...".format(datetime.now()))
-        print("{} Open Tensorboard at --logdir {}".format(datetime.now(), summary_path))
+        print("{} Open Tensorboard at --logdir={}".format(datetime.now(), summary_path))
+
+        train_steps_per_epoch = int(np.ceil(dataset.train_size / dataset.batch_size))
+        print("{} Number of training steps per epoch: {}".format(datetime.now(), train_steps_per_epoch))
+        test_steps_per_epoch = int(np.ceil(dataset.test_size / dataset.batch_size))
+        print("{} Number of test steps per epoch: {}".format(datetime.now(), test_steps_per_epoch))
+        print()
 
         # Loop over number of epochs
         global_step = 0
         for epoch in range(num_epochs):
 
-            print("{} Epoch number: {}".format(datetime.now(), epoch))
+            print("=======================================================")
+            print("{} Starting epoch number: {}".format(datetime.now(), epoch))
 
             # Initialize iterator with the training and test dataset.
             sess.run(train_iterator.initializer)
@@ -148,6 +170,7 @@ def main():
 
             all_train_predictions = []
             all_train_labels = []
+            train_epoch_step = 0
             while True:
                 step_start_time = timeit.default_timer()
 
@@ -155,7 +178,7 @@ def main():
                 try:
                     img_batch, label_batch = sess.run(next_train_batch)
                 except tf.errors.OutOfRangeError:
-                    print("{} Ended epoch {}".format(datetime.now(), epoch))
+                    print("{} Ended training epoch number {}".format(datetime.now(), epoch))
                     break
 
                 # And run the training op
@@ -175,19 +198,24 @@ def main():
                 step_end_time = timeit.default_timer()
 
                 global_step += 1
-                print("{} Global step {}, ETA: {:-3g} s.".format(datetime.now(), global_step,
-                                                              step_end_time - step_start_time))
+                train_epoch_step += 1
+                print("{} Global step {}, Epoch: {}, Epoch step {}/{}, ETA: {:.3g} s."
+                      .format(datetime.now(), global_step, epoch, train_epoch_step, train_steps_per_epoch,
+                              step_end_time - step_start_time))
 
             cm = tf.confusion_matrix(labels=all_train_labels, predictions=all_train_predictions,
                                      num_classes=dataset.num_classes).eval()
             print("{} Training confusion matrix:\n{}".format(datetime.now(), cm))
 
+            print("-------------------------------------------------------")
             print("{} Starting evaluation on test set.".format(datetime.now()))
             # Evaluate on test dataset
             all_test_predictions = []
             all_test_labels = []
             test_summaries_written = False
+            test_epoch_steps = 0
             while True:
+                step_start_time = timeit.default_timer()
                 try:
                     img_batch, label_batch = sess.run(next_test_batch)
                 except tf.errors.OutOfRangeError:
@@ -198,8 +226,14 @@ def main():
                 all_test_predictions.extend(predictions)
                 all_test_labels.extend(np.argmax(label_batch, axis=1))
 
+                step_end_time = timeit.default_timer()
+                test_epoch_steps += 1
+                print("{} Epoch: {}, Test epoch step {}/{}, ETA: {:.3g} s."
+                      .format(datetime.now(), epoch, test_epoch_steps, test_steps_per_epoch,
+                              step_end_time - step_start_time))
+
                 if not test_summaries_written and epoch % write_test_summaries_every_n_epochs == 0:
-                    print("# Writing test summary".format(datetime.now()))
+                    print("{} Writing test summary".format(datetime.now()))
                     test_summaries_written = True
                     s = sess.run(test_summaries, feed_dict={x: img_batch, y: label_batch, keep_prob: 1.0})
                     writer.add_summary(s, global_step)
