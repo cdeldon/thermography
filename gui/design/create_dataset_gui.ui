@@ -492,11 +492,14 @@
                <property name="enabled">
                 <bool>false</bool>
                </property>
-               <property name="text">
-                <string>Working</string>
+               <property name="toolTip">
+                <string>Select current module as 'Working' (shortcut: '0')</string>
                </property>
-               <property name="default">
-                <bool>true</bool>
+               <property name="text">
+                <string>Working (0)</string>
+               </property>
+               <property name="shortcut">
+                <string>0</string>
                </property>
               </widget>
              </item>
@@ -505,8 +508,14 @@
                <property name="enabled">
                 <bool>false</bool>
                </property>
+               <property name="toolTip">
+                <string>Select current module as 'Broken' (shortcut: '1')</string>
+               </property>
                <property name="text">
-                <string>Broken</string>
+                <string>Broken (1)</string>
+               </property>
+               <property name="shortcut">
+                <string>1</string>
                </property>
               </widget>
              </item>
@@ -531,8 +540,14 @@
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>Select current module as 'Misdetected' (shortcut: '2')</string>
+             </property>
              <property name="text">
-              <string>Other</string>
+              <string>Other(2)</string>
+             </property>
+             <property name="shortcut">
+              <string>2</string>
              </property>
             </widget>
            </item>
