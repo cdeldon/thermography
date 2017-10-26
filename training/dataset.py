@@ -4,7 +4,6 @@ from tensorflow.python.framework import dtypes
 from tensorflow.python.framework.ops import convert_to_tensor
 import numpy as np
 import cv2
-from progressbar import Bar, ETA, Percentage, ProgressBar
 
 from .thermo_class import ThermoClassList
 
@@ -208,17 +207,18 @@ class ThermoDataset:
             if load_all_data:
                 images = []
                 labels = []
-                print("Loading all data for {} dataset.".format({0: "TRAIN", 1: "TEST", 2: "VALIDAT."}[dataset_id]))
-                print()
-                pbar = ProgressBar(widgets=[Percentage(), Bar(), " ", ETA()], maxval=max_index - min_index)
-                pbar.start()
+                num_images = max_index - min_index - 1
+                print("Loading {} images for {} dataset.".format(num_images,
+                                                                 {0: "TRAIN", 1: "TEST", 2: "VALIDAT."}[dataset_id]))
                 for image_num, image_index in enumerate(range(min_index, max_index)):
                     image_path = self.__image_file_names[image_index]
                     image_label = self.__labels[image_index]
-                    pbar.update(image_num + 1)
+                    if (image_num + 1) % 100 == 0:
+                        print("Loaded {} images of {}".format(image_num + 1, num_images))
                     im, l = self.__parse_image_load(image_path, image_label)
                     images.append(im)
                     labels.append(l)
+                print("Loaded all {} images".format({0: "TRAIN", 1: "TEST", 2: "VALIDAT."}[dataset_id]))
                 images = np.array(images)
                 images = images[..., np.newaxis]
                 print("Images shape: {}".format(images.shape))

@@ -54,7 +54,16 @@ class ComplexNet(BaseNet):
                     h_fc2_drop = tf.nn.dropout(h_fc2, keep_prob=self.keep_probability, name="dropout")
 
             with tf.variable_scope('full_connected_3'):
-                W_fc3 = weight_variable(name="W", shape=[128, self.num_classes])
-                b_fc3 = bias_variable(name="b", shape=[self.num_classes])
+                W_fc3 = weight_variable(name="W", shape=[128, 128])
+                b_fc3 = bias_variable(name="b", shape=[128])
 
-                self.logits = tf.matmul(h_fc2_drop, W_fc3) + b_fc3
+                h_fc3 = tf.nn.relu(tf.matmul(h_fc2_drop, W_fc3 + b_fc3))
+
+                with tf.variable_scope('drop_out_3'):
+                    h_fc3_drop = tf.nn.dropout(h_fc3, keep_prob=self.keep_probability, name="dropout")
+
+            with tf.variable_scope('full_connected_4'):
+                W_fc4 = weight_variable(name="W", shape=[128, self.num_classes])
+                b_fc4 = bias_variable(name="b", shape=[self.num_classes])
+
+                self.logits = tf.matmul(h_fc3_drop, W_fc4) + b_fc4
