@@ -1,7 +1,8 @@
 import cv2
 import os
 import progressbar
-from .modes import Modality
+
+from . import Modality
 
 __all__ = ["ImageLoader", "VideoLoader"]
 

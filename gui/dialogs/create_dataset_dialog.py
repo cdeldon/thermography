@@ -5,6 +5,8 @@ import numpy as np
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QImage
 
+from simple_logger import Logger
+
 import thermography as tg
 from gui.threads import ThermoDatasetCreationThread
 from gui.design import Ui_CreateDataset_main_window
@@ -32,6 +34,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
     def __init__(self):
         super(self.__class__, self).__init__()
+        Logger.info("Creating dataset creation GUI")
         self.setupUi(self)
         self.set_logo_icon()
 
@@ -55,12 +58,13 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
     def set_logo_icon(self):
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
         logo_path = os.path.join(gui_path, "img/logo.png")
+        Logger.debug("Setting logo {}".format(logo_path))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(logo_path), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
 
     def connect_widgets(self):
-
+        Logger.debug("Connecting all widgets")
         # File buttons
         self.file_about.triggered.connect(self.open_about_window)
         self.file_exit.triggered.connect(self.deleteLater)
@@ -97,10 +101,13 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.expected_ratio_value.valueChanged.connect(self.update_rectangle_detection_params)
         self.ratio_max_deviation_value.valueChanged.connect(self.update_rectangle_detection_params)
         self.min_area_value.valueChanged.connect(self.update_rectangle_detection_params)
+        Logger.debug("Windgets connected")
 
     def connect_thermo_thread(self):
+        Logger.debug("Connecting thermo thread")
         self.thermo_thread.last_frame_signal.connect(lambda x: self.store_last_frame_image(x))
         self.thermo_thread.module_list_signal.connect(lambda x: self.display_all_modules(x))
+        Logger.debug("Thermo thread connected")
 
     def store_last_frame_image(self, img: np.ndarray):
         self.last_frame_image = img
@@ -116,8 +123,11 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         video_file_name, _ = QtWidgets.QFileDialog.getOpenFileName(caption="Select a video",
                                                                    filter="Videos (*.mov *.mp4 *.avi)",
                                                                    directory=open_directory)
+        Logger.debug("Selected video path: <{}>".format(video_file_name))
+
         if video_file_name == "":
             return
+
         self.last_folder_opened = os.path.dirname(video_file_name)
         self.setWindowTitle("Thermography: {}".format(video_file_name))
 
@@ -126,15 +136,19 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         if end_frame == -1:
             end_frame = None
 
+        Logger.debug("Start frame: {}, end frame: {}".format(start_frame, end_frame))
+
         video_loader_thread = VideoLoaderThread(video_path=video_file_name, from_index=start_frame, to_index=end_frame,
                                                 parent=self)
         video_loader_thread.start()
         video_loader_thread.finish_signal.connect(self.video_loader_finished)
 
     def video_loader_finished(self, frame_list: list):
+        Logger.debug("Video loader finished")
         self.frames = frame_list.copy()
         self.global_progress_bar.setMinimum(0)
         self.global_progress_bar.setMaximum(len(self.frames) - 1)
+        Logger.debug("Loaded {} frames".format(len(self.frames)))
 
         self.play_video_button.setEnabled(True)
         self.module_working_button.setEnabled(True)
@@ -169,16 +183,19 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.thermo_thread.start()
 
     def current_module_is_working(self):
+        Logger.debug("Current module is working")
         self.update_module_counter("manual", 0)
         self.register_module(self.accepted_modules)
         self.display_next_module()
 
     def current_module_is_broken(self):
+        Logger.debug("Current module is broken")
         self.update_module_counter("manual", 1)
         self.register_module(self.discarded_modules)
         self.display_next_module()
 
     def current_module_misdetection(self):
+        Logger.debug("Current module was misdetected")
         self.update_module_counter("manual", 2)
         self.register_module(self.misdetected_modules)
         self.display_next_module()
