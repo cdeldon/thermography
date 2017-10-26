@@ -45,6 +45,9 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.accepted_modules = {}
         self.misdetected_modules = {}
 
+        self.module_counter = {"automatic": {"accepted": 0, "discarded": 0, "misdetected": 0},
+                               "manual": {"accepted": 0, "discarded": 0, "misdetected": 0}}
+
         self.thermo_thread = None
 
         self.connect_widgets()
@@ -75,6 +78,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.module_working_button.clicked.connect(self.current_module_is_working)
         self.module_broken_button.clicked.connect(self.current_module_is_broken)
         self.misdetection_button.clicked.connect(self.current_module_misdetection)
+
         # Segment clustering.
         self.gmm_value.clicked.connect(self.update_clustering_params)
         self.knn_value.clicked.connect(self.update_clustering_params)
@@ -139,7 +143,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
     def save_module_dataset(self):
         self.save_dialog = SaveImageDialog(working_modules=self.accepted_modules, broken_modules=self.discarded_modules,
-                                      misdetected_modules=self.misdetected_modules, parent=self)
+                                           misdetected_modules=self.misdetected_modules, parent=self)
         self.save_dialog.exec_()
 
     def save_and_close(self):
@@ -165,14 +169,17 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.thermo_thread.start()
 
     def current_module_is_working(self):
+        self.update_module_counter("manual", 0)
         self.register_module(self.accepted_modules)
         self.display_next_module()
 
     def current_module_is_broken(self):
+        self.update_module_counter("manual", 1)
         self.register_module(self.discarded_modules)
         self.display_next_module()
 
     def current_module_misdetection(self):
+        self.update_module_counter("manual", 2)
         self.register_module(self.misdetected_modules)
         self.display_next_module()
 
@@ -251,7 +258,6 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.thermo_thread.app.rectangle_detection_parameters.min_area = self.min_area_value.value()
 
     def display_all_modules(self, module_list: list):
-        print("We have {} modules".format(len(module_list)))
         self.current_frame_modules = module_list.copy()
         self.current_module_id_in_frame = -1
         if len(self.current_frame_modules) == 0:
@@ -260,6 +266,18 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
             self.frame_finished()
             return
         self.display_next_module()
+
+    def update_module_counter(self, automatic_manual_str, module_class_id):
+        label_text = {0: "accepted", 1: "discarded", 2: "misdetected"}[module_class_id]
+        self.module_counter[automatic_manual_str][label_text] += 1
+        self.working_manual_classified_label.setText(str(self.module_counter["manual"]["accepted"]))
+        self.broken_manual_classified_label.setText(str(self.module_counter["manual"]["discarded"]))
+        self.other_manual_classified_label.setText(str(self.module_counter["manual"]["misdetected"]))
+        self.working_automatic_classified_label.setText(str(self.module_counter["automatic"]["accepted"]))
+        self.broken_automatic_classified_label.setText(str(self.module_counter["automatic"]["discarded"]))
+        self.other_automatic_classified_label.setText(str(self.module_counter["automatic"]["misdetected"]))
+        self.total_manual_classified_label.setText(str(sum(self.module_counter["manual"].values())))
+        self.total_automatic_classified_label.setText(str(sum(self.module_counter["automatic"].values())))
 
     def display_next_module(self):
         self.current_module_id_in_frame += 1
@@ -274,11 +292,14 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         # If module_ID has already been classified, then there is no need to display it as we can directly classify it
         # using the existing manual label.
         was_already_classified = False
-        for module_class in [self.accepted_modules, self.discarded_modules, self.misdetected_modules]:
+        for module_class_id, module_class in enumerate(
+                [self.accepted_modules, self.discarded_modules, self.misdetected_modules]):
             if not was_already_classified and module_ID in module_class:
-                module_class[module_ID].append({"image": module_image, "coordinates": coordinates, "frame_id": self.current_frame_id})
+                module_class[module_ID].append(
+                    {"image": module_image, "coordinates": coordinates, "frame_id": self.current_frame_id})
                 was_already_classified = True
-                print("Module {} was already classified!".format(module_ID))
+                # Update counting labels:
+                self.update_module_counter("automatic", module_class_id)
 
         mask = np.zeros_like(self.last_frame_image)
         tmp_image = self.last_frame_image.copy()
@@ -304,13 +325,11 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         if was_already_classified:
             self.display_next_module()
 
-
     @staticmethod
     def resize_video_view(size, view):
         view.setFixedSize(size[1], size[0])
 
     def frame_finished(self):
-        print("Frame finished")
         self.current_frame_id += 1
         self.current_module_id_in_frame = 0
 
