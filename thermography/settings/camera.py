@@ -1,7 +1,8 @@
 import json
+import os
+
 import numpy as np
 from simple_logger import Logger
-import os
 
 
 class Camera:

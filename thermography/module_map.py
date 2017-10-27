@@ -1,6 +1,6 @@
-import cv2
 import numpy as np
 from simple_logger import Logger
+
 from thermography.utils import ID, rectangle_contains
 
 

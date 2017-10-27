@@ -1,10 +1,11 @@
+import os
+
+import numpy as np
 from PyQt5 import QtCore
 from PyQt5.QtCore import QThread
 from simple_logger import Logger
 
 import thermography as tg
-import os
-import numpy as np
 
 
 class ThermoDatasetCreationThread(QThread):

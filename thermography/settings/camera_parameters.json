@@ -1,8 +1,14 @@
 {
-  "image_size": [640,512],
+  "image_size": [
+    640,
+    512
+  ],
   "focal_length": 529.412,
-  "principal_point": [320, 256],
-  "distortion" : {
+  "principal_point": [
+    320,
+    256
+  ],
+  "distortion": {
     "radial": {
       "r1": -0.283796,
       "r2": 0.100312,

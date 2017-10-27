@@ -2,15 +2,14 @@ import os
 
 import cv2
 import numpy as np
-
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QImage
 from simple_logger import Logger
 
 import thermography as tg
-from gui.threads import ThermoGuiThread
 from gui.design import Ui_ThermoGUI_main_window
 from gui.dialogs import AboutDialog, WebcamDialog
+from gui.threads import ThermoGuiThread
 
 
 class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):

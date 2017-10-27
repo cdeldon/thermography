@@ -1,13 +1,13 @@
-from . import ModuleMap
-from .io import VideoLoader
-from .detection import *
-from .settings import Camera, Modules
-from .utils import rotate_image, scale_image
-from .utils.display import *
-
 import cv2
 import numpy as np
 from simple_logger import Logger
+
+from . import ModuleMap
+from .detection import *
+from .io import VideoLoader
+from .settings import Camera, Modules
+from .utils import rotate_image, scale_image
+from .utils.display import *
 
 
 class ThermoApp:

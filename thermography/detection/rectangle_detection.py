@@ -1,6 +1,7 @@
-from thermography.utils.geometry import aspect_ratio, area
 import numpy as np
 from simple_logger import Logger
+
+from thermography.utils.geometry import aspect_ratio, area
 
 __all__ = ["RectangleDetector", "RectangleDetectorParams"]
 

@@ -1,16 +1,15 @@
 import os
+
 import cv2
 import numpy as np
-
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QImage
-
 from simple_logger import Logger
 
 import thermography as tg
-from gui.threads import ThermoDatasetCreationThread
 from gui.design import Ui_CreateDataset_main_window
 from gui.dialogs import AboutDialog, SaveImageDialog
+from gui.threads import ThermoDatasetCreationThread
 
 
 class VideoLoaderThread(QtCore.QThread):

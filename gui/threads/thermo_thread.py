@@ -1,11 +1,12 @@
+import os
+
+import cv2
+import numpy as np
 from PyQt5 import QtCore
 from PyQt5.QtCore import QThread
 from simple_logger import Logger
 
 import thermography as tg
-import cv2
-import os
-import numpy as np
 
 
 class ThermoGuiThread(QThread):

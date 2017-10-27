@@ -1,9 +1,10 @@
+import os
+
+import cv2
 from PyQt5 import QtWidgets, QtGui
 from simple_logger import Logger
-import os
-import cv2
-import thermography as tg
 
+import thermography as tg
 from gui.design import Ui_Save_images_dialog
 
 

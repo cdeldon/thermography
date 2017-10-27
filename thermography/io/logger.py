@@ -1,9 +1,10 @@
-from datetime import datetime
 import os
+from datetime import datetime
+
 from simple_logger import Logger
 
-from . import LogLevel
 from thermography.settings import get_log_dir
+from . import LogLevel
 
 
 def setup_logger(console_log_level: LogLevel = LogLevel.INFO, file_log_level: LogLevel = LogLevel.DEBUG,

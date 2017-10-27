@@ -1,6 +1,8 @@
-from PyQt5 import QtGui, QtCore, QtWidgets
 import os
+
+from PyQt5 import QtGui, QtCore, QtWidgets
 from simple_logger import Logger
+
 import thermography as tg
 
 

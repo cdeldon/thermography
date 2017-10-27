@@ -1,5 +1,6 @@
+from enum import IntEnum
+
 import cv2
-from enum import IntEnum, Enum
 
 
 class Modality(IntEnum):

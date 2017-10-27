@@ -1,6 +1,7 @@
-import tensorflow as tf
-import numpy as np
 from abc import ABC, abstractmethod
+
+import numpy as np
+import tensorflow as tf
 
 
 class BaseNet(ABC):

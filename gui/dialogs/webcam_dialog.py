@@ -1,5 +1,6 @@
-import cv2
 import os
+
+import cv2
 from PyQt5 import QtGui, QtCore, QtWidgets
 from simple_logger import Logger
 

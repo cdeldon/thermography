@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_ThermoGUI_main_window(object):
     def setupUi(self, ThermoGUI_main_window):
         ThermoGUI_main_window.setObjectName("ThermoGUI_main_window")
@@ -41,7 +42,8 @@ class Ui_ThermoGUI_main_window(object):
         self.verticalLayout_11.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_11.setObjectName("verticalLayout_11")
         self.module_image_view = QtWidgets.QLabel(self.widget_3)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,
+                                           QtWidgets.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.module_image_view.sizePolicy().hasHeightForWidth())
@@ -138,7 +140,8 @@ class Ui_ThermoGUI_main_window(object):
         self.play_stop_panel.addWidget(self.reset_button)
         self.verticalLayout_6.addLayout(self.play_stop_panel)
         self.tabWidget = QtWidgets.QTabWidget(self.widget_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,
+                                           QtWidgets.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
@@ -781,55 +784,82 @@ class Ui_ThermoGUI_main_window(object):
     def retranslateUi(self, ThermoGUI_main_window):
         _translate = QtCore.QCoreApplication.translate
         ThermoGUI_main_window.setWindowTitle(_translate("ThermoGUI_main_window", "ThermoGUI"))
-        ThermoGUI_main_window.setWhatsThis(_translate("ThermoGUI_main_window", "<html><head/><body><p>Tool Bar</p><p><br/></p></body></html>"))
-        self.module_image_view.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\">Module Map</p></body></html>"))
-        self.play_video_button.setToolTip(_translate("ThermoGUI_main_window", "<html><head/><body><p>Play the current video/Webcam.</p></body></html>"))
+        ThermoGUI_main_window.setWhatsThis(
+            _translate("ThermoGUI_main_window", "<html><head/><body><p>Tool Bar</p><p><br/></p></body></html>"))
+        self.module_image_view.setText(
+            _translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\">Module Map</p></body></html>"))
+        self.play_video_button.setToolTip(_translate("ThermoGUI_main_window",
+                                                     "<html><head/><body><p>Play the current video/Webcam.</p></body></html>"))
         self.play_video_button.setText(_translate("ThermoGUI_main_window", "Play"))
-        self.pause_video_button.setToolTip(_translate("ThermoGUI_main_window", "<html><head/><body><p>Pause the current video/Webcam.</p></body></html>"))
+        self.pause_video_button.setToolTip(_translate("ThermoGUI_main_window",
+                                                      "<html><head/><body><p>Pause the current video/Webcam.</p></body></html>"))
         self.pause_video_button.setText(_translate("ThermoGUI_main_window", "Pause"))
-        self.stop_video_button.setToolTip(_translate("ThermoGUI_main_window", "<html><head/><body><p>Resets the current video to the start.</p></body></html>"))
+        self.stop_video_button.setToolTip(_translate("ThermoGUI_main_window",
+                                                     "<html><head/><body><p>Resets the current video to the start.</p></body></html>"))
         self.stop_video_button.setText(_translate("ThermoGUI_main_window", "Stop"))
-        self.reset_button.setToolTip(_translate("ThermoGUI_main_window", "<html><head/><body><p><span style=\" font-weight:400;\">Resets the state of the ThermoGUI.</span></p></body></html>"))
+        self.reset_button.setToolTip(_translate("ThermoGUI_main_window",
+                                                "<html><head/><body><p><span style=\" font-weight:400;\">Resets the state of the ThermoGUI.</span></p></body></html>"))
         self.reset_button.setText(_translate("ThermoGUI_main_window", "Reset"))
-        self.video_view.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\">Input Image</p></body></html>"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.input_image_tab), _translate("ThermoGUI_main_window", "Input image"))
-        self.canny_edges_view.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\">Edges Image</p></body></html>"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.canny_edges_tab), _translate("ThermoGUI_main_window", "Edges image"))
-        self.segment_image_view.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\">Segment Image</p></body></html>"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.segment_image_tab), _translate("ThermoGUI_main_window", "Segment image"))
-        self.rectangle_image_view.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\">Rectangle Image</p></body></html>"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.rectangle_image_tab), _translate("ThermoGUI_main_window", "Rectangle image"))
+        self.video_view.setText(
+            _translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\">Input Image</p></body></html>"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.input_image_tab),
+                                  _translate("ThermoGUI_main_window", "Input image"))
+        self.canny_edges_view.setText(
+            _translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\">Edges Image</p></body></html>"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.canny_edges_tab),
+                                  _translate("ThermoGUI_main_window", "Edges image"))
+        self.segment_image_view.setText(_translate("ThermoGUI_main_window",
+                                                   "<html><head/><body><p align=\"center\">Segment Image</p></body></html>"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.segment_image_tab),
+                                  _translate("ThermoGUI_main_window", "Segment image"))
+        self.rectangle_image_view.setText(_translate("ThermoGUI_main_window",
+                                                     "<html><head/><body><p align=\"center\">Rectangle Image</p></body></html>"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.rectangle_image_tab),
+                                  _translate("ThermoGUI_main_window", "Rectangle image"))
         self.global_progress_bar.setFormat(_translate("ThermoGUI_main_window", "%p%"))
-        self.label.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">File</span></p></body></html>"))
-        self.video_from_index.setToolTip(_translate("ThermoGUI_main_window", "<html><head/><body><p>Initial frame of the video to be loaded.</p></body></html>"))
+        self.label.setText(_translate("ThermoGUI_main_window",
+                                      "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">File</span></p></body></html>"))
+        self.video_from_index.setToolTip(_translate("ThermoGUI_main_window",
+                                                    "<html><head/><body><p>Initial frame of the video to be loaded.</p></body></html>"))
         self.from_video_index_label.setText(_translate("ThermoGUI_main_window", "From:"))
         self.to_video_index_label.setText(_translate("ThermoGUI_main_window", "To:"))
-        self.video_to_index.setToolTip(_translate("ThermoGUI_main_window", "<html><head/><body><p>Final frame of the video to be loaded.</p></body></html>"))
-        self.load_video_button.setToolTip(_translate("ThermoGUI_main_window", "<html><head/><body><p>Loads the frames from the selected video file.</p></body></html>"))
+        self.video_to_index.setToolTip(_translate("ThermoGUI_main_window",
+                                                  "<html><head/><body><p>Final frame of the video to be loaded.</p></body></html>"))
+        self.load_video_button.setToolTip(_translate("ThermoGUI_main_window",
+                                                     "<html><head/><body><p>Loads the frames from the selected video file.</p></body></html>"))
         self.load_video_button.setText(_translate("ThermoGUI_main_window", "Choose Video"))
-        self.label_2.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">WebCam</span></p></body></html>"))
-        self.detect_webcam_button.setToolTip(_translate("ThermoGUI_main_window", "<html><head/><body><p>Detects the correct port for the Webcam</p></body></html>"))
+        self.label_2.setText(_translate("ThermoGUI_main_window",
+                                        "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">WebCam</span></p></body></html>"))
+        self.detect_webcam_button.setToolTip(_translate("ThermoGUI_main_window",
+                                                        "<html><head/><body><p>Detects the correct port for the Webcam</p></body></html>"))
         self.detect_webcam_button.setText(_translate("ThermoGUI_main_window", "Detect"))
         self.image_scaling_label.setText(_translate("ThermoGUI_main_window", "Input image scaling : 1.00"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.video_tab), _translate("ThermoGUI_main_window", "Video Loader"))
-        self.preprocessing_label.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Preprocessing</span></p></body></html>"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.video_tab),
+                                   _translate("ThermoGUI_main_window", "Video Loader"))
+        self.preprocessing_label.setText(_translate("ThermoGUI_main_window",
+                                                    "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Preprocessing</span></p></body></html>"))
         self.undistort_image_box.setText(_translate("ThermoGUI_main_window", "undistort image"))
         self.angle_label.setText(_translate("ThermoGUI_main_window", "angle:"))
         self.blur_label.setText(_translate("ThermoGUI_main_window", "blur:"))
-        self.canny_parameters_label.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Canny</span></p></body></html>"))
-        self.histeresis_label.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p>Histeresis:</p></body></html>"))
+        self.canny_parameters_label.setText(_translate("ThermoGUI_main_window",
+                                                       "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Canny</span></p></body></html>"))
+        self.histeresis_label.setText(
+            _translate("ThermoGUI_main_window", "<html><head/><body><p>Histeresis:</p></body></html>"))
         self.label_max_histeresis.setText(_translate("ThermoGUI_main_window", "max"))
         self.label_min_histeresis.setText(_translate("ThermoGUI_main_window", "min"))
         self.dilation_label.setText(_translate("ThermoGUI_main_window", "dilation steps: "))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.preprocessing_tab), _translate("ThermoGUI_main_window", "Preprocessing"))
-        self.segment_label.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Detection</span></p></body></html>"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.preprocessing_tab),
+                                   _translate("ThermoGUI_main_window", "Preprocessing"))
+        self.segment_label.setText(_translate("ThermoGUI_main_window",
+                                              "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Detection</span></p></body></html>"))
         self.max_gap_label.setText(_translate("ThermoGUI_main_window", "max gap"))
         self.delta_rho_label.setText(_translate("ThermoGUI_main_window", "delta rho"))
         self.min_votes_label.setText(_translate("ThermoGUI_main_window", "min votes"))
         self.min_length_label.setText(_translate("ThermoGUI_main_window", "min length"))
         self.delta_theta_label.setText(_translate("ThermoGUI_main_window", "delta theta"))
         self.extend_segments_label.setText(_translate("ThermoGUI_main_window", "extend segments"))
-        self.clustering_label.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Clustering</span></p></body></html>"))
+        self.clustering_label.setText(_translate("ThermoGUI_main_window",
+                                                 "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Clustering</span></p></body></html>"))
         self.num_init_label.setText(_translate("ThermoGUI_main_window", "num init"))
         self.cluster_type_label.setText(_translate("ThermoGUI_main_window", "type"))
         self.num_clusters_label.setText(_translate("ThermoGUI_main_window", "num clusters"))
@@ -839,16 +869,20 @@ class Ui_ThermoGUI_main_window(object):
         self.swipe_clusters_value.setText(_translate("ThermoGUI_main_window", "swipe"))
         self.use_angle_value.setText(_translate("ThermoGUI_main_window", "angles"))
         self.use_centers_value.setText(_translate("ThermoGUI_main_window", "centers"))
-        self.cleaning_label.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Cleaning</span></p></body></html>"))
+        self.cleaning_label.setText(_translate("ThermoGUI_main_window",
+                                               "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Cleaning</span></p></body></html>"))
         self.max_merging_distance_label.setText(_translate("ThermoGUI_main_window", "max merging distance"))
         self.max_angle_variation_mean_label.setText(_translate("ThermoGUI_main_window", "max angle variation"))
         self.max_merging_angle_label.setText(_translate("ThermoGUI_main_window", "max merging angle"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.segment_tab), _translate("ThermoGUI_main_window", "Segments"))
-        self.filter_label.setText(_translate("ThermoGUI_main_window", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Filter</span></p></body></html>"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.segment_tab),
+                                   _translate("ThermoGUI_main_window", "Segments"))
+        self.filter_label.setText(_translate("ThermoGUI_main_window",
+                                             "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Filter</span></p></body></html>"))
         self.ratio_max_deviation_label.setText(_translate("ThermoGUI_main_window", "ratio max deviation"))
         self.min_area_label.setText(_translate("ThermoGUI_main_window", "min area"))
         self.expected_ratio_label.setText(_translate("ThermoGUI_main_window", "expected ratio"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.module_tab), _translate("ThermoGUI_main_window", "Modules"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.module_tab),
+                                   _translate("ThermoGUI_main_window", "Modules"))
         self.FileMenu.setTitle(_translate("ThermoGUI_main_window", "File"))
         self.actionLoad.setText(_translate("ThermoGUI_main_window", "Load"))
         self.file_about.setText(_translate("ThermoGUI_main_window", "About"))
@@ -857,10 +891,10 @@ class Ui_ThermoGUI_main_window(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     ThermoGUI_main_window = QtWidgets.QMainWindow()
     ui = Ui_ThermoGUI_main_window()
     ui.setupUi(ThermoGUI_main_window)
     ThermoGUI_main_window.show()
     sys.exit(app.exec_())
-

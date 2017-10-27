@@ -1,6 +1,7 @@
-from thermography.utils.geometry import angle, angle_diff, segment_segment_intersection
 import numpy as np
 from simple_logger import Logger
+
+from thermography.utils.geometry import angle, angle_diff, segment_segment_intersection
 
 __all__ = ["IntersectionDetector", "IntersectionDetectorParams"]
 

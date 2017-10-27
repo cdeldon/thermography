@@ -1,5 +1,6 @@
-import cv2
 import os
+
+import cv2
 import progressbar
 from simple_logger import Logger
 
