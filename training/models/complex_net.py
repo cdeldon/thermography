@@ -27,15 +27,16 @@ class ComplexNet(BaseNet):
                 # 12 15
 
             with tf.variable_scope('conv_3'):
-                h_conv3 = conv_relu(x=h_pool2, kernel_shape=[3, 3, 8, 16], bias_shape=[16])
-                h_pool3 = max_pool_2x2(name="max_pool", x=h_conv3)
+                h_conv3_0 = conv_relu(x=h_pool2, kernel_shape=[3, 3, 8, 16], bias_shape=[16], name="_0")
+                h_conv3_1 = conv_relu(x=h_conv3_0, kernel_shape=[3, 3, 16, 32], bias_shape=[32], name="_1")
+                h_pool3 = max_pool_2x2(name="max_pool", x=h_conv3_1)
                 current_shape = self.update_shape(current_shape, 2)
                 # 6 8
 
             with tf.variable_scope('full_connected_1'):
-                h_pool1_flat = tf.reshape(h_pool3, [-1, np.prod(current_shape) * 16])
+                h_pool1_flat = tf.reshape(h_pool3, [-1, np.prod(current_shape) * 32])
 
-                W_fc1 = weight_variable(name="W", shape=[np.prod(current_shape) * 16, 512])
+                W_fc1 = weight_variable(name="W", shape=[np.prod(current_shape) * 32, 512])
                 b_fc1 = bias_variable(name="b", shape=[512])
 
                 h_fc1 = tf.nn.relu(tf.matmul(h_pool1_flat, W_fc1 + b_fc1))
