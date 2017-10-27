@@ -36,11 +36,11 @@ def main():
     # Learning params
     num_epochs = 100000
     batch_size = 32
-    learning_rate = 0.0002
+    learning_rate = 0.00005
 
     # Network params
     image_shape = [96, 120]
-    keep_probability = 0.75
+    keep_probability = 0.5
 
     # Summary params
     write_train_summaries_every_n_steps = 100
