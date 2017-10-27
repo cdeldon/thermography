@@ -6,6 +6,7 @@ SETTINGS_DIR = os.path.dirname(os.path.abspath(__file__))
 THERMOGRAPHY_ROOT_DIR = os.path.dirname(SETTINGS_DIR)
 DATA_DIR = ""
 TEST_DIR = os.path.join(THERMOGRAPHY_ROOT_DIR, "test")
+LOG_DIR = os.path.join(os.path.join(THERMOGRAPHY_ROOT_DIR, os.pardir), "logs")
 
 
 def get_settings_dir() -> str:
@@ -56,8 +57,17 @@ def get_test_dir() -> str:
     return TEST_DIR
 
 
+def get_log_dir() -> str:
+    """
+    Returns the absolute path to the log directory.
+    :return: Absolute path to the log directory.
+    """
+    return LOG_DIR
+
+
 __all__ = ["Camera",
            "get_data_dir",
+           "get_log_dir",
            "get_settings_dir",
            "get_thermography_root_dir",
            "get_test_dir",

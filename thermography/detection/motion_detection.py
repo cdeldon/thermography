@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from simple_logger import Logger
 
 from thermography.utils import scale_image
 
@@ -29,7 +30,7 @@ class MotionDetector:
         :param frame: New frame of the sequence.
         :return: The estimation of the mean motion between self.last_frame and the frame passed as argument. The motion estimate is expressed in pixel units.
         """
-
+        Logger.debug("Detecting motion")
         frame = scale_image(frame, self.scaling)
         if self.last_frame is None:
             self.last_frame = frame.copy()
@@ -39,6 +40,7 @@ class MotionDetector:
                                                  cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
 
         mean_flow = np.mean(self.flow, axis=(0, 1))
+        Logger.debug("Mean motion is {}".format(mean_flow))
 
         self.last_frame = frame.copy()
 

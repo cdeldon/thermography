@@ -101,3 +101,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Log directory
+logs/*
+!logs/.gitkeep

@@ -1,7 +1,10 @@
-import cv2
 import os
+
+import cv2
 import progressbar
-from .modes import Modality
+from simple_logger import Logger
+
+from . import Modality
 
 __all__ = ["ImageLoader", "VideoLoader"]
 
@@ -14,7 +17,7 @@ class ImageLoader:
         :param image_path: Absolute path to the image file to be loaded.
         :param mode: Modality to be used when loading the image.
         """
-
+        Logger.debug("Loading image at {}".format(image_path))
         self.image_path = image_path
         self.mode = mode
         self.image_raw = cv2.imread(self.image_path, self.mode)
@@ -49,10 +52,12 @@ class VideoLoader:
         :param start_frame: Start frame of the video to be considered (inclusive).
         :param end_frame: End frame of the video to be considered (non inclusive).
         """
+        Logger.debug("Loading video at {}".format(video_path))
         self.video_path = video_path
 
         self.start_frame = start_frame
         self.end_frame = end_frame
+        Logger.debug("Start frame: {}, end frame: {}".format(self.start_frame, self.end_frame))
 
         self.frames = []
         self.__load_video(cv2.VideoCapture(self.video_path))
@@ -80,36 +85,34 @@ class VideoLoader:
     @video_path.setter
     def video_path(self, path: str):
         if not os.path.exists(path):
-            raise FileExistsError("Video file {} not found".format(self.video_path))
+            Logger.fatal("Video path {} does not exist".format(path))
+            raise FileNotFoundError("Video file {} not found".format(path))
         self.__video_path = path
 
     def __load_video(self, video_raw: cv2.VideoCapture):
         if not video_raw.isOpened():
-            print("Unable to read {} feed".format(self.video_path))
+            Logger.error("Unable to read {} feed".format(self.video_path))
 
         self.frames = []
 
         num_video_frames = int(video_raw.get(cv2.CAP_PROP_FRAME_COUNT))
-        if self.end_frame is None:
+        if self.end_frame is None or self.end_frame > num_video_frames:
+            Logger.warning("Setting end_frame to {}".format(num_video_frames))
             self.end_frame = num_video_frames
 
         num_frames = 0
-        num_total_frames = self.end_frame - self.start_frame
 
         # Skip the first frames until the self_start frame.
         video_raw.set(cv2.CAP_PROP_POS_FRAMES, self.start_frame)
 
-        print("Loading {} frames...".format(self.end_frame - self.start_frame))
-        bar = progressbar.ProgressBar(maxval=num_total_frames,
+        Logger.info("Loading {} frames...".format(self.end_frame - self.start_frame))
+        bar = progressbar.ProgressBar(maxval=self.num_frames,
                                       widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
         bar.start()
         for i in range(self.end_frame - self.start_frame):
-            if i + self.start_frame >= num_video_frames:
-                RuntimeWarning(
-                    "end_frame={} passed to VideoLoader is greater than video size {}."
-                    "Closing video stream now.".format(self.end_frame, num_video_frames))
             ret = video_raw.grab()
             if not ret:
+                Logger.error("Could not load frame {}".format(i + self.start_frame))
                 raise ValueError("Could not load frame {}".format(i + self.start_frame))
 
             self.frames.append(video_raw.retrieve()[1])

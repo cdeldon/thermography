@@ -7,3 +7,4 @@ scipy>=0.19.1
 sphinx_rtd_theme
 
 git+git://github.com/coagulant/progressbar-python3.git
+git+git://github.com/cdeldon/simple-logger.git@master

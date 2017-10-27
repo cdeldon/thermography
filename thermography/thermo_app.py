@@ -1,12 +1,13 @@
+import cv2
+import numpy as np
+from simple_logger import Logger
+
 from . import ModuleMap
-from .io import VideoLoader
 from .detection import *
+from .io import VideoLoader
 from .settings import Camera, Modules
 from .utils import rotate_image, scale_image
 from .utils.display import *
-
-import cv2
-import numpy as np
 
 
 class ThermoApp:
@@ -21,7 +22,7 @@ class ThermoApp:
         :param input_video_path: Absolute path to the input video.
         :param camera_param_file: Parameter file of the camera.
         """
-
+        Logger.debug("Starting thermo app")
         self.input_video_path = input_video_path
         self.camera_param_file = camera_param_file
 
@@ -69,6 +70,7 @@ class ThermoApp:
         return self.video_loader.frames
 
     def create_segment_image(self):
+        Logger.debug("Creating segment image")
         base_image = self.last_scaled_frame_rgb.copy()
         if self.last_cluster_list is None:
             return base_image
@@ -87,6 +89,7 @@ class ThermoApp:
         return base_image
 
     def create_rectangle_image(self):
+        Logger.debug("Creating rectangle image")
         base_image = self.last_scaled_frame_rgb.copy()
         if self.last_rectangles is not None and len(self.last_rectangles) > 0:
             mean_color = np.mean(base_image, axis=(0, 1))
@@ -103,6 +106,7 @@ class ThermoApp:
         return base_image
 
     def create_module_map_image(self):
+        Logger.debug("Creating module map image")
         base_image = self.last_scaled_frame_rgb.copy()
         for rect_id, rectangle in self.module_map.global_module_map.items():
             rect_shift = rectangle.last_rectangle - np.int32(rectangle.cumulated_motion)
@@ -121,6 +125,7 @@ class ThermoApp:
         return base_image
 
     def create_module_list(self):
+        Logger.debug("Creating module list")
         module_list = []
         module_shape = (90, 64)
         default_rect = np.float32(
@@ -141,10 +146,8 @@ class ThermoApp:
         self.camera = Camera(camera_path=self.camera_param_file)
         self.modules = Modules()
 
-        print("Using camera parameters:\n{}".format(self.camera))
-        print()
-        print("Using module parameters:\n{}".format(self.modules))
-        print()
+        Logger.info("Using camera parameters:\n{}".format(self.camera))
+        Logger.info("Using module parameters:\n{}".format(self.modules))
 
     def load_video(self, start_frame: int, end_frame: int):
         """
@@ -214,6 +217,7 @@ class ThermoApp:
         self.detect_edges()
         self.detect_segments()
         if len(self.last_segments) < 3:
+            Logger.warning("Found less than three segments!")
             return False
 
         self.cluster_segments()

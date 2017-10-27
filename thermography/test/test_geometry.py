@@ -1,6 +1,7 @@
 import collections
-import numpy as np
 import unittest
+
+import numpy as np
 
 from thermography.utils.geometry import *
 

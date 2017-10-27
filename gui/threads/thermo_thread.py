@@ -1,10 +1,12 @@
+import os
+
+import cv2
+import numpy as np
 from PyQt5 import QtCore
 from PyQt5.QtCore import QThread
+from simple_logger import Logger
 
 import thermography as tg
-import cv2
-import os
-import numpy as np
 
 
 class ThermoGuiThread(QThread):
@@ -22,6 +24,7 @@ class ThermoGuiThread(QThread):
         Initializes the Thermo Thread.
         """
         super(ThermoGuiThread, self).__init__()
+        Logger.info("Created thermoGUI thread")
 
         self.camera_param_file_name = None
         self.input_file_name = None
@@ -38,6 +41,7 @@ class ThermoGuiThread(QThread):
         self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name)
 
     def use_webcam(self, webcam_port: int):
+        Logger.debug("Thermo thread uses webcam port {}".format(webcam_port))
         self.webcam_port = webcam_port
         self.cap = cv2.VideoCapture(self.webcam_port)
         self.should_use_webcam = True
@@ -49,6 +53,8 @@ class ThermoGuiThread(QThread):
         self.camera_param_file_name = os.path.join(settings_dir, "camera_parameters.json")
         tg.settings.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
         self.input_file_name = os.path.join(tg.settings.get_data_dir(), "Ispez Termografica Ghidoni 1.mov")
+        Logger.debug("Using default camera param file: {}\n"
+                     "Default input file name: {}".format(self.camera_param_file_name, self.input_file_name))
 
     def load_video(self, start_frame: int, end_frame: int):
         self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name)
@@ -63,6 +69,7 @@ class ThermoGuiThread(QThread):
 
                 ret, frame = self.cap.read()
                 if ret:
+                    Logger.debug("Using webcam frame {}".format(frame_id))
                     self.app.step(frame_id, frame)
 
                     self.last_frame_signal.emit(self.app.last_scaled_frame_rgb)
@@ -78,6 +85,7 @@ class ThermoGuiThread(QThread):
                 while self.is_paused:
                     self.msleep(self.pause_time)
 
+                Logger.debug("Using video frame {}".format(frame_id))
                 self.app.step(frame_id, frame)
                 self.last_frame_signal.emit(self.app.last_scaled_frame_rgb)
                 self.edge_frame_signal.emit(self.app.last_edges_frame)

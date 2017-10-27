@@ -1,14 +1,19 @@
-from PyQt5 import QtWidgets, QtGui
 import os
-import cv2
-import thermography as tg
 
+import cv2
+from PyQt5 import QtWidgets, QtGui
+from simple_logger import Logger
+
+import thermography as tg
 from gui.design import Ui_Save_images_dialog
 
 
 class SaveImageDialog(QtWidgets.QDialog, Ui_Save_images_dialog):
     def __init__(self, working_modules: dict, broken_modules: dict, misdetected_modules: dict, parent=None):
         super(self.__class__, self).__init__(parent=parent)
+
+        Logger.debug("Opened 'Save Images' dialog")
+
         self.setupUi(self)
         self.set_logo_icon()
 
@@ -34,12 +39,14 @@ class SaveImageDialog(QtWidgets.QDialog, Ui_Save_images_dialog):
 
     def open_directory_dialog(self):
         output_directory = QtWidgets.QFileDialog.getExistingDirectory(caption="Select dataset output directory")
+        Logger.debug("Selected <{}> directory to store all images".format(output_directory))
         if output_directory == "":
             return
 
         self.output_directory = output_directory
 
         if len(os.listdir(self.output_directory)) > 0:
+            Logger.warning("Directory {} is not empty!".format(self.output_directory))
             QtWidgets.QMessageBox.warning(self, "Non empty directory",
                                           "Directory {} not empty! Select an empty directory!".format(
                                               self.output_directory), QtWidgets.QMessageBox.Ok,
@@ -57,9 +64,12 @@ class SaveImageDialog(QtWidgets.QDialog, Ui_Save_images_dialog):
                                                       QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                                                       QtWidgets.QMessageBox.No)
         if button_reply == QtWidgets.QMessageBox.No:
+            Logger.warning("Rejected directory <{}> for saving all images".format(self.output_directory))
             self.output_directory = None
             self.save_module_dataset()
         else:
+            Logger.info("Saving all images to <{}>".format(self.output_directory))
+            Logger.warning("If dialog freezes, check log file, but DON'T close the window!")
             working_modules_output_dir = os.path.join(self.output_directory, "working")
             broken_modules_output_dir = os.path.join(self.output_directory, "broken")
             misdetected_modules_output_dir = os.path.join(self.output_directory, "misdetected")
@@ -71,8 +81,8 @@ class SaveImageDialog(QtWidgets.QDialog, Ui_Save_images_dialog):
 
                 os.mkdir(os.path.abspath(directory))
                 for module_number, (module_id, registered_modules) in enumerate(module_dict.items()):
-                    print("Saving all views of module {} ({}/{})".format(module_id, module_number,
-                                                                         len(module_dict.keys()) - 1))
+                    Logger.debug("Saving all views of module ID {}: view {}/{}".format(module_id, module_number,
+                                                                                       len(module_dict.keys()) - 1))
                     self.progress_bar_all_frames.setValue(self.progress_bar_all_frames.value() + 1)
                     self.progress_bar_intra_frame.setValue(0)
                     self.progress_bar_intra_frame.setMaximum(len(registered_modules))
@@ -83,9 +93,15 @@ class SaveImageDialog(QtWidgets.QDialog, Ui_Save_images_dialog):
                         cv2.imwrite(path, img)
                         self.progress_bar_intra_frame.setValue(m_index + 1)
 
+            Logger.info("Saving working modules to <{}>".format(working_modules_output_dir))
             save_modules_into_directory(self.working_modules, working_modules_output_dir)
+            Logger.info("Saved all working modules to <{}>".format(working_modules_output_dir))
+            Logger.info("Saving broken modules to <{}>".format(broken_modules_output_dir))
             save_modules_into_directory(self.broken_modules, broken_modules_output_dir)
+            Logger.info("Saved all broken modules to <{}>".format(broken_modules_output_dir))
+            Logger.info("Saving misdetected modules to <{}>".format(misdetected_modules_output_dir))
             save_modules_into_directory(self.misdetected_modules, misdetected_modules_output_dir)
+            Logger.info("Saved all misdetected modules to <{}>".format(misdetected_modules_output_dir))
 
         _ = QtWidgets.QMessageBox.information(self, "Saved!", "Saved all modules to {}".format(self.output_directory),
                                               QtWidgets.QMessageBox.Ok)

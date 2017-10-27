@@ -6,7 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
+
 
 class Ui_Save_images_dialog(object):
     def setupUi(self, Save_images_dialog):
@@ -75,4 +76,3 @@ class Ui_Save_images_dialog(object):
         self.choose_directory_button.setText(_translate("Save_images_dialog", "Choose Output Directory"))
         self.save_directory_label.setText(_translate("Save_images_dialog", "Saving to directory: \" \""))
         self.save_button.setText(_translate("Save_images_dialog", "Save!"))
-

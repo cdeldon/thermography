@@ -1,13 +1,13 @@
+import os
+
+import cv2
+import numpy as np
 import tensorflow as tf
 from tensorflow.contrib.data import Dataset
 from tensorflow.python.framework import dtypes
 from tensorflow.python.framework.ops import convert_to_tensor
-import numpy as np
-import cv2
 
 from .thermo_class import ThermoClassList
-
-import os
 
 
 class ThermoDataset:
