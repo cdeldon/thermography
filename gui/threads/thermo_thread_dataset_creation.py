@@ -1,10 +1,11 @@
+import os
+
+import numpy as np
 from PyQt5 import QtCore
 from PyQt5.QtCore import QThread
+from simple_logger import Logger
 
 import thermography as tg
-import cv2
-import os
-import numpy as np
 
 
 class ThermoDatasetCreationThread(QThread):
@@ -21,7 +22,7 @@ class ThermoDatasetCreationThread(QThread):
         Initializes the Thermo Thread for dataset creation.
         """
         super(self.__class__, self).__init__()
-
+        Logger.info("Created dataset creation ThermoThread")
         self.camera_param_file_name = None
 
         self.load_default_paths()
@@ -36,16 +37,18 @@ class ThermoDatasetCreationThread(QThread):
         settings_dir = tg.settings.get_settings_dir()
 
         self.camera_param_file_name = os.path.join(settings_dir, "camera_parameters.json")
+        Logger.debug("Using default camera param file: {}".format(self.camera_param_file_name))
         tg.settings.set_data_dir("Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/")
 
     def run(self):
         if self.processing_frame_id is None:
-            print("Processing frame id is None!")
+            Logger.error("Processing frame id is None!")
             return
         if self.processing_frame is None:
-            print("Processing frame is None")
+            Logger.error("Processing frame is None")
             return
 
+        Logger.debug("Processing frame id {}".format(self.processing_frame_id))
         self.app.step(self.processing_frame_id, self.processing_frame)
 
         self.last_frame_signal.emit(self.app.last_scaled_frame_rgb)

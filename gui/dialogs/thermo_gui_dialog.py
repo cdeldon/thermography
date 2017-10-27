@@ -2,14 +2,14 @@ import os
 
 import cv2
 import numpy as np
-
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QImage
+from simple_logger import Logger
 
 import thermography as tg
-from gui.threads import ThermoGuiThread
 from gui.design import Ui_ThermoGUI_main_window
 from gui.dialogs import AboutDialog, WebcamDialog
+from gui.threads import ThermoGuiThread
 
 
 class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
@@ -19,6 +19,7 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
 
     def __init__(self):
         super(self.__class__, self).__init__()
+        Logger.info("Creating themoGUI")
         self.setupUi(self)
         self.set_logo_icon()
 
@@ -36,12 +37,13 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
     def set_logo_icon(self):
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
         logo_path = os.path.join(gui_path, "img/logo.png")
+        Logger.debug("Setting logo {}".format(logo_path))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(logo_path), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
 
     def connect_widgets(self):
-
+        Logger.debug("Connecting all widgets")
         # File buttons
         self.file_about.triggered.connect(self.open_about_window)
         self.file_exit.triggered.connect(self.deleteLater)
@@ -92,8 +94,10 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.expected_ratio_value.valueChanged.connect(self.update_rectangle_detection_params)
         self.ratio_max_deviation_value.valueChanged.connect(self.update_rectangle_detection_params)
         self.min_area_value.valueChanged.connect(self.update_rectangle_detection_params)
+        Logger.debug("Windgets connected")
 
     def connect_thermo_thread(self):
+        Logger.debug("Connecting thermo thread")
         self.thermo_thread.last_frame_signal.connect(lambda x: self.display_image(x))
         self.thermo_thread.edge_frame_signal.connect(lambda x: self.display_canny_edges(x))
         self.thermo_thread.segment_frame_signal.connect(lambda x: self.display_segment_image(x))
@@ -101,6 +105,7 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.thermo_thread.module_map_frame_signal.connect(lambda x: self.display_module_map_image(x))
 
         self.thermo_thread.finish_signal.connect(self.video_finished)
+        Logger.debug("Thermo thread connected")
 
     def open_about_window(self):
         about = AboutDialog(parent=self)
@@ -113,6 +118,7 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         video_file_name, _ = QtWidgets.QFileDialog.getOpenFileName(caption="Select a video",
                                                                    filter="Videos (*.mov *.mp4 *.avi)",
                                                                    directory=open_directory)
+        Logger.debug("Selected video path: <{}>".format(video_file_name))
         if video_file_name == "":
             return
         self.last_folder_opened = os.path.dirname(video_file_name)
@@ -125,6 +131,8 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         end_frame = self.video_to_index.value()
         if end_frame == -1:
             end_frame = None
+
+        Logger.debug("Start frame: {}, end frame: {}".format(start_frame, end_frame))
         self.thermo_thread.load_video(start_frame=start_frame, end_frame=end_frame)
 
         self.global_progress_bar.setMinimum(0)
@@ -133,6 +141,7 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.thermo_thread.iteration_signal.connect(self.update_global_progress_bar)
 
     def play_all_frames(self):
+        Logger.debug("Playing all frames")
         self.thermo_thread.is_paused = False
         self.image_scaling_slider.setEnabled(False)
         self.update_image_scaling()
@@ -145,10 +154,12 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.thermo_thread.start()
 
     def stop_all_frames(self):
+        Logger.debug("Stopped frames execution")
         self.thermo_thread.terminate()
         self.video_finished(True)
 
     def pause_all_frames(self):
+        Logger.debug("Pausing all frames")
         self.thermo_thread.is_paused = True
         self.play_video_button.setEnabled(True)
         if self.is_stoppable:
@@ -262,6 +273,7 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.image_scaling_slider.setEnabled(finished)
 
     def set_webcam_port(self, port):
+        Logger.debug("Setting webcam port {}".format(port))
         self.webcam_port = port
         self.thermo_thread.use_webcam(self.webcam_port)
         self.is_stoppable = False
@@ -277,6 +289,7 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.undistort_image_box.setChecked(False)
 
     def reset_app(self):
+        Logger.log("Resetting app")
         self.thermo_thread.terminate()
         self.thermo_thread = ThermoGuiThread()
         self.image_scaling_slider.setValue(10)
