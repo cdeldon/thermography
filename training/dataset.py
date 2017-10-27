@@ -11,9 +11,8 @@ from .thermo_class import ThermoClassList
 
 
 class ThermoDataset:
-    def __init__(self, image_shape: list, batch_size: int = 32, balance_data=True):
-        self.image_shape = image_shape
-        assert (len(self.image_shape) == 2)
+    def __init__(self, img_shape: np.ndarray, batch_size: int = 32, balance_data: bool = True):
+        self.image_shape = img_shape
         self.batch_size = batch_size
         self.balance_data = balance_data
 
@@ -31,6 +30,20 @@ class ThermoDataset:
 
         self.__image_file_names = None
         self.__labels = None
+
+    @property
+    def image_shape(self):
+        return self.__image_shape
+
+    @image_shape.setter
+    def image_shape(self, l: list):
+        if len(l) != 3:
+            raise ValueError("Image shape passed to dataset must be of length 3! Passed: {}".format(l))
+        self.__image_shape = l
+
+    @property
+    def rgb(self):
+        return self.image_shape[2] == 3
 
     @property
     def data_size(self):
@@ -181,20 +194,23 @@ class ThermoDataset:
     def __parse_image(self, image_path: str, image_label: int):
         one_hot = tf.one_hot(image_label, self.num_classes, dtype=dtypes.int32)
         img_file = tf.read_file(image_path)
-        img_decoded = tf.image.decode_jpeg(img_file, channels=3)
-        img_decoded = tf.image.rgb_to_grayscale(img_decoded)
+        img_decoded = tf.image.decode_jpeg(img_file, channels=self.image_shape[2])
         img_decoded = tf.image.resize_images(img_decoded, self.image_shape)
 
         return img_decoded, one_hot
 
     def __parse_image_load(self, image_path: str, image_label: int):
         one_hot = tf.one_hot(image_label, self.num_classes, dtype=dtypes.int32)
-        img_file = cv2.imread(image_path)
-        img_decoded = cv2.cvtColor(img_file, cv2.COLOR_BGR2GRAY)
-        img_decoded = cv2.resize(img_decoded, (self.image_shape[1], self.image_shape[0]), interpolation=cv2.INTER_AREA)
-        img_decoded = cv2.normalize(img_decoded.astype('float'), None, 0.0, 1.0, cv2.NORM_MINMAX)
+        if self.rgb:
+            flag = cv2.IMREAD_COLOR
+        else:
+            flag = cv2.IMREAD_GRAYSCALE
 
-        return img_decoded, one_hot
+        img = cv2.imread(image_path, flags=flag)
+        img = cv2.resize(img, (self.image_shape[1], self.image_shape[0]), interpolation=cv2.INTER_AREA)
+        img = cv2.normalize(img.astype('float'), None, 0.0, 1.0, cv2.NORM_MINMAX)
+
+        return img, one_hot
 
     def __create_internal_dataset(self, load_all_data: bool):
         cumulative_fraction = 0.0
@@ -220,7 +236,8 @@ class ThermoDataset:
                     labels.append(l)
                 print("Loaded all {} images".format({0: "TRAIN", 1: "TEST", 2: "VALIDAT."}[dataset_id]))
                 images = np.array(images)
-                images = images[..., np.newaxis]
+                if not self.rgb:
+                    images = images[..., np.newaxis]
                 print("Images shape: {}".format(images.shape))
                 images = convert_to_tensor(images, dtypes.float32)
                 labels = convert_to_tensor(labels, dtypes.int32)
