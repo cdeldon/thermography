@@ -1,11 +1,13 @@
 from PyQt5 import QtGui, QtCore, QtWidgets
 import os
+from simple_logger import Logger
 import thermography as tg
 
 
 class AboutDialog(QtWidgets.QMessageBox):
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent=parent)
+        Logger.debug("Opened About dialog")
         self.setWindowTitle("Thermography - About")
         self.setTextFormat(QtCore.Qt.RichText)
         gui_directory = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")

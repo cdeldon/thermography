@@ -1,11 +1,13 @@
 import cv2
 import numpy as np
+from simple_logger import Logger
 from thermography.utils import ID, rectangle_contains
 
 
 class ModuleMap:
     class __ModuleInMap:
         def __init__(self, ID: int, rectangle: np.ndarray, frame_id: int):
+            Logger.debug("Creating a new module inside the map with ID {}".format(ID))
             self.ID = ID
             self.last_rectangle = None
             self.last_center = None
@@ -45,6 +47,7 @@ class ModuleMap:
                 self.cumulated_motion += motion_estimate
 
     def __init__(self):
+        Logger.debug("Creating the module map")
         # A dictionary of modules and their centers keyed by their ID.
         self.global_module_map = {}
         self.module_database = []
@@ -64,6 +67,7 @@ class ModuleMap:
         :param motion_estimate: Motion estimate between the last frame (ID-1) and the frame containing the rectangles.
         """
 
+        Logger.debug("Inserting a new rectangle list into the module map at frame {}".format(frame_id))
         # When no information about the motion estimate is given, assume no motion.
         if motion_estimate is None:
             motion_estimate = np.array([0.0, 0.0])
@@ -117,7 +121,7 @@ class ModuleMap:
 
         return best_id
 
-    def __store_old_modules(self, current_frame_id : int):
+    def __store_old_modules(self, current_frame_id: int):
         old_rectangles_indices = []
         max_time_distance = 10
         for rect_id, rectangle_in_map in self.global_module_map.items():

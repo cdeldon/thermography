@@ -1,6 +1,7 @@
 import cv2
 import os
 from PyQt5 import QtGui, QtCore, QtWidgets
+from simple_logger import Logger
 
 import thermography as tg
 from gui.design import Ui_WebCam
@@ -11,6 +12,7 @@ class WebcamDialog(QtWidgets.QMainWindow, Ui_WebCam):
 
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent=parent)
+        Logger.info("Opened Webcam dialog")
         self.setupUi(self)
         self.set_logo_icon()
 
@@ -24,16 +26,19 @@ class WebcamDialog(QtWidgets.QMainWindow, Ui_WebCam):
     def set_logo_icon(self):
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
         logo_path = os.path.join(gui_path, "img/logo-webcam.png")
+        Logger.debug("Setting logo <{}>".format(logo_path))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(logo_path), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
 
     def increase_webcam_value(self):
+        Logger.debug("Increasing webcam port value to {}".format(self.webcam_value + 1))
         self.webcam_value += 1
         self.previous_button.setEnabled(True)
         self.set_webcam()
 
     def decrease_webcam_value(self):
+        Logger.debug("Decreasing webcam port value to {}".format(self.webcam_value - 1))
         self.webcam_value -= 1
         if self.webcam_value == 0:
             self.previous_button.setEnabled(False)
@@ -74,4 +79,4 @@ class WebcamDialog(QtWidgets.QMainWindow, Ui_WebCam):
 
     def deleteLater(self):
         self.cap.release()
-        super(QtGui.QWidget, self).deleteLater()
+        super(QtWidgets, self).deleteLater()

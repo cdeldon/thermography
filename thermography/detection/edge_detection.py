@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from simple_logger import Logger
 
 __all__ = ["EdgeDetectorParams", "EdgeDetector"]
 
@@ -26,9 +27,11 @@ class EdgeDetector:
         """
         canny = cv2.Canny(image=self.input_image, threshold1=self.params.hysteresis_min_thresh,
                           threshold2=self.params.hysteresis_max_thresh, apertureSize=3)
+        Logger.debug("Canny edges computed")
 
         dilated = cv2.dilate(canny, self.params.kernel,
                              iterations=self.params.dilation_steps)
+        Logger.debug("Dilate canny edges with {} steps".format(self.params.dilation_steps))
 
         size = np.size(dilated)
         skel = np.zeros(dilated.shape, np.uint8)
@@ -37,6 +40,7 @@ class EdgeDetector:
         done = False
 
         while not done:
+            Logger.debug("Eroding canny edges")
             eroded = cv2.erode(img, self.params.kernel)
             temp = cv2.dilate(eroded, self.params.kernel)
             temp = cv2.subtract(img, temp)

@@ -1,4 +1,5 @@
 import thermography as tg
+from thermography.io import setup_logger, LogLevel
 import os
 
 
@@ -16,4 +17,5 @@ def _main():
 
 
 if __name__ == '__main__':
+    setup_logger(console_log_level=LogLevel.INFO, file_log_level=LogLevel.DEBUG)
     _main()
