@@ -35,7 +35,7 @@ def main():
 
     # Learning params
     num_epochs = 100000
-    batch_size = 32
+    batch_size = 128
     learning_rate = 0.00005
 
     # Network params
