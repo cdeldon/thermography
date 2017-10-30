@@ -9,7 +9,7 @@ class BaseNet(ABC):
     Base interdace for nets used by the thermography package
     """
 
-    def __init__(self, x: tf.Tensor, image_shape: list, num_classes: int, name: str = "ThermoNet"):
+    def __init__(self, x: tf.Tensor, image_shape:  np.ndarray, num_classes: int, name: str = "ThermoNet"):
         self.x = x
         self.image_shape = image_shape
         self.__num_classes = num_classes
@@ -32,11 +32,15 @@ class BaseNet(ABC):
 
     @image_shape.setter
     def image_shape(self, shape):
-        if type(shape) is not list:
-            raise TypeError("__image_shape in {} must be a list of two elements".format(self.__class__.__name__))
-        if len(shape) != 2:
-            raise ValueError("__image_shape in {} must be a list of two elements".format(self.__class__.__name__))
+        if type(shape) is not  np.ndarray:
+            raise TypeError("__image_shape in {} must be a  np.ndarray of three elements".format(self.__class__.__name__))
+        if len(shape) != 3:
+            raise ValueError("__image_shape in {} must be a  np.ndarray of there elements".format(self.__class__.__name__))
         self.__image_shape = shape
+
+    @property
+    def channels(self):
+        return self.image_shape[2]
 
     @property
     def name(self):
@@ -72,5 +76,9 @@ class BaseNet(ABC):
 
     @staticmethod
     def update_shape(current_shape: np.ndarray, scale: int):
-        current_shape = current_shape.astype(np.float32) / scale
-        return np.ceil(current_shape).astype(np.int32)
+        assert(len(current_shape) == 2)
+        return (np.ceil(current_shape.astype(np.float32) / scale)).astype(np.int32)
+
+    @property
+    def flat_shape(self):
+        return self.image_shape[0:2]

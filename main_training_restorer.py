@@ -1,106 +1,88 @@
 import os
-import time
+import random
 
+import cv2
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib.data import Iterator
 
-from training.dataset import ThermoDataset
-from training.models.simple_net import SimpleNet
-from training.thermo_class import ThermoClass
+from training.models import RGBNet
 
-path = "C:/Users/Carlo/Desktop/Ghidoni"
-# Path for tf.summary.FileWriter and to store model checkpoints
-filewriter_path = os.path.join(path, "tensorboard")
-checkpoint_path = os.path.join(path, "checkpoints")
-
-batch_size = 100
-num_classes = 3
-
-path = "C:/Users/Carlo/Desktop/Ghidoni"
-
-working_class = ThermoClass("working", 0)
-broken_class = ThermoClass("broken", 1)
-misdetected_class = ThermoClass("misdetected", 2)
-thermo_class_list = [working_class, broken_class, misdetected_class]
+output_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/output"
+checkpoint_path = os.path.join(output_path, "checkpoints")
+input_folder = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/dataset/Ghidoni/0-1000"
+num_images = 300
 
 if __name__ == '__main__':
-    # Place data loading and preprocessing on the cpu
-    with tf.device('/cpu:0'):
-        with tf.name_scope("dataset"):
-            with tf.name_scope("loading"):
-                dataset = ThermoDataset(batch_size=batch_size, shuffle=True, buffer_size=10)
-                dataset.load_dataset(root_directory_list=path, class_list=thermo_class_list)
-
-            with tf.name_scope("iterator"):
-                # create an reinitializable iterator given the dataset structure
-                iterator = Iterator.from_structure(dataset.train.output_types,
-                                                   dataset.train.output_shapes)
-                next_batch = iterator.get_next()
-
-                # Ops for initializing the two different iterators
-                data_init_op = iterator.make_initializer(dataset.train)
+    image_shape = np.array([96, 120, 3])
+    num_classes = 3
 
     with tf.name_scope("placeholders"):
         # TF placeholder for graph input and output
-        x = tf.placeholder(tf.float32, [batch_size, 24, 30, 1], name="input_image")
-        y = tf.placeholder(tf.float32, [batch_size, num_classes], name="input_labels")
-        keep_prob = tf.placeholder(tf.float32, name="keep_probab")
+        x = tf.placeholder(tf.float32, [None, *image_shape], name="input_image")
 
-    model = SimpleNet(x=x, keep_prob=0.8, num_classes=num_classes)
+    model = RGBNet(x=x, image_shape=image_shape, num_classes=num_classes, keep_prob=1)
 
-    predict_op = tf.argmax(model.logits, axis=1, name="model_predictions")
+    with tf.name_scope("predict"):
+        predict_op = tf.argmax(model.logits, axis=1, name="model_predictions")
+        probabilities = tf.nn.softmax(model.logits)
 
-    correct_pred = tf.equal(predict_op, tf.argmax(y, 1), name="correct_predictions")
-    accuracy_op = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name="accuracy")
+    # Add ops to save and restore all the variables.
+    saver = tf.train.Saver()
 
-    restorer = tf.train.Saver()
+    class_name = {0: "working", 1: "broken", 2: "misdetected"}
+
+    # Later, launch the model, use the saver to restore variables from disk, and
+    # do some work with the model.
     with tf.Session() as sess:
-        print("Opened session")
-        sess.run(data_init_op)
-        print("Runned data init op")
-
         # Restore variables from disk.
-        checkpoint_name = os.path.join(checkpoint_path, "simple_model-25")
-        print("Loading {}".format(checkpoint_name))
-        restorer.restore(sess, checkpoint_name)
-        print("Restored")
-        # sess.run(tf.initialize_all_variables())
+        saver.restore(sess, tf.train.latest_checkpoint(checkpoint_path))
+        print("Model restored.")
 
-        correct = 0
-        wrong = 0
+        input_images = []
+        print("Loading images..")
+        image_per_class = num_images / 3
+        for class_type in os.listdir(input_folder):
+            true_label = class_type
+            folder_path = os.path.join(input_folder, class_type)
+            image_count = 0
+            for img_name in os.listdir(folder_path):
+                img_path = os.path.join(folder_path, img_name)
+                input_images.append(
+                    {"image": cv2.imread(img_path, cv2.IMREAD_COLOR), "true_label": true_label, "file_name": img_path})
+                image_count += 1
+                if image_count > image_per_class:
+                    break
 
-        confusion_matrix = np.zeros(shape=(3, 3), dtype=np.int32)
+        random.shuffle(input_images)
+        print("{} images laoded!".format(len(input_images)))
 
-        for i in range(10):
-            print(i)
-            s = time.time()
-            img, lab = sess.run(next_batch)
-            ss = time.time()
-            print("Fetched batch in {} s".format(ss - s))
-            acc, pred, logits = sess.run([accuracy_op, predict_op, model.logits], feed_dict={x: img, y: lab, keep_prob: 1.0})
-            print("Inference in {} s".format(time.time() - ss))
+        for input_image in input_images:
+            img = input_image["image"]
+            true_label = input_image["true_label"]
+            image_name = input_image["file_name"]
 
-            l = np.argmax(lab, axis=1)
-            p = pred
+            resized_img = cv2.resize(img, (image_shape[1], image_shape[0]), interpolation=cv2.INTER_AREA)
+            normalized_img = cv2.normalize(resized_img.astype('float'), None, 0.0, 1.0, cv2.NORM_MINMAX)
+            class_probabilities, predicted_label = sess.run([probabilities, predict_op],
+                                                            feed_dict={x: [normalized_img]})
 
-            for ll, pp in zip(l, p):
-                confusion_matrix[ll, pp] += 1
+            predicted_correcly = class_name[predicted_label[0]] == true_label
+            if predicted_correcly:
+                font_color = (40, 200, 40)
+            else:
+                font_color = (0, 0, 255)
+            font_scale = 1.0
+            thickness = 2
+            cv2.putText(img, "True lab: {}".format(true_label), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
+                        font_color, thickness)
+            cv2.putText(img, "Predicted: {}".format(class_name[predicted_label[0]]), (10, 60), cv2.FONT_HERSHEY_SIMPLEX,
+                        font_scale, font_color, thickness)
+            np.set_printoptions(precision=3, suppress=True)
+            cv2.putText(img, "Logits: {}".format(class_probabilities[0]), (10, 90), cv2.FONT_HERSHEY_SIMPLEX,
+                        font_scale, font_color, thickness)
+            print("Image {}".format(image_name))
+            cv2.imshow("Module", img)
 
-                # img = np.squeeze(img[0])
-                # print(np.int32(img))
-                # print("min_value = {}, max_value = {}".format(np.min(img, axis=(0,1)), np.max(img, axis=(0,1))))
-                # img = np.uint8(img)
-                # print(img.shape)
-                # img = cv2.resize(img, (640, 512), interpolation=cv2.INTER_AREA)
-                # cv2.imshow("True: {}, Pred: {}, logits: {}".format(np.argmax(lab), pred, sess.run(tf.nn.softmax(logits))),
-                #            img)
-                # cv2.waitKey(0)
-
-
-        print("Confusion matrix:\n{}".format(confusion_matrix))
-        correct = np.sum(np.diag(confusion_matrix))
-        wrong = np.sum(confusion_matrix, axis=(0, 1)) - correct
-        print("Correct predictions: {}\nWrong predictions: {}\nAccuracy: {}".format(correct, wrong,
-                                                                                    float(correct) / (correct + wrong)))
-        print("Accuracy op: {}".format(acc))
+            cv2.waitKey(700)
+            if (true_label == "broken" and predicted_label[0]!=1) or (true_label!="broken" and predicted_label==1):
+                cv2.waitKey()

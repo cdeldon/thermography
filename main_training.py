@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 
 from training.dataset import ThermoDataset
-from training.models import SimpleNet, ComplexNet
+from training.models import SimpleNet, ComplexNet, RGBNet
 from training.thermo_class import ThermoClass
 
 
@@ -39,7 +39,7 @@ def main():
     learning_rate = 0.00005
 
     # Network params
-    image_shape = [96, 120]
+    image_shape = np.array([96, 120, 3])
     keep_probability = 0.5
 
     # Summary params
@@ -55,7 +55,7 @@ def main():
     with tf.device('/cpu:0'):
         with tf.name_scope("dataset"):
             with tf.name_scope("loading"):
-                dataset = ThermoDataset(batch_size=batch_size, balance_data=True, image_shape=image_shape)
+                dataset = ThermoDataset(batch_size=batch_size, balance_data=True, img_shape=image_shape)
                 dataset.set_train_test_validation_fraction(train_fraction=0.8, test_fraction=0.2,
                                                            validation_fraction=0.0)
 
@@ -71,12 +71,12 @@ def main():
 
     with tf.name_scope("placeholders"):
         # TF placeholder for graph input and output
-        x = tf.placeholder(tf.float32, [None, *image_shape, 1], name="input_image")
+        x = tf.placeholder(tf.float32, [None, *image_shape], name="input_image")
         y = tf.placeholder(tf.int32, [None, dataset.num_classes], name="input_labels")
         keep_prob = tf.placeholder(tf.float32, name="keep_probab")
 
     # Initialize model
-    model = ComplexNet(x=x, image_shape=image_shape, num_classes=dataset.num_classes, keep_prob=keep_prob)
+    model = RGBNet(x=x, image_shape=image_shape, num_classes=dataset.num_classes, keep_prob=keep_prob)
 
     # Op for calculating the loss
     with tf.name_scope("cross_ent"):
