@@ -15,7 +15,6 @@ def get_dataset_directories(dataset_path: str) -> list:
     for g in recording_path_list:
         input_data_path.extend([os.path.join(g, f) for f in os.listdir(g)])
 
-    input_data_path = input_data_path[0:2]
     return input_data_path
 
 
@@ -248,9 +247,9 @@ def main():
                 if not test_summaries_written and epoch % write_test_summaries_every_n_epochs == 0:
                     print("{} Writing test summary".format(datetime.now()))
                     test_summaries_written = True
-                    s = sess.run(test_summaries,
+                    test_s = sess.run(test_summaries,
                                  feed_dict={input_images: img_batch, input_one_hot_labels: label_batch, keep_prob: 1.0})
-                    writer.add_summary(s, global_step)
+                    writer.add_summary(test_s, global_step)
 
             cm = tf.confusion_matrix(labels=all_test_labels, predictions=all_test_predictions,
                                      num_classes=dataset.num_classes).eval()
@@ -264,8 +263,8 @@ def main():
                         image_summary = tf.summary.image(
                             "True lab: {}, predicted: {}".format(wrong["label"], wrong["prediction"]),
                             np.array([wrong["img"]]))
-                        i_s = sess.run(image_summary)
-                        writer.add_summary(i_s, global_step)
+                        image_s = sess.run(image_summary)
+                        writer.add_summary(image_s, global_step)
 
             if epoch % save_model_every_n_epochs == 0:
                 print("{} Saving checkpoint of model".format(datetime.now()))

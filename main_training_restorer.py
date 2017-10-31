@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-from training.models import RGBNet
+from thermography.classification.models import ThermoNet
 
 output_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/output"
 checkpoint_path = os.path.join(output_path, "checkpoints")
@@ -13,14 +13,14 @@ input_folder = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/dataset/Ghido
 num_images = 300
 
 if __name__ == '__main__':
-    image_shape = np.array([96, 120, 3])
+    image_shape = np.array([96, 120, 1])
     num_classes = 3
 
     with tf.name_scope("placeholders"):
         # TF placeholder for graph input and output
         x = tf.placeholder(tf.float32, [None, *image_shape], name="input_image")
 
-    model = RGBNet(x=x, image_shape=image_shape, num_classes=num_classes, keep_prob=1)
+    model = ThermoNet(x=x, image_shape=image_shape, num_classes=num_classes, keep_prob=1.0)
 
     with tf.name_scope("predict"):
         predict_op = tf.argmax(model.logits, axis=1, name="model_predictions")

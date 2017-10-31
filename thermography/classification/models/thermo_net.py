@@ -16,7 +16,7 @@ class ThermoNet(BaseNet):
         with tf.variable_scope(self.name):
             current_shape = self.flat_shape
             with tf.variable_scope('conv_1'):
-                h_conv1_0 = conv_relu(x=self.x, kernel_shape=[5, 5, 1, 8], bias_shape=[8], name="_0")
+                h_conv1_0 = conv_relu(x=self.x, kernel_shape=[5, 5, self.image_shape[2], 8], bias_shape=[8], name="_0")
                 self.h_pool1 = max_pool_2x2(name="max_pool", x=h_conv1_0)
                 current_shape = self.update_shape(current_shape, 2)
                 # 48 60
