@@ -36,10 +36,10 @@ def main():
     # Learning params
     num_epochs = 100000
     batch_size = 128
-    learning_rate = 0.00005
+    learning_rate = 0.0002
 
     # Network params
-    image_shape = np.array([96, 120, 3])
+    image_shape = np.array([96, 120, 1])
     keep_probability = 0.5
 
     # Summary params

@@ -195,7 +195,7 @@ class ThermoDataset:
         one_hot = tf.one_hot(image_label, self.num_classes, dtype=dtypes.int32)
         img_file = tf.read_file(image_path)
         img_decoded = tf.image.decode_jpeg(img_file, channels=self.image_shape[2])
-        img_decoded = tf.image.resize_images(img_decoded, self.image_shape)
+        img_decoded = tf.image.resize_images(img_decoded, self.image_shape[0:2])
 
         return img_decoded, one_hot
 
