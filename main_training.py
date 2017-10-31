@@ -1,12 +1,12 @@
 import os
-from datetime import datetime
 import timeit
+from datetime import datetime
 
 import numpy as np
 import tensorflow as tf
 
 from training.dataset import ThermoDataset
-from training.models import SimpleNet, ComplexNet, RGBNet
+from training.models import RGBNet, ComplexNet
 from training.thermo_class import ThermoClass
 
 
@@ -76,7 +76,7 @@ def main():
         keep_prob = tf.placeholder(tf.float32, name="keep_probab")
 
     # Initialize model
-    model = RGBNet(x=x, image_shape=image_shape, num_classes=dataset.num_classes, keep_prob=keep_prob)
+    model = ComplexNet(x=x, image_shape=image_shape, num_classes=dataset.num_classes, keep_prob=keep_prob)
 
     # Op for calculating the loss
     with tf.name_scope("cross_ent"):
@@ -228,7 +228,8 @@ def main():
                 all_test_predictions.extend(predictions)
                 all_test_labels.extend(np.argmax(label_batch, axis=1))
 
-                for img, p, l in zip(img_batch[~predicted_correctly], predictions[~predicted_correctly], np.argmax(label_batch[~predicted_correctly, :], axis=1)):
+                for img, p, l in zip(img_batch[~predicted_correctly], predictions[~predicted_correctly],
+                                     np.argmax(label_batch[~predicted_correctly, :], axis=1)):
                     wrongly_classified.append({"img": img, "prediction": p, "label": l})
 
                 step_end_time = timeit.default_timer()
@@ -252,7 +253,9 @@ def main():
                     if len(wrongly_classified) > 10:
                         wrongly_classified = wrongly_classified[0:10]
                     for wrong in wrongly_classified:
-                        image_summary = tf.summary.image("True lab: {}, predicted: {}".format(wrong["label"], wrong["prediction"]), np.array([wrong["img"]]))
+                        image_summary = tf.summary.image(
+                            "True lab: {}, predicted: {}".format(wrong["label"], wrong["prediction"]),
+                            np.array([wrong["img"]]))
                         i_s = sess.run(image_summary)
                         writer.add_summary(i_s, global_step)
 

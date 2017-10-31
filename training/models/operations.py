@@ -5,7 +5,8 @@ __all__ = ["weight_variable",
            "conv2d",
            "conv_relu",
            "max_pool_2x2",
-           "max_pool_4x4"]
+           "max_pool_4x4",
+           "max_pool_kxk"]
 
 
 def weight_variable(name, shape):
