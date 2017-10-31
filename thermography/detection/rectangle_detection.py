@@ -24,7 +24,7 @@ class RectangleDetector:
     def detect(self):
         Logger.debug("Detecting rectangles")
         # Iterate over each pair of clusters.
-        num_clusters = int((np.sqrt(8 * len(self.intersections) + 1) - 1) / 2)
+        num_clusters = int((np.sqrt(8 * len(self.intersections) + 1) + 1) / 2)
         for cluster_index_i in range(num_clusters):
             for cluster_index_j in range(cluster_index_i + 1, num_clusters):
                 if (cluster_index_i, cluster_index_j) in self.intersections:
