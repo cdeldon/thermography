@@ -3,7 +3,7 @@ import os
 import cv2
 import numpy as np
 from PyQt5 import QtGui, QtCore, QtWidgets
-from PyQt5.QtGui import QImage
+from PyQt5.QtGui import QImage, QPainter
 from simple_logger import Logger
 
 import thermography as tg
@@ -81,6 +81,22 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.module_working_button.clicked.connect(self.current_module_is_working)
         self.module_broken_button.clicked.connect(self.current_module_is_broken)
         self.misdetection_button.clicked.connect(self.current_module_misdetection)
+
+        # Preprocessing and Edge extraction.
+        self.undistort_image_box.stateChanged.connect(self.update_image_distortion)
+        self.angle_value.valueChanged.connect(self.update_image_angle)
+        self.blur_value.valueChanged.connect(self.update_blur_value)
+        self.max_histeresis_value.valueChanged.connect(self.update_histeresis_params)
+        self.min_histeresis_value.valueChanged.connect(self.update_histeresis_params)
+        self.dilation_value.valueChanged.connect(self.update_dilation_steps)
+
+        # Segment detection.
+        self.delta_rho_value.valueChanged.connect(self.update_edge_params)
+        self.delta_theta_value.valueChanged.connect(self.update_edge_params)
+        self.min_votes_value.valueChanged.connect(self.update_edge_params)
+        self.min_length_value.valueChanged.connect(self.update_edge_params)
+        self.max_gap_value.valueChanged.connect(self.update_edge_params)
+        self.extend_segments_value.valueChanged.connect(self.update_edge_params)
 
         # Segment clustering.
         self.gmm_value.clicked.connect(self.update_clustering_params)
@@ -277,11 +293,24 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.current_frame_modules = module_list.copy()
         self.current_module_id_in_frame = -1
         if len(self.current_frame_modules) == 0:
-            self.rectangle_image_view.setText("No Module detected")
-            self.rectangle_image_view.setAlignment(QtCore.Qt.AlignCenter)
+            # Since there are no modules in this frame, display the input image with a label saying no module has been detected.
+            image = QImage(self.last_frame_image.data, self.last_frame_image.shape[1], self.last_frame_image.shape[0],
+                           self.last_frame_image.strides[0], QImage.Format_RGB888)
+            image = image.scaled(self.rectangle_image_view.size(), QtCore.Qt.KeepAspectRatio,
+                                 QtCore.Qt.SmoothTransformation)
+            pixmap = QtGui.QPixmap.fromImage(image)
+            painter = QPainter()
+            painter.begin(pixmap)
+            rect = QtCore.QRect(0, 0, pixmap.width(), pixmap.height())
+            font = QtGui.QFont()
+            font.setPointSize(26)
+            painter.setFont(font)
+            painter.drawText(rect, QtCore.Qt.AlignCenter, "No Module detected")
+            painter.end()
+            self.rectangle_image_view.setPixmap(pixmap)
             self.frame_finished()
-            return
-        self.display_next_module()
+        else:
+            self.display_next_module()
 
     def update_module_counter(self, automatic_manual_str, module_class_id):
         label_text = {0: "accepted", 1: "discarded", 2: "misdetected"}[module_class_id]
