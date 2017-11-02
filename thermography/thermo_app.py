@@ -6,7 +6,7 @@ from . import ModuleMap
 from .detection import *
 from .io import VideoLoader
 from .settings import Camera, Modules
-from .utils import rotate_image, scale_image
+from .utils import rotate_image, scale_image, aspect_ratio
 from .utils.display import *
 
 
@@ -102,7 +102,7 @@ class ThermoApp:
                 cv2.polylines(base_image, np.int32([rectangle]), True, opposite_color, 1, cv2.LINE_AA)
                 cv2.fillConvexPoly(mask, np.int32([rectangle]), (255, 0, 0), cv2.LINE_4)
 
-            cv2.addWeighted(base_image, 1, mask, 0.3, 0, base_image)
+            cv2.addWeighted(base_image, 1.0, mask, 0.8, 0, base_image)
         return base_image
 
     def create_module_map_image(self):
@@ -127,16 +127,38 @@ class ThermoApp:
     def create_module_list(self):
         Logger.debug("Creating module list")
         module_list = []
-        module_shape = (90, 64)
-        default_rect = np.float32(
-            [[module_shape[0] - 1, 0], [0, 0], [0, module_shape[1] - 1], [module_shape[0] - 1, module_shape[1] - 1]])
+        module_width = 90
+        module_height = 64
+        padding = 15
+        image_width = module_width + 2 * padding
+        image_height = module_height + 2 * padding
+        module_image_size = (image_width, image_height)
+
         for rectangle_id, rectangle in self.module_map.global_module_map.items():
+            # Only iterate over the last detected rectangles.
             if rectangle.frame_id_history[-1] != self.last_frame_id:
                 continue
 
-            M = cv2.getPerspectiveTransform(np.float32(rectangle.last_rectangle), default_rect)
-            extracted = cv2.warpPerspective(self.last_scaled_frame_rgb, M, module_shape)
+            module_coordinates = rectangle.last_rectangle
+            module_aspect_ratio = aspect_ratio(module_coordinates)
+            is_horizontal = module_aspect_ratio >= 1.0
+            if is_horizontal:
+                projection_rectangle = np.float32([[0 + padding, 0 + padding],
+                                                   [image_width - 1 - padding, 0 + padding],
+                                                   [image_width - 1 - padding, image_height - 1 - padding],
+                                                   [0 + padding, image_height - 1 - padding]])
+            else:
+                projection_rectangle = np.float32([[0 + padding, image_height - 1 - padding],
+                                                   [0 + padding, 0 + padding],
+                                                   [image_width - 1 - padding, 0 + padding],
+                                                   [image_width - 1 - padding, image_height - 1 - padding]])
+
+            transformation_matrix = cv2.getPerspectiveTransform(np.float32(module_coordinates),
+                                                                projection_rectangle)
+            extracted = cv2.warpPerspective(self.last_scaled_frame_rgb, transformation_matrix, module_image_size)
+
             module_list.append({"coordinates": rectangle.last_rectangle, "image": extracted, "id": rectangle.ID})
+
         return module_list
 
     def __load_params(self):

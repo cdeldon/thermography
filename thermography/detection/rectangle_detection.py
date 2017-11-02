@@ -1,7 +1,7 @@
 import numpy as np
 from simple_logger import Logger
 
-from thermography.utils.geometry import aspect_ratio, area
+from thermography.utils.geometry import aspect_ratio, area, sort_rectangle
 
 __all__ = ["RectangleDetector", "RectangleDetectorParams"]
 
@@ -60,6 +60,7 @@ class RectangleDetector:
                     coord3 = intersections_with_i_plus[segment_index_j]
                     coord4 = intersections_with_i_plus[segment_index_j + 1]
                     rectangle = np.array([coord1, coord2, coord4, coord3])
+                    rectangle = sort_rectangle(rectangle)
                     if self.fulfills_ratio(rectangle, self.params.aspect_ratio,
                                            self.params.aspect_ratio_relative_deviation) and \
                                     area(rectangle) >= self.params.min_area:

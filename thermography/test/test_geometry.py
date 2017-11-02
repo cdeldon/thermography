@@ -346,6 +346,27 @@ class TestGeometryUtils(unittest.TestCase):
         sorted_segments_indices = sort_segments(segments)
         self.assertListEqual([*sorted_segments_indices], [3, 0, 1, 2])
 
+    def test_sort_rectangle(self):
+        p0 = np.array([0.0, 0.0])
+        p1 = np.array([1.0, 0.0])
+        p2 = np.array([1.0, 1.0])
+        p3 = np.array([0.0, 1.0])
+
+        r_final = np.array([p0, p1, p2, p3])
+
+        r0123 = np.array([p0, p1, p2, p3])
+        r1230 = np.array([p1, p2, p3, p0])
+        r2301 = np.array([p2, p3, p0, p1])
+        r3012 = np.array([p3, p0, p1, p2])
+        r3210 = np.array([p3, p2, p1, p0])
+        r2103 = np.array([p2, p1, p0, p3])
+        r1032 = np.array([p1, p0, p3, p2])
+        r0321 = np.array([p0, p3, p2, p1])
+
+        for rec in [r0123, r1230, r2301, r3012, r3210, r2103, r1032, r0321]:
+            sorted_rec = sort_rectangle(rec)
+            self.assertTrue((r_final == sorted_rec).all(), msg="Original:\n{}\nSorted:\n{}".format(rec, sorted_rec))
+
 
 if __name__ == '__main__':
     unittest.main()

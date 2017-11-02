@@ -232,31 +232,35 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.thermo_thread.app.rectangle_detection_parameters.min_area = self.min_area_value.value()
 
     def display_image(self, frame: np.ndarray):
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
         image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.video_view.setPixmap(pixmap)
 
     def display_canny_edges(self, frame: np.ndarray):
-        frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
+        frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
         image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.canny_edges_view.setPixmap(pixmap)
 
     def display_segment_image(self, frame: np.ndarray):
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
         image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.segment_image_view.setPixmap(pixmap)
 
     def display_rectangle_image(self, frame: np.ndarray):
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
         image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.rectangle_image_view.setPixmap(pixmap)
 
     def display_module_map_image(self, frame: np.ndarray):
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         self.resize_video_view(frame.shape, self.module_image_view)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
         pixmap = QtGui.QPixmap.fromImage(image)
