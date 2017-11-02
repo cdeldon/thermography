@@ -102,7 +102,7 @@ class ThermoApp:
                 cv2.polylines(base_image, np.int32([rectangle]), True, opposite_color, 1, cv2.LINE_AA)
                 cv2.fillConvexPoly(mask, np.int32([rectangle]), (255, 0, 0), cv2.LINE_4)
 
-            cv2.addWeighted(base_image, 1, mask, 0.3, 0, base_image)
+            cv2.addWeighted(base_image, 1.0, mask, 0.8, 0, base_image)
         return base_image
 
     def create_module_map_image(self):

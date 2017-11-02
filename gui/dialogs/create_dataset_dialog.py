@@ -109,7 +109,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         Logger.debug("Thermo thread connected")
 
     def store_last_frame_image(self, img: np.ndarray):
-        self.last_frame_image = img
+        self.last_frame_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     def open_about_window(self):
         about = AboutDialog(parent=self)
@@ -201,7 +201,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
     def register_module(self, m: dict):
         current_module = self.current_frame_modules[self.current_module_id_in_frame]
-        image = current_module["image"]
+        image = cv2.cvtColor(current_module["image"], cv2.COLOR_BGR2RGB)
         coords = current_module["coordinates"]
         moduel_id = current_module["id"]
         if moduel_id not in m:
@@ -304,7 +304,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         d = self.current_frame_modules[self.current_module_id_in_frame]
         module_ID = d["id"]
         coordinates = d["coordinates"]
-        module_image = d["image"]
+        module_image = cv2.cvtColor(d["image"], cv2.COLOR_BGR2RGB)
         # If module_ID has already been classified, then there is no need to display it as we can directly classify it
         # using the existing manual label.
         was_already_classified = False
@@ -324,7 +324,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
             module_color = (255, 0, 0)
         cv2.polylines(tmp_image, np.int32([coordinates]), True, module_color, 2, cv2.LINE_AA)
         cv2.fillConvexPoly(mask, np.int32([coordinates]), module_color, cv2.LINE_4)
-        cv2.addWeighted(tmp_image, 0.8, mask, 0.5, 0, tmp_image)
+        cv2.addWeighted(tmp_image, 1.0, mask, 0.0, 0, tmp_image)
         image = QImage(tmp_image.data, tmp_image.shape[1], tmp_image.shape[0], tmp_image.strides[0],
                        QImage.Format_RGB888)
         image = image.scaled(self.rectangle_image_view.size(), QtCore.Qt.KeepAspectRatio,
