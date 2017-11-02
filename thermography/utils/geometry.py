@@ -14,6 +14,7 @@ __all__ = ["angle",
            "segment_line_intersection",
            "segment_min_distance",
            "segment_segment_intersection",
+           "sort_rectangle",
            "sort_segments"]
 
 
@@ -381,6 +382,31 @@ def segment_segment_intersection(seg1: np.ndarray, seg2: np.ndarray) -> np.ndarr
         y = seg1[1] + (t * s1_y)
         return np.array([x, y])
     return False
+
+
+def sort_rectangle(rectangle: np.ndarray) -> np.ndarray:
+    """
+    Sorts the coordinates in the rectangle such that the final indexing corresponds to the following structure:
+    ::
+       +-----------> x
+       |  3             2
+       |  *-------------*
+       |  |             |
+       v  |             |
+       y  |             |
+          *-------------*
+          0             1
+
+    :param rectangle: numpy array of coordinates with form: [[x0, y0], [x1, y1], [x2, y2], [x3, y3]]
+    :return: A rectangle whose vertices are sorted.
+    """
+
+    center = np.mean(rectangle, axis=0)
+    diff = rectangle - center
+    angles = np.arctan2(diff[:, 1], diff[:, 0])
+
+    order = np.argsort(angles)
+    return rectangle[order]
 
 
 def sort_segments(segment_list: list) -> np.ndarray:

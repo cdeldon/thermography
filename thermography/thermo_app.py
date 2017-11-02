@@ -6,7 +6,7 @@ from . import ModuleMap
 from .detection import *
 from .io import VideoLoader
 from .settings import Camera, Modules
-from .utils import rotate_image, scale_image
+from .utils import rotate_image, scale_image, aspect_ratio
 from .utils.display import *
 
 
@@ -127,15 +127,32 @@ class ThermoApp:
     def create_module_list(self):
         Logger.debug("Creating module list")
         module_list = []
-        module_shape = (90, 64)
-        default_rect = np.float32(
-            [[module_shape[0] - 1, 0], [0, 0], [0, module_shape[1] - 1], [module_shape[0] - 1, module_shape[1] - 1]])
+        module_height = 64
+        module_width = 90
+        horizontal_module_shape = (module_width, module_height)
+
         for rectangle_id, rectangle in self.module_map.global_module_map.items():
+            # Only iterate over the last detected rectangles.
             if rectangle.frame_id_history[-1] != self.last_frame_id:
                 continue
 
-            M = cv2.getPerspectiveTransform(np.float32(rectangle.last_rectangle), default_rect)
+            rect_coords = rectangle.last_rectangle
+            ratio = aspect_ratio(rect_coords)
+            is_horizontal = ratio >= 1.0
+            if is_horizontal:
+                module_shape = horizontal_module_shape
+                projection_rectangle = np.array([[0, 0], [module_shape[0] - 1, 0],
+                                                 [module_shape[0] - 1, module_shape[1] - 1],
+                                                 [0, module_shape[1] - 1]]).astype(np.float32)
+            else:
+                module_shape = horizontal_module_shape
+                projection_rectangle = np.array([[0, module_shape[1] - 1], [0, 0],
+                                                 [module_shape[0] - 1, 0],
+                                                 [module_shape[0] - 1, module_shape[1] - 1]]).astype(np.float32)
+
+            M = cv2.getPerspectiveTransform(np.float32(rectangle.last_rectangle), projection_rectangle)
             extracted = cv2.warpPerspective(self.last_scaled_frame_rgb, M, module_shape)
+
             module_list.append({"coordinates": rectangle.last_rectangle, "image": extracted, "id": rectangle.ID})
         return module_list
 
