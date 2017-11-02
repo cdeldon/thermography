@@ -127,33 +127,44 @@ class ThermoApp:
     def create_module_list(self):
         Logger.debug("Creating module list")
         module_list = []
-        module_height = 64
         module_width = 90
-        horizontal_module_shape = (module_width, module_height)
+        module_height = 64
+        padding = 10
+        image_width = module_width + 2 * padding
+        image_height = module_height + 2 * padding
+        module_image_size = (image_width, image_height)
 
         for rectangle_id, rectangle in self.module_map.global_module_map.items():
             # Only iterate over the last detected rectangles.
             if rectangle.frame_id_history[-1] != self.last_frame_id:
                 continue
 
-            rect_coords = rectangle.last_rectangle
-            ratio = aspect_ratio(rect_coords)
-            is_horizontal = ratio >= 1.0
+            module_coordinates = rectangle.last_rectangle
+            module_aspect_ratio = aspect_ratio(module_coordinates)
+            is_horizontal = module_aspect_ratio >= 1.0
             if is_horizontal:
-                module_shape = horizontal_module_shape
-                projection_rectangle = np.array([[0, 0], [module_shape[0] - 1, 0],
-                                                 [module_shape[0] - 1, module_shape[1] - 1],
-                                                 [0, module_shape[1] - 1]]).astype(np.float32)
+                projection_rectangle = np.float32([[0 + padding, 0 + padding],
+                                                   [image_width - 1 - padding, 0 + padding],
+                                                   [image_width - 1 - padding, image_height - 1 - padding],
+                                                   [0 + padding, image_height - 1 - padding]])
             else:
-                module_shape = horizontal_module_shape
-                projection_rectangle = np.array([[0, module_shape[1] - 1], [0, 0],
-                                                 [module_shape[0] - 1, 0],
-                                                 [module_shape[0] - 1, module_shape[1] - 1]]).astype(np.float32)
+                projection_rectangle = np.float32([[0 + padding, image_height - 1 - padding],
+                                                   [0 + padding, 0 + padding],
+                                                   [image_width - 1 - padding, 0 + padding],
+                                                   [image_width - 1 - padding, image_height - 1 - padding]])
 
-            M = cv2.getPerspectiveTransform(np.float32(rectangle.last_rectangle), projection_rectangle)
-            extracted = cv2.warpPerspective(self.last_scaled_frame_rgb, M, module_shape)
+            max_rect = np.max(module_coordinates, axis=0)
+            min_rect = np.min(module_coordinates, axis=0)
+
+            roi = np.array([[min_rect[0], min_rect[1]], [max_rect[0], min_rect[1]],
+                            [max_rect[0], max_rect[1]], [min_rect[0], max_rect[1]]])
+
+            transformation_matrix = cv2.getPerspectiveTransform(np.float32(roi),
+                                                                projection_rectangle)
+            extracted = cv2.warpPerspective(self.last_scaled_frame_rgb, transformation_matrix, module_image_size)
 
             module_list.append({"coordinates": rectangle.last_rectangle, "image": extracted, "id": rectangle.ID})
+
         return module_list
 
     def __load_params(self):
