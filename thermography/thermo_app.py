@@ -232,7 +232,8 @@ class ThermoApp:
         self.last_scaled_frame_rgb = rotated_frame
 
         gray = cv2.cvtColor(src=rotated_frame, code=cv2.COLOR_BGR2GRAY)
-        gray = cv2.blur(gray, (self.gaussian_blur, self.gaussian_blur))
+        if self.gaussian_blur > 0:
+            gray = cv2.blur(gray, (self.gaussian_blur, self.gaussian_blur))
 
         self.last_scaled_frame = gray
 
