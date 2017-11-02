@@ -129,7 +129,7 @@ class ThermoApp:
         module_list = []
         module_width = 90
         module_height = 64
-        padding = 10
+        padding = 15
         image_width = module_width + 2 * padding
         image_height = module_height + 2 * padding
         module_image_size = (image_width, image_height)
@@ -153,13 +153,7 @@ class ThermoApp:
                                                    [image_width - 1 - padding, 0 + padding],
                                                    [image_width - 1 - padding, image_height - 1 - padding]])
 
-            max_rect = np.max(module_coordinates, axis=0)
-            min_rect = np.min(module_coordinates, axis=0)
-
-            roi = np.array([[min_rect[0], min_rect[1]], [max_rect[0], min_rect[1]],
-                            [max_rect[0], max_rect[1]], [min_rect[0], max_rect[1]]])
-
-            transformation_matrix = cv2.getPerspectiveTransform(np.float32(roi),
+            transformation_matrix = cv2.getPerspectiveTransform(np.float32(module_coordinates),
                                                                 projection_rectangle)
             extracted = cv2.warpPerspective(self.last_scaled_frame_rgb, transformation_matrix, module_image_size)
 
