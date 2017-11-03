@@ -5,9 +5,9 @@ from .base_net import BaseNet
 from .operations import *
 
 
-class ThermoNet3x3(BaseNet):
+class ThermoNet(BaseNet):
     def __init__(self, x: tf.Tensor, image_shape: np.ndarray, num_classes: int, keep_prob: float, *args, **kwargs):
-        super(self.__class__, self).__init__(x=x, image_shape=image_shape, num_classes=num_classes, name="ThermoNet3x3")
+        super(self.__class__, self).__init__(x=x, image_shape=image_shape, num_classes=num_classes, name="ThermoNet")
         self.keep_probability = keep_prob
 
         self.create()
