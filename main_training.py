@@ -66,7 +66,9 @@ def main():
 
     ############################# Runtime parameters #############################
 
+    # Dataset params
     load_all_data = True
+    normalize_images = True
 
     # Learning params
     num_epochs = 100000
@@ -90,7 +92,8 @@ def main():
     with tf.device('/cpu:0'):
         with tf.name_scope("dataset"):
             with tf.name_scope("loading"):
-                dataset = ThermoDataset(batch_size=batch_size, balance_data=True, img_shape=image_shape)
+                dataset = ThermoDataset(batch_size=batch_size, balance_data=True, img_shape=image_shape,
+                                        normalize_images=normalize_images)
                 dataset.set_train_test_validation_fraction(train_fraction=0.8, test_fraction=0.2,
                                                            validation_fraction=0.0)
 

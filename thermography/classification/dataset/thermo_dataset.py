@@ -11,10 +11,12 @@ from .thermo_class import ThermoClassList
 
 
 class ThermoDataset:
-    def __init__(self, img_shape: np.ndarray, batch_size: int = 32, balance_data: bool = True):
+    def __init__(self, img_shape: np.ndarray, batch_size: int = 32, balance_data: bool = True,
+                 normalize_images: bool = True):
         self.image_shape = img_shape
         self.batch_size = batch_size
         self.balance_data = balance_data
+        self.normalize_images = normalize_images
 
         self.__train_dataset = None
         self.__test_dataset = None
@@ -196,6 +198,9 @@ class ThermoDataset:
         img_file = tf.read_file(image_path)
         img_decoded = tf.image.decode_jpeg(img_file, channels=self.image_shape[2])
         img_decoded = tf.image.resize_images(img_decoded, self.image_shape[0:2])
+        img_decoded = tf.cast(img_decoded, tf.float32)
+        if self.normalize_images:
+            img_decoded = tf.image.per_image_standardization(img_decoded)
 
         return img_decoded, one_hot
 
@@ -207,8 +212,14 @@ class ThermoDataset:
             flag = cv2.IMREAD_GRAYSCALE
 
         img = cv2.imread(image_path, flags=flag)
-        img = cv2.resize(img, (self.image_shape[1], self.image_shape[0]), interpolation=cv2.INTER_AREA)
-        img = cv2.normalize(img.astype('float'), None, 0.0, 1.0, cv2.NORM_MINMAX)
+        img = cv2.resize(img, (self.image_shape[1], self.image_shape[0]), interpolation=cv2.INTER_AREA).astype(
+            np.float32)
+
+        if self.normalize_images:
+            img_mean = np.mean(img, axis=(0, 1))
+            img_std = np.std(img, axis=(0, 1))
+
+            img = (img - img_mean) / img_std
 
         return img, one_hot
 
