@@ -18,6 +18,24 @@ def get_dataset_directories(dataset_path: str) -> list:
     return input_data_path
 
 
+def kernel_to_image_summary(kernel: tf.Tensor, name: str, max_images=3):
+    x_min = tf.reduce_min(kernel)
+    x_max = tf.reduce_max(kernel)
+    weights_0_to_1 = (kernel - x_min) / (x_max - x_min)
+
+    # to tf.image_summary format [batch_size, height, width, channels]
+    weights_transposed = tf.transpose(weights_0_to_1, [3, 0, 1, 2])
+    weights_transposed = tf.unstack(weights_transposed, axis=3)
+    weights_transposed = tf.concat(weights_transposed, axis=0)
+    weights_transposed = tf.expand_dims(weights_transposed, axis=-1)
+
+    # this will display random 3 filters from the 64 in conv1
+    tf.summary.image(name, weights_transposed, max_outputs=max_images, collections=["kernels"])
+
+    s = weights_transposed.get_shape()
+    print(name, tuple([s[i].value for i in range(len(s))]))
+
+
 def main():
     ########################### Input and output paths ###########################
 
@@ -53,15 +71,17 @@ def main():
     # Learning params
     num_epochs = 100000
     batch_size = 128
-    learning_rate = 0.0002
+    learning_rate = 0.0001
 
     # Network params
     image_shape = np.array([96, 120, 1])
     keep_probability = 0.5
 
     # Summary params
-    write_train_summaries_every_n_steps = 100
-    write_test_summaries_every_n_epochs = 20
+    write_train_summaries_every_n_steps = 500
+    write_histograms_every_n_steps = 1000
+    write_kernel_images_every_n_steps = 1000
+    write_test_summaries_every_n_epochs = 100
     save_model_every_n_epochs = 100
 
     ############################# Loading the dataset ############################
@@ -109,7 +129,7 @@ def main():
 
     # Train operation
     with tf.name_scope("train"):
-        optimizer = tf.train.AdagradOptimizer(learning_rate=learning_rate, name="optimizer")
+        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name="optimizer")
         train_op = optimizer.minimize(loss)
 
     # Predict operation
@@ -125,14 +145,17 @@ def main():
     tf.summary.scalar('train/accuracy', accuracy, collections=["train"])
     tf.summary.scalar('test/accuracy', accuracy, collections=["test"])
 
-    for var in tf.trainable_variables():
-        if model.name in var.name:
-            tf.summary.histogram(var.name, var, collections=["histogram"])
+    for var in tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=model.name):
+        tf.summary.histogram(var.name, var, collections=["histogram"])
+        if ("W" in var.name) and ("conv" in var.name):
+            print(var.name)
+            kernel_to_image_summary(var, var.name, max_images=10)
 
     # Merge all summaries together
     train_summaries = tf.summary.merge_all(key="train")
     test_summaries = tf.summary.merge_all(key="test")
     histogram_summaries = tf.summary.merge_all(key="histogram")
+    kernel_summaries = tf.summary.merge_all(key="kernels")
 
     # Initialize the FileWriter
     writer = tf.summary.FileWriter(summary_path)
@@ -192,12 +215,20 @@ def main():
 
                 if global_step % write_train_summaries_every_n_steps == 0:
                     print("{} Writing training summary".format(datetime.now()))
-                    train_s, histogram_s = sess.run(
-                        [train_summaries, histogram_summaries],
-                        feed_dict={input_images: img_batch, input_one_hot_labels: label_batch,
-                                   keep_prob: keep_probability})
+                    train_s = sess.run(train_summaries,
+                                       feed_dict={input_images: img_batch, input_one_hot_labels: label_batch,
+                                                  keep_prob: keep_probability})
                     writer.add_summary(train_s, global_step)
+
+                if global_step % write_histograms_every_n_steps == 0:
+                    print("{} Writing histogram summary".format(datetime.now()))
+                    histogram_s = sess.run(histogram_summaries)
                     writer.add_summary(histogram_s, global_step)
+
+                if global_step % write_kernel_images_every_n_steps == 0:
+                    print("{} Writing kernel summary".format(datetime.now()))
+                    kernel_s = sess.run(kernel_summaries)
+                    writer.add_summary(kernel_s, global_step)
 
                 step_end_time = timeit.default_timer()
 
@@ -248,7 +279,8 @@ def main():
                     print("{} Writing test summary".format(datetime.now()))
                     test_summaries_written = True
                     test_s = sess.run(test_summaries,
-                                 feed_dict={input_images: img_batch, input_one_hot_labels: label_batch, keep_prob: 1.0})
+                                      feed_dict={input_images: img_batch, input_one_hot_labels: label_batch,
+                                                 keep_prob: 1.0})
                     writer.add_summary(test_s, global_step)
 
             cm = tf.confusion_matrix(labels=all_test_labels, predictions=all_test_predictions,

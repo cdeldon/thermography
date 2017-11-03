@@ -17,24 +17,18 @@ class ThermoNet(BaseNet):
             current_shape = self.flat_shape
             with tf.variable_scope('conv_1'):
                 h_conv1_0 = conv_relu(x=self.x, kernel_shape=[5, 5, self.image_shape[2], 8], bias_shape=[8], name="_0")
-                self.h_pool1 = max_pool_2x2(name="max_pool", x=h_conv1_0)
-                current_shape = self.update_shape(current_shape, 2)
-                # 48 60
+                self.h_pool1 = max_pool_4x4(name="max_pool", x=h_conv1_0)
+                current_shape = self.update_shape(current_shape, 4)
+                # 24 30
 
             with tf.variable_scope('conv_2'):
-                h_conv2_0 = conv_relu(x=self.h_pool1, kernel_shape=[3, 3, 8, 16], bias_shape=[16], name="_0")
+                h_conv2_0 = conv_relu(x=self.h_pool1, kernel_shape=[5, 5, 8, 16], bias_shape=[16], name="_0")
                 self.h_pool2 = max_pool_4x4(name="max_pool", x=h_conv2_0)
                 current_shape = self.update_shape(current_shape, 4)
-                # 12 15
-
-            with tf.variable_scope('conv_3'):
-                h_conv3_0 = conv_relu(x=self.h_pool2, kernel_shape=[3, 3, 16, 32], bias_shape=[32], name="_0")
-                self.h_pool3 = max_pool_2x2(name="max_pool", x=h_conv3_0)
-                current_shape = self.update_shape(current_shape, 2)
                 # 6 8
 
             with tf.variable_scope('full_connected_1'):
-                flattened = tf.reshape(self.h_pool3, [-1, np.prod(current_shape) * 32])
+                flattened = tf.reshape(self.h_pool2, [-1, np.prod(current_shape) * 16])
                 shape = flattened.get_shape().as_list()
 
                 W_fc1 = weight_variable(name="W", shape=[shape[1], 256])
@@ -46,16 +40,7 @@ class ThermoNet(BaseNet):
                     self.h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob=self.keep_probability, name="dropout")
 
             with tf.variable_scope('full_connected_2'):
-                W_fc2 = weight_variable(name="W", shape=[256, 32])
-                b_fc2 = bias_variable(name="b", shape=[32])
+                W_fc2 = weight_variable(name="W", shape=[256, self.num_classes])
+                b_fc2 = bias_variable(name="b", shape=[self.num_classes])
 
-                h_fc2 = tf.nn.relu(tf.matmul(self.h_fc1_drop, W_fc2) + b_fc2)
-
-                with tf.variable_scope('drop_out_2'):
-                    self.h_fc2_drop = tf.nn.dropout(h_fc2, keep_prob=self.keep_probability, name="dropout")
-
-            with tf.variable_scope('full_connected_3'):
-                W_fc3 = weight_variable(name="W", shape=[32, self.num_classes])
-                b_fc3 = bias_variable(name="b", shape=[self.num_classes])
-
-                self.logits = tf.add(tf.matmul(self.h_fc2_drop, W_fc3), b_fc3, name="logits")
+                self.logits = tf.add(tf.matmul(self.h_fc1_drop, W_fc2), b_fc2, name="logits")
