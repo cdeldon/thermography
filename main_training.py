@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 
 from thermography.classification.dataset import ThermoDataset, ThermoClass
-from thermography.classification.models import ThermoNet
+from thermography.classification.models import ThermoNet, ThermoNet3x3
 
 
 def get_dataset_directories(dataset_path: str) -> list:
@@ -23,23 +23,18 @@ def kernel_to_image_summary(kernel: tf.Tensor, name: str, max_images=3):
     x_max = tf.reduce_max(kernel)
     weights_0_to_1 = (kernel - x_min) / (x_max - x_min)
 
-    # to tf.image_summary format [batch_size, height, width, channels]
     weights_transposed = tf.transpose(weights_0_to_1, [3, 0, 1, 2])
     weights_transposed = tf.unstack(weights_transposed, axis=3)
     weights_transposed = tf.concat(weights_transposed, axis=0)
     weights_transposed = tf.expand_dims(weights_transposed, axis=-1)
 
-    # this will display random 3 filters from the 64 in conv1
     tf.summary.image(name, weights_transposed, max_outputs=max_images, collections=["kernels"])
-
-    s = weights_transposed.get_shape()
-    print(name, tuple([s[i].value for i in range(len(s))]))
 
 
 def main():
     ########################### Input and output paths ###########################
 
-    dataset_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/dataset"
+    dataset_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/padded_dataset"
     dataset_directories = get_dataset_directories(dataset_path)
 
     print("Input dataset directories:")
@@ -66,23 +61,26 @@ def main():
 
     ############################# Runtime parameters #############################
 
+    # Dataset params
     load_all_data = True
+    normalize_images = True
 
     # Learning params
     num_epochs = 100000
     batch_size = 128
-    learning_rate = 0.0001
+    global_step = tf.Variable(0, name="global_step")
+    learning_rate = 0.00025
 
     # Network params
     image_shape = np.array([96, 120, 1])
     keep_probability = 0.5
 
     # Summary params
-    write_train_summaries_every_n_steps = 500
-    write_histograms_every_n_steps = 1000
-    write_kernel_images_every_n_steps = 1000
-    write_test_summaries_every_n_epochs = 100
-    save_model_every_n_epochs = 100
+    write_train_summaries_every_n_steps = 501
+    write_histograms_every_n_steps = 1001
+    write_kernel_images_every_n_steps = 1001
+    write_test_summaries_every_n_epochs = 20
+    save_model_every_n_epochs = 20
 
     ############################# Loading the dataset ############################
 
@@ -90,7 +88,8 @@ def main():
     with tf.device('/cpu:0'):
         with tf.name_scope("dataset"):
             with tf.name_scope("loading"):
-                dataset = ThermoDataset(batch_size=batch_size, balance_data=True, img_shape=image_shape)
+                dataset = ThermoDataset(batch_size=batch_size, balance_data=True, img_shape=image_shape,
+                                        normalize_images=normalize_images)
                 dataset.set_train_test_validation_fraction(train_fraction=0.8, test_fraction=0.2,
                                                            validation_fraction=0.0)
 
@@ -114,7 +113,7 @@ def main():
         keep_prob = tf.placeholder(tf.float32, name="keep_probability")
 
     # Initialize model
-    model = ThermoNet(x=input_images, image_shape=image_shape, num_classes=dataset.num_classes, keep_prob=keep_prob)
+    model = ThermoNet3x3(x=input_images, image_shape=image_shape, num_classes=dataset.num_classes, keep_prob=keep_prob)
 
     # Operation for calculating the loss
     with tf.name_scope("cross_ent"):
@@ -130,7 +129,7 @@ def main():
     # Train operation
     with tf.name_scope("train"):
         optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name="optimizer")
-        train_op = optimizer.minimize(loss)
+        train_op = optimizer.minimize(loss, global_step=global_step)
 
     # Predict operation
     with tf.name_scope("predict"):
@@ -148,7 +147,6 @@ def main():
     for var in tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=model.name):
         tf.summary.histogram(var.name, var, collections=["histogram"])
         if ("W" in var.name) and ("conv" in var.name):
-            print(var.name)
             kernel_to_image_summary(var, var.name, max_images=10)
 
     # Merge all summaries together
@@ -183,7 +181,6 @@ def main():
         print()
 
         # Loop over number of epochs
-        global_step = 0
         for epoch in range(num_epochs):
 
             print("=======================================================")
@@ -213,29 +210,28 @@ def main():
                 all_train_predictions.extend(predictions)
                 all_train_labels.extend(np.argmax(label_batch, axis=1))
 
-                if global_step % write_train_summaries_every_n_steps == 0:
+                if sess.run(global_step) % write_train_summaries_every_n_steps == 0:
                     print("{} Writing training summary".format(datetime.now()))
                     train_s = sess.run(train_summaries,
                                        feed_dict={input_images: img_batch, input_one_hot_labels: label_batch,
                                                   keep_prob: keep_probability})
-                    writer.add_summary(train_s, global_step)
+                    writer.add_summary(train_s, sess.run(global_step))
 
-                if global_step % write_histograms_every_n_steps == 0:
+                if sess.run(global_step) % write_histograms_every_n_steps == 0:
                     print("{} Writing histogram summary".format(datetime.now()))
                     histogram_s = sess.run(histogram_summaries)
-                    writer.add_summary(histogram_s, global_step)
+                    writer.add_summary(histogram_s, sess.run(global_step))
 
-                if global_step % write_kernel_images_every_n_steps == 0:
+                if sess.run(global_step) % write_kernel_images_every_n_steps == 0:
                     print("{} Writing kernel summary".format(datetime.now()))
                     kernel_s = sess.run(kernel_summaries)
-                    writer.add_summary(kernel_s, global_step)
+                    writer.add_summary(kernel_s, sess.run(global_step))
 
                 step_end_time = timeit.default_timer()
 
-                global_step += 1
                 train_epoch_step += 1
                 print("{} Global step {}, Epoch: {}, Epoch step {}/{}, ETA: {:.3g} s."
-                      .format(datetime.now(), global_step, epoch, train_epoch_step, train_steps_per_epoch,
+                      .format(datetime.now(), sess.run(global_step), epoch, train_epoch_step, train_steps_per_epoch,
                               step_end_time - step_start_time))
 
             cm = tf.confusion_matrix(labels=all_train_labels, predictions=all_train_predictions,
@@ -281,7 +277,7 @@ def main():
                     test_s = sess.run(test_summaries,
                                       feed_dict={input_images: img_batch, input_one_hot_labels: label_batch,
                                                  keep_prob: 1.0})
-                    writer.add_summary(test_s, global_step)
+                    writer.add_summary(test_s, sess.run(global_step))
 
             cm = tf.confusion_matrix(labels=all_test_labels, predictions=all_test_predictions,
                                      num_classes=dataset.num_classes).eval()
@@ -291,12 +287,12 @@ def main():
                 with tf.name_scope('image_prediction'):
                     if len(wrongly_classified) > 10:
                         wrongly_classified = wrongly_classified[0:10]
-                    for wrong in wrongly_classified:
+                    for i, wrong in enumerate(wrongly_classified):
                         image_summary = tf.summary.image(
-                            "True lab: {}, predicted: {}".format(wrong["label"], wrong["prediction"]),
+                            "{}: True {} pred {}".format(i, wrong["label"], wrong["prediction"]),
                             np.array([wrong["img"]]))
                         image_s = sess.run(image_summary)
-                        writer.add_summary(image_s, global_step)
+                        writer.add_summary(image_s, sess.run(global_step))
 
             if epoch % save_model_every_n_epochs == 0:
                 print("{} Saving checkpoint of model".format(datetime.now()))

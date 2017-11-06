@@ -83,6 +83,21 @@ class TestGeometryUtils(unittest.TestCase):
         polygon = np.array([point1, point5, point3, point4])
         self.assertEqual(area(points=polygon), 1.5)
 
+    def test_area_between_rectangles(self):
+        """
+        Tests the 'area_between_rectangles' function which computes the surface between two rectangles.
+        """
+        rect1 = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+        self.assertEqual(area_between_rectangles(rect1, rect1), 0.0)
+
+        rect2 = np.array([[0.25, .25], [0.75, 0.25], [0.75, 0.75], [0.25, 0.75]])
+        self.assertEqual(area_between_rectangles(rect1, rect2), 0.75)
+        self.assertEqual(area_between_rectangles(rect2, rect1), 0.75)
+
+        rect3 = rect1 + np.array([0.2, 0.2])
+        self.assertAlmostEqual(area_between_rectangles(rect1, rect3), 0.8)
+        self.assertAlmostEqual(area_between_rectangles(rect3, rect1), 0.8)
+
     def test_aspect_ratio(self):
         """
         Tests the 'aspect_ratio' function which computes the aspect ratio of a rectangle.
