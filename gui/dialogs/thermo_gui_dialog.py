@@ -101,6 +101,7 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.thermo_thread.edge_frame_signal.connect(lambda x: self.display_canny_edges(x))
         self.thermo_thread.segment_frame_signal.connect(lambda x: self.display_segment_image(x))
         self.thermo_thread.rectangle_frame_signal.connect(lambda x: self.display_rectangle_image(x))
+        self.thermo_thread.classes_frame_signal.connect(lambda x: self.display_classes_image(x))
         self.thermo_thread.module_map_frame_signal.connect(lambda x: self.display_module_map_image(x))
 
         self.thermo_thread.finish_signal.connect(self.video_finished)
@@ -260,10 +261,17 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
 
     def display_module_map_image(self, frame: np.ndarray):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        self.resize_video_view(frame.shape, self.module_image_view)
         image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
+        image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.module_image_view.setPixmap(pixmap)
+
+    def display_classes_image(self, frame: np.ndarray):
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        self.resize_video_view(frame.shape, self.class_image_view)
+        image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
+        pixmap = QtGui.QPixmap.fromImage(image)
+        self.class_image_view.setPixmap(pixmap)
 
     @staticmethod
     def resize_video_view(size, view):

@@ -15,10 +15,10 @@ class Inference:
         self.graph = tf.Graph()
         with self.graph.as_default():
             self.x = tf.placeholder(tf.float32, [None, *self.image_shape], name="input_image")
-            self.model = model_class(x=self.x, image_shape=self.image_shape, num_classes=self.num_classes, keep_prob=1.0)
+            self.model = model_class(x=self.x, image_shape=self.image_shape, num_classes=self.num_classes,
+                                     keep_prob=1.0)
 
         self.logits = self.model.logits
-        self.predict_op = tf.argmax(self.logits, axis=1, name="model_predictions")
         self.probabilities = tf.nn.softmax(self.logits)
 
         # Add ops to save and restore all the variables.
@@ -46,7 +46,10 @@ class Inference:
             raise TypeError("Model passed to {} is not deriving from BaseNet".format(self.__class__.__name__))
         self.__model = m
 
-    def classify(self, image_list: list) -> tuple:
+    def classify(self, image_list: list) -> np.ndarray:
+        if len(image_list) == 0:
+            return np.empty(shape=[0])
+
         img_tensor = []
         for img in image_list:
             if (img.shape[0:2] != self.image_shape[0:2]).any():
@@ -72,6 +75,8 @@ class Inference:
         if len(img_tensor.shape) == 3:
             img_tensor = img_tensor[..., np.newaxis]
 
-        class_probabilities, predicted_label = self.sess.run([self.probabilities, self.predict_op],
-                                                             feed_dict={self.x: img_tensor})
-        return class_probabilities, predicted_label
+        Logger.debug("Classifying {} module image{}".format(
+            img_tensor.shape[0], "" if img_tensor.shape[0] == 1 else "s"))
+
+        class_probabilities = self.sess.run(self.probabilities, feed_dict={self.x: img_tensor})
+        return class_probabilities

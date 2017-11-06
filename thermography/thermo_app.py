@@ -59,6 +59,7 @@ class ThermoApp:
         self.last_rectangles = None
         self.last_mean_motion = None
         self.last_frame_id = 0
+        self.last_probabilities = {}
 
         # Runtime parameters for detection.
         self.should_undistort_image = True
@@ -115,6 +116,24 @@ class ThermoApp:
             cv2.addWeighted(base_image, 1.0, mask, 0.8, 0, base_image)
         return base_image
 
+    def create_classes_image(self):
+        Logger.debug("Creating classes image")
+        base_image = self.last_scaled_frame_rgb.copy()
+        working_color = np.array([0, 255, 0])
+        broken_color = np.array([0, 0, 255])
+        misdetected_color = np.array([255, 0, 0])
+        for module_id, prob in self.last_probabilities.items():
+            module = self.module_map.global_module_map[module_id]
+            module_coords = module.last_rectangle - np.int32(module.cumulated_motion)
+            module_center = module.last_center - np.int32(module.cumulated_motion)
+            color = prob[0] * working_color + prob[1] * broken_color + prob[2] * misdetected_color
+            color = (int(color[0]), int(color[1]), int(color[2]))
+
+            cv2.circle(base_image, (int(module_center[0]), int(module_center[1])), 6, color, cv2.FILLED, cv2.LINE_AA)
+            cv2.polylines(base_image, np.int32([module_coords]), True, color, 1, cv2.LINE_AA)
+
+        return base_image
+
     def create_module_map_image(self):
         Logger.debug("Creating module map image")
         base_image = self.last_scaled_frame_rgb.copy()
@@ -138,7 +157,7 @@ class ThermoApp:
         Logger.debug("Creating module list")
         module_list = []
         module_width = 90
-        module_height = 64
+        module_height = 66
         padding = 15
         image_width = module_width + 2 * padding
         image_height = module_height + 2 * padding
@@ -232,15 +251,9 @@ class ThermoApp:
         must be called after inserting the modules in the global module map!
         """
         module_list = self.create_module_list()
-        probabilities, labels = self.inference.classify([m["image"] for m in module_list])
-
-        label_to_string = {0: "working", 1: "broken", 2: "misdetected"}
-        for m, p, l in zip(module_list, probabilities, labels):
-            if l != 0:
-                print("Module {}: {} --> {}".format(m["id"], p, label_to_string[l]))
-
-        print()
-        print()
+        probabilities = self.inference.classify([m["image"] for m in module_list])
+        for module, prob in zip(module_list, probabilities):
+            self.last_probabilities[module["id"]] = prob
 
     def step(self, frame_id, frame):
         self.last_frame_id = frame_id
@@ -276,15 +289,12 @@ class ThermoApp:
         # Motion estimate.
         self.last_mean_motion = self.motion_detector.motion_estimate(self.last_scaled_frame)
 
-        if len(self.last_rectangles) == 0:
-            Logger.warning("No rectangles detected!")
-            return False
-
         # Add the detected rectangles to the global map.
         self.module_map.insert(self.last_rectangles, frame_id, self.last_mean_motion)
 
-        # Classification of the modules detected in the current frame.
-        self.classify_detected_modules()
+        if len(self.last_rectangles) == 0:
+            Logger.warning("No rectangles detected!")
+            return False
 
         return True
 
@@ -299,6 +309,8 @@ class ThermoApp:
         self.last_cluster_list = None
         self.last_rectangles = None
         self.last_mean_motion = None
+
+        self.last_probabilities = {}
 
     def run(self):
         for frame_id, frame in enumerate(self.video_loader.frames):

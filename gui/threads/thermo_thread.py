@@ -17,6 +17,7 @@ class ThermoGuiThread(QThread):
     segment_frame_signal = QtCore.pyqtSignal(np.ndarray)
     rectangle_frame_signal = QtCore.pyqtSignal(np.ndarray)
     module_map_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    classes_frame_signal = QtCore.pyqtSignal(np.ndarray)
     module_list_signal = QtCore.pyqtSignal(list)
 
     def __init__(self):
@@ -86,12 +87,17 @@ class ThermoGuiThread(QThread):
                     self.msleep(self.pause_time)
 
                 Logger.debug("Using video frame {}".format(frame_id))
+                # Perfom one step in the input video (i.e. analyze one frame)
                 self.app.step(frame_id, frame)
+                # Perform inference (classification on the detected modules)
+                self.app.classify_detected_modules()
+
                 self.last_frame_signal.emit(self.app.last_scaled_frame_rgb)
                 self.edge_frame_signal.emit(self.app.last_edges_frame)
                 self.segment_frame_signal.emit(self.app.create_segment_image())
                 self.rectangle_frame_signal.emit(self.app.create_rectangle_image())
                 self.module_map_frame_signal.emit(self.app.create_module_map_image())
+                self.classes_frame_signal.emit(self.app.create_classes_image())
                 self.iteration_signal.emit(frame_id)
                 self.module_list_signal.emit(self.app.create_module_list())
 
