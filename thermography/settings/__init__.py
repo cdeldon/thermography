@@ -7,6 +7,7 @@ THERMOGRAPHY_ROOT_DIR = os.path.dirname(SETTINGS_DIR)
 DATA_DIR = ""
 TEST_DIR = os.path.join(THERMOGRAPHY_ROOT_DIR, "test")
 LOG_DIR = os.path.join(os.path.join(THERMOGRAPHY_ROOT_DIR, os.pardir), "logs")
+RES_DIR = os.path.join(os.path.join(THERMOGRAPHY_ROOT_DIR, os.pardir), "resources")
 
 
 def get_settings_dir() -> str:
@@ -64,6 +65,13 @@ def get_log_dir() -> str:
     """
     return LOG_DIR
 
+def get_resources_dir() -> str:
+    """
+    Returns the absolute path to the resources directory.
+    :return: Absolute path to the resources directory.
+    """
+    return RES_DIR
+
 
 __all__ = ["Camera",
            "get_data_dir",
@@ -71,4 +79,5 @@ __all__ = ["Camera",
            "get_settings_dir",
            "get_thermography_root_dir",
            "get_test_dir",
-           "set_data_dir"]
+           "set_data_dir",
+           "get_resources_dir"]

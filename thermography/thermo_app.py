@@ -1,11 +1,15 @@
+import os
+
 import cv2
 import numpy as np
 from simple_logger import Logger
 
 from . import ModuleMap
+from .classification import Inference
+from .classification.models import ThermoNet3x3
 from .detection import *
 from .io import VideoLoader
-from .settings import Camera, Modules
+from .settings import Camera, Modules, get_resources_dir
 from .utils import rotate_image, scale_image, aspect_ratio
 from .utils.display import *
 
@@ -25,6 +29,12 @@ class ThermoApp:
         Logger.debug("Starting thermo app")
         self.input_video_path = input_video_path
         self.camera_param_file = camera_param_file
+
+        self.image_shape = np.array([96, 120, 1])
+        self.num_classes = 3
+        checkpoint_dir = os.path.join(get_resources_dir(), "weights")
+        self.inference = Inference(checkpoint_dir=checkpoint_dir, model_class=ThermoNet3x3,
+                                   image_shape=self.image_shape, num_classes=self.num_classes)
 
         # Camera and Modules object containing the corresponding parameters.
         self.camera = None
@@ -216,6 +226,22 @@ class ThermoApp:
         rectangle_detector.detect()
         self.last_rectangles = rectangle_detector.rectangles
 
+    def classify_detected_modules(self):
+        """
+        Classifies the modules in the global module map which have been detected in the current frame. This function
+        must be called after inserting the modules in the global module map!
+        """
+        module_list = self.create_module_list()
+        probabilities, labels = self.inference.classify([m["image"] for m in module_list])
+
+        label_to_string = {0: "working", 1: "broken", 2: "misdetected"}
+        for m, p, l in zip(module_list, probabilities, labels):
+            if l != 0:
+                print("Module {}: {} --> {}".format(m["id"], p, label_to_string[l]))
+
+        print()
+        print()
+
     def step(self, frame_id, frame):
         self.last_frame_id = frame_id
         self.last_input_frame = frame
@@ -250,8 +276,15 @@ class ThermoApp:
         # Motion estimate.
         self.last_mean_motion = self.motion_detector.motion_estimate(self.last_scaled_frame)
 
+        if len(self.last_rectangles) == 0:
+            Logger.warning("No rectangles detected!")
+            return False
+
         # Add the detected rectangles to the global map.
         self.module_map.insert(self.last_rectangles, frame_id, self.last_mean_motion)
+
+        # Classification of the modules detected in the current frame.
+        self.classify_detected_modules()
 
         return True
 

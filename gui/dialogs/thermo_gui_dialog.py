@@ -22,7 +22,6 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         Logger.info("Creating themoGUI")
         self.setupUi(self)
         self.set_logo_icon()
-
         self.thermo_thread = ThermoGuiThread()
         self.is_stoppable = True
 
