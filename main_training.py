@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 
 from thermography.classification.dataset import ThermoDataset, ThermoClass
-from thermography.classification.models import ThermoNet
+from thermography.classification.models import ThermoNet, ThermoNet3x3
 
 
 def get_dataset_directories(dataset_path: str) -> list:
@@ -30,14 +30,11 @@ def kernel_to_image_summary(kernel: tf.Tensor, name: str, max_images=3):
 
     tf.summary.image(name, weights_transposed, max_outputs=max_images, collections=["kernels"])
 
-    s = weights_transposed.get_shape()
-    print(name, tuple([s[i].value for i in range(len(s))]))
-
 
 def main():
     ########################### Input and output paths ###########################
 
-    dataset_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/dataset"
+    dataset_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/padded_dataset"
     dataset_directories = get_dataset_directories(dataset_path)
 
     print("Input dataset directories:")
@@ -71,21 +68,17 @@ def main():
     # Learning params
     num_epochs = 100000
     batch_size = 128
-    start_learning_rate = 0.0005
-    decay_steps = 2000
-    decay_rate = 0.8
     global_step = tf.Variable(0, name="global_step")
-    learning_rate = tf.train.exponential_decay(start_learning_rate, global_step, decay_steps, decay_rate,
-                                               staircase=False, name="learning_rate")
+    learning_rate = 0.00025
 
     # Network params
     image_shape = np.array([96, 120, 1])
     keep_probability = 0.5
 
     # Summary params
-    write_train_summaries_every_n_steps = 500
-    write_histograms_every_n_steps = 1000
-    write_kernel_images_every_n_steps = 1000
+    write_train_summaries_every_n_steps = 501
+    write_histograms_every_n_steps = 1001
+    write_kernel_images_every_n_steps = 1001
     write_test_summaries_every_n_epochs = 20
     save_model_every_n_epochs = 20
 
@@ -120,7 +113,7 @@ def main():
         keep_prob = tf.placeholder(tf.float32, name="keep_probability")
 
     # Initialize model
-    model = ThermoNet(x=input_images, image_shape=image_shape, num_classes=dataset.num_classes, keep_prob=keep_prob)
+    model = ThermoNet3x3(x=input_images, image_shape=image_shape, num_classes=dataset.num_classes, keep_prob=keep_prob)
 
     # Operation for calculating the loss
     with tf.name_scope("cross_ent"):
@@ -135,9 +128,8 @@ def main():
 
     # Train operation
     with tf.name_scope("train"):
-        optimizer = tf.train.AdadeltaOptimizer(learning_rate=learning_rate, name="optimizer")
+        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name="optimizer")
         train_op = optimizer.minimize(loss, global_step=global_step)
-    tf.summary.scalar("train/learning_rate", optimizer._lr, collections=["train"])
 
     # Predict operation
     with tf.name_scope("predict"):
@@ -155,7 +147,6 @@ def main():
     for var in tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=model.name):
         tf.summary.histogram(var.name, var, collections=["histogram"])
         if ("W" in var.name) and ("conv" in var.name):
-            print(var.name)
             kernel_to_image_summary(var, var.name, max_images=10)
 
     # Merge all summaries together
