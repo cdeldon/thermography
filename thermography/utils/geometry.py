@@ -5,6 +5,7 @@ __all__ = ["angle",
            "angle_diff",
            "aspect_ratio",
            "area",
+           "area_between_rectangles",
            "line_estimate",
            "mean_segment_angle",
            "merge_segments",
@@ -61,7 +62,36 @@ def area(points: np.ndarray) -> float:
     """
     x = points[:, 0]
     y = points[:, 1]
+    
     return 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
+
+
+def area_between_rectangles(rect1: np.ndarray, rect2: np.ndarray) -> float:
+    """
+    Computes the cumulative surface between the corresponding edges of the two rectangles passed as argument.
+    ::
+
+       *--------------------*
+       |####################|
+       |###*-------------*##|
+       |###|             |##|
+       |###|             |##|
+       |###|             |##|
+       |###*-------------*##|
+       |####################|
+       *--------------------*
+    :param rect1: First rectangle's coordinates [[x0,y0],[x1,y1],[x2,y2],[x3,y3]]
+    :param rect2: Second rectangle's coordinates [[x'0,y'0],[x'1,y'1],[x'2,y'2],[x'3,y'3]]
+    :return: The surface between the rectangles' corresponding edges.
+    """
+
+    r0 = sort_rectangle(np.array([*rect1[0:2], *rect2[1::-1]]))
+    r1 = sort_rectangle(np.array([*rect1[1:3], *rect2[2:0:-1]]))
+    r2 = sort_rectangle(np.array([*rect1[2:4], *rect2[3:1:-1]]))
+    r3 = sort_rectangle(np.array([rect1[3], rect1[0], rect2[0], rect2[3]]))
+
+    a0, a1, a2, a3 = area(r0), area(r1), area(r2), area(r3)
+    return a0 + a1 + a2 + a3
 
 
 def aspect_ratio(rectangle: np.ndarray) -> float:
