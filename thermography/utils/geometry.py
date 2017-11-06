@@ -62,7 +62,7 @@ def area(points: np.ndarray) -> float:
     """
     x = points[:, 0]
     y = points[:, 1]
-    
+
     return 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
 
 

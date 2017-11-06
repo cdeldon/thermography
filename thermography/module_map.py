@@ -11,6 +11,7 @@ class ModuleMap:
             self.ID = ID
             self.last_rectangle = None
             self.last_center = None
+            self.last_area = None
 
             self.frame_id_history = []
             self.rectangle_history = {}
@@ -36,6 +37,7 @@ class ModuleMap:
         def add(self, rectangle: np.ndarray, frame_id: int):
             self.last_rectangle = rectangle
             self.last_center = np.mean(self.last_rectangle, axis=0)
+            self.last_area = area(self.last_rectangle)
 
             self.frame_id_history.append(frame_id)
             self.rectangle_history[frame_id] = rectangle
@@ -92,12 +94,15 @@ class ModuleMap:
                 # rectangles of interest.
                 most_similar_ID = self.__find_most_similar_module(rectangle, area_threshold_ratio=0.2)
 
-                # If this rectangle's center is inside the nearest rectangle, set it as a correspondence.
-                closest_rectangle = self.global_module_map[most_similar_ID].last_rectangle
-                if rectangle_contains(closest_rectangle, rectangle_center):
-                    associations.append(most_similar_ID)
-                else:
+                if most_similar_ID is None:
                     associations.append(None)
+                else:
+                    # If this rectangle's center is inside the nearest rectangle, set it as a correspondence.
+                    closest_rectangle = self.global_module_map[most_similar_ID].last_rectangle
+                    if rectangle_contains(closest_rectangle, rectangle_center):
+                        associations.append(most_similar_ID)
+                    else:
+                        associations.append(None)
 
             for rectangle_index, correspondence in enumerate(associations):
                 if correspondence is None:
@@ -123,13 +128,16 @@ class ModuleMap:
         :return: Index of the most similar rectangle in the module map.
         """
         rectangle_area = area(rectangle)
-        min_area = np.infty
+        rectangle_center = np.mean(rectangle, axis=0)
+        min_surface_between_rect = np.infty
         best_id = None
         for module_id, module_in_map in self.global_module_map.items():
-            surface = area_between_rectangles(rectangle, module_in_map.last_rectangle)
-            if surface < min_area and (
-                area(module_in_map.last_rectangle) - rectangle_area) / rectangle_area < area_threshold_ratio:
-                min_area = surface
+            if not rectangle_contains(module_in_map.last_rectangle, rectangle_center):
+                continue
+            surface_between_rect = area_between_rectangles(rectangle, module_in_map.last_rectangle)
+            surface_diff = module_in_map.last_area - rectangle_area
+            if surface_between_rect < min_surface_between_rect and surface_diff / rectangle_area < area_threshold_ratio:
+                min_surface_between_rect = surface_between_rect
                 best_id = module_id
 
         return best_id
