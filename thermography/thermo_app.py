@@ -10,7 +10,7 @@ from .classification.models import ThermoNet3x3
 from .detection import *
 from .io import VideoLoader
 from .settings import Camera, Modules, get_resources_dir
-from .utils import rotate_image, scale_image, aspect_ratio
+from .utils import aspect_ratio
 from .utils.display import *
 
 
@@ -49,6 +49,8 @@ class ThermoApp:
 
         # Objects referring to the items computed during the last frame.
         self.last_input_frame = None
+        self.last_preprocessed_image = None
+        self.last_attention_image = None
         self.last_scaled_frame_rgb = None
         self.last_scaled_frame = None
         self.last_edges_frame = None
@@ -63,9 +65,7 @@ class ThermoApp:
 
         # Runtime parameters for detection.
         self.should_undistort_image = True
-        self.image_rotating_angle = 0.0
-        self.image_scaling = 1.0
-        self.gaussian_blur = 3
+        self.preprocessing_parameters = PreprocessingParams()
         self.edge_detection_parameters = EdgeDetectorParams()
         self.segment_detection_parameters = SegmentDetectorParams()
         self.segment_clustering_parameters = SegmentClustererParams()
@@ -209,8 +209,17 @@ class ThermoApp:
         """
         self.video_loader = VideoLoader(video_path=self.input_video_path, start_frame=start_frame, end_frame=end_frame)
 
+    def preprocess_frame(self):
+        frame_preprocessor = FramePreprocessor(input_image=self.last_input_frame, params=self.preprocessing_parameters)
+        frame_preprocessor.preprocess()
+
+        self.last_scaled_frame_rgb = frame_preprocessor.scaled_image_rgb
+        self.last_scaled_frame = frame_preprocessor.scaled_image
+        self.last_preprocessed_image = frame_preprocessor.preprocessed_image
+        self.last_attention_image = frame_preprocessor.attention_image
+
     def detect_edges(self):
-        edge_detector = EdgeDetector(input_image=self.last_scaled_frame, params=self.edge_detection_parameters)
+        edge_detector = EdgeDetector(input_image=self.last_preprocessed_image, params=self.edge_detection_parameters)
         edge_detector.detect()
 
         self.last_edges_frame = edge_detector.edge_image
@@ -250,6 +259,8 @@ class ThermoApp:
         Classifies the modules in the global module map which have been detected in the current frame. This function
         must be called after inserting the modules in the global module map!
         """
+        assert (self.inference is not None)
+
         module_list = self.create_module_list()
         probabilities = self.inference.classify([m["image"] for m in module_list])
         for module, prob in zip(module_list, probabilities):
@@ -264,17 +275,9 @@ class ThermoApp:
                                               distCoeffs=self.camera.distortion_coeff)
         else:
             undistorted_image = distorted_image
+        self.last_input_frame = undistorted_image
 
-        scaled_image = scale_image(undistorted_image, self.image_scaling)
-
-        rotated_frame = rotate_image(scaled_image, self.image_rotating_angle)
-        self.last_scaled_frame_rgb = rotated_frame
-
-        gray = cv2.cvtColor(src=rotated_frame, code=cv2.COLOR_BGR2GRAY)
-        if self.gaussian_blur > 0:
-            gray = cv2.blur(gray, (self.gaussian_blur, self.gaussian_blur))
-
-        self.last_scaled_frame = gray
+        self.preprocess_frame()
 
         self.detect_edges()
         self.detect_segments()
@@ -300,6 +303,8 @@ class ThermoApp:
 
     def reset(self):
         self.last_input_frame = None
+        self.last_preprocessed_image = None
+        self.last_attention_image = None
         self.last_scaled_frame_rgb = None
         self.last_scaled_frame = None
         self.last_edges_frame = None

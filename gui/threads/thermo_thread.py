@@ -13,6 +13,7 @@ class ThermoGuiThread(QThread):
     iteration_signal = QtCore.pyqtSignal(int)
     finish_signal = QtCore.pyqtSignal(bool)
     last_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    attention_frame_signal = QtCore.pyqtSignal(np.ndarray)
     edge_frame_signal = QtCore.pyqtSignal(np.ndarray)
     segment_frame_signal = QtCore.pyqtSignal(np.ndarray)
     rectangle_frame_signal = QtCore.pyqtSignal(np.ndarray)
@@ -93,6 +94,7 @@ class ThermoGuiThread(QThread):
                 self.app.classify_detected_modules()
 
                 self.last_frame_signal.emit(self.app.last_scaled_frame_rgb)
+                self.attention_frame_signal.emit(self.app.last_attention_image)
                 self.edge_frame_signal.emit(self.app.last_edges_frame)
                 self.segment_frame_signal.emit(self.app.create_segment_image())
                 self.rectangle_frame_signal.emit(self.app.create_rectangle_image())

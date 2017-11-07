@@ -59,10 +59,14 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
 
         self.image_scaling_slider.valueChanged.connect(self.update_image_scaling)
 
-        # Preprocessing and Edge extraction.
+        # Preprocessing
         self.undistort_image_box.stateChanged.connect(self.update_image_distortion)
-        self.angle_value.valueChanged.connect(self.update_image_angle)
-        self.blur_value.valueChanged.connect(self.update_blur_value)
+
+        self.image_scaling_slider.valueChanged.connect(self.update_preprocessing_params)
+        self.angle_value.valueChanged.connect(self.update_preprocessing_params)
+        self.blur_value.valueChanged.connect(self.update_preprocessing_params)
+
+        # Edge extraction.
         self.max_histeresis_value.valueChanged.connect(self.update_histeresis_params)
         self.min_histeresis_value.valueChanged.connect(self.update_histeresis_params)
         self.dilation_value.valueChanged.connect(self.update_dilation_steps)
@@ -98,6 +102,7 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
     def connect_thermo_thread(self):
         Logger.debug("Connecting thermo thread")
         self.thermo_thread.last_frame_signal.connect(lambda x: self.display_image(x))
+        self.thermo_thread.attention_frame_signal.connect(lambda x: self.display_attention(x))
         self.thermo_thread.edge_frame_signal.connect(lambda x: self.display_canny_edges(x))
         self.thermo_thread.segment_frame_signal.connect(lambda x: self.display_segment_image(x))
         self.thermo_thread.rectangle_frame_signal.connect(lambda x: self.display_rectangle_image(x))
@@ -146,7 +151,8 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.image_scaling_slider.setEnabled(False)
         self.update_image_scaling()
 
-        self.image_scaling_label.setText("Input image scaling: {:0.2f}".format(self.thermo_thread.app.image_scaling))
+        self.image_scaling_label.setText(
+            "Input image scaling: {:0.2f}".format(self.thermo_thread.app.preprocessing_parameters.image_scaling))
         self.play_video_button.setEnabled(False)
         self.pause_video_button.setEnabled(True)
         if self.is_stoppable:
@@ -172,8 +178,21 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
     def update_image_scaling(self):
         image_scaling = self.image_scaling_slider.value() * 0.1
         if self.thermo_thread is not None:
-            self.thermo_thread.app.image_scaling = image_scaling
+            self.thermo_thread.app.preprocessing_parameters.image_scaling = image_scaling
         self.image_scaling_label.setText("Input image scaling: {:0.2f}".format(image_scaling))
+
+    def update_image_angle(self):
+        self.thermo_thread.app.preprocessing_parameters.image_rotation = self.angle_value.value() * np.pi / 180
+        if self.angle_value.value() == 360:
+            self.angle_value.setValue(0)
+
+    def update_blur_value(self):
+        self.thermo_thread.app.preprocessing_parameters.gaussian_blur = self.blur_value.value()
+
+    def update_preprocessing_params(self):
+        self.update_image_scaling()
+        self.update_image_angle()
+        self.update_blur_value()
 
     def update_histeresis_params(self):
         min_value = self.min_histeresis_value.value()
@@ -189,14 +208,6 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
 
     def update_image_distortion(self):
         self.thermo_thread.app.should_undistort_image = self.undistort_image_box.isChecked()
-
-    def update_image_angle(self):
-        self.thermo_thread.app.image_rotating_angle = self.angle_value.value() * np.pi / 180
-        if self.angle_value.value() == 360:
-            self.angle_value.setValue(0)
-
-    def update_blur_value(self):
-        self.thermo_thread.app.gaussian_blur = self.blur_value.value()
 
     def update_edge_params(self):
         self.thermo_thread.app.segment_detection_parameters.d_rho = self.delta_rho_value.value()
@@ -237,6 +248,13 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.video_view.setPixmap(pixmap)
+
+    def display_attention(self, frame: np.ndarray):
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        image = QImage(frame.data, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format_RGB888)
+        image = image.scaled(self.video_view.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        pixmap = QtGui.QPixmap.fromImage(image)
+        self.attention_view.setPixmap(pixmap)
 
     def display_canny_edges(self, frame: np.ndarray):
         frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
