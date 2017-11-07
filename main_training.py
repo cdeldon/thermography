@@ -5,23 +5,15 @@ from datetime import datetime
 import numpy as np
 import tensorflow as tf
 
-from thermography.classification.dataset import ThermoDataset, ThermoClass
-from thermography.classification.models import ThermoNet, ThermoNet3x3
+from thermography.classification.dataset import ThermoDataset, ThermoClass, create_directory_list
+from thermography.classification.models import ThermoNet3x3, ThermoNet
 
-
-def get_dataset_directories(dataset_path: str) -> list:
-    recording_path_list = [os.path.join(dataset_path, f) for f in os.listdir(dataset_path)]
-    input_data_path = []
-    for g in recording_path_list:
-        input_data_path.extend([os.path.join(g, f) for f in os.listdir(g)])
-
-    return input_data_path
 
 def main():
     ########################### Input and output paths ###########################
 
     dataset_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/padded_dataset"
-    dataset_directories = get_dataset_directories(dataset_path)
+    dataset_directories = create_directory_list(dataset_path)
 
     print("Input dataset directories:")
     for path_index, path in enumerate(dataset_directories):
