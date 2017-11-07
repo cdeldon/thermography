@@ -42,8 +42,10 @@ class ThermoNet(BaseNet):
                 with tf.variable_scope('drop_out'):
                     self.h_pool3_drop = tf.nn.dropout(self.h_pool3, keep_prob=self.keep_probability, name="dropout")
 
-            with tf.variable_scope('full_connected_1'):
+            with tf.variable_scope('reshape'):
                 flattened = tf.reshape(self.h_pool3_drop, [-1, np.prod(current_shape) * 64])
+
+            with tf.variable_scope('fc_1'):
                 shape = flattened.get_shape().as_list()
 
                 W_fc1 = weight_variable(name="W", shape=[shape[1], 256])
@@ -54,7 +56,7 @@ class ThermoNet(BaseNet):
                 with tf.variable_scope('drop_out'):
                     self.h_fc1_drop = tf.nn.dropout(self.h_fc1, keep_prob=self.keep_probability, name="dropout")
 
-            with tf.variable_scope('full_connected_2'):
+            with tf.variable_scope('fc_2'):
                 W_fc2 = weight_variable(name="W", shape=[256, 32])
                 b_fc2 = bias_variable(name="b", shape=[32])
 
@@ -63,7 +65,7 @@ class ThermoNet(BaseNet):
                 with tf.variable_scope('drop_out_2'):
                     self.h_fc2_drop = tf.nn.dropout(self.h_fc2, keep_prob=self.keep_probability, name="dropout")
 
-            with tf.variable_scope('full_connected_3'):
+            with tf.variable_scope('readout'):
                 W_fc3 = weight_variable(name="W", shape=[32, self.num_classes])
                 b_fc3 = bias_variable(name="b", shape=[self.num_classes])
 

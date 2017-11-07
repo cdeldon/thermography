@@ -105,8 +105,7 @@ def main():
     with tf.name_scope("cross_ent"):
         # Link variable to model output
         logits = model.logits
-        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=input_one_hot_labels),
-                              name="cross_entropy_loss")
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=input_one_hot_labels))
 
     # Add the loss to summary
     tf.summary.scalar('train/cross_entropy', loss, collections=["train"])
@@ -114,15 +113,12 @@ def main():
 
     # Train operation
     with tf.name_scope("train"):
-        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name="optimizer")
+        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name="adam")
         train_op = optimizer.minimize(loss, global_step=global_step)
 
     # Predict operation
-    with tf.name_scope("predict"):
-        class_prediction_op = tf.argmax(logits, axis=1, name="model_predictions")
-
-    # Evaluation op: Accuracy of the model
-    with tf.name_scope("accuracy"):
+    with tf.name_scope("prediction"):
+        class_prediction_op = tf.argmax(logits, axis=1, name="class_predictions")
         correct_pred = tf.equal(class_prediction_op, input_labels, name="correct_predictions")
         accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name="accuracy")
 
