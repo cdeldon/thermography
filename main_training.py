@@ -17,20 +17,6 @@ def get_dataset_directories(dataset_path: str) -> list:
 
     return input_data_path
 
-
-def kernel_to_image_summary(kernel: tf.Tensor, name: str, max_images=3):
-    x_min = tf.reduce_min(kernel)
-    x_max = tf.reduce_max(kernel)
-    weights_0_to_1 = (kernel - x_min) / (x_max - x_min)
-
-    weights_transposed = tf.transpose(weights_0_to_1, [3, 0, 1, 2])
-    weights_transposed = tf.unstack(weights_transposed, axis=3)
-    weights_transposed = tf.concat(weights_transposed, axis=0)
-    weights_transposed = tf.expand_dims(weights_transposed, axis=-1)
-
-    tf.summary.image(name, weights_transposed, max_outputs=max_images, collections=["kernels"])
-
-
 def main():
     ########################### Input and output paths ###########################
 
@@ -143,11 +129,6 @@ def main():
     # Add the accuracy to the summary
     tf.summary.scalar('train/accuracy', accuracy, collections=["train"])
     tf.summary.scalar('test/accuracy', accuracy, collections=["test"])
-
-    for var in tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=model.name):
-        tf.summary.histogram(var.name, var, collections=["histogram"])
-        if ("W" in var.name) and ("conv" in var.name):
-            kernel_to_image_summary(var, var.name, max_images=10)
 
     # Merge all summaries together
     train_summaries = tf.summary.merge_all(key="train")
