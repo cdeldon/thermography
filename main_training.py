@@ -276,7 +276,7 @@ def main():
 
                 # save checkpoint of the model
                 checkpoint_name = os.path.join(checkpoint_path, model.name)
-                save_path = saver.save(sess, checkpoint_name, global_step=epoch)
+                save_path = saver.save(sess, checkpoint_name, global_step=epoch, write_meta_graph=False)
 
                 print("{} Model checkpoint saved at {}".format(datetime.now(), save_path))
 
