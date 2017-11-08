@@ -101,32 +101,32 @@ class ThermoApp:
     def create_rectangle_image(self):
         Logger.debug("Creating rectangle image")
         base_image = self.last_scaled_frame_rgb.copy()
-        if self.last_rectangles is not None and len(self.last_rectangles) > 0:
-            mean_color = np.mean(base_image, axis=(0, 1))
-            mask = np.zeros_like(base_image)
-            if mean_color[0] == mean_color[1] == mean_color[2]:
-                mean_color = np.array([255, 255, 0])
-            opposite_color = np.array([255, 255, 255]) - mean_color
-            opposite_color = (int(opposite_color[0]), int(opposite_color[1]), int(opposite_color[2]))
-            for rectangle in self.last_rectangles:
-                cv2.polylines(base_image, np.int32([rectangle]), True, opposite_color, 1, cv2.LINE_AA)
-                cv2.fillConvexPoly(mask, np.int32([rectangle]), (255, 0, 0), cv2.LINE_4)
+        mask = np.zeros_like(base_image)
 
-            cv2.addWeighted(base_image, 1.0, mask, 0.8, 0, base_image)
+        for module_id, module in self.module_map.global_module_map.items():
+            if module.frame_id_history[-1] == self.last_frame_id:
+
+                module_coords = module.last_rectangle - np.int32(module.cumulated_motion)
+                mean_prob = module.mean_probability
+                color = color_from_probabilities(mean_prob)
+
+                cv2.polylines(base_image, np.int32([module_coords]), True, color, 1, cv2.LINE_AA)
+                cv2.fillConvexPoly(mask, np.int32([module_coords]), color, cv2.LINE_4)
+            else:
+                continue
+
+        cv2.addWeighted(base_image, 1.0, mask, 0.4, 0, base_image)
         return base_image
 
     def create_classes_image(self):
         Logger.debug("Creating classes image")
         base_image = self.last_scaled_frame_rgb.copy()
-        working_color = np.array([0, 255, 0])
-        broken_color = np.array([0, 0, 255])
-        misdetected_color = np.array([255, 0, 0])
-        for module_id, prob in self.last_probabilities.items():
-            module = self.module_map.global_module_map[module_id]
+
+        for module_id, module in self.module_map.global_module_map.items():
             module_coords = module.last_rectangle - np.int32(module.cumulated_motion)
             module_center = module.last_center - np.int32(module.cumulated_motion)
-            color = prob[0] * working_color + prob[1] * broken_color + prob[2] * misdetected_color
-            color = (int(color[0]), int(color[1]), int(color[2]))
+            mean_prob = module.mean_probability
+            color = color_from_probabilities(mean_prob)
 
             cv2.circle(base_image, (int(module_center[0]), int(module_center[1])), 6, color, cv2.FILLED, cv2.LINE_AA)
             cv2.polylines(base_image, np.int32([module_coords]), True, color, 1, cv2.LINE_AA)
@@ -261,6 +261,8 @@ class ThermoApp:
         probabilities = self.inference.classify([m["image"] for m in module_list])
         for module, prob in zip(module_list, probabilities):
             self.last_probabilities[module["id"]] = prob
+
+        self.module_map.update_class_belief(self.last_probabilities)
 
     def step(self, frame_id, frame):
         self.last_frame_id = frame_id

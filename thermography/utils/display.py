@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 __all__ = ["draw_intersections", "draw_motion", "draw_rectangles", "draw_segments",
-           "random_color"]
+           "random_color", "color_from_probabilities"]
 
 
 def draw_intersections(intersections: list, base_image: np.ndarray, windows_name: str):
@@ -126,3 +126,14 @@ def random_color() -> tuple:
     """
     c = np.random.randint(0, 255, 3)
     return int(c[0]), int(c[1]), int(c[2])
+
+
+def color_from_probabilities(prob: np.ndarray) -> tuple:
+    """
+    Constructs a color tuple given the probability distribution prob.
+
+    :param prob: A three dimensional numpy array containing class probabilities.
+    :return: The color associated to the probability distribution.
+    """
+    color = np.diag(prob).dot(np.ones(shape=[3, 1]) * 255.0)
+    return (int(color[2]), int(color[0]), int(color[1]))

@@ -17,6 +17,7 @@ class ModuleMap:
             self.rectangle_history = {}
 
             self.cumulated_motion = np.array([0, 0], dtype=np.float32)
+            self.__all_probabilities = []
 
             self.add(rectangle, frame_id)
 
@@ -47,6 +48,19 @@ class ModuleMap:
         def add_motion(self, frame_id: int, motion_estimate: np.ndarray):
             if frame_id != self.frame_id_history[-1]:
                 self.cumulated_motion += motion_estimate
+
+        def update_probability(self, prob: np.ndarray) -> None:
+            """
+            Updates the current probability distribution over the class labels of this module.
+            :param prob: A 1D numpy array of size 'num_classes' representing the classification probability.
+            """
+            self.__all_probabilities.append(prob)
+
+        @property
+        def mean_probability(self):
+            if len(self.__all_probabilities) == 0:
+                raise RuntimeError("No probabilities assigned to current module {}".format(self.ID))
+            return np.mean(self.__all_probabilities, axis=0)
 
     def __init__(self):
         Logger.debug("Creating the module map")
@@ -92,7 +106,7 @@ class ModuleMap:
                 # Compute the ID of the rectangle in the global map which is most similar to the current rectangle.
                 # This computation involves the evaluation of the surface between the corresponding edges of the
                 # rectangles of interest.
-                most_similar_ID = self.__find_most_similar_module(rectangle, area_threshold_ratio=0.2)
+                most_similar_ID = self.__find_most_similar_module(rectangle, area_threshold_ratio=0.5)
 
                 if most_similar_ID is None:
                     associations.append(None)
@@ -116,6 +130,15 @@ class ModuleMap:
                 rectangle_in_map.add_motion(frame_id, motion_estimate)
 
         self.__store_old_modules(frame_id)
+
+    def update_class_belief(self, probabilities: dict) -> None:
+        """
+        Updates the current class probability for the modules being detected in the last step.
+
+        :param probabilities: A dictionary keyed by the module ID, whose value is a probability distribution over the classes.
+        """
+        for module_id, prob in probabilities.items():
+            self.global_module_map[module_id].update_probability(prob)
 
     def __find_most_similar_module(self, rectangle: np.ndarray, area_threshold_ratio: float) -> int:
         """
