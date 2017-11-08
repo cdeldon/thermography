@@ -88,7 +88,7 @@ class ThermoGuiThread(QThread):
                     self.msleep(self.pause_time)
 
                 Logger.debug("Using video frame {}".format(frame_id))
-                # Perfom one step in the input video (i.e. analyze one frame)
+                # Perform one step in the input video (i.e. analyze one frame)
                 self.app.step(frame_id, frame)
                 # Perform inference (classification on the detected modules)
                 self.app.classify_detected_modules()
