@@ -75,17 +75,20 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.stop_video_button.clicked.connect(self.save_and_close)
         self.quick_save_button.clicked.connect(self.save_module_dataset)
 
-        self.image_scaling_slider.valueChanged.connect(self.update_image_scaling)
-
         # Working and Broken module buttons.
         self.module_working_button.clicked.connect(self.current_module_is_working)
         self.module_broken_button.clicked.connect(self.current_module_is_broken)
         self.misdetection_button.clicked.connect(self.current_module_misdetection)
 
-        # Preprocessing and Edge extraction.
+        # Preprocessing
         self.undistort_image_box.stateChanged.connect(self.update_image_distortion)
-        self.angle_value.valueChanged.connect(self.update_image_angle)
-        self.blur_value.valueChanged.connect(self.update_blur_value)
+
+        self.image_scaling_slider.valueChanged.connect(self.update_preprocessing_params)
+        self.angle_value.valueChanged.connect(self.update_preprocessing_params)
+        self.blur_value.valueChanged.connect(self.update_preprocessing_params)
+        self.temperature_value.valueChanged.connect(self.update_preprocessing_params)
+
+        # Edge extraction.
         self.max_histeresis_value.valueChanged.connect(self.update_histeresis_params)
         self.min_histeresis_value.valueChanged.connect(self.update_histeresis_params)
         self.dilation_value.valueChanged.connect(self.update_dilation_steps)
@@ -230,7 +233,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
     def update_image_scaling(self):
         image_scaling = self.image_scaling_slider.value() * 0.1
         if self.thermo_thread is not None:
-            self.thermo_thread.app.image_scaling = image_scaling
+            self.thermo_thread.app.preprocessing_parameters.image_scaling = image_scaling
         self.image_scaling_label.setText("Input image scaling: {:0.2f}".format(image_scaling))
 
     def update_histeresis_params(self):
@@ -249,12 +252,21 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.thermo_thread.app.should_undistort_image = self.undistort_image_box.isChecked()
 
     def update_image_angle(self):
-        self.thermo_thread.app.image_rotating_angle = self.angle_value.value() * np.pi / 180
+        self.thermo_thread.app.preprocessing_parameters.image_rotation = self.angle_value.value() * np.pi / 180
         if self.angle_value.value() == 360:
             self.angle_value.setValue(0)
 
     def update_blur_value(self):
-        self.thermo_thread.app.gaussian_blur = self.blur_value.value()
+        self.thermo_thread.app.preprocessing_parameters.gaussian_blur = self.blur_value.value()
+
+    def update_temperature_value(self):
+        self.thermo_thread.app.preprocessing_parameters.red_threshold = self.temperature_value.value()
+
+    def update_preprocessing_params(self):
+        self.update_image_scaling()
+        self.update_image_angle()
+        self.update_blur_value()
+        self.update_temperature_value()
 
     def update_edge_params(self):
         self.thermo_thread.app.segment_detection_parameters.d_rho = self.delta_rho_value.value()

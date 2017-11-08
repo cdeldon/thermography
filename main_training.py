@@ -5,37 +5,15 @@ from datetime import datetime
 import numpy as np
 import tensorflow as tf
 
-from thermography.classification.dataset import ThermoDataset, ThermoClass
-from thermography.classification.models import ThermoNet, ThermoNet3x3
-
-
-def get_dataset_directories(dataset_path: str) -> list:
-    recording_path_list = [os.path.join(dataset_path, f) for f in os.listdir(dataset_path)]
-    input_data_path = []
-    for g in recording_path_list:
-        input_data_path.extend([os.path.join(g, f) for f in os.listdir(g)])
-
-    return input_data_path
-
-
-def kernel_to_image_summary(kernel: tf.Tensor, name: str, max_images=3):
-    x_min = tf.reduce_min(kernel)
-    x_max = tf.reduce_max(kernel)
-    weights_0_to_1 = (kernel - x_min) / (x_max - x_min)
-
-    weights_transposed = tf.transpose(weights_0_to_1, [3, 0, 1, 2])
-    weights_transposed = tf.unstack(weights_transposed, axis=3)
-    weights_transposed = tf.concat(weights_transposed, axis=0)
-    weights_transposed = tf.expand_dims(weights_transposed, axis=-1)
-
-    tf.summary.image(name, weights_transposed, max_outputs=max_images, collections=["kernels"])
+from thermography.classification.dataset import ThermoDataset, ThermoClass, create_directory_list
+from thermography.classification.models import ThermoNet3x3, ThermoNet
 
 
 def main():
     ########################### Input and output paths ###########################
 
     dataset_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/padded_dataset"
-    dataset_directories = get_dataset_directories(dataset_path)
+    dataset_directories = create_directory_list(dataset_path)
 
     print("Input dataset directories:")
     for path_index, path in enumerate(dataset_directories):
@@ -119,8 +97,7 @@ def main():
     with tf.name_scope("cross_ent"):
         # Link variable to model output
         logits = model.logits
-        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=input_one_hot_labels),
-                              name="cross_entropy_loss")
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=input_one_hot_labels))
 
     # Add the loss to summary
     tf.summary.scalar('train/cross_entropy', loss, collections=["train"])
@@ -128,26 +105,18 @@ def main():
 
     # Train operation
     with tf.name_scope("train"):
-        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name="optimizer")
+        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name="adam")
         train_op = optimizer.minimize(loss, global_step=global_step)
 
     # Predict operation
-    with tf.name_scope("predict"):
-        class_prediction_op = tf.argmax(logits, axis=1, name="model_predictions")
-
-    # Evaluation op: Accuracy of the model
-    with tf.name_scope("accuracy"):
+    with tf.name_scope("prediction"):
+        class_prediction_op = tf.argmax(logits, axis=1, name="class_predictions")
         correct_pred = tf.equal(class_prediction_op, input_labels, name="correct_predictions")
         accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name="accuracy")
 
     # Add the accuracy to the summary
     tf.summary.scalar('train/accuracy', accuracy, collections=["train"])
     tf.summary.scalar('test/accuracy', accuracy, collections=["test"])
-
-    for var in tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=model.name):
-        tf.summary.histogram(var.name, var, collections=["histogram"])
-        if ("W" in var.name) and ("conv" in var.name):
-            kernel_to_image_summary(var, var.name, max_images=10)
 
     # Merge all summaries together
     train_summaries = tf.summary.merge_all(key="train")
@@ -299,7 +268,7 @@ def main():
 
                 # save checkpoint of the model
                 checkpoint_name = os.path.join(checkpoint_path, model.name)
-                save_path = saver.save(sess, checkpoint_name, global_step=epoch)
+                save_path = saver.save(sess, checkpoint_name, global_step=epoch, write_meta_graph=False)
 
                 print("{} Model checkpoint saved at {}".format(datetime.now(), save_path))
 

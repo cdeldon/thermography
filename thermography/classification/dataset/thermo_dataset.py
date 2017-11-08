@@ -131,8 +131,8 @@ class ThermoDataset:
         for thermo_class in sorted(class_list, key=lambda t: t.class_value):
             for root_dir in self.root_directory_list:
                 directory = os.path.join(root_dir, thermo_class.class_folder)
-                image_names = np.array([os.path.join(directory, img_name) for img_name in os.listdir(directory)],
-                                       dtype=str)
+                image_names = np.array([os.path.join(directory, img_name) for img_name in os.listdir(directory)
+                                        if img_name.endswith(".jpg")], dtype=str)
                 self.__image_file_names = np.concatenate((self.__image_file_names, image_names))
                 self.__labels = np.concatenate(
                     (self.__labels, np.ones(shape=(len(image_names)), dtype=np.int32) * thermo_class.class_value))

@@ -1,12 +1,16 @@
+import os
+
 import cv2
 import numpy as np
 from simple_logger import Logger
 
 from . import ModuleMap
+from .classification import Inference
+from .classification.models import ThermoNet3x3
 from .detection import *
 from .io import VideoLoader
-from .settings import Camera, Modules
-from .utils import rotate_image, scale_image, aspect_ratio
+from .settings import Camera, get_resources_dir
+from .utils import aspect_ratio
 from .utils.display import *
 
 
@@ -26,9 +30,14 @@ class ThermoApp:
         self.input_video_path = input_video_path
         self.camera_param_file = camera_param_file
 
-        # Camera and Modules object containing the corresponding parameters.
+        self.image_shape = np.array([96, 120, 1])
+        self.num_classes = 3
+        checkpoint_dir = os.path.join(get_resources_dir(), "weights")
+        self.inference = Inference(checkpoint_dir=checkpoint_dir, model_class=ThermoNet3x3,
+                                   image_shape=self.image_shape, num_classes=self.num_classes)
+
+        # Camera object containing the corresponding parameters.
         self.camera = None
-        self.modules = None
 
         # Object responsible for loading the video passed as parameter.
         self.video_loader = None
@@ -39,6 +48,8 @@ class ThermoApp:
 
         # Objects referring to the items computed during the last frame.
         self.last_input_frame = None
+        self.last_preprocessed_image = None
+        self.last_attention_image = None
         self.last_scaled_frame_rgb = None
         self.last_scaled_frame = None
         self.last_edges_frame = None
@@ -49,12 +60,11 @@ class ThermoApp:
         self.last_rectangles = None
         self.last_mean_motion = None
         self.last_frame_id = 0
+        self.last_probabilities = {}
 
         # Runtime parameters for detection.
         self.should_undistort_image = True
-        self.image_rotating_angle = 0.0
-        self.image_scaling = 1.0
-        self.gaussian_blur = 3
+        self.preprocessing_parameters = PreprocessingParams()
         self.edge_detection_parameters = EdgeDetectorParams()
         self.segment_detection_parameters = SegmentDetectorParams()
         self.segment_clustering_parameters = SegmentClustererParams()
@@ -105,6 +115,24 @@ class ThermoApp:
             cv2.addWeighted(base_image, 1.0, mask, 0.8, 0, base_image)
         return base_image
 
+    def create_classes_image(self):
+        Logger.debug("Creating classes image")
+        base_image = self.last_scaled_frame_rgb.copy()
+        working_color = np.array([0, 255, 0])
+        broken_color = np.array([0, 0, 255])
+        misdetected_color = np.array([255, 0, 0])
+        for module_id, prob in self.last_probabilities.items():
+            module = self.module_map.global_module_map[module_id]
+            module_coords = module.last_rectangle - np.int32(module.cumulated_motion)
+            module_center = module.last_center - np.int32(module.cumulated_motion)
+            color = prob[0] * working_color + prob[1] * broken_color + prob[2] * misdetected_color
+            color = (int(color[0]), int(color[1]), int(color[2]))
+
+            cv2.circle(base_image, (int(module_center[0]), int(module_center[1])), 6, color, cv2.FILLED, cv2.LINE_AA)
+            cv2.polylines(base_image, np.int32([module_coords]), True, color, 1, cv2.LINE_AA)
+
+        return base_image
+
     def create_module_map_image(self):
         Logger.debug("Creating module map image")
         base_image = self.last_scaled_frame_rgb.copy()
@@ -128,7 +156,7 @@ class ThermoApp:
         Logger.debug("Creating module list")
         module_list = []
         module_width = 90
-        module_height = 64
+        module_height = 66
         padding = 15
         image_width = module_width + 2 * padding
         image_height = module_height + 2 * padding
@@ -163,13 +191,11 @@ class ThermoApp:
 
     def __load_params(self):
         """
-        Load the parameters related to camera and modules.
+        Load the parameters related to camera.
         """
         self.camera = Camera(camera_path=self.camera_param_file)
-        self.modules = Modules()
 
         Logger.info("Using camera parameters:\n{}".format(self.camera))
-        Logger.info("Using module parameters:\n{}".format(self.modules))
 
     def load_video(self, start_frame: int, end_frame: int):
         """
@@ -180,8 +206,17 @@ class ThermoApp:
         """
         self.video_loader = VideoLoader(video_path=self.input_video_path, start_frame=start_frame, end_frame=end_frame)
 
+    def preprocess_frame(self):
+        frame_preprocessor = FramePreprocessor(input_image=self.last_input_frame, params=self.preprocessing_parameters)
+        frame_preprocessor.preprocess()
+
+        self.last_scaled_frame_rgb = frame_preprocessor.scaled_image_rgb
+        self.last_scaled_frame = frame_preprocessor.scaled_image
+        self.last_preprocessed_image = frame_preprocessor.preprocessed_image
+        self.last_attention_image = frame_preprocessor.attention_image
+
     def detect_edges(self):
-        edge_detector = EdgeDetector(input_image=self.last_scaled_frame, params=self.edge_detection_parameters)
+        edge_detector = EdgeDetector(input_image=self.last_preprocessed_image, params=self.edge_detection_parameters)
         edge_detector.detect()
 
         self.last_edges_frame = edge_detector.edge_image
@@ -210,11 +245,22 @@ class ThermoApp:
         self.last_intersections = intersection_detector.cluster_cluster_intersections
 
     def detect_rectangles(self):
-        self.rectangle_detection_parameters.aspect_ratio = self.modules.aspect_ratio
         rectangle_detector = RectangleDetector(input_intersections=self.last_intersections,
                                                params=self.rectangle_detection_parameters)
         rectangle_detector.detect()
         self.last_rectangles = rectangle_detector.rectangles
+
+    def classify_detected_modules(self):
+        """
+        Classifies the modules in the global module map which have been detected in the current frame. This function
+        must be called after inserting the modules in the global module map!
+        """
+        assert (self.inference is not None)
+
+        module_list = self.create_module_list()
+        probabilities = self.inference.classify([m["image"] for m in module_list])
+        for module, prob in zip(module_list, probabilities):
+            self.last_probabilities[module["id"]] = prob
 
     def step(self, frame_id, frame):
         self.last_frame_id = frame_id
@@ -225,17 +271,9 @@ class ThermoApp:
                                               distCoeffs=self.camera.distortion_coeff)
         else:
             undistorted_image = distorted_image
+        self.last_input_frame = undistorted_image
 
-        scaled_image = scale_image(undistorted_image, self.image_scaling)
-
-        rotated_frame = rotate_image(scaled_image, self.image_rotating_angle)
-        self.last_scaled_frame_rgb = rotated_frame
-
-        gray = cv2.cvtColor(src=rotated_frame, code=cv2.COLOR_BGR2GRAY)
-        if self.gaussian_blur > 0:
-            gray = cv2.blur(gray, (self.gaussian_blur, self.gaussian_blur))
-
-        self.last_scaled_frame = gray
+        self.preprocess_frame()
 
         self.detect_edges()
         self.detect_segments()
@@ -253,10 +291,16 @@ class ThermoApp:
         # Add the detected rectangles to the global map.
         self.module_map.insert(self.last_rectangles, frame_id, self.last_mean_motion)
 
+        if len(self.last_rectangles) == 0:
+            Logger.warning("No rectangles detected!")
+            return False
+
         return True
 
     def reset(self):
         self.last_input_frame = None
+        self.last_preprocessed_image = None
+        self.last_attention_image = None
         self.last_scaled_frame_rgb = None
         self.last_scaled_frame = None
         self.last_edges_frame = None
@@ -266,6 +310,8 @@ class ThermoApp:
         self.last_cluster_list = None
         self.last_rectangles = None
         self.last_mean_motion = None
+
+        self.last_probabilities = {}
 
     def run(self):
         for frame_id, frame in enumerate(self.video_loader.frames):

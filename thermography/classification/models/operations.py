@@ -1,5 +1,7 @@
 import tensorflow as tf
 
+from ..utils import kernel_to_image_summary
+
 __all__ = ["weight_variable",
            "bias_variable",
            "conv2d",
@@ -23,6 +25,7 @@ def conv2d(name, x, W):
 
 def conv_relu(x, kernel_shape, bias_shape, name: str = ""):
     weights = weight_variable(name="W" + name, shape=kernel_shape)
+    kernel_to_image_summary(kernel=weights, summary_name="kernels")
     biases = bias_variable(name="b" + name, shape=bias_shape)
     return tf.nn.relu(conv2d(name="conv2d" + name, x=x, W=weights) + biases)
 
