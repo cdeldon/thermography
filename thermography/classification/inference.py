@@ -15,8 +15,9 @@ class Inference:
         self.graph = tf.Graph()
         with self.graph.as_default():
             self.x = tf.placeholder(tf.float32, [None, *self.image_shape], name="input_image")
+            self.keep_probability = tf.placeholder(tf.float32, name="keep_probability")
             self.model = model_class(x=self.x, image_shape=self.image_shape, num_classes=self.num_classes,
-                                     keep_prob=1.0)
+                                     keep_prob=self.keep_probability)
 
         self.logits = self.model.logits
         self.probabilities = tf.nn.softmax(self.logits)
@@ -78,5 +79,5 @@ class Inference:
         Logger.debug("Classifying {} module image{}".format(
             img_tensor.shape[0], "" if img_tensor.shape[0] == 1 else "s"))
 
-        class_probabilities = self.sess.run(self.probabilities, feed_dict={self.x: img_tensor})
+        class_probabilities = self.sess.run(self.probabilities, feed_dict={self.x: img_tensor, self.keep_probability: 1.0})
         return class_probabilities
