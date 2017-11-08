@@ -9,7 +9,7 @@ from .classification import Inference
 from .classification.models import ThermoNet3x3
 from .detection import *
 from .io import VideoLoader
-from .settings import Camera, Modules, get_resources_dir
+from .settings import Camera, get_resources_dir
 from .utils import aspect_ratio
 from .utils.display import *
 
@@ -36,9 +36,8 @@ class ThermoApp:
         self.inference = Inference(checkpoint_dir=checkpoint_dir, model_class=ThermoNet3x3,
                                    image_shape=self.image_shape, num_classes=self.num_classes)
 
-        # Camera and Modules object containing the corresponding parameters.
+        # Camera object containing the corresponding parameters.
         self.camera = None
-        self.modules = None
 
         # Object responsible for loading the video passed as parameter.
         self.video_loader = None
@@ -192,13 +191,11 @@ class ThermoApp:
 
     def __load_params(self):
         """
-        Load the parameters related to camera and modules.
+        Load the parameters related to camera.
         """
         self.camera = Camera(camera_path=self.camera_param_file)
-        self.modules = Modules()
 
         Logger.info("Using camera parameters:\n{}".format(self.camera))
-        Logger.info("Using module parameters:\n{}".format(self.modules))
 
     def load_video(self, start_frame: int, end_frame: int):
         """
@@ -248,7 +245,6 @@ class ThermoApp:
         self.last_intersections = intersection_detector.cluster_cluster_intersections
 
     def detect_rectangles(self):
-        self.rectangle_detection_parameters.aspect_ratio = self.modules.aspect_ratio
         rectangle_detector = RectangleDetector(input_intersections=self.last_intersections,
                                                params=self.rectangle_detection_parameters)
         rectangle_detector.detect()

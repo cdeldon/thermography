@@ -8,7 +8,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class Ui_CreateDataset_main_window(object):
     def setupUi(self, CreateDataset_main_window):
         CreateDataset_main_window.setObjectName("CreateDataset_main_window")
@@ -42,8 +41,7 @@ class Ui_CreateDataset_main_window(object):
         self.verticalLayout_11.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_11.setObjectName("verticalLayout_11")
         self.rectangle_image_view = QtWidgets.QLabel(self.widget_3)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,
-                                           QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.rectangle_image_view.sizePolicy().hasHeightForWidth())
@@ -372,20 +370,29 @@ class Ui_CreateDataset_main_window(object):
         self.angle_label.setSizePolicy(sizePolicy)
         self.angle_label.setObjectName("angle_label")
         self.preprocessing_grid_layout.addWidget(self.angle_label, 0, 0, 1, 1)
+        self.blur_value = QtWidgets.QSpinBox(self.preprocessing_tab)
+        self.blur_value.setMaximum(15)
+        self.blur_value.setProperty("value", 3)
+        self.blur_value.setObjectName("blur_value")
+        self.preprocessing_grid_layout.addWidget(self.blur_value, 1, 1, 1, 1)
+        self.blur_label = QtWidgets.QLabel(self.preprocessing_tab)
+        self.blur_label.setObjectName("blur_label")
+        self.preprocessing_grid_layout.addWidget(self.blur_label, 1, 0, 1, 1)
         self.angle_value = QtWidgets.QSpinBox(self.preprocessing_tab)
         self.angle_value.setMinimum(0)
         self.angle_value.setMaximum(360)
         self.angle_value.setSingleStep(10)
         self.angle_value.setObjectName("angle_value")
         self.preprocessing_grid_layout.addWidget(self.angle_value, 0, 1, 1, 1)
-        self.blur_label = QtWidgets.QLabel(self.preprocessing_tab)
-        self.blur_label.setObjectName("blur_label")
-        self.preprocessing_grid_layout.addWidget(self.blur_label, 1, 0, 1, 1)
-        self.blur_value = QtWidgets.QSpinBox(self.preprocessing_tab)
-        self.blur_value.setMaximum(15)
-        self.blur_value.setProperty("value", 3)
-        self.blur_value.setObjectName("blur_value")
-        self.preprocessing_grid_layout.addWidget(self.blur_value, 1, 1, 1, 1)
+        self.temperature_label = QtWidgets.QLabel(self.preprocessing_tab)
+        self.temperature_label.setObjectName("temperature_label")
+        self.preprocessing_grid_layout.addWidget(self.temperature_label, 2, 0, 1, 1)
+        self.temperature_value = QtWidgets.QSpinBox(self.preprocessing_tab)
+        self.temperature_value.setMaximum(255)
+        self.temperature_value.setSingleStep(10)
+        self.temperature_value.setProperty("value", 200)
+        self.temperature_value.setObjectName("temperature_value")
+        self.preprocessing_grid_layout.addWidget(self.temperature_value, 2, 1, 1, 1)
         self.preprocessing_layout.addLayout(self.preprocessing_grid_layout)
         self.verticalLayout_9.addLayout(self.preprocessing_layout)
         self.line_2 = QtWidgets.QFrame(self.preprocessing_tab)
@@ -710,87 +717,106 @@ class Ui_CreateDataset_main_window(object):
     def retranslateUi(self, CreateDataset_main_window):
         _translate = QtCore.QCoreApplication.translate
         CreateDataset_main_window.setWindowTitle(_translate("CreateDataset_main_window", "ThermoGUI"))
-        CreateDataset_main_window.setWhatsThis(
-            _translate("CreateDataset_main_window", "<html><head/><body><p>Tool Bar</p><p><br/></p></body></html>"))
-        self.rectangle_image_view.setText(_translate("CreateDataset_main_window",
-                                                     "<html><head/><body><p align=\"center\">Module Map</p></body></html>"))
+        CreateDataset_main_window.setWhatsThis(_translate("CreateDataset_main_window", "<html><head/><body><p>Tool Bar</p><p><br/></p></body></html>"))
+        self.rectangle_image_view.setText(_translate("CreateDataset_main_window", "<html><head/><body><p align=\"center\">Module\n"
+"                                            Map</p></body></html>\n"
+"                                        "))
         self.global_progress_bar.setFormat(_translate("CreateDataset_main_window", "%p%"))
-        self.label.setText(_translate("CreateDataset_main_window",
-                                      "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Input</span></p></body></html>"))
-        self.video_from_index.setToolTip(_translate("CreateDataset_main_window",
-                                                    "<html><head/><body><p>Initial frame of the video to be loaded.</p></body></html>"))
+        self.label.setText(_translate("CreateDataset_main_window", "<html><head/><body><p align=\"center\"><span\n"
+"                                                                style=\" font-weight:600;\">Input</span></p></body></html>\n"
+"                                                            "))
+        self.video_from_index.setToolTip(_translate("CreateDataset_main_window", "<html><head/><body><p>Initial\n"
+"                                                                        frame of the video to be loaded.</p></body></html>\n"
+"                                                                    "))
         self.from_video_index_label.setText(_translate("CreateDataset_main_window", "From:"))
         self.to_video_index_label.setText(_translate("CreateDataset_main_window", "To:"))
-        self.video_to_index.setToolTip(_translate("CreateDataset_main_window",
-                                                  "<html><head/><body><p>Final frame of the video to be loaded.</p></body></html>"))
-        self.load_video_button.setToolTip(_translate("CreateDataset_main_window",
-                                                     "<html><head/><body><p>Loads the frames from the selected video file.</p></body></html>"))
+        self.video_to_index.setToolTip(_translate("CreateDataset_main_window", "<html><head/><body><p>Final\n"
+"                                                                        frame of the video to be loaded.</p></body></html>\n"
+"                                                                    "))
+        self.load_video_button.setToolTip(_translate("CreateDataset_main_window", "<html><head/><body><p>Loads\n"
+"                                                                the frames from the selected video file.</p></body></html>\n"
+"                                                            "))
         self.load_video_button.setText(_translate("CreateDataset_main_window", "Choose Video"))
         self.image_scaling_label.setText(_translate("CreateDataset_main_window", "Input image scaling : 1.00"))
-        self.play_video_button.setToolTip(_translate("CreateDataset_main_window",
-                                                     "<html><head/><body><p>Play the current video/Webcam.</p></body></html>"))
+        self.play_video_button.setToolTip(_translate("CreateDataset_main_window", "<html><head/><body><p>Play\n"
+"                                                                                        the current video/Webcam.</p></body></html>\n"
+"                                                                                    "))
         self.play_video_button.setText(_translate("CreateDataset_main_window", "Play"))
-        self.stop_video_button.setToolTip(_translate("CreateDataset_main_window",
-                                                     "<html><head/><body><p>Resets the current video to the start.</p></body></html>"))
+        self.stop_video_button.setToolTip(_translate("CreateDataset_main_window", "<html><head/><body><p>Resets\n"
+"                                                                                        the current video to the start.</p></body></html>\n"
+"                                                                                    "))
         self.stop_video_button.setText(_translate("CreateDataset_main_window", "Stop and Save"))
         self.quick_save_button.setText(_translate("CreateDataset_main_window", "Quick Save"))
-        self.current_module_view.setText(_translate("CreateDataset_main_window",
-                                                    "<html><head/><body><p align=\"center\">Current Module</p></body></html>"))
+        self.current_module_view.setText(_translate("CreateDataset_main_window", "<html><head/><body><p align=\"center\">Current\n"
+"                                            Module</p></body></html>\n"
+"                                        "))
         self.label_2.setText(_translate("CreateDataset_main_window", "Module Detected:"))
-        self.module_working_button.setToolTip(
-            _translate("CreateDataset_main_window", "Select current module as \'Working\' (shortcut: \'0\')"))
+        self.module_working_button.setToolTip(_translate("CreateDataset_main_window", "Select current module as \'Working\' (shortcut:\n"
+"                                                                    \'0\')\n"
+"                                                                "))
         self.module_working_button.setText(_translate("CreateDataset_main_window", "Working (0)"))
         self.module_working_button.setShortcut(_translate("CreateDataset_main_window", "0"))
-        self.module_broken_button.setToolTip(
-            _translate("CreateDataset_main_window", "Select current module as \'Broken\' (shortcut: \'1\')"))
+        self.module_broken_button.setToolTip(_translate("CreateDataset_main_window", "Select current module as \'Broken\' (shortcut:\n"
+"                                                                    \'1\')\n"
+"                                                                "))
         self.module_broken_button.setText(_translate("CreateDataset_main_window", "Broken (1)"))
         self.module_broken_button.setShortcut(_translate("CreateDataset_main_window", "1"))
         self.label_3.setText(_translate("CreateDataset_main_window", "Misdetection:"))
-        self.misdetection_button.setToolTip(
-            _translate("CreateDataset_main_window", "Select current module as \'Misdetected\' (shortcut: \'2\')"))
+        self.misdetection_button.setToolTip(_translate("CreateDataset_main_window", "Select current module as \'Misdetected\' (shortcut: \'2\')\n"
+"                                                        "))
         self.misdetection_button.setText(_translate("CreateDataset_main_window", "Other(2)"))
         self.misdetection_button.setShortcut(_translate("CreateDataset_main_window", "2"))
         self.label_7.setText(_translate("CreateDataset_main_window", "Other:"))
-        self.label_4.setText(_translate("CreateDataset_main_window",
-                                        "<html><head/><body><p><span style=\" font-weight:600;\">Total classified modules:</span></p></body></html>"))
+        self.label_4.setText(_translate("CreateDataset_main_window", "<html><head/><body><p><span style=\"\n"
+"                                                    font-weight:600;\">Total classified modules:</span></p></body></html>\n"
+"                                                "))
         self.label_5.setText(_translate("CreateDataset_main_window", "Working:"))
         self.label_6.setText(_translate("CreateDataset_main_window", "Broken:"))
         self.label_9.setText(_translate("CreateDataset_main_window", "Automatic:"))
         self.label_8.setText(_translate("CreateDataset_main_window", "Manual:"))
-        self.total_manual_classified_label.setText(_translate("CreateDataset_main_window",
-                                                              "<html><head/><body><p><span style=\" font-weight:600;\">0</span></p></body></html>"))
-        self.total_automatic_classified_label.setText(_translate("CreateDataset_main_window",
-                                                                 "<html><head/><body><p><span style=\" font-weight:600;\">0</span></p></body></html>"))
+        self.total_manual_classified_label.setText(_translate("CreateDataset_main_window", "<html><head/><body><p><span style=\"\n"
+"                                                    font-weight:600;\">0</span></p></body></html>\n"
+"                                                "))
+        self.total_automatic_classified_label.setText(_translate("CreateDataset_main_window", "<html><head/><body><p><span style=\"\n"
+"                                                    font-weight:600;\">0</span></p></body></html>\n"
+"                                                "))
         self.working_manual_classified_label.setText(_translate("CreateDataset_main_window", "0"))
         self.working_automatic_classified_label.setText(_translate("CreateDataset_main_window", "0"))
         self.broken_manual_classified_label.setText(_translate("CreateDataset_main_window", "0"))
         self.broken_automatic_classified_label.setText(_translate("CreateDataset_main_window", "0"))
         self.other_manual_classified_label.setText(_translate("CreateDataset_main_window", "0"))
         self.other_automatic_classified_label.setText(_translate("CreateDataset_main_window", "0"))
-        self.preprocessing_label.setText(_translate("CreateDataset_main_window",
-                                                    "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Preprocessing</span></p></body></html>"))
+        self.preprocessing_label.setText(_translate("CreateDataset_main_window", "<html><head/><body><p\n"
+"                                                                    align=\"center\"><span style=\"\n"
+"                                                                    font-weight:600;\">Preprocessing</span></p></body></html>\n"
+"                                                                "))
         self.undistort_image_box.setText(_translate("CreateDataset_main_window", "undistort image"))
         self.angle_label.setText(_translate("CreateDataset_main_window", "angle:"))
         self.blur_label.setText(_translate("CreateDataset_main_window", "blur:"))
-        self.canny_parameters_label.setText(_translate("CreateDataset_main_window",
-                                                       "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Canny</span></p></body></html>"))
-        self.histeresis_label.setText(
-            _translate("CreateDataset_main_window", "<html><head/><body><p>Histeresis:</p></body></html>"))
+        self.temperature_label.setText(_translate("CreateDataset_main_window", "temperature:"))
+        self.canny_parameters_label.setText(_translate("CreateDataset_main_window", "<html><head/><body><p\n"
+"                                                                    align=\"center\"><span style=\"\n"
+"                                                                    font-weight:600;\">Canny</span></p></body></html>\n"
+"                                                                "))
+        self.histeresis_label.setText(_translate("CreateDataset_main_window", "<html><head/><body><p>Histeresis:</p></body></html>"))
         self.label_max_histeresis.setText(_translate("CreateDataset_main_window", "max"))
         self.label_min_histeresis.setText(_translate("CreateDataset_main_window", "min"))
-        self.dilation_label.setText(_translate("CreateDataset_main_window", "dilation steps: "))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.preprocessing_tab),
-                                   _translate("CreateDataset_main_window", "Preprocessing"))
-        self.segment_label.setText(_translate("CreateDataset_main_window",
-                                              "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Detection</span></p></body></html>"))
+        self.dilation_label.setText(_translate("CreateDataset_main_window", "dilation steps:"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.preprocessing_tab), _translate("CreateDataset_main_window", "Preprocessing"))
+        self.segment_label.setText(_translate("CreateDataset_main_window", "<html><head/><body><p\n"
+"                                                                    align=\"center\"><span style=\"\n"
+"                                                                    font-weight:600;\">Detection</span></p></body></html>\n"
+"                                                                "))
         self.max_gap_label.setText(_translate("CreateDataset_main_window", "max gap"))
         self.delta_rho_label.setText(_translate("CreateDataset_main_window", "delta rho"))
         self.min_votes_label.setText(_translate("CreateDataset_main_window", "min votes"))
         self.min_length_label.setText(_translate("CreateDataset_main_window", "min length"))
         self.delta_theta_label.setText(_translate("CreateDataset_main_window", "delta theta"))
         self.extend_segments_label.setText(_translate("CreateDataset_main_window", "extend segments"))
-        self.clustering_label.setText(_translate("CreateDataset_main_window",
-                                                 "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Clustering</span></p></body></html>"))
+        self.clustering_label.setText(_translate("CreateDataset_main_window", "<html><head/><body><p\n"
+"                                                                    align=\"center\"><span style=\"\n"
+"                                                                    font-weight:600;\">Clustering</span></p></body></html>\n"
+"                                                                "))
         self.num_init_label.setText(_translate("CreateDataset_main_window", "num init"))
         self.cluster_type_label.setText(_translate("CreateDataset_main_window", "type"))
         self.num_clusters_label.setText(_translate("CreateDataset_main_window", "num clusters"))
@@ -800,20 +826,22 @@ class Ui_CreateDataset_main_window(object):
         self.swipe_clusters_value.setText(_translate("CreateDataset_main_window", "swipe"))
         self.use_angle_value.setText(_translate("CreateDataset_main_window", "angles"))
         self.use_centers_value.setText(_translate("CreateDataset_main_window", "centers"))
-        self.cleaning_label.setText(_translate("CreateDataset_main_window",
-                                               "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Cleaning</span></p></body></html>"))
+        self.cleaning_label.setText(_translate("CreateDataset_main_window", "<html><head/><body><p\n"
+"                                                                    align=\"center\"><span style=\"\n"
+"                                                                    font-weight:600;\">Cleaning</span></p></body></html>\n"
+"                                                                "))
         self.max_merging_distance_label.setText(_translate("CreateDataset_main_window", "max merging distance"))
         self.max_angle_variation_mean_label.setText(_translate("CreateDataset_main_window", "max angle variation"))
         self.max_merging_angle_label.setText(_translate("CreateDataset_main_window", "max merging angle"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.segment_tab),
-                                   _translate("CreateDataset_main_window", "Segments"))
-        self.filter_label.setText(_translate("CreateDataset_main_window",
-                                             "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Filter</span></p></body></html>"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.segment_tab), _translate("CreateDataset_main_window", "Segments"))
+        self.filter_label.setText(_translate("CreateDataset_main_window", "<html><head/><body><p\n"
+"                                                                    align=\"center\"><span style=\"\n"
+"                                                                    font-weight:600;\">Filter</span></p></body></html>\n"
+"                                                                "))
         self.ratio_max_deviation_label.setText(_translate("CreateDataset_main_window", "ratio max deviation"))
         self.min_area_label.setText(_translate("CreateDataset_main_window", "min area"))
         self.expected_ratio_label.setText(_translate("CreateDataset_main_window", "expected ratio"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.module_tab),
-                                   _translate("CreateDataset_main_window", "Modules"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.module_tab), _translate("CreateDataset_main_window", "Modules"))
         self.FileMenu.setTitle(_translate("CreateDataset_main_window", "File"))
         self.actionLoad.setText(_translate("CreateDataset_main_window", "Load"))
         self.file_about.setText(_translate("CreateDataset_main_window", "About"))
@@ -822,10 +850,10 @@ class Ui_CreateDataset_main_window(object):
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     CreateDataset_main_window = QtWidgets.QMainWindow()
     ui = Ui_CreateDataset_main_window()
     ui.setupUi(CreateDataset_main_window)
     CreateDataset_main_window.show()
     sys.exit(app.exec_())
+

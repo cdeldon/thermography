@@ -65,6 +65,7 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
         self.image_scaling_slider.valueChanged.connect(self.update_preprocessing_params)
         self.angle_value.valueChanged.connect(self.update_preprocessing_params)
         self.blur_value.valueChanged.connect(self.update_preprocessing_params)
+        self.temperature_value.valueChanged.connect(self.update_preprocessing_params)
 
         # Edge extraction.
         self.max_histeresis_value.valueChanged.connect(self.update_histeresis_params)
@@ -189,10 +190,14 @@ class ThermoGUI(QtWidgets.QMainWindow, Ui_ThermoGUI_main_window):
     def update_blur_value(self):
         self.thermo_thread.app.preprocessing_parameters.gaussian_blur = self.blur_value.value()
 
+    def update_temperature_value(self):
+        self.thermo_thread.app.preprocessing_parameters.red_threshold = self.temperature_value.value()
+
     def update_preprocessing_params(self):
         self.update_image_scaling()
         self.update_image_angle()
         self.update_blur_value()
+        self.update_temperature_value()
 
     def update_histeresis_params(self):
         min_value = self.min_histeresis_value.value()

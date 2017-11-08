@@ -1073,6 +1073,16 @@
                  <property name="topMargin">
                   <number>10</number>
                  </property>
+                 <item row="1" column="1">
+                  <widget class="QSpinBox" name="blur_value">
+                   <property name="maximum">
+                    <number>15</number>
+                   </property>
+                   <property name="value">
+                    <number>3</number>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="0">
                   <widget class="QLabel" name="angle_label">
                    <property name="sizePolicy">
@@ -1083,6 +1093,13 @@
                    </property>
                    <property name="text">
                     <string>angle:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="blur_label">
+                   <property name="text">
+                    <string>blur:</string>
                    </property>
                   </widget>
                  </item>
@@ -1099,20 +1116,26 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="blur_label">
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="temperature_label">
                    <property name="text">
-                    <string>blur:</string>
+                    <string>temperature:</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QSpinBox" name="blur_value">
+                 <item row="2" column="1">
+                  <widget class="QSpinBox" name="temperature_value">
                    <property name="maximum">
-                    <number>15</number>
+                    <number>255</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>10</number>
                    </property>
                    <property name="value">
-                    <number>3</number>
+                    <number>200</number>
+                   </property>
+                   <property name="displayIntegerBase">
+                    <number>10</number>
                    </property>
                   </widget>
                  </item>
