@@ -1,95 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WebCam</class>
- <widget class="QMainWindow" name="WebCam">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>310</width>
-    <height>265</height>
-   </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>200</width>
-    <height>200</height>
-   </size>
-  </property>
-  <property name="windowTitle">
-   <string>ThermoGUI - Webcam</string>
-  </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>img/logo-webcam.png</normaloff>img/logo-webcam.png</iconset>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QLabel" name="webcam_view">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>150</width>
-        <height>150</height>
-       </size>
-      </property>
-      <property name="autoFillBackground">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;WebCam&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="textFormat">
-       <enum>Qt::RichText</enum>
-      </property>
-      <property name="scaledContents">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QPushButton" name="previous_button">
-        <property name="enabled">
-         <bool>false</bool>
+    <class>WebCam</class>
+    <widget class="QMainWindow" name="WebCam">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>310</width>
+                <height>265</height>
+            </rect>
         </property>
-        <property name="text">
-         <string>Previous</string>
+        <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="ok_button">
-        <property name="text">
-         <string>Use port 0!</string>
+        <property name="minimumSize">
+            <size>
+                <width>200</width>
+                <height>200</height>
+            </size>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="next_button">
-        <property name="text">
-         <string>Next</string>
+        <property name="windowTitle">
+            <string>ThermoGUI - Webcam</string>
         </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
- </widget>
- <resources/>
- <connections/>
+        <property name="windowIcon">
+            <iconset>
+                <normaloff>img/logo-webcam.png</normaloff>img/logo-webcam.png
+            </iconset>
+        </property>
+        <widget class="QWidget" name="centralwidget">
+            <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                    <widget class="QLabel" name="webcam_view">
+                        <property name="sizePolicy">
+                            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>150</width>
+                                <height>150</height>
+                            </size>
+                        </property>
+                        <property name="autoFillBackground">
+                            <bool>true</bool>
+                        </property>
+                        <property name="text">
+                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span
+                                style=&quot; font-weight:600;&quot;&gt;WebCam&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+                            </string>
+                        </property>
+                        <property name="textFormat">
+                            <enum>Qt::RichText</enum>
+                        </property>
+                        <property name="scaledContents">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </item>
+                <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout">
+                        <item>
+                            <widget class="QPushButton" name="previous_button">
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="text">
+                                    <string>Previous</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QPushButton" name="ok_button">
+                                <property name="text">
+                                    <string>Use port 0!</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QPushButton" name="next_button">
+                                <property name="text">
+                                    <string>Next</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </item>
+            </layout>
+        </widget>
+    </widget>
+    <resources/>
+    <connections/>
 </ui>

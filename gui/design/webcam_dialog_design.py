@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_WebCam(object):
     def setupUi(self, WebCam):
         WebCam.setObjectName("WebCam")
@@ -26,7 +27,8 @@ class Ui_WebCam(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
         self.webcam_view = QtWidgets.QLabel(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,
+                                           QtWidgets.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.webcam_view.sizePolicy().hasHeightForWidth())
@@ -58,8 +60,8 @@ class Ui_WebCam(object):
     def retranslateUi(self, WebCam):
         _translate = QtCore.QCoreApplication.translate
         WebCam.setWindowTitle(_translate("WebCam", "ThermoGUI - Webcam"))
-        self.webcam_view.setText(_translate("WebCam", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">WebCam</span></p></body></html>"))
+        self.webcam_view.setText(_translate("WebCam",
+                                            "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">WebCam</span></p></body></html>"))
         self.previous_button.setText(_translate("WebCam", "Previous"))
         self.ok_button.setText(_translate("WebCam", "Use port 0!"))
         self.next_button.setText(_translate("WebCam", "Next"))
-

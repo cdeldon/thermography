@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pylab as plt
+from simple_logger import Logger
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import normalize
@@ -50,7 +51,9 @@ class SegmentClusterer:
         Clusters the input segments based on the parameters passed as argument. The features that can be used to cluster
         the segments are their mean coordinates, and their angle.
         """
+        Logger.debug("Clustering segments")
         if self.params.cluster_type not in ["gmm", "knn"]:
+            Logger.fatal("Invalid value for cluster type: {}".format(self.params.cluster_type))
             raise ValueError("Invalid value for 'cluster_type': {} "
                              "'cluster_type' should be in ['gmm', 'knn']".format(self.params.cluster_type))
 
@@ -88,9 +91,11 @@ class SegmentClusterer:
         cluster_prediction = None
 
         if self.params.cluster_type is "knn":
+            Logger.debug("Clustering segments using KNN")
             cluster_prediction = KMeans(n_clusters=self.params.num_clusters, n_init=self.params.num_init,
                                         random_state=0).fit_predict(features)
         elif self.params.cluster_type is "gmm":
+            Logger.debug("Clustering segments using GMM")
             best_gmm = None
             lowest_bic = np.infty
             bic = []

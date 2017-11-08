@@ -1,5 +1,7 @@
-from thermography.utils.geometry import aspect_ratio, area
 import numpy as np
+from simple_logger import Logger
+
+from thermography.utils.geometry import aspect_ratio, area, sort_rectangle
 
 __all__ = ["RectangleDetector", "RectangleDetectorParams"]
 
@@ -7,7 +9,7 @@ __all__ = ["RectangleDetector", "RectangleDetectorParams"]
 class RectangleDetectorParams:
     def __init__(self):
         self.aspect_ratio = 1.5
-        self.aspect_ratio_relative_deviation =  0.35
+        self.aspect_ratio_relative_deviation = 0.35
 
         self.min_area = 20 * 40
 
@@ -20,11 +22,14 @@ class RectangleDetector:
         self.rectangles = []
 
     def detect(self):
+        Logger.debug("Detecting rectangles")
         # Iterate over each pair of clusters.
-        num_clusters = int((np.sqrt(8 * len(self.intersections) + 1) - 1) / 2)
+        num_clusters = int((np.sqrt(8 * len(self.intersections) + 1) + 1) / 2)
         for cluster_index_i in range(num_clusters):
             for cluster_index_j in range(cluster_index_i + 1, num_clusters):
                 if (cluster_index_i, cluster_index_j) in self.intersections:
+                    Logger.debug("Detecting rectangles between cluster {} and cluster {}".format(cluster_index_i,
+                                                                                                 cluster_index_j))
                     self.__detect_rectangles_between_clusters(cluster_index_i, cluster_index_j)
 
     @staticmethod
@@ -55,9 +60,10 @@ class RectangleDetector:
                     coord3 = intersections_with_i_plus[segment_index_j]
                     coord4 = intersections_with_i_plus[segment_index_j + 1]
                     rectangle = np.array([coord1, coord2, coord4, coord3])
+                    rectangle = sort_rectangle(rectangle)
                     if self.fulfills_ratio(rectangle, self.params.aspect_ratio,
-                                           self.params.aspect_ratio_relative_deviation) and area(
-                        rectangle) >= self.params.min_area:
+                                           self.params.aspect_ratio_relative_deviation) and \
+                                    area(rectangle) >= self.params.min_area:
                         rectangles_between_cluster_i_j.append(rectangle)
 
         self.rectangles.extend(rectangles_between_cluster_i_j)

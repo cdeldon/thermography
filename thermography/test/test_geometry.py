@@ -1,6 +1,7 @@
 import collections
-import numpy as np
 import unittest
+
+import numpy as np
 
 from thermography.utils.geometry import *
 
@@ -81,6 +82,21 @@ class TestGeometryUtils(unittest.TestCase):
         point5 = np.array([2, 0])
         polygon = np.array([point1, point5, point3, point4])
         self.assertEqual(area(points=polygon), 1.5)
+
+    def test_area_between_rectangles(self):
+        """
+        Tests the 'area_between_rectangles' function which computes the surface between two rectangles.
+        """
+        rect1 = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+        self.assertEqual(area_between_rectangles(rect1, rect1), 0.0)
+
+        rect2 = np.array([[0.25, .25], [0.75, 0.25], [0.75, 0.75], [0.25, 0.75]])
+        self.assertEqual(area_between_rectangles(rect1, rect2), 0.75)
+        self.assertEqual(area_between_rectangles(rect2, rect1), 0.75)
+
+        rect3 = rect1 + np.array([0.2, 0.2])
+        self.assertAlmostEqual(area_between_rectangles(rect1, rect3), 0.8)
+        self.assertAlmostEqual(area_between_rectangles(rect3, rect1), 0.8)
 
     def test_aspect_ratio(self):
         """
@@ -344,6 +360,27 @@ class TestGeometryUtils(unittest.TestCase):
         segments = np.array([[0, 0, 1, 0], [0, 1, 1, 1], [0, 1, 1, 1.1], [0, -1, 1, -0.5]])
         sorted_segments_indices = sort_segments(segments)
         self.assertListEqual([*sorted_segments_indices], [3, 0, 1, 2])
+
+    def test_sort_rectangle(self):
+        p0 = np.array([0.0, 0.0])
+        p1 = np.array([1.0, 0.0])
+        p2 = np.array([1.0, 1.0])
+        p3 = np.array([0.0, 1.0])
+
+        r_final = np.array([p0, p1, p2, p3])
+
+        r0123 = np.array([p0, p1, p2, p3])
+        r1230 = np.array([p1, p2, p3, p0])
+        r2301 = np.array([p2, p3, p0, p1])
+        r3012 = np.array([p3, p0, p1, p2])
+        r3210 = np.array([p3, p2, p1, p0])
+        r2103 = np.array([p2, p1, p0, p3])
+        r1032 = np.array([p1, p0, p3, p2])
+        r0321 = np.array([p0, p3, p2, p1])
+
+        for rec in [r0123, r1230, r2301, r3012, r3210, r2103, r1032, r0321]:
+            sorted_rec = sort_rectangle(rec)
+            self.assertTrue((r_final == sorted_rec).all(), msg="Original:\n{}\nSorted:\n{}".format(rec, sorted_rec))
 
 
 if __name__ == '__main__':

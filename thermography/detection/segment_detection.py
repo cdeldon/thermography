@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from simple_logger import Logger
 
 __all__ = ["SegmentDetector", "SegmentDetectorParams"]
 
@@ -45,6 +46,7 @@ class SegmentDetector:
         Detects the segments in the input image using the parameters passed as argument. Furthermore the detected
         segments are extended on each side by a few pixels as defined in the parameters.
         """
+        Logger.debug("Detecting segments")
         self.segments = cv2.HoughLinesP(image=self.input_image, rho=self.params.d_rho,
                                         theta=self.params.d_theta,
                                         threshold=self.params.min_num_votes,
@@ -53,6 +55,7 @@ class SegmentDetector:
 
         # If no segments have been found, return an empty array.
         if self.segments is None:
+            Logger.warning("No segments were detected")
             self.segments = np.empty(shape=(0, 4))
             return
 
