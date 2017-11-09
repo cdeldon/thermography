@@ -109,5 +109,4 @@ logs/*
 # Resource directory
 resources/*
 !resources/.gitkeep
-resources/weights/*
-!resources/weights/.gitkeep
+!resources/weights/*
