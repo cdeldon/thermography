@@ -48,9 +48,14 @@ The executables with a graphical interface offer the following tools and visuali
 
 The GUI presents different views of the processed input video, in particular the following views are available:
 
-![EdgeImage](./docs/_static/edge_image.PNG?raw=true "Edge image") | ![SegmentImage](./docs/_static/segments_image.PNG?raw=true "Segment Image") | ![RectangleImage](./docs/_static/rectangle_image.PNG?raw=true "Rectangle Image")
-:----------------------------------------------------------------:|:---------------------------------------------------------------------------:|:-------------------------:
-Edge image                                                        | Segment image                                                               | Rectangle image
+
+![Attention Image](./docs/_static/attention_image.PNG?raw=true "Attention image") |  ![EdgeImage](./docs/_static/edge_image.PNG?raw=true "Edge image")
+:--------------------------------------------------------------------------------:|:------------------------------------------------------------------:
+Attention image                                                                   | Edge image
+
+![SegmentImage](./docs/_static/segments_image.PNG?raw=true "Segment Image") | ![RectangleImage](./docs/_static/rectangle_image.PNG?raw=true "Rectangle Image")
+:--------------------------------------------------------------------------:|:--------------------------------------------------------------------------------:
+Segment image                                                               | Rectangle image
 
 
 The lateral toolbar offers runtime parameter tuning with immediate application:
