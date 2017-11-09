@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/cdeldon/thermography/tree/doc/readme/docs/_static/logo.png"><br><br>
+  <img src="https://github.com/cdeldon/thermography/tree/master/docs/_static/logo.PNG?raw=true"><br><br>
 </div>
 
 |  Branch |                                                     Linux                                                      |
