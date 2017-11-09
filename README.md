@@ -9,6 +9,8 @@ Thermography
 This repository containes the implementation of a feasibility study for automatic detection of defected solar panel modules.
 The developed framework has been coined _Thermography_ due to the fact that the input data to the system is a sequence of images in the infrared spectrum.
 
+![Thermography in action](docs/_static/example-view.gif)
+
 ### Structure
 The repository is structured as follows:
  1. [Documentation](docs) of the _Thermography_ repository.
