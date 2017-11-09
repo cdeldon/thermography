@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 import tensorflow as tf
@@ -29,7 +31,7 @@ class Inference:
         with self.sess.as_default():
             with self.graph.as_default():
                 self.saver = tf.train.Saver()
-                self.saver.restore(self.sess, tf.train.latest_checkpoint(self.checkpoint_dir))
+                self.saver.restore(self.sess, os.path.join(self.checkpoint_dir, self.model.name))
 
         Logger.info("Model restored.")
 
@@ -79,5 +81,6 @@ class Inference:
         Logger.debug("Classifying {} module image{}".format(
             img_tensor.shape[0], "" if img_tensor.shape[0] == 1 else "s"))
 
-        class_probabilities = self.sess.run(self.probabilities, feed_dict={self.x: img_tensor, self.keep_probability: 1.0})
+        class_probabilities = self.sess.run(self.probabilities,
+                                            feed_dict={self.x: img_tensor, self.keep_probability: 1.0})
         return class_probabilities
