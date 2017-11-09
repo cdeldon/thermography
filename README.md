@@ -1,5 +1,6 @@
-Thermography  
-============
+<div align="center">
+  <img src="https://github.com/cdeldon/thermography/tree/doc/readme/docs/_static/logo.png"><br><br>
+</div>
 
 |  Branch |                                                     Linux                                                      |
 |:-------:|:--------------------------------------------------------------------------------------------------------------:|
