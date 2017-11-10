@@ -1,0 +1,450 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography.io package &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="index.html"/>
+        <link rel="up" title="thermography package" href="thermography.html"/>
+        <link rel="next" title="thermography.settings package" href="thermography.settings.html"/>
+        <link rel="prev" title="thermography.detection package" href="thermography.detection.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="thermography.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">thermography.io package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.settings.html">thermography.settings package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.test.html">thermography.test package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="thermography.html">thermography package</a> &raquo;</li>
+        
+      <li>thermography.io package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/thermography.io.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-thermography.io">
+<span id="thermography-io-package"></span><h1>thermography.io package<a class="headerlink" href="#module-thermography.io" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="thermography.io.ImageLoader">
+<em class="property">class </em><code class="descclassname">thermography.io.</code><code class="descname">ImageLoader</code><span class="sig-paren">(</span><em>image_path: str</em>, <em>mode: thermography.io.modes.Modality = &lt;Modality.RGB: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#ImageLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.ImageLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="thermography.io.ImageLoader.image_path">
+<code class="descname">image_path</code><a class="headerlink" href="#thermography.io.ImageLoader.image_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.io.ImageLoader.show_raw">
+<code class="descname">show_raw</code><span class="sig-paren">(</span><em>title: str = ''</em>, <em>wait: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#ImageLoader.show_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.ImageLoader.show_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the raw image associated with the calling instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>title</strong> – Title to be added to the displayed image.</li>
+<li><strong>wait</strong> – Time to wait until displayed windows is closed. If set to 0, then the image does not close.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="thermography.io.VideoLoader">
+<em class="property">class </em><code class="descclassname">thermography.io.</code><code class="descname">VideoLoader</code><span class="sig-paren">(</span><em>video_path: str</em>, <em>start_frame: int = 0</em>, <em>end_frame: int = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#VideoLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.VideoLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="thermography.io.VideoLoader.num_frames">
+<code class="descname">num_frames</code><a class="headerlink" href="#thermography.io.VideoLoader.num_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.io.VideoLoader.show_video">
+<code class="descname">show_video</code><span class="sig-paren">(</span><em>fps: int = 60</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#VideoLoader.show_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.VideoLoader.show_video" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the loaded frames.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fps</strong> – Frames per second to be used when showing the images.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.io.VideoLoader.video_path">
+<code class="descname">video_path</code><a class="headerlink" href="#thermography.io.VideoLoader.video_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-thermography.io.io">
+<span id="thermography-io-io-module"></span><h2>thermography.io.io module<a class="headerlink" href="#module-thermography.io.io" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="thermography.io.io.ImageLoader">
+<em class="property">class </em><code class="descclassname">thermography.io.io.</code><code class="descname">ImageLoader</code><span class="sig-paren">(</span><em>image_path: str</em>, <em>mode: thermography.io.modes.Modality = &lt;Modality.RGB: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#ImageLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.io.ImageLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="thermography.io.io.ImageLoader.image_path">
+<code class="descname">image_path</code><a class="headerlink" href="#thermography.io.io.ImageLoader.image_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.io.io.ImageLoader.show_raw">
+<code class="descname">show_raw</code><span class="sig-paren">(</span><em>title: str = ''</em>, <em>wait: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#ImageLoader.show_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.io.ImageLoader.show_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the raw image associated with the calling instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>title</strong> – Title to be added to the displayed image.</li>
+<li><strong>wait</strong> – Time to wait until displayed windows is closed. If set to 0, then the image does not close.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="thermography.io.io.VideoLoader">
+<em class="property">class </em><code class="descclassname">thermography.io.io.</code><code class="descname">VideoLoader</code><span class="sig-paren">(</span><em>video_path: str</em>, <em>start_frame: int = 0</em>, <em>end_frame: int = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#VideoLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.io.VideoLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="thermography.io.io.VideoLoader.num_frames">
+<code class="descname">num_frames</code><a class="headerlink" href="#thermography.io.io.VideoLoader.num_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.io.io.VideoLoader.show_video">
+<code class="descname">show_video</code><span class="sig-paren">(</span><em>fps: int = 60</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#VideoLoader.show_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.io.VideoLoader.show_video" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the loaded frames.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fps</strong> – Frames per second to be used when showing the images.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.io.io.VideoLoader.video_path">
+<code class="descname">video_path</code><a class="headerlink" href="#thermography.io.io.VideoLoader.video_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-thermography.io.logger">
+<span id="thermography-io-logger-module"></span><h2>thermography.io.logger module<a class="headerlink" href="#module-thermography.io.logger" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="thermography.io.logger.setup_logger">
+<code class="descclassname">thermography.io.logger.</code><code class="descname">setup_logger</code><span class="sig-paren">(</span><em>console_log_level: thermography.io.modes.LogLevel = 'INFO'</em>, <em>file_log_level: thermography.io.modes.LogLevel = 'DEBUG'</em>, <em>log_file_name: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/logger.html#setup_logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.logger.setup_logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up the simple logger.
+:param console_log_level: Log level associated to the streaming log.
+:param file_log_level: Log level associated to the file log.
+:param log_file_name: If set, then the file log is written to this file. Otherwise a new log file will be created in the log directory returned by get_log_dir()</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-thermography.io.modes">
+<span id="thermography-io-modes-module"></span><h2>thermography.io.modes module<a class="headerlink" href="#module-thermography.io.modes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="thermography.io.modes.LogLevel">
+<em class="property">class </em><code class="descclassname">thermography.io.modes.</code><code class="descname">LogLevel</code><a class="reference internal" href="_modules/thermography/io/modes.html#LogLevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.modes.LogLevel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Log levels used for the simple_logger.</p>
+<dl class="attribute">
+<dt id="thermography.io.modes.LogLevel.DEBUG">
+<code class="descname">DEBUG</code><em class="property"> = 'DEBUG'</em><a class="headerlink" href="#thermography.io.modes.LogLevel.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.io.modes.LogLevel.ERROR">
+<code class="descname">ERROR</code><em class="property"> = 'ERROR'</em><a class="headerlink" href="#thermography.io.modes.LogLevel.ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.io.modes.LogLevel.FATAL">
+<code class="descname">FATAL</code><em class="property"> = 'FATAL'</em><a class="headerlink" href="#thermography.io.modes.LogLevel.FATAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.io.modes.LogLevel.INFO">
+<code class="descname">INFO</code><em class="property"> = 'INFO'</em><a class="headerlink" href="#thermography.io.modes.LogLevel.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.io.modes.LogLevel.WARN">
+<code class="descname">WARN</code><em class="property"> = 'WARNING'</em><a class="headerlink" href="#thermography.io.modes.LogLevel.WARN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.io.modes.LogLevel.WARNING">
+<code class="descname">WARNING</code><em class="property"> = 'WARNING'</em><a class="headerlink" href="#thermography.io.modes.LogLevel.WARNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="thermography.io.modes.Modality">
+<em class="property">class </em><code class="descclassname">thermography.io.modes.</code><code class="descname">Modality</code><a class="reference internal" href="_modules/thermography/io/modes.html#Modality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.modes.Modality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.IntEnum</span></code></p>
+<p>Modalities used to load an image into opencv.</p>
+<dl class="attribute">
+<dt id="thermography.io.modes.Modality.DEFAULT">
+<code class="descname">DEFAULT</code><em class="property"> = 1</em><a class="headerlink" href="#thermography.io.modes.Modality.DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.io.modes.Modality.GRAY_SCALE">
+<code class="descname">GRAY_SCALE</code><em class="property"> = 0</em><a class="headerlink" href="#thermography.io.modes.Modality.GRAY_SCALE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.io.modes.Modality.RGB">
+<code class="descname">RGB</code><em class="property"> = 1</em><a class="headerlink" href="#thermography.io.modes.Modality.RGB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="thermography.settings.html" class="btn btn-neutral float-right" title="thermography.settings package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="thermography.detection.html" class="btn btn-neutral" title="thermography.detection package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

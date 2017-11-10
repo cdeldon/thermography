@@ -1,0 +1,516 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography.classification.dataset.thermo_dataset &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../thermography.html">thermography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gui.html">gui</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>thermography.classification.dataset.thermo_dataset</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for thermography.classification.dataset.thermo_dataset</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.contrib.data</span> <span class="k">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">tensorflow.python.framework</span> <span class="k">import</span> <span class="n">dtypes</span>
+<span class="kn">from</span> <span class="nn">tensorflow.python.framework.ops</span> <span class="k">import</span> <span class="n">convert_to_tensor</span>
+
+<span class="kn">from</span> <span class="nn">.thermo_class</span> <span class="k">import</span> <span class="n">ThermoClassList</span>
+
+
+<div class="viewcode-block" id="ThermoDataset"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset">[docs]</a><span class="k">class</span> <span class="nc">ThermoDataset</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="n">balance_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">normalize_images</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span> <span class="o">=</span> <span class="n">img_shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">balance_data</span> <span class="o">=</span> <span class="n">balance_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalize_images</span> <span class="o">=</span> <span class="n">normalize_images</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__train_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__test_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__validation_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__root_directory_list</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__thermo_class_list</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__samples_per_class</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__train_fraction</span> <span class="o">=</span> <span class="mf">0.6</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__test_fraction</span> <span class="o">=</span> <span class="mf">0.2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__validation_fraction</span> <span class="o">=</span> <span class="mf">0.2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__labels</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_shape</span>
+
+    <span class="nd">@image_shape</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">image_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Image shape passed to dataset must be of length 3! Passed: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_shape</span> <span class="o">=</span> <span class="n">l</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rgb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__labels</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">train_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">__train_fraction</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">test_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_fraction</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">validation_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">__validation_fraction</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__train_dataset</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_dataset</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">validation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__validation_dataset</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">split_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">__train_fraction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_fraction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__validation_fraction</span><span class="p">])</span>
+
+<div class="viewcode-block" id="ThermoDataset.dataset_from_id"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.dataset_from_id">[docs]</a>    <span class="k">def</span> <span class="nf">dataset_from_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__train_dataset</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_dataset</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__validation_dataset</span><span class="p">}[</span><span class="n">index</span><span class="p">]</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">root_directory_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root_directory_list</span>
+
+    <span class="nd">@root_directory_list</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">root_directory_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">dir_list</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">dir_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">dir_list</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">dir_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Directory &lt;</span><span class="si">{}</span><span class="s2">&gt; passed to &#39;root_directory_list&#39; property does not exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">directory</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__root_directory_list</span> <span class="o">=</span> <span class="n">dir_list</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thermo_class_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thermo_class_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Property &#39;thermo_class_list&#39; has not been set yet!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thermo_class_list</span>
+
+    <span class="nd">@thermo_class_list</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">thermo_class_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thermo_class_list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root_directory_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must set property &#39;root_directory_list&#39; before setting the class list!&quot;</span><span class="p">)</span>
+        <span class="n">directories_which_must_be_contained_in_root_directory</span> <span class="o">=</span> <span class="p">[</span><span class="n">thermo_class</span><span class="o">.</span><span class="n">class_name</span> <span class="k">for</span> <span class="n">thermo_class</span> <span class="ow">in</span>
+                                                                 <span class="n">thermo_class_list</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">directories_which_must_be_contained_in_root_directory</span><span class="p">:</span>
+            <span class="k">for</span> <span class="nb">dir</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root_directory_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">directory</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Root directory </span><span class="si">{}</span><span class="s2"> does not contain subdirectory </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">directory</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">thermo_class_list</span><span class="p">)</span>
+        <span class="n">thermo_class_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">thermo_class</span><span class="o">.</span><span class="n">class_value</span> <span class="k">for</span> <span class="n">thermo_class</span> <span class="ow">in</span> <span class="n">thermo_class_list</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">class_label</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">class_label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">thermo_class_labels</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Class label </span><span class="si">{}</span><span class="s2"> is not present in thermo classes: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">class_label</span><span class="p">,</span> <span class="n">thermo_class_labels</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ThermoDataset.load_dataset"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.load_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root_directory_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">class_list</span><span class="p">:</span> <span class="n">ThermoClassList</span><span class="p">,</span> <span class="n">load_all_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_directory_list</span> <span class="o">=</span> <span class="n">root_directory_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_class_list</span> <span class="o">=</span> <span class="n">class_list</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">sample_per_class</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">thermo_class</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">class_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">class_value</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">root_dir</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_directory_list</span><span class="p">:</span>
+                <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">thermo_class</span><span class="o">.</span><span class="n">class_folder</span><span class="p">)</span>
+                <span class="n">image_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">img_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">img_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+                                        <span class="k">if</span> <span class="n">img_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.jpg&quot;</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span><span class="p">,</span> <span class="n">image_names</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__labels</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">image_names</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">*</span> <span class="n">thermo_class</span><span class="o">.</span><span class="n">class_value</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">thermo_class</span><span class="o">.</span><span class="n">class_value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample_per_class</span><span class="p">:</span>
+                    <span class="n">sample_per_class</span><span class="p">[</span><span class="n">thermo_class</span><span class="o">.</span><span class="n">class_value</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_names</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sample_per_class</span><span class="p">[</span><span class="n">thermo_class</span><span class="o">.</span><span class="n">class_value</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_names</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__samples_per_class</span> <span class="o">=</span> <span class="p">[</span><span class="n">sample_per_class</span><span class="p">[</span><span class="n">thermo_class</span><span class="o">.</span><span class="n">class_value</span><span class="p">]</span> <span class="k">for</span> <span class="n">thermo_class</span> <span class="ow">in</span> <span class="n">class_list</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__balance_data</span><span class="p">()</span>
+
+        <span class="n">permutation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span><span class="p">[</span><span class="n">permutation</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__labels</span><span class="p">[</span><span class="n">permutation</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__create_internal_dataset</span><span class="p">(</span><span class="n">load_all_data</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__balance_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Shuffle each class independently (This is useful in case of multiple root directories because it does not</span>
+        <span class="c1"># discard only elements of the last listed root directory, but random elements of all root directories)</span>
+        <span class="n">start_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">class_id</span><span class="p">,</span> <span class="n">num_samples_in_this_class</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__samples_per_class</span><span class="p">):</span>
+            <span class="n">permutation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">num_samples_in_this_class</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">start_index</span> <span class="o">+</span> <span class="n">num_samples_in_this_class</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">start_index</span> <span class="o">+</span> <span class="n">num_samples_in_this_class</span><span class="p">][</span><span class="n">permutation</span><span class="p">]</span>
+            <span class="n">start_index</span> <span class="o">+=</span> <span class="n">num_samples_in_this_class</span>
+
+        <span class="n">class_with_min_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__samples_per_class</span><span class="p">)</span>
+        <span class="n">num_min_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__samples_per_class</span><span class="p">[</span><span class="n">class_with_min_samples</span><span class="p">]</span>
+
+        <span class="c1"># Remove all elements in the majority classes in order to balance their sample numbers to the minority class.</span>
+        <span class="n">start_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">elements_to_delete</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">num_samples_in_this_class</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__samples_per_class</span><span class="p">:</span>
+            <span class="n">new_indices_to_delete</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span>
+                                     <span class="nb">range</span><span class="p">(</span><span class="n">start_index</span> <span class="o">+</span> <span class="n">num_min_samples</span><span class="p">,</span> <span class="n">start_index</span> <span class="o">+</span> <span class="n">num_samples_in_this_class</span><span class="p">)]</span>
+            <span class="n">elements_to_delete</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_indices_to_delete</span><span class="p">)</span>
+            <span class="n">start_index</span> <span class="o">+=</span> <span class="n">num_samples_in_this_class</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__labels</span><span class="p">,</span> <span class="n">elements_to_delete</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span><span class="p">,</span> <span class="n">elements_to_delete</span><span class="p">)</span>
+
+        <span class="c1"># Check for class balance.</span>
+        <span class="n">cumulator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__labels</span><span class="p">:</span>
+            <span class="n">cumulator</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">cumulator</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">cumulator</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Error in data balancing: resulting label distribution: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cumulator</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__samples_per_class</span> <span class="o">=</span> <span class="p">[</span><span class="n">num_min_samples</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)]</span>
+
+<div class="viewcode-block" id="ThermoDataset.set_train_test_validation_fraction"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.set_train_test_validation_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">set_train_test_validation_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_fraction</span><span class="p">,</span> <span class="n">test_fraction</span><span class="p">,</span> <span class="n">validation_fraction</span><span class="p">):</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">train_fraction</span> <span class="o">+</span> <span class="n">test_fraction</span> <span class="o">+</span> <span class="n">validation_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__train_fraction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">train_fraction</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__test_fraction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">test_fraction</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__validation_fraction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">validation_fraction</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span></div>
+
+    <span class="k">def</span> <span class="nf">__parse_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_label</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">one_hot</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">image_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">img_file</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+        <span class="n">img_decoded</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">decode_jpeg</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">img_decoded</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">resize_images</span><span class="p">(</span><span class="n">img_decoded</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">img_decoded</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">img_decoded</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_images</span><span class="p">:</span>
+            <span class="n">img_decoded</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">per_image_standardization</span><span class="p">(</span><span class="n">img_decoded</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">img_decoded</span><span class="p">,</span> <span class="n">one_hot</span>
+
+    <span class="k">def</span> <span class="nf">__parse_image_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_label</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">one_hot</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">image_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_COLOR</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_GRAYSCALE</span>
+
+        <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">flag</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_images</span><span class="p">:</span>
+            <span class="n">img_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">img_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+            <span class="n">img</span> <span class="o">=</span> <span class="p">(</span><span class="n">img</span> <span class="o">-</span> <span class="n">img_mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">img_std</span>
+
+        <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">one_hot</span>
+
+    <span class="k">def</span> <span class="nf">__create_internal_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load_all_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="n">cumulative_fraction</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">dataset_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">fraction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_fraction</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">]</span>
+            <span class="n">min_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">cumulative_fraction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_size</span><span class="p">))</span>
+            <span class="n">max_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">cumulative_fraction</span> <span class="o">+</span> <span class="n">fraction</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_size</span><span class="p">))</span>
+            <span class="n">cumulative_fraction</span> <span class="o">+=</span> <span class="n">fraction</span>
+
+            <span class="k">if</span> <span class="n">load_all_data</span><span class="p">:</span>
+                <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">num_images</span> <span class="o">=</span> <span class="n">max_index</span> <span class="o">-</span> <span class="n">min_index</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading </span><span class="si">{}</span><span class="s2"> images for </span><span class="si">{}</span><span class="s2"> dataset.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_images</span><span class="p">,</span>
+                                                                 <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;TRAIN&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;TEST&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;VALIDAT.&quot;</span><span class="p">}[</span><span class="n">dataset_id</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">image_num</span><span class="p">,</span> <span class="n">image_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">min_index</span><span class="p">,</span> <span class="n">max_index</span><span class="p">)):</span>
+                    <span class="n">image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span><span class="p">[</span><span class="n">image_index</span><span class="p">]</span>
+                    <span class="n">image_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__labels</span><span class="p">[</span><span class="n">image_index</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">image_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loaded </span><span class="si">{}</span><span class="s2"> images of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_images</span><span class="p">))</span>
+                    <span class="n">im</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_image_load</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">image_label</span><span class="p">)</span>
+                    <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+                    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loaded all </span><span class="si">{}</span><span class="s2"> images&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;TRAIN&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;TEST&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;VALIDAT.&quot;</span><span class="p">}[</span><span class="n">dataset_id</span><span class="p">]))</span>
+                <span class="n">images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span><span class="p">:</span>
+                    <span class="n">images</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Images shape: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+                <span class="n">images</span> <span class="o">=</span> <span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">images</span> <span class="o">=</span> <span class="n">convert_to_tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span><span class="p">[</span><span class="n">min_index</span><span class="p">:</span><span class="n">max_index</span><span class="p">],</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">convert_to_tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__labels</span><span class="p">[</span><span class="n">min_index</span><span class="p">:</span><span class="n">max_index</span><span class="p">],</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">from_tensor_slices</span><span class="p">((</span><span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">load_all_data</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__parse_image</span><span class="p">)</span>
+
+            <span class="c1"># Create a new dataset with batches of images</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dataset_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__train_dataset</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">elif</span> <span class="n">dataset_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__test_dataset</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__validation_dataset</span> <span class="o">=</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="ThermoDataset.get_train_iterator"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">get_train_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">make_initializable_iterator</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ThermoDataset.get_test_iterator"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_test_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">get_test_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">make_initializable_iterator</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ThermoDataset.get_validation_iterator"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_validation_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">get_validation_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">make_initializable_iterator</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ThermoDataset.print_info"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.print_info">[docs]</a>    <span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Num samples (train/test/val):  </span><span class="si">{}</span><span class="s2"> tot: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;Samples per class: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;Sample type        </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;Sample shape:      </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;Label type         </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;Label shape:       </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;Root dirs:         </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">frac</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__labels</span><span class="p">)))</span> <span class="k">for</span> <span class="n">frac</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_fraction</span><span class="p">],</span>
+                                             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__labels</span><span class="p">),</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__samples_per_class</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">output_types</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">output_shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">output_types</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">output_shapes</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__root_directory_list</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

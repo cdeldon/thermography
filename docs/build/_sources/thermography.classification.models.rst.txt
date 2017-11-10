@@ -1,0 +1,44 @@
+thermography\.classification\.models package
+============================================
+
+.. automodule:: thermography.classification.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Submodules
+----------
+
+thermography\.classification\.models\.base\_net module
+------------------------------------------------------
+
+.. automodule:: thermography.classification.models.base_net
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+thermography\.classification\.models\.operations module
+-------------------------------------------------------
+
+.. automodule:: thermography.classification.models.operations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+thermography\.classification\.models\.thermo\_net module
+--------------------------------------------------------
+
+.. automodule:: thermography.classification.models.thermo_net
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+thermography\.classification\.models\.thermo\_net\_3x3 module
+-------------------------------------------------------------
+
+.. automodule:: thermography.classification.models.thermo_net_3x3
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+

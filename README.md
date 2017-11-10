@@ -5,7 +5,7 @@ Branch|Linux
 Master|[![BuildStatusMaster](https://travis-ci.org/cdeldon/thermography.svg?branch=master)](https://travis-ci.org/cdeldon)
 Devel|[![BuildStatusDev](https://travis-ci.org/cdeldon/thermography.svg?branch=devel)](https://travis-ci.org/cdeldon)
 
-This repository containes the implementation of a feasibility study for automatic detection of defected solar panel modules.
+This repository contains the implementation of a feasibility study for automatic detection of defected solar panel modules.
 The developed framework has been coined _Thermography_ due to the fact that the input data to the system is a sequence of images in the infrared spectrum.
 
 ![Thermography in action](docs/_static/example-view.gif)

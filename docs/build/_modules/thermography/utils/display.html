@@ -1,0 +1,362 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography.utils.display &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../thermography.html">thermography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gui.html">gui</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>thermography.utils.display</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for thermography.utils.display</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;draw_intersections&quot;</span><span class="p">,</span> <span class="s2">&quot;draw_motion&quot;</span><span class="p">,</span> <span class="s2">&quot;draw_rectangles&quot;</span><span class="p">,</span> <span class="s2">&quot;draw_segments&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;random_color&quot;</span><span class="p">,</span> <span class="s2">&quot;color_from_probabilities&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="draw_intersections"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.draw_intersections">[docs]</a><span class="k">def</span> <span class="nf">draw_intersections</span><span class="p">(</span><span class="n">intersections</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">base_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">windows_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws the intersections contained in the first parameter onto the base image passed as second parameter and displays</span>
+<span class="sd">    the image using the third parameter as title.</span>
+
+<span class="sd">    :param intersections: List of intersection coordinates.</span>
+<span class="sd">    :param base_image: Base image over which to render the intersections.</span>
+<span class="sd">    :param windows_name: Title to give to the rendered image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mean_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">mean_color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">mean_color</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">mean_color</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+        <span class="n">mean_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">opposite_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">])</span> <span class="o">-</span> <span class="n">mean_color</span>
+    <span class="k">for</span> <span class="n">intersection</span> <span class="ow">in</span> <span class="n">intersections</span><span class="p">:</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">intersection</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">intersection</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">opposite_color</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_4</span><span class="p">)</span>
+
+    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">windows_name</span><span class="p">,</span> <span class="n">base_image</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="draw_motion"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.draw_motion">[docs]</a><span class="k">def</span> <span class="nf">draw_motion</span><span class="p">(</span><span class="n">flow</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">base_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">windows_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">draw_mean_motion</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">nums</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws the motion flow contained in the first parameter onto the base image passed as second argument and displays</span>
+<span class="sd">    the image using the third argument as title.</span>
+
+<span class="sd">    :param flow: Numpy array of flow computed by the motion estimator.</span>
+<span class="sd">    :param base_image: Base image over which to render the intersection. Note that this image must have the dimensions used for the flow computation.</span>
+<span class="sd">    :param windows_name: Title to give to the rendered image.</span>
+<span class="sd">    :param draw_mean_motion: Boolean flag indicating whether to render also the mean motion estimate.</span>
+<span class="sd">    :param nums: Number of samples in each dimension to be rendered.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">flow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">base_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">base_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_GRAY2BGRA</span><span class="p">)</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">base_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">step_y</span> <span class="o">=</span> <span class="n">h</span> <span class="o">/</span> <span class="n">nums</span>
+        <span class="n">step_x</span> <span class="o">=</span> <span class="n">w</span> <span class="o">/</span> <span class="n">nums</span>
+        <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="n">step_y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span><span class="n">h</span><span class="p">:</span><span class="n">step_y</span><span class="p">,</span> <span class="n">step_x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span><span class="n">w</span><span class="p">:</span><span class="n">step_x</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span> <span class="o">=</span> <span class="n">flow</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="mi">5</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">fx</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">fy</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">lines</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FILLED</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">draw_mean_motion</span><span class="p">:</span>
+            <span class="n">mean_flow_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">fx</span><span class="p">)</span> <span class="o">*</span> <span class="mi">5</span>
+            <span class="n">mean_flow_y</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">fy</span><span class="p">)</span> <span class="o">*</span> <span class="mi">5</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">arrowedLine</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                            <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">mean_flow_x</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">mean_flow_y</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+                            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_4</span><span class="p">)</span>
+
+    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">windows_name</span><span class="p">,</span> <span class="n">base_image</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="draw_segments"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.draw_segments">[docs]</a><span class="k">def</span> <span class="nf">draw_segments</span><span class="p">(</span><span class="n">segments</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">base_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">windows_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">render_indices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                  <span class="n">colors</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws the segments contained in the first parameter onto the base image passed as second parameter and displays</span>
+<span class="sd">    the image using the third parameter as title. The indices associated to the segments are rendered on the image</span>
+<span class="sd">    depending on &#39;render_indices&#39;.</span>
+<span class="sd">    A list of colors can be passed as argument to specify the colors to be used for different segment clusters.</span>
+
+<span class="sd">    :param segments: List of segment clusters.</span>
+<span class="sd">    :param base_image: Base image over which to render the segments.</span>
+<span class="sd">    :param windows_name: Title to give to the rendered image.</span>
+<span class="sd">    :param render_indices: Boolean flag indicating whether to render the segment indices or not.</span>
+<span class="sd">    :param colors: Color list to be used for segment rendering, such that segments belonging to the same cluster are of the same color.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Fix colors for first two clusters, choose the next randomly.</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">247</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">50</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">cluster_number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">segments</span><span class="p">)):</span>
+            <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random_color</span><span class="p">())</span>
+
+    <span class="k">for</span> <span class="n">cluster</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">segments</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">segment_index</span><span class="p">,</span> <span class="n">segment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cluster</span><span class="p">):</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">img</span><span class="o">=</span><span class="n">base_image</span><span class="p">,</span> <span class="n">pt1</span><span class="o">=</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">segment</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">pt2</span><span class="o">=</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">segment</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
+                     <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lineType</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">render_indices</span><span class="p">:</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">segment_index</span><span class="p">),</span> <span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">segment</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_PLAIN</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span>
+                            <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">windows_name</span><span class="p">,</span> <span class="n">base_image</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="draw_rectangles"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.draw_rectangles">[docs]</a><span class="k">def</span> <span class="nf">draw_rectangles</span><span class="p">(</span><span class="n">rectangles</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">base_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">windows_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws the rectangles contained in the first parameter onto the base image passed as second parameter and displays</span>
+<span class="sd">    the image using the third parameter as title.</span>
+
+<span class="sd">    :param rectangles: List of rectangles.</span>
+<span class="sd">    :param base_image: Base image over which to render the rectangles.</span>
+<span class="sd">    :param windows_name: Title to give to the rendered image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mean_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">base_image</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mean_color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">mean_color</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">mean_color</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+        <span class="n">mean_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">opposite_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">])</span> <span class="o">-</span> <span class="n">mean_color</span>
+    <span class="n">opposite_color</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">opposite_color</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">opposite_color</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">opposite_color</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="k">for</span> <span class="n">rectangle</span> <span class="ow">in</span> <span class="n">rectangles</span><span class="p">:</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">rectangle</span><span class="p">]),</span> <span class="kc">True</span><span class="p">,</span> <span class="n">opposite_color</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">fillConvexPoly</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">rectangle</span><span class="p">]),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_4</span><span class="p">)</span>
+
+    <span class="n">cv2</span><span class="o">.</span><span class="n">addWeighted</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">base_image</span><span class="p">)</span>
+
+    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">windows_name</span><span class="p">,</span> <span class="n">base_image</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="random_color"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.random_color">[docs]</a><span class="k">def</span> <span class="nf">random_color</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a random RGB color in [0, 255]^3</span>
+
+<span class="sd">    :return: A randomly generated color defined as a triplet of RGB values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="color_from_probabilities"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.color_from_probabilities">[docs]</a><span class="k">def</span> <span class="nf">color_from_probabilities</span><span class="p">(</span><span class="n">prob</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constructs a color tuple given the probability distribution prob.</span>
+
+<span class="sd">    :param prob: A three dimensional numpy array containing class probabilities.</span>
+<span class="sd">    :return: The color associated to the probability distribution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">prob</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">255.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,688 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography.utils.geometry &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../thermography.html">thermography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gui.html">gui</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>thermography.utils.geometry</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for thermography.utils.geometry</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;angle_diff&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;aspect_ratio&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;area&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;area_between_rectangles&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;line_estimate&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;mean_segment_angle&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;merge_segments&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;point_line_distance&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;rectangle_contains&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;segments_collinear&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;segment_line_intersection&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;segment_min_distance&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;segment_segment_intersection&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;sort_rectangle&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;sort_segments&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="angle"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.angle">[docs]</a><span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="n">pt1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">pt2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the angle (in radiants) between a segment specified by the two points and the x-axis.</span>
+<span class="sd">    Note that this function assumes the input are pixel coordinates, and thus negates the y-difference between the two</span>
+<span class="sd">    points to get a consistent angle with the one seen by the user.</span>
+
+<span class="sd">    :param pt1: First point of the segment.</span>
+<span class="sd">    :param pt2: Second point of the segment.</span>
+<span class="sd">    :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">pt2</span> <span class="o">-</span> <span class="n">pt1</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">diff</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.00001</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">return</span> <span class="n">a</span></div>
+
+
+<div class="viewcode-block" id="angle_diff"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.angle_diff">[docs]</a><span class="k">def</span> <span class="nf">angle_diff</span><span class="p">(</span><span class="n">angle1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">angle2</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the angle difference between the input arguments. The resulting angle difference is in [0, pi * 0.5]</span>
+
+<span class="sd">    :param angle1: First angle expressed in radiants.</span>
+<span class="sd">    :param angle2: Second angle expressed in radiants.</span>
+<span class="sd">    :return: Angle difference between the input parameters. This angle represents the smallest positive angle between the input parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">angle1</span> <span class="o">-</span> <span class="n">angle2</span><span class="p">)</span>
+    <span class="n">d_angle</span> <span class="o">=</span> <span class="n">d_angle</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">if</span> <span class="n">d_angle</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">d_angle</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">d_angle</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="area"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.area">[docs]</a><span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the surface of the polygon defined by the coordinates passed as argument.</span>
+
+<span class="sd">    :param points: List of coordinates defining  the polygon&#39;s vertices.</span>
+<span class="sd">    :return: The surface contained by the polygon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="area_between_rectangles"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.area_between_rectangles">[docs]</a><span class="k">def</span> <span class="nf">area_between_rectangles</span><span class="p">(</span><span class="n">rect1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">rect2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the cumulative surface between the corresponding edges of the two rectangles passed as argument.</span>
+<span class="sd">    ::</span>
+
+<span class="sd">       *--------------------*</span>
+<span class="sd">       |####################|</span>
+<span class="sd">       |###*-------------*##|</span>
+<span class="sd">       |###|             |##|</span>
+<span class="sd">       |###|             |##|</span>
+<span class="sd">       |###|             |##|</span>
+<span class="sd">       |###*-------------*##|</span>
+<span class="sd">       |####################|</span>
+<span class="sd">       *--------------------*</span>
+
+<span class="sd">    :param rect1: First rectangle&#39;s coordinates [[x0,y0],[x1,y1],[x2,y2],[x3,y3]]</span>
+<span class="sd">    :param rect2: Second rectangle&#39;s coordinates [[x&#39;0,y&#39;0],[x&#39;1,y&#39;1],[x&#39;2,y&#39;2],[x&#39;3,y&#39;3]]</span>
+<span class="sd">    :return: The surface between the rectangles&#39; corresponding edges.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">r0</span> <span class="o">=</span> <span class="n">sort_rectangle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">*</span><span class="n">rect1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="o">*</span><span class="n">rect2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">sort_rectangle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">*</span><span class="n">rect1</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="o">*</span><span class="n">rect2</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+    <span class="n">r2</span> <span class="o">=</span> <span class="n">sort_rectangle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">*</span><span class="n">rect1</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="o">*</span><span class="n">rect2</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+    <span class="n">r3</span> <span class="o">=</span> <span class="n">sort_rectangle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rect1</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">rect1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rect2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rect2</span><span class="p">[</span><span class="mi">3</span><span class="p">]]))</span>
+
+    <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span> <span class="o">=</span> <span class="n">area</span><span class="p">(</span><span class="n">r0</span><span class="p">),</span> <span class="n">area</span><span class="p">(</span><span class="n">r1</span><span class="p">),</span> <span class="n">area</span><span class="p">(</span><span class="n">r2</span><span class="p">),</span> <span class="n">area</span><span class="p">(</span><span class="n">r3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a0</span> <span class="o">+</span> <span class="n">a1</span> <span class="o">+</span> <span class="n">a2</span> <span class="o">+</span> <span class="n">a3</span></div>
+
+
+<div class="viewcode-block" id="aspect_ratio"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.aspect_ratio">[docs]</a><span class="k">def</span> <span class="nf">aspect_ratio</span><span class="p">(</span><span class="n">rectangle</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the aspect ratio of a rectangle.</span>
+
+<span class="sd">    The aspect ratio is computed based on the following rectangle.</span>
+<span class="sd">    ::</span>
+
+<span class="sd">         3      s2     2</span>
+<span class="sd">         *-------------*</span>
+<span class="sd">         |             |</span>
+<span class="sd">      s4 |             | s3</span>
+<span class="sd">         |             |</span>
+<span class="sd">         *-------------*</span>
+<span class="sd">         0     s1      1</span>
+
+<span class="sd">    :param rectangle: Rectangle is a numpy array of coordinates ordered as shown in the diagram.</span>
+<span class="sd">    :return: Aspect ratio of the rectangle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">rectangle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rectangle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">s2</span> <span class="o">=</span> <span class="n">rectangle</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">rectangle</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">s3</span> <span class="o">=</span> <span class="n">rectangle</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">rectangle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">s4</span> <span class="o">=</span> <span class="n">rectangle</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">rectangle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">s1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">s2</span><span class="p">)])</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">s3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">s4</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">dx</span> <span class="o">/</span> <span class="n">dy</span></div>
+
+
+<div class="viewcode-block" id="line_estimate"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.line_estimate">[docs]</a><span class="k">def</span> <span class="nf">line_estimate</span><span class="p">(</span><span class="n">seg1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">seg2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the line estimation (regression) using the endpoints of the segments passed as argument.</span>
+<span class="sd">    Depending on the points&#39; distribution, the line estimate is computed in the x-y plane as usual, or on the y-x plane</span>
+<span class="sd">    (i.e. with inverted coordinates).</span>
+
+<span class="sd">    :param seg1: First segment.</span>
+<span class="sd">    :param seg2: Second segment.</span>
+<span class="sd">    :return: The slope and intercept of the estimated line, a boolean indicating whether the slope and intercept refer to a vertical or horizontal polyfit.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">seg1</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="o">*</span><span class="n">seg2</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">seg1</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="o">*</span><span class="n">seg2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]]</span>
+
+    <span class="c1"># Compute vertical polyfit if standard deviation of y coordinates is larger than the one of x coordinates.</span>
+    <span class="n">std_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">std_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="n">vertical</span> <span class="o">=</span> <span class="n">std_y</span> <span class="o">&gt;</span> <span class="n">std_x</span>
+
+    <span class="k">if</span> <span class="n">vertical</span><span class="p">:</span>
+        <span class="p">[</span><span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="p">[</span><span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">),</span> <span class="n">vertical</span></div>
+
+
+<div class="viewcode-block" id="mean_segment_angle"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.mean_segment_angle">[docs]</a><span class="k">def</span> <span class="nf">mean_segment_angle</span><span class="p">(</span><span class="n">segment_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the mean angle of a list of segments.</span>
+
+<span class="sd">    :param segment_list: A list of segments of the form [np.array([x0, y0, x1, y1]), np.array([...]), .... ]</span>
+<span class="sd">    :return: The mean angle of the segments passed as argument. The angle lies in [0, pi]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">complex_coordinates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">segment_list</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">segment</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span>
+
+        <span class="c1"># Compute complex representation of angle.</span>
+        <span class="n">complex_coordinate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">)])</span>
+        <span class="n">complex_coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">complex_coordinate</span><span class="p">)</span>
+
+    <span class="n">mean_coordinate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">complex_coordinates</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">mean_coordinate</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mean_coordinate</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">return</span> <span class="n">a</span></div>
+
+
+<div class="viewcode-block" id="merge_segments"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.merge_segments">[docs]</a><span class="k">def</span> <span class="nf">merge_segments</span><span class="p">(</span><span class="n">segment_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes a unique segments as a representation of the almost collinear segments passed as argument.</span>
+
+<span class="sd">    :param segment_list: List of almost collinear segments to be merged into a single segment.</span>
+<span class="sd">    :return: A new segment defined on the line estimation over the segments passed as argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">segment_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">segment_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">segment_list</span><span class="p">:</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="n">std_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">std_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="n">vertical</span> <span class="o">=</span> <span class="n">std_y</span> <span class="o">&gt;</span> <span class="n">std_x</span>
+
+    <span class="k">if</span> <span class="n">vertical</span><span class="p">:</span>
+        <span class="p">[</span><span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">y0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">y0</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">y1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="p">[</span><span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y0</span> <span class="o">=</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">x0</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">x1</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="point_line_distance"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.point_line_distance">[docs]</a><span class="k">def</span> <span class="nf">point_line_distance</span><span class="p">(</span><span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">slope</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">intercept</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">vertical</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the shortest distance between a point and a line defined by its slope and intercept.</span>
+
+<span class="sd">    :param point: Point given by a 2D coordinate in the form of [x, y]</span>
+<span class="sd">    :param slope: Slope of the line</span>
+<span class="sd">    :param intercept: Intercept of the line</span>
+<span class="sd">    :param vertical: Boolean indicating if the slope and intercept refer to a vertical or horizontal polyfit.</span>
+<span class="sd">    :return: Positive minimal distance between the point passed as argument and the line defined by the slope and intercept passed as arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">vertical</span><span class="p">:</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="o">-</span><span class="n">slope</span> <span class="o">*</span> <span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">intercept</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">slope</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="rectangle_contains"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.rectangle_contains">[docs]</a><span class="k">def</span> <span class="nf">rectangle_contains</span><span class="p">(</span><span class="n">rectangle</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes whether a point is inside a rectangle or not.</span>
+
+<span class="sd">    :param rectangle: Rectangle to be tested against the query point.</span>
+<span class="sd">    :param point: Point to be tested against the rectangle.</span>
+<span class="sd">    :return: True if the point is inside or on the rectangle contours, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">point</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">rectangle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rectangle</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">pointPolygonTest</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="segments_collinear"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.segments_collinear">[docs]</a><span class="k">def</span> <span class="nf">segments_collinear</span><span class="p">(</span><span class="n">seg1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">seg2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">max_angle</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+                       <span class="n">max_endpoint_distance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">50.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tests whether two segments are collinear given some thresholds for collinearity.</span>
+
+<span class="sd">    :param seg1: First segment to be tested.</span>
+<span class="sd">    :param seg2: Second segment to be tested.</span>
+<span class="sd">    :param max_angle: Maximal angle between segments to be accepted as collinear.</span>
+<span class="sd">    :param max_endpoint_distance: Max sum of euclidean distance between the endpoints of the passed segments and the line estimate computed between the segments. This parameter discards almost parallel segments with different intercept.</span>
+<span class="sd">    :return: True if the segments are almost collinear, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Compute the angle between the segments.</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">angle_diff</span><span class="p">(</span><span class="n">angle</span><span class="p">(</span><span class="n">seg1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">seg1</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]),</span> <span class="n">angle</span><span class="p">(</span><span class="n">seg2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">max_angle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">intersection</span> <span class="o">=</span> <span class="n">segment_segment_intersection</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">seg1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">seg2</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">intersection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">),</span> <span class="n">vertical</span> <span class="o">=</span> <span class="n">line_estimate</span><span class="p">(</span><span class="n">seg1</span><span class="p">,</span> <span class="n">seg2</span><span class="p">)</span>
+        <span class="n">dist_sum_2</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="p">[</span><span class="n">seg1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">seg1</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]]:</span>
+            <span class="n">dist_sum_2</span> <span class="o">+=</span> <span class="n">point_line_distance</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">vertical</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">dist_sum_2</span> <span class="o">&gt;=</span> <span class="n">max_endpoint_distance</span> <span class="o">**</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="segment_line_intersection"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.segment_line_intersection">[docs]</a><span class="k">def</span> <span class="nf">segment_line_intersection</span><span class="p">(</span><span class="n">seg</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">slope</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">intercept</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the intersection point between a segment and a line.</span>
+
+<span class="sd">    :param seg: Segment to be intersected with the line.</span>
+<span class="sd">    :param slope: Slope of the intersecting line.</span>
+<span class="sd">    :param intercept: Intercept of the intersecting line.</span>
+<span class="sd">    :return: Coordinates of the intersection point, or False if no intersection point is found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pt1</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">pt2</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">intercept</span><span class="p">])</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">slope</span> <span class="o">+</span> <span class="n">intercept</span><span class="p">])</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+    <span class="n">d1</span> <span class="o">=</span> <span class="n">pt1</span> <span class="o">-</span> <span class="n">x0</span>
+    <span class="n">d2</span> <span class="o">=</span> <span class="n">pt2</span> <span class="o">-</span> <span class="n">x0</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d2</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">d1_proj</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+    <span class="n">d2_proj</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d2</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+
+    <span class="c1"># If segment was perpendicular to line.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">d1_proj</span> <span class="o">==</span> <span class="n">d2_proj</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">d1_proj</span>
+
+    <span class="k">return</span> <span class="n">segment_segment_intersection</span><span class="p">(</span><span class="n">seg</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d1_proj</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">d1_proj</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">d2_proj</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">d2_proj</span><span class="p">[</span><span class="mi">1</span><span class="p">]]))</span></div>
+
+
+<div class="viewcode-block" id="segment_min_distance"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.segment_min_distance">[docs]</a><span class="k">def</span> <span class="nf">segment_min_distance</span><span class="p">(</span><span class="n">seg1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">seg2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the minimal distance between two segments.</span>
+<span class="sd">    Implementation taken form &quot;https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&amp;tab=function&quot;</span>
+
+<span class="sd">    :param seg1: First segment defined as [x1, y1, x2, y2]</span>
+<span class="sd">    :param seg2: Second segment defined as [x2, y3, x4, y4]</span>
+<span class="sd">    :return: The minimal distance between the two segments</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">seg1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">seg1</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">p3</span> <span class="o">=</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">p4</span> <span class="o">=</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+
+    <span class="n">u</span> <span class="o">=</span> <span class="p">(</span><span class="n">p1</span> <span class="o">-</span> <span class="n">p2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">p3</span> <span class="o">-</span> <span class="n">p4</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">p2</span> <span class="o">-</span> <span class="n">p4</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">b</span>
+    <span class="n">sD</span> <span class="o">=</span> <span class="n">D</span>
+    <span class="n">tD</span> <span class="o">=</span> <span class="n">D</span>
+
+    <span class="n">eps</span> <span class="o">=</span> <span class="mf">0.0001</span>
+
+    <span class="k">if</span> <span class="n">D</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>  <span class="c1"># the lines are almost parallel</span>
+        <span class="n">sN</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># force using point P0 on segment S1</span>
+        <span class="n">sD</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># to prevent possible division by 0.0 later</span>
+        <span class="n">tN</span> <span class="o">=</span> <span class="n">e</span>
+        <span class="n">tD</span> <span class="o">=</span> <span class="n">c</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># get the closest points on the infinite lines</span>
+        <span class="n">sN</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">e</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">tN</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">e</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sN</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>  <span class="c1"># sc &lt; 0 = &gt; the s=0 edge is visible</span>
+            <span class="n">sN</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">tN</span> <span class="o">=</span> <span class="n">e</span>
+            <span class="n">tD</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="k">elif</span> <span class="n">sN</span> <span class="o">&gt;</span> <span class="n">sD</span><span class="p">:</span>  <span class="c1"># sc &gt; 1 = &gt; the s = 1 edge is visible</span>
+            <span class="n">sN</span> <span class="o">=</span> <span class="n">sD</span>
+            <span class="n">tN</span> <span class="o">=</span> <span class="n">e</span> <span class="o">+</span> <span class="n">b</span>
+            <span class="n">tD</span> <span class="o">=</span> <span class="n">c</span>
+
+    <span class="k">if</span> <span class="n">tN</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>  <span class="c1"># tc &lt; 0 = &gt; the t=0 edge is visible</span>
+        <span class="n">tN</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c1"># recompute sc for this edge</span>
+        <span class="k">if</span> <span class="o">-</span><span class="n">d</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">sN</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">elif</span> <span class="o">-</span><span class="n">d</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">:</span>
+            <span class="n">sN</span> <span class="o">=</span> <span class="n">sD</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sN</span> <span class="o">=</span> <span class="o">-</span><span class="n">d</span>
+            <span class="n">sD</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="k">elif</span> <span class="n">tN</span> <span class="o">&gt;</span> <span class="n">tD</span><span class="p">:</span>  <span class="c1"># tc &gt; 1 = &gt; the t = 1 edge is visible</span>
+        <span class="n">tN</span> <span class="o">=</span> <span class="n">tD</span>
+        <span class="c1"># recompute sc for this edge</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">-</span><span class="n">d</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">sN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="o">-</span><span class="n">d</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">:</span>
+            <span class="n">sN</span> <span class="o">=</span> <span class="n">sD</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sN</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">d</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+            <span class="n">sD</span> <span class="o">=</span> <span class="n">a</span>
+
+    <span class="c1"># finally do the division to get sc and tc</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sN</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">sN</span> <span class="o">/</span> <span class="n">sD</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">tN</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>
+        <span class="n">tc</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tc</span> <span class="o">=</span> <span class="n">tN</span> <span class="o">/</span> <span class="n">tD</span>
+
+    <span class="c1"># get the difference of the two closest points</span>
+    <span class="n">dP</span> <span class="o">=</span> <span class="n">w</span> <span class="o">+</span> <span class="p">(</span><span class="n">sc</span> <span class="o">*</span> <span class="n">u</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">tc</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>  <span class="c1"># = S1(sc) - S2(tc)</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dP</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">distance</span></div>
+
+
+<div class="viewcode-block" id="segment_segment_intersection"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.segment_segment_intersection">[docs]</a><span class="k">def</span> <span class="nf">segment_segment_intersection</span><span class="p">(</span><span class="n">seg1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">seg2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the intersection point between two segments.</span>
+
+<span class="sd">    :param seg1: First segment of intersection.</span>
+<span class="sd">    :param seg2: Second segment of intersection.</span>
+<span class="sd">    :return: Coordinates of intersection point, or False if no intersection is found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">seg1</span> <span class="o">==</span> <span class="n">seg2</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">s1_x</span> <span class="o">=</span> <span class="n">seg1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">seg1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">s1_y</span> <span class="o">=</span> <span class="n">seg1</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">seg1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">s2_x</span> <span class="o">=</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">s2_y</span> <span class="o">=</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">denom</span> <span class="o">=</span> <span class="o">-</span><span class="n">s2_x</span> <span class="o">*</span> <span class="n">s1_y</span> <span class="o">+</span> <span class="n">s1_x</span> <span class="o">*</span> <span class="n">s2_y</span>
+    <span class="k">if</span> <span class="n">denom</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">s1_y</span> <span class="o">*</span> <span class="p">(</span><span class="n">seg1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">s1_x</span> <span class="o">*</span> <span class="p">(</span><span class="n">seg1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">/</span> <span class="n">denom</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">s2_x</span> <span class="o">*</span> <span class="p">(</span><span class="n">seg1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">s2_y</span> <span class="o">*</span> <span class="p">(</span><span class="n">seg1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">seg2</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">/</span> <span class="n">denom</span>
+
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">seg1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="n">s1_x</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">seg1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="n">s1_y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="sort_rectangle"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.sort_rectangle">[docs]</a><span class="k">def</span> <span class="nf">sort_rectangle</span><span class="p">(</span><span class="n">rectangle</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sorts the coordinates in the rectangle such that the final indexing corresponds to the following structure:</span>
+<span class="sd">    ::</span>
+
+<span class="sd">       +-----------&gt; x</span>
+<span class="sd">       |  3             2</span>
+<span class="sd">       |  *-------------*</span>
+<span class="sd">       |  |             |</span>
+<span class="sd">       v  |             |</span>
+<span class="sd">       y  |             |</span>
+<span class="sd">          *-------------*</span>
+<span class="sd">          0             1</span>
+
+<span class="sd">    :param rectangle: numpy array of coordinates with form: [[x0, y0], [x1, y1], [x2, y2], [x3, y3]]</span>
+<span class="sd">    :return: A rectangle whose vertices are sorted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">rectangle</span> <span class="o">-</span> <span class="n">center</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">diff</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">diff</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rectangle</span><span class="p">[</span><span class="n">order</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="sort_segments"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.sort_segments">[docs]</a><span class="k">def</span> <span class="nf">sort_segments</span><span class="p">(</span><span class="n">segment_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sorts the segments passed as argument based on the normal associated to the mean angle.</span>
+
+<span class="sd">    :param segment_list:  A list of segments of the form [[x0, y0, x1, y1], [...], .... ]</span>
+<span class="sd">    :return: A list of indices in the segment list passed as argument which sorts the segments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Compute the mean angle of the segments in the list.</span>
+    <span class="n">mean_angle</span> <span class="o">=</span> <span class="n">mean_segment_angle</span><span class="p">(</span><span class="n">segment_list</span><span class="p">)</span>
+
+    <span class="c1"># Compute the associated segment centers.</span>
+    <span class="n">segment_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">segment_list</span><span class="p">])</span>
+
+    <span class="c1"># Compute the normal associated to the mean angle.</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">mean_angle</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">mean_angle</span><span class="p">)])</span>
+    <span class="n">normal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">direction</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">direction</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+    <span class="c1"># Project the segment centers along the normal defined by the mean angle.</span>
+    <span class="n">projected_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span> <span class="k">for</span> <span class="n">center</span> <span class="ow">in</span> <span class="n">segment_centers</span><span class="p">])</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">projected_centers</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">order</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
