@@ -29,12 +29,13 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 1
 
-    thermography.classification
-    thermography.detection
-    thermography.io
-    thermography.settings
-    thermography.test
-    thermography.utils
+   thermography.classification
+   thermography.detection
+   thermography.io
+   thermography.settings
+   thermography.test
+   thermography.utils
 
 
