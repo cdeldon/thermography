@@ -1,0 +1,502 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="index.html"/>
+        <link rel="next" title="thermography.classification package" href="thermography.classification.html"/>
+        <link rel="prev" title="Welcome to Thermography’s documentation!" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">thermography</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-thermography.thermo_app">thermography.thermo_app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.io.html">thermography.io package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.settings.html">thermography.settings package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.test.html">thermography.test package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>thermography</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/thermography.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-thermography">
+<span id="thermography"></span><h1>thermography<a class="headerlink" href="#module-thermography" title="Permalink to this headline">¶</a></h1>
+<p>The thermography package implements different computer vision and image progessing algorithms for automatic detection of solar panel modules.</p>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-thermography.module_map">
+<span id="thermography-module-map-module"></span><h2>thermography.module_map module<a class="headerlink" href="#module-thermography.module_map" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="thermography.module_map.ModuleMap">
+<em class="property">class </em><code class="descclassname">thermography.module_map.</code><code class="descname">ModuleMap</code><a class="reference internal" href="_modules/thermography/module_map.html#ModuleMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.module_map.ModuleMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class responsible for storing a spatial representation of the detected modules.
+Each module is keyed by an unique ID Multiple detections of the same module are considered and the existing module is updated in the internal representation of the map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">module_map</span> <span class="o">=</span> <span class="n">ModuleMap</span><span class="p">()</span>
+<span class="n">module_map</span><span class="o">.</span><span class="n">insert</span><span class="p">([</span><span class="n">rect1</span><span class="p">,</span> <span class="n">rect2</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">frame_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">motion_estimate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="c1"># module_map.global_module_map = {0: &lt;..., rect1, frame_id_history=[0]&gt;;</span>
+<span class="c1">#                                 1: &lt;..., rect2, frame_id_history=[0]&gt;,</span>
+<span class="c1">#                                 2: &lt;..., rect3, frame_id_history=[0]&gt;}</span>
+<span class="n">motion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">rect1</span> <span class="o">+=</span> <span class="n">motion</span>
+<span class="n">module_map</span><span class="o">.</span><span class="n">insert</span><span class="p">([</span><span class="n">rect1</span><span class="p">,</span> <span class="n">rect4</span><span class="p">],</span> <span class="n">frame_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">motion_estimate</span><span class="o">=</span><span class="n">motion</span><span class="p">)</span>
+<span class="c1"># module_map.global_module_map = {0: &lt;..., rect1, frame_id_history=[0, 1]&gt;;</span>
+<span class="c1">#                                 1: &lt;..., rect2, frame_id_history=[0]&gt;,</span>
+<span class="c1">#                                 2: &lt;..., rect3, frame_id_history=[0]&gt;,</span>
+<span class="c1">#                                 3: &lt;..., rect4, frame_id_history=[1]&gt;}</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="thermography.module_map.ModuleMap.insert">
+<code class="descname">insert</code><span class="sig-paren">(</span><em>rectangle_list: list</em>, <em>frame_id: int</em>, <em>motion_estimate: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/module_map.html#ModuleMap.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.module_map.ModuleMap.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts all rectangles contained in the list  passed as first parameter into the global map representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rectangle_list</strong> – List of detected rectangles to be inserted into the global module map.</li>
+<li><strong>frame_id</strong> – Frame id of the current image frame associated to the detected rectangles.</li>
+<li><strong>motion_estimate</strong> – Numpy array representing the motion estimate between the last frame (ID-1) and the frame containing the rectangles.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="thermography.module_map.ModuleMap.update_class_belief">
+<code class="descname">update_class_belief</code><span class="sig-paren">(</span><em>probabilities: dict</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/module_map.html#ModuleMap.update_class_belief"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.module_map.ModuleMap.update_class_belief" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the current class probability for the modules being detected in the last step.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>probabilities</strong> – A dictionary keyed by the module ID, whose value is a probability distribution over the classes.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-thermography.thermo_app">
+<span id="thermography-thermo-app-module"></span><h2>thermography.thermo_app module<a class="headerlink" href="#module-thermography.thermo_app" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="thermography.thermo_app.ThermoApp">
+<em class="property">class </em><code class="descclassname">thermography.thermo_app.</code><code class="descname">ThermoApp</code><span class="sig-paren">(</span><em>input_video_path</em>, <em>camera_param_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Application implementing the routines for module detections and analysis under the form of an object.</p>
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.classify_detected_modules">
+<code class="descname">classify_detected_modules</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.classify_detected_modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.classify_detected_modules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classifies the modules in the global module map which have been detected in the current frame. This function
+must be called after inserting the modules in the global module map!</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.cluster_segments">
+<code class="descname">cluster_segments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.cluster_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.cluster_segments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.create_classes_image">
+<code class="descname">create_classes_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.create_classes_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.create_classes_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.create_module_list">
+<code class="descname">create_module_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.create_module_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.create_module_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.create_module_map_image">
+<code class="descname">create_module_map_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.create_module_map_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.create_module_map_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.create_rectangle_image">
+<code class="descname">create_rectangle_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.create_rectangle_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.create_rectangle_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.create_segment_image">
+<code class="descname">create_segment_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.create_segment_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.create_segment_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.detect_edges">
+<code class="descname">detect_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_edges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.detect_intersections">
+<code class="descname">detect_intersections</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_intersections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_intersections" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.detect_rectangles">
+<code class="descname">detect_rectangles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_rectangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_rectangles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.detect_segments">
+<code class="descname">detect_segments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_segments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.thermo_app.ThermoApp.frames">
+<code class="descname">frames</code><a class="headerlink" href="#thermography.thermo_app.ThermoApp.frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.load_video">
+<code class="descname">load_video</code><span class="sig-paren">(</span><em>start_frame: int</em>, <em>end_frame: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.load_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.load_video" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the video associated with the absolute path given to the constructor between the frames indicated as argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start_frame</strong> – Starting frame (inclusive)</li>
+<li><strong>end_frame</strong> – Termination frame (exclusive), is set to None, the entire video will be loaded.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.preprocess_frame">
+<code class="descname">preprocess_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.preprocess_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.preprocess_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.thermo_app.ThermoApp.step">
+<code class="descname">step</code><span class="sig-paren">(</span><em>frame_id</em>, <em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="thermography.classification.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="thermography.classification.dataset.html">thermography.classification.dataset package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.dataset.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.dataset.html#module-thermography.classification.dataset.create_directory_list">thermography.classification.dataset.create_directory_list module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.dataset.html#module-thermography.classification.dataset.thermo_class">thermography.classification.dataset.thermo_class module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.dataset.html#module-thermography.classification.dataset.thermo_dataset">thermography.classification.dataset.thermo_dataset module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.classification.models.html">thermography.classification.models package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.models.html#module-thermography.classification.models.base_net">thermography.classification.models.base_net module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.models.html#module-thermography.classification.models.operations">thermography.classification.models.operations module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.models.html#module-thermography.classification.models.thermo_net">thermography.classification.models.thermo_net module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.models.html#module-thermography.classification.models.thermo_net_3x3">thermography.classification.models.thermo_net_3x3 module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.classification.utils.html">thermography.classification.utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thermography.classification.utils.html#module-thermography.classification.utils.kernel_summaries">thermography.classification.utils.kernel_summaries module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.classification.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.classification.html#module-thermography.classification.inference">thermography.classification.inference module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="thermography.detection.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.detection.html#module-thermography.detection.edge_detection">thermography.detection.edge_detection module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.detection.html#module-thermography.detection.intersection_detection">thermography.detection.intersection_detection module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.detection.html#module-thermography.detection.motion_detection">thermography.detection.motion_detection module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.detection.html#module-thermography.detection.preprocessing">thermography.detection.preprocessing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.detection.html#module-thermography.detection.rectangle_detection">thermography.detection.rectangle_detection module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.detection.html#module-thermography.detection.segment_clustering">thermography.detection.segment_clustering module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.detection.html#module-thermography.detection.segment_detection">thermography.detection.segment_detection module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thermography.io.html">thermography.io package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="thermography.io.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.io.html#module-thermography.io.io">thermography.io.io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.io.html#module-thermography.io.logger">thermography.io.logger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.io.html#module-thermography.io.modes">thermography.io.modes module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thermography.settings.html">thermography.settings package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="thermography.settings.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.settings.html#module-thermography.settings.camera">thermography.settings.camera module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thermography.test.html">thermography.test package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="thermography.test.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.test.html#module-thermography.test.test_ID">thermography.test.test_ID module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.test.html#module-thermography.test.test_geometry">thermography.test.test_geometry module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.test.html#module-thermography.test.test_images">thermography.test.test_images module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="thermography.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.utils.html#module-thermography.utils.ID">thermography.utils.ID module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.utils.html#module-thermography.utils.display">thermography.utils.display module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.utils.html#module-thermography.utils.geometry">thermography.utils.geometry module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.utils.html#module-thermography.utils.images">thermography.utils.images module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="thermography.classification.html" class="btn btn-neutral float-right" title="thermography.classification package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to Thermography’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

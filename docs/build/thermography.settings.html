@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography.settings package &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="index.html"/>
+        <link rel="up" title="thermography package" href="thermography.html"/>
+        <link rel="next" title="thermography.test package" href="thermography.test.html"/>
+        <link rel="prev" title="thermography.io package" href="thermography.io.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="thermography.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.io.html">thermography.io package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">thermography.settings package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.test.html">thermography.test package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="thermography.html">thermography package</a> &raquo;</li>
+        
+      <li>thermography.settings package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/thermography.settings.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-thermography.settings">
+<span id="thermography-settings-package"></span><h1>thermography.settings package<a class="headerlink" href="#module-thermography.settings" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="thermography.settings.Camera">
+<em class="property">class </em><code class="descclassname">thermography.settings.</code><code class="descname">Camera</code><span class="sig-paren">(</span><em>camera_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/settings/camera.html#Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.Camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="thermography.settings.Camera.camera_matrix">
+<code class="descname">camera_matrix</code><a class="headerlink" href="#thermography.settings.Camera.camera_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.Camera.camera_path">
+<code class="descname">camera_path</code><a class="headerlink" href="#thermography.settings.Camera.camera_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.Camera.distortion_coeff">
+<code class="descname">distortion_coeff</code><a class="headerlink" href="#thermography.settings.Camera.distortion_coeff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.Camera.focal_length">
+<code class="descname">focal_length</code><a class="headerlink" href="#thermography.settings.Camera.focal_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.Camera.image_size">
+<code class="descname">image_size</code><a class="headerlink" href="#thermography.settings.Camera.image_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.Camera.principal_point">
+<code class="descname">principal_point</code><a class="headerlink" href="#thermography.settings.Camera.principal_point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.Camera.r1">
+<code class="descname">r1</code><a class="headerlink" href="#thermography.settings.Camera.r1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.Camera.r2">
+<code class="descname">r2</code><a class="headerlink" href="#thermography.settings.Camera.r2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.Camera.r3">
+<code class="descname">r3</code><a class="headerlink" href="#thermography.settings.Camera.r3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.Camera.t1">
+<code class="descname">t1</code><a class="headerlink" href="#thermography.settings.Camera.t1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.Camera.t2">
+<code class="descname">t2</code><a class="headerlink" href="#thermography.settings.Camera.t2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.settings.get_data_dir">
+<code class="descclassname">thermography.settings.</code><code class="descname">get_data_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_data_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_data_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the absolute path to the data directory.
+:return: Absolute path to the data directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.settings.get_log_dir">
+<code class="descclassname">thermography.settings.</code><code class="descname">get_log_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_log_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_log_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the absolute path to the log directory.
+:return: Absolute path to the log directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.settings.get_settings_dir">
+<code class="descclassname">thermography.settings.</code><code class="descname">get_settings_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_settings_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_settings_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the absolute path to the settings directory, i.e. the directory containing this file.
+:return: Absolute path to the settings directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.settings.get_thermography_root_dir">
+<code class="descclassname">thermography.settings.</code><code class="descname">get_thermography_root_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_thermography_root_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_thermography_root_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the absolute path to the root directory of the thermography project,
+i.e. the parent directory of the settings directory.
+:return: Absolute path to the project root directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.settings.get_test_dir">
+<code class="descclassname">thermography.settings.</code><code class="descname">get_test_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_test_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_test_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the absolute path to the test directory.
+:return: Absolute path to the rest directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.settings.set_data_dir">
+<code class="descclassname">thermography.settings.</code><code class="descname">set_data_dir</code><span class="sig-paren">(</span><em>data_dir: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/settings.html#set_data_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.set_data_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the data directory.
+:param data_dir: Absolute path to the data directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.settings.get_resources_dir">
+<code class="descclassname">thermography.settings.</code><code class="descname">get_resources_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_resources_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_resources_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the absolute path to the resources directory.
+:return: Absolute path to the resources directory.</p>
+</dd></dl>
+
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-thermography.settings.camera">
+<span id="thermography-settings-camera-module"></span><h2>thermography.settings.camera module<a class="headerlink" href="#module-thermography.settings.camera" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="thermography.settings.camera.Camera">
+<em class="property">class </em><code class="descclassname">thermography.settings.camera.</code><code class="descname">Camera</code><span class="sig-paren">(</span><em>camera_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/settings/camera.html#Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.camera.Camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.camera_matrix">
+<code class="descname">camera_matrix</code><a class="headerlink" href="#thermography.settings.camera.Camera.camera_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.camera_path">
+<code class="descname">camera_path</code><a class="headerlink" href="#thermography.settings.camera.Camera.camera_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.distortion_coeff">
+<code class="descname">distortion_coeff</code><a class="headerlink" href="#thermography.settings.camera.Camera.distortion_coeff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.focal_length">
+<code class="descname">focal_length</code><a class="headerlink" href="#thermography.settings.camera.Camera.focal_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.image_size">
+<code class="descname">image_size</code><a class="headerlink" href="#thermography.settings.camera.Camera.image_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.principal_point">
+<code class="descname">principal_point</code><a class="headerlink" href="#thermography.settings.camera.Camera.principal_point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.r1">
+<code class="descname">r1</code><a class="headerlink" href="#thermography.settings.camera.Camera.r1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.r2">
+<code class="descname">r2</code><a class="headerlink" href="#thermography.settings.camera.Camera.r2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.r3">
+<code class="descname">r3</code><a class="headerlink" href="#thermography.settings.camera.Camera.r3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.t1">
+<code class="descname">t1</code><a class="headerlink" href="#thermography.settings.camera.Camera.t1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.settings.camera.Camera.t2">
+<code class="descname">t2</code><a class="headerlink" href="#thermography.settings.camera.Camera.t2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="thermography.test.html" class="btn btn-neutral float-right" title="thermography.test package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="thermography.io.html" class="btn btn-neutral" title="thermography.io package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

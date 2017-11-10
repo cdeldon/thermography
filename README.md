@@ -1,13 +1,11 @@
-<div align="center">
-  <img src="https://github.com/cdeldon/thermography/blob/master/docs/_static/logo.png?raw=true"><br><br>
-</div>
+![](https://github.com/cdeldon/thermography/blob/master/docs/_static/logo.png?raw=true "Thermography Logo")
 
-|  Branch |                                                     Linux                                                      |
-|:-------:|:--------------------------------------------------------------------------------------------------------------:|
-|  Master | [![Build Status](https://travis-ci.org/cdeldon/thermography.svg?branch=master)](https://travis-ci.org/cdeldon) |
-|  Devel  | [![Build Status](https://travis-ci.org/cdeldon/thermography.svg?branch=devel)](https://travis-ci.org/cdeldon)  |
+Branch|Linux
+:----:|:----:
+Master|[![BuildStatusMaster](https://travis-ci.org/cdeldon/thermography.svg?branch=master)](https://travis-ci.org/cdeldon)
+Devel|[![BuildStatusDev](https://travis-ci.org/cdeldon/thermography.svg?branch=devel)](https://travis-ci.org/cdeldon)
 
-This repository containes the implementation of a feasibility study for automatic detection of defected solar panel modules.
+This repository contains the implementation of a feasibility study for automatic detection of defected solar panel modules.
 The developed framework has been coined _Thermography_ due to the fact that the input data to the system is a sequence of images in the infrared spectrum.
 
 ![Thermography in action](docs/_static/example-view.gif)
@@ -52,20 +50,21 @@ The executables with a graphical interface offer the following tools and visuali
 The GUI presents different views of the processed input video, in particular the following views are available:
 
 
-![Attention Image](./docs/_static/attention_image.PNG?raw=true "Attention image") |  ![EdgeImage](./docs/_static/edge_image.PNG?raw=true "Edge image")
-:--------------------------------------------------------------------------------:|:------------------------------------------------------------------:
-Attention image                                                                   | Edge image
+Attention image|Edge image
+:---:|:---:
+![AtteImage](./docs/_static/attention_image.PNG?raw=true "Attention image")|![EdgeImage](./docs/_static/edge_image.PNG?raw=true "Edge image")
 
-![SegmentImage](./docs/_static/segments_image.PNG?raw=true "Segment Image") | ![RectangleImage](./docs/_static/rectangle_image.PNG?raw=true "Rectangle Image")
-:--------------------------------------------------------------------------:|:--------------------------------------------------------------------------------:
-Segment image                                                               | Rectangle image
+Segment image|Rectangle image
+:---:|:---:
+![SegmImage](./docs/_static/segments_image.PNG?raw=true "Segment Image")|![RectImage](./docs/_static/rectangle_image.PNG?raw=true "Rectangle Image")
+
 
 
 The lateral toolbar offers runtime parameter tuning with immediate application:
 
-![VideoTab](./docs/_static/video_tab.PNG?raw=true "Video tab") | ![PreprocessingTab](./docs/_static/preprocessing_tab.PNG?raw=true "Preprocessing Tab") | ![SegmentsTab](./docs/_static/segments_tab.PNG?raw=true "Segments Tab") | ![ModulesTab](./docs/_static/modules_tab.PNG?raw=true "Modules Tab")
-:-------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------:|:-------------------------------------------------------------------:
-Video tab                                                      | Preprocessing tab                                                                      | Segments tab                                                            | Modules tab
+Video tab|Prepr. tab|Segment tab|Modules tab
+:---:|:---:|:---:|:---:
+![VideoTab](./docs/_static/video_tab.PNG?raw=true "Video tab")|![PreprTab](./docs/_static/preprocessing_tab.PNG?raw=true "Preprocessing Tab")|![SegmeTab](./docs/_static/segments_tab.PNG?raw=true "Segments Tab")|![ModulTab](./docs/_static/modules_tab.PNG?raw=true "Modules Tab")
 
 ##### Training and restoring
 Executables for training and restoring a learning system are offered with the _Thermography_ framework.
@@ -90,3 +89,4 @@ $ python main_test.py
 
 ### Documentation
 The documentation of the code is available [here](https://cdeldon.github.io/thermography/html/html/index.html).
+

@@ -1,0 +1,41 @@
+@import url("theme.css");
+
+a.icon-home {
+    color: #ffffff !important;
+}
+div.version {
+    color: #ededed !important;
+}
+
+.wy-side-nav-search {
+    background: #d67500;
+}
+
+.wy-nav-shift {
+    background: #adadad;
+}
+
+a {
+    color: #ffa300;
+}
+
+a:visited {
+    color: #d66500;
+}
+
+a:hover {
+    color: #d66500;
+}
+
+.rst-content dl:not(.docutils) dt {
+    background: #f9f6e6;
+    color: #d66500;
+    border-top: solid 3px #dea56a;
+}
+
+.rst-content .viewcode-link, .rst-content .viewcode-back {
+    display: inline-block;
+    color: #d61919;
+    font-size: 80%;
+    padding-left: 24px
+}

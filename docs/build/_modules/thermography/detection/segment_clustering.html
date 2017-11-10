@@ -1,0 +1,436 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography.detection.segment_clustering &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../thermography.html">thermography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gui.html">gui</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>thermography.detection.segment_clustering</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for thermography.detection.segment_clustering</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">simple_logger</span> <span class="k">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="k">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span> <span class="nn">sklearn.mixture</span> <span class="k">import</span> <span class="n">GaussianMixture</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">normalize</span>
+
+<span class="kn">import</span> <span class="nn">thermography</span> <span class="k">as</span> <span class="nn">tg</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SegmentClusterer&quot;</span><span class="p">,</span> <span class="s2">&quot;SegmentClustererParams&quot;</span><span class="p">,</span> <span class="s2">&quot;ClusterCleaningParams&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="SegmentClustererParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClustererParams">[docs]</a><span class="k">class</span> <span class="nc">SegmentClustererParams</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#  Number of initializations to be performed when clustering.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_init</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="c1"># Number of clusters to extract from the parameter space.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_clusters</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="c1"># Boolean flag, if set to &#39;True&#39; and &#39;cluster_type&#39; is &#39;gmm&#39;, then the algorithm iterates the clustering</span>
+        <span class="c1"># procedure over a range of number of clusters from 1 to &#39;num_clusters&#39; and retains the best result.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swipe_clusters</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># Clustering algorithm to be used, must be in [&#39;gmm&#39;, &#39;knn&#39;] which correspond to a full gaussian mixture model,</span>
+        <span class="c1"># and k-nearest-neighbors respectively.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_type</span> <span class="o">=</span> <span class="s2">&quot;gmm&quot;</span>
+        <span class="c1"># Boolean flag indicating whether to consider angles in the clustering process.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_angles</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># Boolean flag indicating whether to consider segment centroids in the clustering process.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_centers</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="ClusterCleaningParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.ClusterCleaningParams">[docs]</a><span class="k">class</span> <span class="nc">ClusterCleaningParams</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Maximal allowed angle between each segment and corresponding cluster mean angle.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_angle_variation_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="mi">20</span>
+        <span class="c1"># Maximal allowed angle between two segments in order to merge them into a single one.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_merging_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="mi">10</span>
+        <span class="c1"># Maximal summed distance between segments endpoints and fitted line for merging segments.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_endpoint_distance</span> <span class="o">=</span> <span class="mf">10.0</span></div>
+
+
+<div class="viewcode-block" id="SegmentClusterer"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer">[docs]</a><span class="k">class</span> <span class="nc">SegmentClusterer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_segments</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SegmentClustererParams</span> <span class="o">=</span> <span class="n">SegmentClustererParams</span><span class="p">()):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_segments</span> <span class="o">=</span> <span class="n">input_segments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_features</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="SegmentClusterer.cluster_segments"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer.cluster_segments">[docs]</a>    <span class="k">def</span> <span class="nf">cluster_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clusters the input segments based on the parameters passed as argument. The features that can be used to cluster</span>
+<span class="sd">        the segments are their mean coordinates, and their angle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Clustering segments&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">cluster_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;gmm&quot;</span><span class="p">,</span> <span class="s2">&quot;knn&quot;</span><span class="p">]:</span>
+            <span class="n">Logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s2">&quot;Invalid value for cluster type: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">cluster_type</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid value for &#39;cluster_type&#39;: </span><span class="si">{}</span><span class="s2"> &quot;</span>
+                             <span class="s2">&quot;&#39;cluster_type&#39; should be in [&#39;gmm&#39;, &#39;knn&#39;]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">cluster_type</span><span class="p">))</span>
+
+        <span class="n">centers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_segments</span><span class="p">:</span>
+            <span class="n">pt1</span> <span class="o">=</span> <span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">pt2</span> <span class="o">=</span> <span class="n">segment</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">pt1</span> <span class="o">+</span> <span class="n">pt2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="n">centers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+
+            <span class="c1"># Segment angle lies in [0, pi], multiply by 2 such that complex number associated to similar angles are</span>
+            <span class="c1"># close on the complex plane (e.g. 180° and 0°)</span>
+            <span class="n">angle</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">pt1</span><span class="p">,</span> <span class="n">pt2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+
+            <span class="c1"># Need to use complex representation as Euclidean distance used in clustering makes sense in complex plane,</span>
+            <span class="c1"># and does not directly on angles.</span>
+            <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)])</span>
+            <span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+
+        <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">centers</span><span class="p">)</span>
+        <span class="n">centers</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">use_angles</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">use_centers</span><span class="p">:</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">angles</span><span class="p">,</span> <span class="n">centers</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">use_angles</span><span class="p">:</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">angles</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">use_centers</span><span class="p">:</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">centers</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can not perform segment clustering without any feature. &quot;</span>
+                               <span class="s2">&quot;Select &#39;use_angles=True&#39; and/or &#39;use_centers=True&#39;.&quot;</span><span class="p">)</span>
+
+        <span class="n">cluster_prediction</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">cluster_type</span> <span class="ow">is</span> <span class="s2">&quot;knn&quot;</span><span class="p">:</span>
+            <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Clustering segments using KNN&quot;</span><span class="p">)</span>
+            <span class="n">cluster_prediction</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_init</span><span class="p">,</span>
+                                        <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">cluster_type</span> <span class="ow">is</span> <span class="s2">&quot;gmm&quot;</span><span class="p">:</span>
+            <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Clustering segments using GMM&quot;</span><span class="p">)</span>
+            <span class="n">best_gmm</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">lowest_bic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">infty</span>
+            <span class="n">bic</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">n_components_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_clusters</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">swipe_clusters</span><span class="p">:</span>
+                <span class="n">n_components_range</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">n_components</span> <span class="ow">in</span> <span class="n">n_components_range</span><span class="p">:</span>
+                <span class="c1"># Fit a Gaussian mixture with EM.</span>
+                <span class="n">gmm</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> <span class="n">covariance_type</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">)</span>
+                <span class="n">gmm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+                <span class="n">bic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gmm</span><span class="o">.</span><span class="n">bic</span><span class="p">(</span><span class="n">features</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">bic</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lowest_bic</span><span class="p">:</span>
+                    <span class="n">lowest_bic</span> <span class="o">=</span> <span class="n">bic</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">best_gmm</span> <span class="o">=</span> <span class="n">gmm</span>
+
+            <span class="n">cluster_prediction</span> <span class="o">=</span> <span class="n">best_gmm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+        <span class="c1"># Reorder the segments as clusters.</span>
+        <span class="n">cluster_segment_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cluster_feature_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">num_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">cluster_prediction</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_labels</span><span class="p">):</span>
+            <span class="n">cluster_segments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_segments</span><span class="p">[</span><span class="n">cluster_prediction</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster_segments</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">cluster_features</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">cluster_prediction</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span>
+            <span class="n">cluster_segment_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cluster_segments</span><span class="p">)</span>
+            <span class="n">cluster_feature_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cluster_features</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span> <span class="o">=</span> <span class="n">cluster_segment_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_features</span> <span class="o">=</span> <span class="n">cluster_feature_list</span></div>
+
+<div class="viewcode-block" id="SegmentClusterer.compute_cluster_mean"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer.compute_cluster_mean">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cluster_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the mean values (coordinates and angles) for each one of the identified clusters.</span>
+
+<span class="sd">        :return: The mean angles, and mean coordinates of each cluster.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mean_centers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mean_angles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">:</span>
+            <span class="n">centers</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">cluster</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">cluster</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+
+            <span class="n">mean_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">mean_centers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean_center</span><span class="p">)</span>
+
+            <span class="n">mean_angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tg</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">mean_segment_angle</span><span class="p">(</span><span class="n">cluster</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mean_angles</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mean_centers</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SegmentClusterer.clean_clusters_angle"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer.clean_clusters_angle">[docs]</a>    <span class="k">def</span> <span class="nf">clean_clusters_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean_angles</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">max_angle_variation_mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes all segments whose angle deviates more than the passed parameter from the mean cluster angle.</span>
+
+<span class="sd">        :param mean_angles: List of cluster means.</span>
+<span class="sd">        :param max_angle_variation_mean: Maximal angle variation to allow between the cluster segments and the associated mean angle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cluster_index</span><span class="p">,</span> <span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">mean_angle</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">,</span> <span class="n">mean_angles</span><span class="p">)):</span>
+            <span class="n">invalid_indices</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">segment_index</span><span class="p">,</span> <span class="n">segment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cluster</span><span class="p">):</span>
+                <span class="c1"># Retrieve angle in [0, pi] of current segment.</span>
+                <span class="n">angle</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">segment</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+                <span class="c1"># Compute angle difference between current segment and mean angle of cluster.</span>
+                <span class="n">d_angle</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">angle_diff</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">mean_angle</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">d_angle</span> <span class="o">&gt;</span> <span class="n">max_angle_variation_mean</span><span class="p">:</span>
+                    <span class="n">invalid_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment_index</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">invalid_indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SegmentClusterer.merge_collinear_segments"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer.merge_collinear_segments">[docs]</a>    <span class="k">def</span> <span class="nf">merge_collinear_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_merging_angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_endpoint_distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Merges all collinear segments belonging to the same cluster.</span>
+
+<span class="sd">        :param max_merging_angle: Maximal angle to allow between segments to be merged.</span>
+<span class="sd">        :param max_endpoint_distance: Maximal summed distance between segments endpoints and fitted line for merging segments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cluster_index</span><span class="p">,</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">):</span>
+            <span class="n">merged</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">merged_segments</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">segment_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cluster</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">merged</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">collinears</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster</span><span class="p">)):</span>
+                    <span class="n">segment_j</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">tg</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">segments_collinear</span><span class="p">(</span><span class="n">segment_i</span><span class="p">,</span> <span class="n">segment_j</span><span class="p">,</span> <span class="n">max_angle</span><span class="o">=</span><span class="n">max_merging_angle</span><span class="p">,</span>
+                                                   <span class="n">max_endpoint_distance</span><span class="o">=</span><span class="n">max_endpoint_distance</span><span class="p">):</span>
+                        <span class="n">collinears</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+                <span class="n">merged_segment</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">merge_segments</span><span class="p">(</span><span class="n">cluster</span><span class="p">[</span><span class="n">collinears</span><span class="p">])</span>
+                <span class="n">merged_segment</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">merged_segment</span><span class="p">]</span>
+                <span class="n">merged_segments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">merged_segment</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">collinears</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">merged</span><span class="p">:</span>
+                        <span class="n">merged</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">merged_segments</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SegmentClusterer.clean_clusters"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer.clean_clusters">[docs]</a>    <span class="k">def</span> <span class="nf">clean_clusters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean_angles</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">ClusterCleaningParams</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging</span>
+<span class="sd">        almost collinear segments into a single segment.</span>
+
+<span class="sd">        :param mean_angles: List of mean angles computed for each cluster.</span>
+<span class="sd">        :param params: Parameters used to clean the clusters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Reorder the segments inside the clusters.</span>
+        <span class="k">for</span> <span class="n">cluster_index</span><span class="p">,</span> <span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_features</span><span class="p">)):</span>
+            <span class="n">cluster_order</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sort_segments</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">[</span><span class="n">cluster_order</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cluster_features</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">cluster_order</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_clusters_angle</span><span class="p">(</span><span class="n">mean_angles</span><span class="o">=</span><span class="n">mean_angles</span><span class="p">,</span> <span class="n">max_angle_variation_mean</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">max_angle_variation_mean</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">merge_collinear_segments</span><span class="p">(</span><span class="n">max_merging_angle</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">max_merging_angle</span><span class="p">,</span>
+                                      <span class="n">max_endpoint_distance</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">max_endpoint_distance</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

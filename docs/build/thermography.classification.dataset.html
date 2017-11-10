@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography.classification.dataset package &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="index.html"/>
+        <link rel="up" title="thermography.classification package" href="thermography.classification.html"/>
+        <link rel="next" title="thermography.classification.models package" href="thermography.classification.models.html"/>
+        <link rel="prev" title="thermography.classification package" href="thermography.classification.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="thermography.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.io.html">thermography.io package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.settings.html">thermography.settings package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.test.html">thermography.test package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="thermography.html">thermography package</a> &raquo;</li>
+        
+          <li><a href="thermography.classification.html">thermography.classification package</a> &raquo;</li>
+        
+      <li>thermography.classification.dataset package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/thermography.classification.dataset.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-thermography.classification.dataset">
+<span id="thermography-classification-dataset-package"></span><h1>thermography.classification.dataset package<a class="headerlink" href="#module-thermography.classification.dataset" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-thermography.classification.dataset.create_directory_list">
+<span id="thermography-classification-dataset-create-directory-list-module"></span><h2>thermography.classification.dataset.create_directory_list module<a class="headerlink" href="#module-thermography.classification.dataset.create_directory_list" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="thermography.classification.dataset.create_directory_list.create_directory_list">
+<code class="descclassname">thermography.classification.dataset.create_directory_list.</code><code class="descname">create_directory_list</code><span class="sig-paren">(</span><em>root_dir: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/create_directory_list.html#create_directory_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.create_directory_list.create_directory_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a list of directories for dataset loading.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>root_dir</strong> – Absolute path to the root directory of the dataset.</td>
+</tr>
+</tbody>
+</table>
+<p>The dataset root directory must be of the following form:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">root_dir</span>
+<span class="o">|</span><span class="n">__video1</span>
+<span class="o">|</span>    <span class="o">|</span><span class="n">__0</span><span class="o">-</span><span class="mi">1000</span>
+<span class="o">|</span>    <span class="o">|</span><span class="n">__1000_2000</span>
+<span class="o">|</span><span class="n">__video2</span>
+<span class="o">|</span>    <span class="o">|</span><span class="n">__0</span><span class="o">-</span><span class="mi">500</span>
+<span class="o">|</span>    <span class="o">|</span><span class="n">__500</span><span class="o">-</span><span class="mi">1000</span>
+<span class="o">|</span>    <span class="o">|</span><span class="n">__1000</span><span class="o">-</span><span class="mi">1200</span>
+<span class="o">|</span><span class="n">__video3</span>
+     <span class="o">|</span><span class="n">__0</span><span class="o">-</span><span class="mi">1000</span>
+</pre></div>
+</div>
+<p>and each folder ‘xxxx-yyyy’ must contain three directories associated to the classes of the dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of absolute paths to the class directories containing the dataset images.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-thermography.classification.dataset.thermo_class">
+<span id="thermography-classification-dataset-thermo-class-module"></span><h2>thermography.classification.dataset.thermo_class module<a class="headerlink" href="#module-thermography.classification.dataset.thermo_class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="thermography.classification.dataset.thermo_class.ThermoClass">
+<em class="property">class </em><code class="descclassname">thermography.classification.dataset.thermo_class.</code><code class="descname">ThermoClass</code><span class="sig-paren">(</span><em>class_name: str</em>, <em>class_value: int</em>, <em>class_folder: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_class.html#ThermoClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_class.ThermoClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-thermography.classification.dataset.thermo_dataset">
+<span id="thermography-classification-dataset-thermo-dataset-module"></span><h2>thermography.classification.dataset.thermo_dataset module<a class="headerlink" href="#module-thermography.classification.dataset.thermo_dataset" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset">
+<em class="property">class </em><code class="descclassname">thermography.classification.dataset.thermo_dataset.</code><code class="descname">ThermoDataset</code><span class="sig-paren">(</span><em>img_shape: numpy.ndarray</em>, <em>batch_size: int = 32</em>, <em>balance_data: bool = True</em>, <em>normalize_images: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.data_size">
+<code class="descname">data_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.dataset_from_id">
+<code class="descname">dataset_from_id</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.dataset_from_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.dataset_from_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.get_test_iterator">
+<code class="descname">get_test_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.get_test_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_test_iterator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator">
+<code class="descname">get_train_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.get_train_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.get_validation_iterator">
+<code class="descname">get_validation_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.get_validation_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_validation_iterator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.image_shape">
+<code class="descname">image_shape</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.image_shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.load_dataset">
+<code class="descname">load_dataset</code><span class="sig-paren">(</span><em>root_directory_list: list, class_list: typing.List[thermography.classification.dataset.thermo_class.ThermoClass], load_all_data: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.load_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.load_dataset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.print_info">
+<code class="descname">print_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.print_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.print_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.rgb">
+<code class="descname">rgb</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.rgb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.root_directory_list">
+<code class="descname">root_directory_list</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.root_directory_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.set_train_test_validation_fraction">
+<code class="descname">set_train_test_validation_fraction</code><span class="sig-paren">(</span><em>train_fraction</em>, <em>test_fraction</em>, <em>validation_fraction</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.set_train_test_validation_fraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.set_train_test_validation_fraction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.split_fraction">
+<code class="descname">split_fraction</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.split_fraction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.test">
+<code class="descname">test</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.test_size">
+<code class="descname">test_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.test_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.thermo_class_list">
+<code class="descname">thermo_class_list</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.thermo_class_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.train">
+<code class="descname">train</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.train" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.train_size">
+<code class="descname">train_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.train_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.validation">
+<code class="descname">validation</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.validation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.validation_size">
+<code class="descname">validation_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.validation_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="thermography.classification.models.html" class="btn btn-neutral float-right" title="thermography.classification.models package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="thermography.classification.html" class="btn btn-neutral" title="thermography.classification package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

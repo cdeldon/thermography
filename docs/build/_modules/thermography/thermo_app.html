@@ -1,0 +1,577 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography.thermo_app &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../thermography.html">thermography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gui.html">gui</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>thermography.thermo_app</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for thermography.thermo_app</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">simple_logger</span> <span class="k">import</span> <span class="n">Logger</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ModuleMap</span>
+<span class="kn">from</span> <span class="nn">.classification</span> <span class="k">import</span> <span class="n">Inference</span>
+<span class="kn">from</span> <span class="nn">.classification.models</span> <span class="k">import</span> <span class="n">ThermoNet3x3</span>
+<span class="kn">from</span> <span class="nn">.detection</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.io</span> <span class="k">import</span> <span class="n">VideoLoader</span>
+<span class="kn">from</span> <span class="nn">.settings</span> <span class="k">import</span> <span class="n">Camera</span><span class="p">,</span> <span class="n">get_resources_dir</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">aspect_ratio</span>
+<span class="kn">from</span> <span class="nn">.utils.display</span> <span class="k">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="ThermoApp"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp">[docs]</a><span class="k">class</span> <span class="nc">ThermoApp</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Application implementing the routines for module detections and analysis under the form of an object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_video_path</span><span class="p">,</span> <span class="n">camera_param_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the ThermoApp object by defining default parameters.</span>
+
+<span class="sd">        :param input_video_path: Absolute path to the input video.</span>
+<span class="sd">        :param camera_param_file: Parameter file of the camera.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Starting thermo app&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_video_path</span> <span class="o">=</span> <span class="n">input_video_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera_param_file</span> <span class="o">=</span> <span class="n">camera_param_file</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">96</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">checkpoint_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_resources_dir</span><span class="p">(),</span> <span class="s2">&quot;weights&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inference</span> <span class="o">=</span> <span class="n">Inference</span><span class="p">(</span><span class="n">checkpoint_dir</span><span class="o">=</span><span class="n">checkpoint_dir</span><span class="p">,</span> <span class="n">model_class</span><span class="o">=</span><span class="n">ThermoNet3x3</span><span class="p">,</span>
+                                   <span class="n">image_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)</span>
+
+        <span class="c1"># Camera object containing the corresponding parameters.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Object responsible for loading the video passed as parameter.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">video_loader</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Global objects staying alive over the entire run of the movie.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_map</span> <span class="o">=</span> <span class="n">ModuleMap</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_detector</span> <span class="o">=</span> <span class="n">MotionDetector</span><span class="p">(</span><span class="n">scaling</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+
+        <span class="c1"># Objects referring to the items computed during the last frame.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_input_frame</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_preprocessed_image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_attention_image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame_rgb</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_edges_frame</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_raw_intersections</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_intersections</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_segments</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_cluster_list</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_rectangles</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_mean_motion</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_probabilities</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Runtime parameters for detection.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">should_undistort_image</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preprocessing_parameters</span> <span class="o">=</span> <span class="n">PreprocessingParams</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_detection_parameters</span> <span class="o">=</span> <span class="n">EdgeDetectorParams</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment_detection_parameters</span> <span class="o">=</span> <span class="n">SegmentDetectorParams</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment_clustering_parameters</span> <span class="o">=</span> <span class="n">SegmentClustererParams</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_cleaning_parameters</span> <span class="o">=</span> <span class="n">ClusterCleaningParams</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intersection_detection_parameters</span> <span class="o">=</span> <span class="n">IntersectionDetectorParams</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangle_detection_parameters</span> <span class="o">=</span> <span class="n">RectangleDetectorParams</span><span class="p">()</span>
+
+        <span class="c1"># Load the camera and module parameters.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__load_params</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_loader</span><span class="o">.</span><span class="n">frames</span>
+
+<div class="viewcode-block" id="ThermoApp.create_segment_image"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.create_segment_image">[docs]</a>    <span class="k">def</span> <span class="nf">create_segment_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating segment image&quot;</span><span class="p">)</span>
+        <span class="n">base_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame_rgb</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_cluster_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">base_image</span>
+
+        <span class="c1"># Fix colors for first two clusters, choose the next randomly.</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">247</span><span class="p">,</span> <span class="mi">240</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">50</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">cluster_number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_cluster_list</span><span class="p">)):</span>
+            <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random_color</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">cluster</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_cluster_list</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">segment_index</span><span class="p">,</span> <span class="n">segment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cluster</span><span class="p">):</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">img</span><span class="o">=</span><span class="n">base_image</span><span class="p">,</span> <span class="n">pt1</span><span class="o">=</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">segment</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">pt2</span><span class="o">=</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">segment</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
+                         <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">lineType</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">segment_index</span><span class="p">),</span> <span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">segment</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_PLAIN</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">,</span>
+                            <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base_image</span></div>
+
+<div class="viewcode-block" id="ThermoApp.create_rectangle_image"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.create_rectangle_image">[docs]</a>    <span class="k">def</span> <span class="nf">create_rectangle_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating rectangle image&quot;</span><span class="p">)</span>
+        <span class="n">base_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame_rgb</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">base_image</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_map</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_id</span><span class="p">:</span>
+
+                <span class="n">module_coords</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">last_rectangle</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">cumulated_motion</span><span class="p">)</span>
+                <span class="n">mean_prob</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">mean_probability</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">color_from_probabilities</span><span class="p">(</span><span class="n">mean_prob</span><span class="p">)</span>
+
+                <span class="n">cv2</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">module_coords</span><span class="p">]),</span> <span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">fillConvexPoly</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">module_coords</span><span class="p">]),</span> <span class="n">color</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_4</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">addWeighted</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">base_image</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base_image</span></div>
+
+<div class="viewcode-block" id="ThermoApp.create_classes_image"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.create_classes_image">[docs]</a>    <span class="k">def</span> <span class="nf">create_classes_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating classes image&quot;</span><span class="p">)</span>
+        <span class="n">base_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame_rgb</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_map</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">module_coords</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">last_rectangle</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">cumulated_motion</span><span class="p">)</span>
+            <span class="n">module_center</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">last_center</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">cumulated_motion</span><span class="p">)</span>
+            <span class="n">mean_prob</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">mean_probability</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">color_from_probabilities</span><span class="p">(</span><span class="n">mean_prob</span><span class="p">)</span>
+
+            <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">module_center</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">module_center</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="mi">6</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FILLED</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">module_coords</span><span class="p">]),</span> <span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_image</span></div>
+
+<div class="viewcode-block" id="ThermoApp.create_module_map_image"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.create_module_map_image">[docs]</a>    <span class="k">def</span> <span class="nf">create_module_map_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating module map image&quot;</span><span class="p">)</span>
+        <span class="n">base_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame_rgb</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">rect_id</span><span class="p">,</span> <span class="n">rectangle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_map</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">rect_shift</span> <span class="o">=</span> <span class="n">rectangle</span><span class="o">.</span><span class="n">last_rectangle</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">rectangle</span><span class="o">.</span><span class="n">cumulated_motion</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">rectangle</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_id</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+                <span class="n">thickness</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">thickness</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">rect_shift</span><span class="p">]),</span> <span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rect_shift</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">thickness</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">rect_id</span><span class="p">),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_PLAIN</span><span class="p">,</span>
+                            <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_image</span></div>
+
+<div class="viewcode-block" id="ThermoApp.create_module_list"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.create_module_list">[docs]</a>    <span class="k">def</span> <span class="nf">create_module_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating module list&quot;</span><span class="p">)</span>
+        <span class="n">module_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">module_width</span> <span class="o">=</span> <span class="mi">90</span>
+        <span class="n">module_height</span> <span class="o">=</span> <span class="mi">66</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="mi">15</span>
+        <span class="n">image_width</span> <span class="o">=</span> <span class="n">module_width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span>
+        <span class="n">image_height</span> <span class="o">=</span> <span class="n">module_height</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span>
+        <span class="n">module_image_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">image_width</span><span class="p">,</span> <span class="n">image_height</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">rectangle_id</span><span class="p">,</span> <span class="n">rectangle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_map</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Only iterate over the last detected rectangles.</span>
+            <span class="k">if</span> <span class="n">rectangle</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_id</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">module_coordinates</span> <span class="o">=</span> <span class="n">rectangle</span><span class="o">.</span><span class="n">last_rectangle</span>
+            <span class="n">module_aspect_ratio</span> <span class="o">=</span> <span class="n">aspect_ratio</span><span class="p">(</span><span class="n">module_coordinates</span><span class="p">)</span>
+            <span class="n">is_horizontal</span> <span class="o">=</span> <span class="n">module_aspect_ratio</span> <span class="o">&gt;=</span> <span class="mf">1.0</span>
+            <span class="k">if</span> <span class="n">is_horizontal</span><span class="p">:</span>
+                <span class="n">projection_rectangle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([[</span><span class="mi">0</span> <span class="o">+</span> <span class="n">padding</span><span class="p">,</span> <span class="mi">0</span> <span class="o">+</span> <span class="n">padding</span><span class="p">],</span>
+                                                   <span class="p">[</span><span class="n">image_width</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">padding</span><span class="p">,</span> <span class="mi">0</span> <span class="o">+</span> <span class="n">padding</span><span class="p">],</span>
+                                                   <span class="p">[</span><span class="n">image_width</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">padding</span><span class="p">,</span> <span class="n">image_height</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">padding</span><span class="p">],</span>
+                                                   <span class="p">[</span><span class="mi">0</span> <span class="o">+</span> <span class="n">padding</span><span class="p">,</span> <span class="n">image_height</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">padding</span><span class="p">]])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">projection_rectangle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([[</span><span class="mi">0</span> <span class="o">+</span> <span class="n">padding</span><span class="p">,</span> <span class="n">image_height</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">padding</span><span class="p">],</span>
+                                                   <span class="p">[</span><span class="mi">0</span> <span class="o">+</span> <span class="n">padding</span><span class="p">,</span> <span class="mi">0</span> <span class="o">+</span> <span class="n">padding</span><span class="p">],</span>
+                                                   <span class="p">[</span><span class="n">image_width</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">padding</span><span class="p">,</span> <span class="mi">0</span> <span class="o">+</span> <span class="n">padding</span><span class="p">],</span>
+                                                   <span class="p">[</span><span class="n">image_width</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">padding</span><span class="p">,</span> <span class="n">image_height</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">padding</span><span class="p">]])</span>
+
+            <span class="n">transformation_matrix</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getPerspectiveTransform</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">module_coordinates</span><span class="p">),</span>
+                                                                <span class="n">projection_rectangle</span><span class="p">)</span>
+            <span class="n">extracted</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpPerspective</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame_rgb</span><span class="p">,</span> <span class="n">transformation_matrix</span><span class="p">,</span> <span class="n">module_image_size</span><span class="p">)</span>
+
+            <span class="n">module_list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;coordinates&quot;</span><span class="p">:</span> <span class="n">rectangle</span><span class="o">.</span><span class="n">last_rectangle</span><span class="p">,</span> <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">extracted</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">rectangle</span><span class="o">.</span><span class="n">ID</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">module_list</span></div>
+
+    <span class="k">def</span> <span class="nf">__load_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the parameters related to camera.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="n">Camera</span><span class="p">(</span><span class="n">camera_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_param_file</span><span class="p">)</span>
+
+        <span class="n">Logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using camera parameters:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ThermoApp.load_video"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.load_video">[docs]</a>    <span class="k">def</span> <span class="nf">load_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads the video associated with the absolute path given to the constructor between the frames indicated as argument.</span>
+
+<span class="sd">        :param start_frame: Starting frame (inclusive)</span>
+<span class="sd">        :param end_frame: Termination frame (exclusive), is set to None, the entire video will be loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">video_loader</span> <span class="o">=</span> <span class="n">VideoLoader</span><span class="p">(</span><span class="n">video_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_video_path</span><span class="p">,</span> <span class="n">start_frame</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">end_frame</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ThermoApp.preprocess_frame"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.preprocess_frame">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">frame_preprocessor</span> <span class="o">=</span> <span class="n">FramePreprocessor</span><span class="p">(</span><span class="n">input_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_input_frame</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocessing_parameters</span><span class="p">)</span>
+        <span class="n">frame_preprocessor</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame_rgb</span> <span class="o">=</span> <span class="n">frame_preprocessor</span><span class="o">.</span><span class="n">scaled_image_rgb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame</span> <span class="o">=</span> <span class="n">frame_preprocessor</span><span class="o">.</span><span class="n">scaled_image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_preprocessed_image</span> <span class="o">=</span> <span class="n">frame_preprocessor</span><span class="o">.</span><span class="n">preprocessed_image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_attention_image</span> <span class="o">=</span> <span class="n">frame_preprocessor</span><span class="o">.</span><span class="n">attention_image</span></div>
+
+<div class="viewcode-block" id="ThermoApp.detect_edges"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.detect_edges">[docs]</a>    <span class="k">def</span> <span class="nf">detect_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">edge_detector</span> <span class="o">=</span> <span class="n">EdgeDetector</span><span class="p">(</span><span class="n">input_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_preprocessed_image</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_detection_parameters</span><span class="p">)</span>
+        <span class="n">edge_detector</span><span class="o">.</span><span class="n">detect</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_edges_frame</span> <span class="o">=</span> <span class="n">edge_detector</span><span class="o">.</span><span class="n">edge_image</span></div>
+
+<div class="viewcode-block" id="ThermoApp.detect_segments"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.detect_segments">[docs]</a>    <span class="k">def</span> <span class="nf">detect_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">segment_detector</span> <span class="o">=</span> <span class="n">SegmentDetector</span><span class="p">(</span><span class="n">input_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_edges_frame</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">segment_detection_parameters</span><span class="p">)</span>
+        <span class="n">segment_detector</span><span class="o">.</span><span class="n">detect</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_segments</span> <span class="o">=</span> <span class="n">segment_detector</span><span class="o">.</span><span class="n">segments</span></div>
+
+<div class="viewcode-block" id="ThermoApp.cluster_segments"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.cluster_segments">[docs]</a>    <span class="k">def</span> <span class="nf">cluster_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">segment_clusterer</span> <span class="o">=</span> <span class="n">SegmentClusterer</span><span class="p">(</span><span class="n">input_segments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_segments</span><span class="p">,</span>
+                                             <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">segment_clustering_parameters</span><span class="p">)</span>
+        <span class="n">segment_clusterer</span><span class="o">.</span><span class="n">cluster_segments</span><span class="p">()</span>
+
+        <span class="n">mean_angles</span><span class="p">,</span> <span class="n">mean_centers</span> <span class="o">=</span> <span class="n">segment_clusterer</span><span class="o">.</span><span class="n">compute_cluster_mean</span><span class="p">()</span>
+        <span class="n">segment_clusterer</span><span class="o">.</span><span class="n">clean_clusters</span><span class="p">(</span><span class="n">mean_angles</span><span class="o">=</span><span class="n">mean_angles</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_cleaning_parameters</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_cluster_list</span> <span class="o">=</span> <span class="n">segment_clusterer</span><span class="o">.</span><span class="n">cluster_list</span></div>
+
+<div class="viewcode-block" id="ThermoApp.detect_intersections"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.detect_intersections">[docs]</a>    <span class="k">def</span> <span class="nf">detect_intersections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">intersection_detector</span> <span class="o">=</span> <span class="n">IntersectionDetector</span><span class="p">(</span><span class="n">input_segments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_cluster_list</span><span class="p">,</span>
+                                                     <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intersection_detection_parameters</span><span class="p">)</span>
+        <span class="n">intersection_detector</span><span class="o">.</span><span class="n">detect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_raw_intersections</span> <span class="o">=</span> <span class="n">intersection_detector</span><span class="o">.</span><span class="n">raw_intersections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_intersections</span> <span class="o">=</span> <span class="n">intersection_detector</span><span class="o">.</span><span class="n">cluster_cluster_intersections</span></div>
+
+<div class="viewcode-block" id="ThermoApp.detect_rectangles"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.detect_rectangles">[docs]</a>    <span class="k">def</span> <span class="nf">detect_rectangles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">rectangle_detector</span> <span class="o">=</span> <span class="n">RectangleDetector</span><span class="p">(</span><span class="n">input_intersections</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_intersections</span><span class="p">,</span>
+                                               <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rectangle_detection_parameters</span><span class="p">)</span>
+        <span class="n">rectangle_detector</span><span class="o">.</span><span class="n">detect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_rectangles</span> <span class="o">=</span> <span class="n">rectangle_detector</span><span class="o">.</span><span class="n">rectangles</span></div>
+
+<div class="viewcode-block" id="ThermoApp.classify_detected_modules"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.classify_detected_modules">[docs]</a>    <span class="k">def</span> <span class="nf">classify_detected_modules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Classifies the modules in the global module map which have been detected in the current frame. This function</span>
+<span class="sd">        must be called after inserting the modules in the global module map!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">module_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_module_list</span><span class="p">()</span>
+        <span class="n">probabilities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inference</span><span class="o">.</span><span class="n">classify</span><span class="p">([</span><span class="n">m</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">module_list</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">module</span><span class="p">,</span> <span class="n">prob</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">module_list</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_probabilities</span><span class="p">[</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">prob</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_map</span><span class="o">.</span><span class="n">update_class_belief</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_probabilities</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ThermoApp.step"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_id</span> <span class="o">=</span> <span class="n">frame_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_input_frame</span> <span class="o">=</span> <span class="n">frame</span>
+        <span class="n">distorted_image</span> <span class="o">=</span> <span class="n">frame</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_undistort_image</span><span class="p">:</span>
+            <span class="n">undistorted_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">undistort</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">distorted_image</span><span class="p">,</span> <span class="n">cameraMatrix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">camera_matrix</span><span class="p">,</span>
+                                              <span class="n">distCoeffs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">distortion_coeff</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">undistorted_image</span> <span class="o">=</span> <span class="n">distorted_image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_input_frame</span> <span class="o">=</span> <span class="n">undistorted_image</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">preprocess_frame</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">detect_edges</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detect_segments</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_segments</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">Logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Found less than three segments!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_segments</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detect_intersections</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detect_rectangles</span><span class="p">()</span>
+
+        <span class="c1"># Motion estimate.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_mean_motion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion_detector</span><span class="o">.</span><span class="n">motion_estimate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame</span><span class="p">)</span>
+
+        <span class="c1"># Add the detected rectangles to the global map.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_map</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_rectangles</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_mean_motion</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_rectangles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">Logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No rectangles detected!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ThermoApp.reset"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_input_frame</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_preprocessed_image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_attention_image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame_rgb</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_edges_frame</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_raw_intersections</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_intersections</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_segments</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_cluster_list</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_rectangles</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_mean_motion</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_probabilities</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="ThermoApp.run"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">frame_id</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">video_loader</span><span class="o">.</span><span class="n">frames</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+                <span class="c1"># Displaying.</span>
+                <span class="n">base_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame_rgb</span>
+
+                <span class="n">draw_segments</span><span class="p">(</span><span class="n">segments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_cluster_list</span><span class="p">,</span> <span class="n">base_image</span><span class="o">=</span><span class="n">base_image</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                              <span class="n">windows_name</span><span class="o">=</span><span class="s2">&quot;Filtered segments&quot;</span><span class="p">)</span>
+                <span class="n">draw_intersections</span><span class="p">(</span><span class="n">intersections</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_raw_intersections</span><span class="p">,</span>
+                                   <span class="n">base_image</span><span class="o">=</span><span class="n">base_image</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">windows_name</span><span class="o">=</span><span class="s2">&quot;Intersections&quot;</span><span class="p">)</span>
+                <span class="n">draw_rectangles</span><span class="p">(</span><span class="n">rectangles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_rectangles</span><span class="p">,</span> <span class="n">base_image</span><span class="o">=</span><span class="n">base_image</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                <span class="n">windows_name</span><span class="o">=</span><span class="s2">&quot;Detected rectangles&quot;</span><span class="p">)</span>
+                <span class="n">draw_motion</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">motion_detector</span><span class="o">.</span><span class="n">flow</span><span class="p">,</span> <span class="n">base_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">motion_detector</span><span class="o">.</span><span class="n">last_frame</span><span class="p">,</span>
+                            <span class="n">windows_name</span><span class="o">=</span><span class="s2">&quot;Motion estimate&quot;</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Canny edges&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_edges_frame</span><span class="p">)</span>
+
+                <span class="n">global_map</span> <span class="o">=</span> <span class="n">base_image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">rect_id</span><span class="p">,</span> <span class="n">rectangle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_map</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">rect_shift</span> <span class="o">=</span> <span class="n">rectangle</span><span class="o">.</span><span class="n">last_rectangle</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">rectangle</span><span class="o">.</span><span class="n">cumulated_motion</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">rectangle</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame_id</span><span class="p">:</span>
+                        <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+                        <span class="n">thickness</span> <span class="o">=</span> <span class="mi">2</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="n">thickness</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">cv2</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">global_map</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">rect_shift</span><span class="p">]),</span> <span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+                    <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rect_shift</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">thickness</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">global_map</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">rect_id</span><span class="p">),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_PLAIN</span><span class="p">,</span>
+                                    <span class="mi">1</span><span class="p">,</span>
+                                    <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Global map&quot;</span><span class="p">,</span> <span class="n">global_map</span><span class="p">)</span>
+
+                <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
