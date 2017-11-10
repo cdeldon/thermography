@@ -110,3 +110,6 @@ logs/*
 resources/*
 !resources/.gitkeep
 !resources/weights/*
+
+# Documentation
+!/docs/build/

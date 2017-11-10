@@ -7,7 +7,6 @@ import numpy as np
 from thermography.classification import Inference
 from thermography.classification.models import ThermoNet3x3
 from thermography.settings import get_resources_dir
-from thermography.utils import scale_image
 
 input_folder = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/padded_dataset/Ghidoni1/0-1000"
 num_images = 300
@@ -59,7 +58,8 @@ if __name__ == '__main__':
         thickness = 2
         cv2.putText(resized_image, "True lab: {}".format(true_label), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, font_scale,
                     font_color, thickness)
-        cv2.putText(resized_image, "Predicted: {}".format(class_name[predicted_class]), (10, 60), cv2.FONT_HERSHEY_SIMPLEX,
+        cv2.putText(resized_image, "Predicted: {}".format(class_name[predicted_class]), (10, 60),
+                    cv2.FONT_HERSHEY_SIMPLEX,
                     font_scale, font_color, thickness)
         np.set_printoptions(precision=3, suppress=True)
         cv2.putText(resized_image, "Logits: {}".format(probabilities), (10, 90), cv2.FONT_HERSHEY_SIMPLEX,

@@ -1,3 +1,5 @@
+"""The thermography package implements different computer vision and image progessing algorithms for automatic detection of solar panel modules."""
+
 # Import everything from the subpackages.
 from . import detection
 from . import io

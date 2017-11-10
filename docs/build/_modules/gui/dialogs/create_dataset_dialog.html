@@ -1,0 +1,627 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gui.dialogs.create_dataset_dialog &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../thermography.html">thermography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gui.html">gui</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>gui.dialogs.create_dataset_dialog</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gui.dialogs.create_dataset_dialog</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="k">import</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="k">import</span> <span class="n">QImage</span><span class="p">,</span> <span class="n">QPainter</span>
+<span class="kn">from</span> <span class="nn">simple_logger</span> <span class="k">import</span> <span class="n">Logger</span>
+
+<span class="kn">import</span> <span class="nn">thermography</span> <span class="k">as</span> <span class="nn">tg</span>
+<span class="kn">from</span> <span class="nn">gui.design</span> <span class="k">import</span> <span class="n">Ui_CreateDataset_main_window</span>
+<span class="kn">from</span> <span class="nn">gui.dialogs</span> <span class="k">import</span> <span class="n">AboutDialog</span><span class="p">,</span> <span class="n">SaveImageDialog</span>
+<span class="kn">from</span> <span class="nn">gui.threads</span> <span class="k">import</span> <span class="n">ThermoDatasetCreationThread</span>
+
+
+<div class="viewcode-block" id="VideoLoaderThread"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.VideoLoaderThread">[docs]</a><span class="k">class</span> <span class="nc">VideoLoaderThread</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QThread</span><span class="p">):</span>
+    <span class="n">finish_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">from_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">video_path</span> <span class="o">=</span> <span class="n">video_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_index</span> <span class="o">=</span> <span class="n">from_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_index</span> <span class="o">=</span> <span class="n">to_index</span>
+
+<div class="viewcode-block" id="VideoLoaderThread.run"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.VideoLoaderThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">video_loader</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">VideoLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">video_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finish_signal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">video_loader</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CreateDatasetGUI"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI">[docs]</a><span class="k">class</span> <span class="nc">CreateDatasetGUI</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">,</span> <span class="n">Ui_CreateDataset_main_window</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataset creation GUI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating dataset creation GUI&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_logo_icon</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_folder_opened</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_module_id_in_frame</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_modules</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">discarded_modules</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accepted_modules</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">misdetected_modules</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_counter</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;automatic&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;accepted&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;discarded&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;misdetected&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+                               <span class="s2">&quot;manual&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;accepted&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;discarded&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;misdetected&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_widgets</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CreateDatasetGUI.set_logo_icon"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.set_logo_icon">[docs]</a>    <span class="k">def</span> <span class="nf">set_logo_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">gui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tg</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get_thermography_root_dir</span><span class="p">(),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">),</span> <span class="s2">&quot;gui&quot;</span><span class="p">)</span>
+        <span class="n">logo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gui_path</span><span class="p">,</span> <span class="s2">&quot;img/logo.png&quot;</span><span class="p">)</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting logo </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logo_path</span><span class="p">))</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">()</span>
+        <span class="n">icon</span><span class="o">.</span><span class="n">addPixmap</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="p">(</span><span class="n">logo_path</span><span class="p">),</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="o">.</span><span class="n">Normal</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="o">.</span><span class="n">Off</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.connect_widgets"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_widgets">[docs]</a>    <span class="k">def</span> <span class="nf">connect_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Connecting all widgets&quot;</span><span class="p">)</span>
+        <span class="c1"># File buttons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_about</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_about_window</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_exit</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">)</span>
+
+        <span class="c1"># Main buttons.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_video_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_video_from_file</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">play_video_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_playing_frames</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_video_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_and_close</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quick_save_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_module_dataset</span><span class="p">)</span>
+
+        <span class="c1"># Working and Broken module buttons.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_working_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_module_is_working</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_broken_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_module_is_broken</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">misdetection_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_module_misdetection</span><span class="p">)</span>
+
+        <span class="c1"># Preprocessing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">undistort_image_box</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_image_distortion</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_scaling_slider</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_preprocessing_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_preprocessing_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blur_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_preprocessing_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_preprocessing_params</span><span class="p">)</span>
+
+        <span class="c1"># Edge extraction.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_histeresis_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_histeresis_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_histeresis_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_histeresis_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dilation_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_dilation_steps</span><span class="p">)</span>
+
+        <span class="c1"># Segment detection.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta_rho_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_edge_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta_theta_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_edge_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_votes_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_edge_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_length_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_edge_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_gap_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_edge_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extend_segments_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_edge_params</span><span class="p">)</span>
+
+        <span class="c1"># Segment clustering.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gmm_value</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_clustering_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">knn_value</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_clustering_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_clusters_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_clustering_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_init_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_clustering_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_angle_value</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_clustering_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_centers_value</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_clustering_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swipe_clusters_value</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_clustering_params</span><span class="p">)</span>
+
+        <span class="c1"># Segment cleaning</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_angle_variation_mean_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_cluster_cleaning_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_merging_angle_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_cluster_cleaning_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_merging_distance_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_cluster_cleaning_params</span><span class="p">)</span>
+
+        <span class="c1"># Rectangle detection.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_ratio_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_rectangle_detection_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ratio_max_deviation_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_rectangle_detection_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_area_value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_rectangle_detection_params</span><span class="p">)</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Windgets connected&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.connect_thermo_thread"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_thermo_thread">[docs]</a>    <span class="k">def</span> <span class="nf">connect_thermo_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Connecting thermo thread&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">last_frame_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_last_frame_image</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">module_list_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_all_modules</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Thermo thread connected&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.store_last_frame_image"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.store_last_frame_image">[docs]</a>    <span class="k">def</span> <span class="nf">store_last_frame_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.open_about_window"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.open_about_window">[docs]</a>    <span class="k">def</span> <span class="nf">open_about_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">about</span> <span class="o">=</span> <span class="n">AboutDialog</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">about</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.load_video_from_file"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.load_video_from_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_video_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">open_directory</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_folder_opened</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">open_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_folder_opened</span>
+        <span class="n">video_file_name</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s2">&quot;Select a video&quot;</span><span class="p">,</span>
+                                                                   <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;Videos (*.mov *.mp4 *.avi)&quot;</span><span class="p">,</span>
+                                                                   <span class="n">directory</span><span class="o">=</span><span class="n">open_directory</span><span class="p">)</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Selected video path: &lt;</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">video_file_name</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">video_file_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_folder_opened</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">video_file_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Thermography: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">video_file_name</span><span class="p">))</span>
+
+        <span class="n">start_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_from_index</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="n">end_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_to_index</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">end_frame</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">end_frame</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start frame: </span><span class="si">{}</span><span class="s2">, end frame: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">))</span>
+
+        <span class="n">video_loader_thread</span> <span class="o">=</span> <span class="n">VideoLoaderThread</span><span class="p">(</span><span class="n">video_path</span><span class="o">=</span><span class="n">video_file_name</span><span class="p">,</span> <span class="n">from_index</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">to_index</span><span class="o">=</span><span class="n">end_frame</span><span class="p">,</span>
+                                                <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">video_loader_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">video_loader_thread</span><span class="o">.</span><span class="n">finish_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">video_loader_finished</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.video_loader_finished"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.video_loader_finished">[docs]</a>    <span class="k">def</span> <span class="nf">video_loader_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Video loader finished&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="n">frame_list</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_progress_bar</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_progress_bar</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loaded </span><span class="si">{}</span><span class="s2"> frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">play_video_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_working_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_broken_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">misdetection_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.save_module_dataset"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.save_module_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">save_module_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_dialog</span> <span class="o">=</span> <span class="n">SaveImageDialog</span><span class="p">(</span><span class="n">working_modules</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">accepted_modules</span><span class="p">,</span> <span class="n">broken_modules</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discarded_modules</span><span class="p">,</span>
+                                           <span class="n">misdetected_modules</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">misdetected_modules</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_dialog</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.save_and_close"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.save_and_close">[docs]</a>    <span class="k">def</span> <span class="nf">save_and_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_module_dataset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.start_playing_frames"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.start_playing_frames">[docs]</a>    <span class="k">def</span> <span class="nf">start_playing_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span> <span class="o">=</span> <span class="n">ThermoDatasetCreationThread</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_thermo_thread</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_scaling_slider</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_image_scaling</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">play_video_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_video_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quick_save_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_module_id_in_frame</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">processing_frame_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">processing_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.current_module_is_working"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.current_module_is_working">[docs]</a>    <span class="k">def</span> <span class="nf">current_module_is_working</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Current module is working&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_module_counter</span><span class="p">(</span><span class="s2">&quot;manual&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accepted_modules</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_next_module</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.current_module_is_broken"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.current_module_is_broken">[docs]</a>    <span class="k">def</span> <span class="nf">current_module_is_broken</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Current module is broken&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_module_counter</span><span class="p">(</span><span class="s2">&quot;manual&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discarded_modules</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_next_module</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.current_module_misdetection"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.current_module_misdetection">[docs]</a>    <span class="k">def</span> <span class="nf">current_module_misdetection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Current module was misdetected&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_module_counter</span><span class="p">(</span><span class="s2">&quot;manual&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">misdetected_modules</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_next_module</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.register_module"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.register_module">[docs]</a>    <span class="k">def</span> <span class="nf">register_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">current_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_module_id_in_frame</span><span class="p">]</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">current_module</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">],</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">current_module</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
+        <span class="n">moduel_id</span> <span class="o">=</span> <span class="n">current_module</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">moduel_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">m</span><span class="p">[</span><span class="n">moduel_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">m</span><span class="p">[</span><span class="n">moduel_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">image</span><span class="p">,</span> <span class="s2">&quot;coordinates&quot;</span><span class="p">:</span> <span class="n">coords</span><span class="p">,</span> <span class="s2">&quot;frame_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_global_progress_bar"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_global_progress_bar">[docs]</a>    <span class="k">def</span> <span class="nf">update_global_progress_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_progress_bar</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">frame_index</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_image_scaling"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_image_scaling">[docs]</a>    <span class="k">def</span> <span class="nf">update_image_scaling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">image_scaling</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_scaling_slider</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">preprocessing_parameters</span><span class="o">.</span><span class="n">image_scaling</span> <span class="o">=</span> <span class="n">image_scaling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_scaling_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Input image scaling: </span><span class="si">{:0.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image_scaling</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_histeresis_params"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_histeresis_params">[docs]</a>    <span class="k">def</span> <span class="nf">update_histeresis_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">min_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_histeresis_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="n">max_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_histeresis_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">max_value</span> <span class="o">&lt;=</span> <span class="n">min_value</span><span class="p">:</span>
+            <span class="n">max_value</span> <span class="o">=</span> <span class="n">min_value</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_histeresis_value</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">max_value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">edge_detection_parameters</span><span class="o">.</span><span class="n">hysteresis_max_thresh</span> <span class="o">=</span> <span class="n">max_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">edge_detection_parameters</span><span class="o">.</span><span class="n">hysteresis_min_thresh</span> <span class="o">=</span> <span class="n">min_value</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_dilation_steps"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_dilation_steps">[docs]</a>    <span class="k">def</span> <span class="nf">update_dilation_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">edge_detection_parameters</span><span class="o">.</span><span class="n">dilation_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilation_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_image_distortion"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_image_distortion">[docs]</a>    <span class="k">def</span> <span class="nf">update_image_distortion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">should_undistort_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">undistort_image_box</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_image_angle"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_image_angle">[docs]</a>    <span class="k">def</span> <span class="nf">update_image_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">preprocessing_parameters</span><span class="o">.</span><span class="n">image_rotation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">==</span> <span class="mi">360</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">angle_value</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_blur_value"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_blur_value">[docs]</a>    <span class="k">def</span> <span class="nf">update_blur_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">preprocessing_parameters</span><span class="o">.</span><span class="n">gaussian_blur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blur_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_temperature_value"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_temperature_value">[docs]</a>    <span class="k">def</span> <span class="nf">update_temperature_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">preprocessing_parameters</span><span class="o">.</span><span class="n">red_threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_preprocessing_params"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_preprocessing_params">[docs]</a>    <span class="k">def</span> <span class="nf">update_preprocessing_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_image_scaling</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_image_angle</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_blur_value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_temperature_value</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_edge_params"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_edge_params">[docs]</a>    <span class="k">def</span> <span class="nf">update_edge_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_detection_parameters</span><span class="o">.</span><span class="n">d_rho</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_rho_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_detection_parameters</span><span class="o">.</span><span class="n">d_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_theta_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_detection_parameters</span><span class="o">.</span><span class="n">min_num_votes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_votes_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_detection_parameters</span><span class="o">.</span><span class="n">min_line_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_length_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_detection_parameters</span><span class="o">.</span><span class="n">max_line_gap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_gap_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_detection_parameters</span><span class="o">.</span><span class="n">extension_pixels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extend_segments_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_clustering_params"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_clustering_params">[docs]</a>    <span class="k">def</span> <span class="nf">update_clustering_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_clustering_parameters</span><span class="o">.</span><span class="n">num_init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_init_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_clustering_parameters</span><span class="o">.</span><span class="n">swipe_clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swipe_clusters_value</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_clustering_parameters</span><span class="o">.</span><span class="n">num_clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_clusters_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_clustering_parameters</span><span class="o">.</span><span class="n">use_centers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_centers_value</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_clustering_parameters</span><span class="o">.</span><span class="n">use_angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_angle_value</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">knn_value</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_clustering_parameters</span><span class="o">.</span><span class="n">cluster_type</span> <span class="o">=</span> <span class="s2">&quot;knn&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">swipe_clusters_value</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_init_value</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">gmm_value</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">segment_clustering_parameters</span><span class="o">.</span><span class="n">cluster_type</span> <span class="o">=</span> <span class="s2">&quot;gmm&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">swipe_clusters_value</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_init_value</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_cluster_cleaning_params"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_cluster_cleaning_params">[docs]</a>    <span class="k">def</span> <span class="nf">update_cluster_cleaning_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cluster_cleaning_parameters</span><span class="o">.</span><span class="n">max_angle_variation_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_angle_variation_mean_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cluster_cleaning_parameters</span><span class="o">.</span><span class="n">max_merging_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_merging_angle_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cluster_cleaning_parameters</span><span class="o">.</span><span class="n">max_endpoint_distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_merging_distance_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_rectangle_detection_params"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_rectangle_detection_params">[docs]</a>    <span class="k">def</span> <span class="nf">update_rectangle_detection_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">rectangle_detection_parameters</span><span class="o">.</span><span class="n">aspect_ratio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_ratio_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">rectangle_detection_parameters</span><span class="o">.</span><span class="n">aspect_ratio_relative_deviation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_max_deviation_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">rectangle_detection_parameters</span><span class="o">.</span><span class="n">min_area</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_area_value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.display_all_modules"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.display_all_modules">[docs]</a>    <span class="k">def</span> <span class="nf">display_all_modules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_modules</span> <span class="o">=</span> <span class="n">module_list</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_module_id_in_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_frame_modules</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Since there are no modules in this frame, display the input image with a label saying no module has been detected.</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_frame_image</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_image</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">QImage</span><span class="o">.</span><span class="n">Format_RGB888</span><span class="p">)</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">scaled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rectangle_image_view</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">KeepAspectRatio</span><span class="p">,</span>
+                                 <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">SmoothTransformation</span><span class="p">)</span>
+            <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="o">.</span><span class="n">fromImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="n">painter</span> <span class="o">=</span> <span class="n">QPainter</span><span class="p">()</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">begin</span><span class="p">(</span><span class="n">pixmap</span><span class="p">)</span>
+            <span class="n">rect</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pixmap</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">pixmap</span><span class="o">.</span><span class="n">height</span><span class="p">())</span>
+            <span class="n">font</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QFont</span><span class="p">()</span>
+            <span class="n">font</span><span class="o">.</span><span class="n">setPointSize</span><span class="p">(</span><span class="mi">26</span><span class="p">)</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">,</span> <span class="s2">&quot;No Module detected&quot;</span><span class="p">)</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangle_image_view</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pixmap</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frame_finished</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_next_module</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.update_module_counter"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_module_counter">[docs]</a>    <span class="k">def</span> <span class="nf">update_module_counter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">automatic_manual_str</span><span class="p">,</span> <span class="n">module_class_id</span><span class="p">):</span>
+        <span class="n">label_text</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;accepted&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;discarded&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;misdetected&quot;</span><span class="p">}[</span><span class="n">module_class_id</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_counter</span><span class="p">[</span><span class="n">automatic_manual_str</span><span class="p">][</span><span class="n">label_text</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">working_manual_classified_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_counter</span><span class="p">[</span><span class="s2">&quot;manual&quot;</span><span class="p">][</span><span class="s2">&quot;accepted&quot;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broken_manual_classified_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_counter</span><span class="p">[</span><span class="s2">&quot;manual&quot;</span><span class="p">][</span><span class="s2">&quot;discarded&quot;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_manual_classified_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_counter</span><span class="p">[</span><span class="s2">&quot;manual&quot;</span><span class="p">][</span><span class="s2">&quot;misdetected&quot;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">working_automatic_classified_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_counter</span><span class="p">[</span><span class="s2">&quot;automatic&quot;</span><span class="p">][</span><span class="s2">&quot;accepted&quot;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broken_automatic_classified_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_counter</span><span class="p">[</span><span class="s2">&quot;automatic&quot;</span><span class="p">][</span><span class="s2">&quot;discarded&quot;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_automatic_classified_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_counter</span><span class="p">[</span><span class="s2">&quot;automatic&quot;</span><span class="p">][</span><span class="s2">&quot;misdetected&quot;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_manual_classified_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_counter</span><span class="p">[</span><span class="s2">&quot;manual&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_automatic_classified_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_counter</span><span class="p">[</span><span class="s2">&quot;automatic&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.display_next_module"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.display_next_module">[docs]</a>    <span class="k">def</span> <span class="nf">display_next_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_module_id_in_frame</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_frame_modules</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_module_id_in_frame</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frame_finished</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_module_id_in_frame</span><span class="p">]</span>
+        <span class="n">module_ID</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
+        <span class="n">module_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">],</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span>
+        <span class="c1"># If module_ID has already been classified, then there is no need to display it as we can directly classify it</span>
+        <span class="c1"># using the existing manual label.</span>
+        <span class="n">was_already_classified</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">module_class_id</span><span class="p">,</span> <span class="n">module_class</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">accepted_modules</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">discarded_modules</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">misdetected_modules</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">was_already_classified</span> <span class="ow">and</span> <span class="n">module_ID</span> <span class="ow">in</span> <span class="n">module_class</span><span class="p">:</span>
+                <span class="n">module_class</span><span class="p">[</span><span class="n">module_ID</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">module_image</span><span class="p">,</span> <span class="s2">&quot;coordinates&quot;</span><span class="p">:</span> <span class="n">coordinates</span><span class="p">,</span> <span class="s2">&quot;frame_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span><span class="p">})</span>
+                <span class="n">was_already_classified</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1"># Update counting labels:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_module_counter</span><span class="p">(</span><span class="s2">&quot;automatic&quot;</span><span class="p">,</span> <span class="n">module_class_id</span><span class="p">)</span>
+
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_frame_image</span><span class="p">)</span>
+        <span class="n">tmp_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">module_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">was_already_classified</span><span class="p">:</span>
+            <span class="n">module_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">tmp_image</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">coordinates</span><span class="p">]),</span> <span class="kc">True</span><span class="p">,</span> <span class="n">module_color</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">fillConvexPoly</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">([</span><span class="n">coordinates</span><span class="p">]),</span> <span class="n">module_color</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_4</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">addWeighted</span><span class="p">(</span><span class="n">tmp_image</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tmp_image</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">tmp_image</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">tmp_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tmp_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tmp_image</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                       <span class="n">QImage</span><span class="o">.</span><span class="n">Format_RGB888</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">scaled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rectangle_image_view</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">KeepAspectRatio</span><span class="p">,</span>
+                             <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">SmoothTransformation</span><span class="p">)</span>
+        <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="o">.</span><span class="n">fromImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangle_image_view</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pixmap</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resize_video_view</span><span class="p">(</span><span class="n">module_image</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_module_view</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">QImage</span><span class="p">(</span><span class="n">module_image</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">module_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">module_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">module_image</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                       <span class="n">QImage</span><span class="o">.</span><span class="n">Format_RGB888</span><span class="p">)</span>
+        <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="o">.</span><span class="n">fromImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_module_view</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pixmap</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_module_view</span><span class="o">.</span><span class="n">repaint</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">was_already_classified</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_next_module</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.resize_video_view"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.resize_video_view">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">resize_video_view</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="CreateDatasetGUI.frame_finished"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.frame_finished">[docs]</a>    <span class="k">def</span> <span class="nf">frame_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_module_id_in_frame</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_progress_bar</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">):</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Finished&quot;</span><span class="p">,</span> <span class="s2">&quot;Analyzed all frames&quot;</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_module_dataset</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">processing_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">processing_frame_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_frame_id</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

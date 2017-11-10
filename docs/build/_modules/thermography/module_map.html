@@ -1,0 +1,472 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography.module_map &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../thermography.html">thermography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gui.html">gui</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>thermography.module_map</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for thermography.module_map</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">simple_logger</span> <span class="k">import</span> <span class="n">Logger</span>
+
+<span class="kn">from</span> <span class="nn">thermography.utils</span> <span class="k">import</span> <span class="n">ID</span><span class="p">,</span> <span class="n">rectangle_contains</span><span class="p">,</span> <span class="n">area_between_rectangles</span><span class="p">,</span> <span class="n">area</span>
+
+
+<div class="viewcode-block" id="ModuleMap"><a class="viewcode-back" href="../../thermography.html#thermography.module_map.ModuleMap">[docs]</a><span class="k">class</span> <span class="nc">ModuleMap</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class responsible for storing a spatial representation of the detected modules.</span>
+<span class="sd">    Each module is keyed by an unique ID Multiple detections of the same module are considered and the existing module is updated in the internal representation of the map.</span>
+
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        module_map = ModuleMap()</span>
+<span class="sd">        module_map.insert([rect1, rect2, ...], frame_id=0, motion_estimate = np.array([0, 0])</span>
+<span class="sd">        # module_map.global_module_map = {0: &lt;..., rect1, frame_id_history=[0]&gt;;</span>
+<span class="sd">        #                                 1: &lt;..., rect2, frame_id_history=[0]&gt;,</span>
+<span class="sd">        #                                 2: &lt;..., rect3, frame_id_history=[0]&gt;}</span>
+<span class="sd">        motion = np.array([4, 2])</span>
+<span class="sd">        rect1 += motion</span>
+<span class="sd">        module_map.insert([rect1, rect4], frame_id=1, motion_estimate=motion)</span>
+<span class="sd">        # module_map.global_module_map = {0: &lt;..., rect1, frame_id_history=[0, 1]&gt;;</span>
+<span class="sd">        #                                 1: &lt;..., rect2, frame_id_history=[0]&gt;,</span>
+<span class="sd">        #                                 2: &lt;..., rect3, frame_id_history=[0]&gt;,</span>
+<span class="sd">        #                                 3: &lt;..., rect4, frame_id_history=[1]&gt;}</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">__ModuleInMap</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Class representing a single module instance.</span>
+
+<span class="sd">        The module&#39;s property are given by a unique ID, the image-coordinates of the last detection,</span>
+<span class="sd">        the image-coordinates of the module center during the last detection, the module&#39;s surface,</span>
+<span class="sd">        a list of frames in which the module has been detected, and a list of associated image-coordinates.</span>
+
+<span class="sd">        An estimate of the motion occourred from the last time the module has been detected and the current frame is</span>
+<span class="sd">        updated each time new modules are added to the module map.</span>
+
+<span class="sd">        An estimate of class probabilities associated to the module is computed by taking the mean over all probability</span>
+<span class="sd">        samples associated to the module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Initializes the module with the ID, image-coordinates and frame id passed as argument.</span>
+
+<span class="sd">            :param ID: Unique integer identifier. This module is keyed by this parameter in the ModuleMap.</span>
+<span class="sd">            :param rectangle: Numpy array of pixel-coordinates associated to the first module detection of the form np.array([[x0, y0], [x1, y1], [x2, y2], [x3, y3]])</span>
+<span class="sd">            :param frame_id: Integer associated to the video-frame the module has been detected from.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating a new module inside the map with ID </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ID</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_rectangle</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_center</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_area</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="c1"># Initialize the frame history and rectangle history to be empty. They will be filled in the self.add(...) method.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frame_id_history</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangle_history</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="c1"># Since the module has been detected now, the motion estimate is set to zero.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cumulated_motion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__all_probabilities</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;Frame: </span><span class="si">{}</span><span class="s2">,  center: </span><span class="si">{}</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_center</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_rectangle</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">History: &quot;</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">frame_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\t\t</span><span class="s2">(</span><span class="si">{}</span><span class="s2">): &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame_id</span><span class="p">)</span>
+                    <span class="n">s</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rectangle_history</span><span class="p">[</span><span class="n">frame_id</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n\t\t\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">s</span>
+
+        <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Adds a the observation of the module to the current state.</span>
+
+<span class="sd">            :param rectangle: New image-coordinates of the module being observed.</span>
+<span class="sd">            :param frame_id: Frame id of the frame in which the module has been detected.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_rectangle</span> <span class="o">=</span> <span class="n">rectangle</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_rectangle</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_area</span> <span class="o">=</span> <span class="n">area</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_rectangle</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">frame_id_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangle_history</span><span class="p">[</span><span class="n">frame_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">rectangle</span>
+
+            <span class="c1"># Since the module has been detected now, the motion estimate is reset to zero.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cumulated_motion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">add_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">motion_estimate</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Add a motion estimate to the module.</span>
+
+<span class="sd">            Since a module might not be detected during one frame, the module map shifts its coordinates according to a</span>
+<span class="sd">            motion estimate of the frame. This motion estimate is propagated to the modules which are not detected i</span>
+<span class="sd">            the current frame in order to move their coordinates with the image.</span>
+
+<span class="sd">            :param frame_id: Current video-frame.</span>
+<span class="sd">            :param motion_estimate: Motion estimate between frame_id-1 and frame_id expressed in pixel coordinates.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="c1"># Only update the motion estimate if the current module has not been detected in this frame.</span>
+            <span class="k">if</span> <span class="n">frame_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cumulated_motion</span> <span class="o">+=</span> <span class="n">motion_estimate</span>
+
+        <span class="k">def</span> <span class="nf">update_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prob</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Updates the current probability distribution over the class labels of this module.</span>
+
+<span class="sd">            :param prob: A 1D numpy array of size &#39;num_classes&#39; representing the classification probability.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__all_probabilities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prob</span><span class="p">)</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">mean_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Computes the mean class probability for the current module.&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__all_probabilities</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No probabilities assigned to current module </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ID</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__all_probabilities</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the module map to be empty.&quot;&quot;&quot;</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating the module map&quot;</span><span class="p">)</span>
+        <span class="c1"># A dictionary of modules and their centers keyed by their ID.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_database</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">module_in_map</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">module_in_map</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+<div class="viewcode-block" id="ModuleMap.insert"><a class="viewcode-back" href="../../thermography.html#thermography.module_map.ModuleMap.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rectangle_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">motion_estimate</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inserts all rectangles contained in the list  passed as first parameter into the global map representation.</span>
+
+<span class="sd">        :param rectangle_list: List of detected rectangles to be inserted into the global module map.</span>
+<span class="sd">        :param frame_id: Frame id of the current image frame associated to the detected rectangles.</span>
+<span class="sd">        :param motion_estimate: Numpy array representing the motion estimate between the last frame (ID-1) and the frame containing the rectangles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Inserting a new rectangle list into the module map at frame </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame_id</span><span class="p">))</span>
+        <span class="c1"># When no information about the motion estimate is given, assume no motion.</span>
+        <span class="k">if</span> <span class="n">motion_estimate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">motion_estimate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+
+        <span class="c1"># In case there are no rectangles in the global map (first step in the simulation) store all the ones passed to</span>
+        <span class="c1"># the function as if they were new modules.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">rectangle</span> <span class="ow">in</span> <span class="n">rectangle_list</span><span class="p">:</span>
+                <span class="c1"># Give a new ID to each rectangle.</span>
+                <span class="n">next_ID</span> <span class="o">=</span> <span class="n">ID</span><span class="o">.</span><span class="n">next_id</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="p">[</span><span class="n">next_ID</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ModuleInMap</span><span class="p">(</span><span class="n">next_ID</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Correspondences between the rectangles passed to the function and the ones already stored in the global map.</span>
+            <span class="c1"># If no correspondence is found (e.g. a rectangle is new), then set the correspondence to None.</span>
+            <span class="n">correspondences</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">rectangle</span> <span class="ow">in</span> <span class="n">rectangle_list</span><span class="p">:</span>
+                <span class="n">rectangle_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="c1"># Shift the rectangle center using the motion estimate in order to align with the previous frame.</span>
+                <span class="n">rectangle_center</span> <span class="o">-=</span> <span class="n">motion_estimate</span>
+
+                <span class="c1"># Compute the ID of the rectangle in the global map which is most similar to the current rectangle.</span>
+                <span class="n">most_similar_ID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__find_most_similar_module</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">area_threshold_ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">most_similar_ID</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">correspondences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># If the query rectangle&#39;s center is inside the nearest rectangle, set it as a correspondence.</span>
+                    <span class="n">closest_rectangle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="p">[</span><span class="n">most_similar_ID</span><span class="p">]</span><span class="o">.</span><span class="n">last_rectangle</span>
+                    <span class="k">if</span> <span class="n">rectangle_contains</span><span class="p">(</span><span class="n">closest_rectangle</span><span class="p">,</span> <span class="n">rectangle_center</span><span class="p">):</span>
+                        <span class="n">correspondences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">most_similar_ID</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">correspondences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+            <span class="c1"># Update the current module map representation by considering the correspondences determined above.</span>
+            <span class="k">for</span> <span class="n">rectangle_index</span><span class="p">,</span> <span class="n">correspondence</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">correspondences</span><span class="p">):</span>
+                <span class="c1"># If there was no correspondence, add the rectangle as a new module in the global map.</span>
+                <span class="k">if</span> <span class="n">correspondence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">next_ID</span> <span class="o">=</span> <span class="n">ID</span><span class="o">.</span><span class="n">next_id</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="p">[</span><span class="n">next_ID</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ModuleInMap</span><span class="p">(</span><span class="n">next_ID</span><span class="p">,</span> <span class="n">rectangle_list</span><span class="p">[</span><span class="n">rectangle_index</span><span class="p">],</span>
+                                                                         <span class="n">frame_id</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Update the correspondet module in the map with the newest coordinates.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="p">[</span><span class="n">correspondence</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rectangle_list</span><span class="p">[</span><span class="n">rectangle_index</span><span class="p">],</span> <span class="n">frame_id</span><span class="p">)</span>
+
+            <span class="c1"># Update the rectangles in the global map with the motion estimate.</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">rectangle_in_map</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">rectangle_in_map</span><span class="o">.</span><span class="n">add_motion</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">motion_estimate</span><span class="p">)</span>
+
+        <span class="c1"># All modules which have not been detected for more than a fixed timespan, are shifted to a database which</span>
+        <span class="c1"># stores them but will not update their coordinates if an association is found.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__store_old_modules</span><span class="p">(</span><span class="n">frame_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ModuleMap.update_class_belief"><a class="viewcode-back" href="../../thermography.html#thermography.module_map.ModuleMap.update_class_belief">[docs]</a>    <span class="k">def</span> <span class="nf">update_class_belief</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Updates the current class probability for the modules being detected in the last step.</span>
+
+<span class="sd">        :param probabilities: A dictionary keyed by the module ID, whose value is a probability distribution over the classes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">prob</span> <span class="ow">in</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="p">[</span><span class="n">module_id</span><span class="p">]</span><span class="o">.</span><span class="n">update_probability</span><span class="p">(</span><span class="n">prob</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__find_most_similar_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">area_threshold_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Finds the most similar rectangle in the global map by computing the surface between each rectangle stored in</span>
+<span class="sd">        the module map, and the one passed as argument.</span>
+
+<span class="sd">        :param rectangle: Query rectangle in the form np.array([[x0, y0], [x1, y1], [x2,y2], [x3, y3]]).</span>
+<span class="sd">        :param area_threshold_ratio: The most similar module is accepted only if the relative deviation between the</span>
+<span class="sd">        surface area of the query rectangle and the candidate is smaller than this parameter.</span>
+<span class="sd">        :return: Index of the most similar rectangle in the module map.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rectangle_area</span> <span class="o">=</span> <span class="n">area</span><span class="p">(</span><span class="n">rectangle</span><span class="p">)</span>
+        <span class="n">rectangle_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">min_surface_between_rect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">infty</span>
+        <span class="n">best_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">module_in_map</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rectangle_contains</span><span class="p">(</span><span class="n">module_in_map</span><span class="o">.</span><span class="n">last_rectangle</span><span class="p">,</span> <span class="n">rectangle_center</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">surface_between_rect</span> <span class="o">=</span> <span class="n">area_between_rectangles</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">module_in_map</span><span class="o">.</span><span class="n">last_rectangle</span><span class="p">)</span>
+            <span class="n">surface_diff</span> <span class="o">=</span> <span class="n">module_in_map</span><span class="o">.</span><span class="n">last_area</span> <span class="o">-</span> <span class="n">rectangle_area</span>
+            <span class="k">if</span> <span class="n">surface_between_rect</span> <span class="o">&lt;</span> <span class="n">min_surface_between_rect</span> <span class="ow">and</span> <span class="n">surface_diff</span> <span class="o">/</span> <span class="n">rectangle_area</span> <span class="o">&lt;</span> <span class="n">area_threshold_ratio</span><span class="p">:</span>
+                <span class="n">min_surface_between_rect</span> <span class="o">=</span> <span class="n">surface_between_rect</span>
+                <span class="n">best_id</span> <span class="o">=</span> <span class="n">module_id</span>
+
+        <span class="k">return</span> <span class="n">best_id</span>
+
+    <span class="k">def</span> <span class="nf">__store_old_modules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_frame_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Stores all modules in the global map which have not been observed for a fixed time span.</span>
+
+<span class="sd">        :param current_frame_id: The current frame id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">old_rectangles_indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">max_time_distance</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="k">for</span> <span class="n">rect_id</span><span class="p">,</span> <span class="n">rectangle_in_map</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">current_frame_id</span> <span class="o">-</span> <span class="n">rectangle_in_map</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_time_distance</span><span class="p">:</span>
+                <span class="n">old_rectangles_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rect_id</span><span class="p">)</span>
+
+        <span class="n">backup_rectangles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">rectangle_id</span> <span class="ow">in</span> <span class="n">old_rectangles_indices</span><span class="p">:</span>
+            <span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="p">[</span><span class="n">rectangle_id</span><span class="p">]</span>
+            <span class="n">backup_rectangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_module_map</span><span class="p">[</span><span class="n">rectangle_id</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_database</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">backup_rectangles</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

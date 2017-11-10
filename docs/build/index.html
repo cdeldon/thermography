@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to Thermography’s documentation! &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="#"/>
+        <link rel="next" title="thermography" href="thermography.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="thermography.html">thermography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to Thermography’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-thermography-s-documentation">
+<h1>Welcome to Thermography’s documentation!<a class="headerlink" href="#welcome-to-thermography-s-documentation" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Branch</th>
+<th class="head">Linux</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Master</td>
+<td><a class="reference external" href="https://travis-ci.org/cdeldon"><img alt="BuildStatusMaster" src="https://travis-ci.org/cdeldon/thermography.svg?branch=master" /></a></td>
+</tr>
+<tr class="row-odd"><td>Devel</td>
+<td><a class="reference external" href="https://travis-ci.org/cdeldon"><img alt="BuildStatusDev" src="https://travis-ci.org/cdeldon/thermography.svg?branch=devel" /></a></td>
+</tr>
+</tbody>
+</table>
+<p>This repository contains the implementation of a feasibility study for
+automatic detection of defected solar panel modules. The developed
+framework has been coined <em>Thermography</em> due to the fact that the input
+data to the system is a sequence of images in the infrared spectrum.</p>
+<div class="figure" id="id1">
+<img alt="Thermography in action" src="_images/example-view.gif" />
+<p class="caption"><span class="caption-text">Thermography in action</span></p>
+</div>
+<div class="section" id="structure">
+<h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<p>The repository is structured as follows: 1. <a class="reference external" href="docs">Documentation</a> of
+the <em>Thermography</em> repository. 2. <a class="reference external" href="gui">GUI</a> source code associated
+to the graphical user interface for interacting with the <em>Thermography</em>
+framework. 3. <a class="reference external" href="logs">Log files</a> generated at runtime. 4.
+<a class="reference external" href="resources">Resources</a> used by the <em>Thermography</em> framework. 5.
+<a class="reference external" href="thermography">Thermography</a> core source code related to detection
+and classification of solar panel modules.</p>
+<p>The <em>python</em> scripts located in the root directory can be used to launch
+different executables which exploit the <em>Thermography</em> framework for
+solar panel module detection and classification.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Download the git repository:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ git clone https://github.com/cdeldon/thermography.git
+$ cd thermography/
+</pre></div>
+</div>
+<p>Install the prerequisites:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ pip install -r requirements.txt
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-scripts">
+<h2>Example scripts<a class="headerlink" href="#example-scripts" title="Permalink to this headline">¶</a></h2>
+<p>Here follows a description of the example scripts in the <a class="reference external" href=".">root</a>
+directory of the <em>Thermography</em> repository.</p>
+<div class="section" id="application">
+<h3>Application<a class="headerlink" href="#application" title="Permalink to this headline">¶</a></h3>
+<p>Running the <a class="reference external" href="main_app.py">main_app.py</a> script a default video is
+loaded and each frame is processed for module extraction. This script’s
+purpose is to show the workflow of the <em>Thermography</em> framework for a
+simple video.</p>
+</div>
+<div class="section" id="guis">
+<h3>GUIs<a class="headerlink" href="#guis" title="Permalink to this headline">¶</a></h3>
+<p>A graphical user interface is provided for interacting with the
+<em>Thermography</em> framework. In particular the following executables are
+available: 1. <a class="reference external" href="main_create_dataset.py">Dataset creation</a> script used
+to facilitate the creation of a labeled dataset of images representing
+solar panel modules. 2. <a class="reference external" href="main_thermogui.py">ThermoGUI</a> graphical
+interface which allows the used to interact with the <em>Thermography</em>
+framework and to analyze a new sequence of frames on the fly.</p>
+<p>The executables with a graphical interface offer the following tools and
+visualizations: <img alt="GUI" src="_images/gui_video.PNG" /></p>
+<p>The GUI presents different views of the processed input video, in
+particular the following views are available:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attention image</th>
+<th class="head">Edge image</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><img alt="AtteImage" src="_images/attention_image.PNG" /></td>
+<td><img alt="EdgeImage" src="_images/edge_image.PNG" /></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="47%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Segment image</th>
+<th class="head">Rectangle image</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><img alt="SegmImage" src="_images/segments_image.PNG" /></td>
+<td><img alt="RectImage" src="_images/rectangle_image.PNG" /></td>
+</tr>
+</tbody>
+</table>
+<p>The lateral toolbar offers runtime parameter tuning with immediate
+application:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Video tab</th>
+<th class="head">Prepr. tab</th>
+<th class="head">Segment tab</th>
+<th class="head">Modules tab</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><img alt="VideoTab" src="_images/video_tab.PNG" /></td>
+<td><img alt="PreprTab" src="_images/preprocessing_tab.PNG" /></td>
+<td><img alt="SegmeTab" src="_images/segments_tab.PNG" /></td>
+<td><img alt="ModulTab" src="_images/modules_tab.PNG" /></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="training-and-restoring">
+<h3>Training and restoring<a class="headerlink" href="#training-and-restoring" title="Permalink to this headline">¶</a></h3>
+<p>Executables for training and restoring a learning system are offered
+with the <em>Thermography</em> framework. These scripts can be used and adapted
+for training a new classifier which can the be integrated with the GUIs
+for real time classification of the detected solar panel modules.</p>
+<ol class="arabic">
+<li><p class="first"><a class="reference external" href="main_training.py">Training</a> trains a model to classify input
+images with the correct label.</p>
+</li>
+<li><p class="first"><a class="reference external" href="main_training_restorer.py">Restoring</a> restores a trained model
+with associated weights and outputs the classification for a set of
+input images. ### Tests The base functionalities of the
+<em>Thermography</em> framework are tested using
+<a class="reference external" href="https://docs.python.org/3/library/unittest.html">unittests</a>. The
+tests can be executed as follows:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ cd thermography/
+$ python -m unittest discover thermography/test [-v]
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The same tests can be run as a normal python script as follows:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ cd thermography/
+$ python main_test.py
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="api">
+<h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<p>The code documentation is available here.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="thermography.html">thermography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="thermography.html" class="btn btn-neutral float-right" title="thermography" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

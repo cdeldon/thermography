@@ -7,8 +7,8 @@ REM Command file for Sphinx documentation
 if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=python -msphinx
 )
-set SOURCEDIR=.
-set BUILDDIR=html
+set SOURCEDIR=source
+set BUILDDIR=build
 set SPHINXPROJ=Thermography
 
 if "%1" == "" goto help

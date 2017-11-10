@@ -2,8 +2,8 @@ import os
 
 
 def create_directory_list(root_dir: str):
-    """
-    Creates a list of directories for dataset loading.
+    """Creates a list of directories for dataset loading.
+
     :param root_dir: Absolute path to the root directory of the dataset.
 
     The dataset root directory must be of the following form:

@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 
 from thermography.classification.dataset import ThermoDataset, ThermoClass, create_directory_list
-from thermography.classification.models import ThermoNet3x3, ThermoNet
+from thermography.classification.models import ThermoNet3x3
 
 
 def main():

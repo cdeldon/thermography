@@ -80,6 +80,7 @@ def area_between_rectangles(rect1: np.ndarray, rect2: np.ndarray) -> float:
        |###*-------------*##|
        |####################|
        *--------------------*
+
     :param rect1: First rectangle's coordinates [[x0,y0],[x1,y1],[x2,y2],[x3,y3]]
     :param rect2: Second rectangle's coordinates [[x'0,y'0],[x'1,y'1],[x'2,y'2],[x'3,y'3]]
     :return: The surface between the rectangles' corresponding edges.
@@ -418,6 +419,7 @@ def sort_rectangle(rectangle: np.ndarray) -> np.ndarray:
     """
     Sorts the coordinates in the rectangle such that the final indexing corresponds to the following structure:
     ::
+
        +-----------> x
        |  3             2
        |  *-------------*

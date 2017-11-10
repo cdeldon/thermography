@@ -1,6 +1,7 @@
+import os
+
 import thermography as tg
 from thermography.io import setup_logger, LogLevel
-import os
 
 
 def _main():
