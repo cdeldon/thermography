@@ -7,7 +7,17 @@ __all__ = ["PreprocessingParams", "FramePreprocessor"]
 
 
 class PreprocessingParams:
+    """Parameters used by the :class:`.FramePreprocessor`."""
+
     def __init__(self):
+        """Initializes the preprocessing parameters to their default value.
+
+       :ivar gaussian_blur: Radius of the gaussian blur to apply to the input image.
+       :ivar image_scaling: Scaling factor to apply to the input image.
+       :ivar image_rotation: Angle expressed in radiants used to rotate the input image.
+       :ivar red_threshold: Temperature threshold used to discard `cold` unimportant areas in the image.
+       :ivar min_area: Minimal surface of retained `important` areas of the image. Warm regions whose surface is smaller than this threshold are discarded.
+       """
         self.gaussian_blur = 2
         self.image_scaling = 1.0
         self.image_rotation = 0.0
@@ -16,7 +26,14 @@ class PreprocessingParams:
 
 
 class FramePreprocessor:
+    """Class responsible for preprocessing an image frame."""
+
     def __init__(self, input_image: np.ndarray, params: PreprocessingParams = PreprocessingParams()):
+        """Initializes the frame preprocessor with the input image and the preprocessor parameters.
+
+        :param input_image: RGB or greyscale input image to be preprocessed.
+        :param params: Preprocessing parameters.
+        """
         self.input_image = input_image
         self.params = params
         self.preprocessed_image = None
@@ -25,7 +42,8 @@ class FramePreprocessor:
         self.attention_image = None
 
     @property
-    def channels(self):
+    def channels(self) -> int:
+        """Returns the number of channels of the :attr:`self.input_image` image."""
         if len(self.input_image.shape) < 3:
             return 1
         elif len(self.input_image.shape) == 3:
@@ -34,7 +52,8 @@ class FramePreprocessor:
             raise ValueError("Input image has {} channels.".format(len(self.input_image.shape)))
 
     @property
-    def gray_scale(self):
+    def gray_scale(self) -> bool:
+        """Returns a boolean indicating wheter :attr:`self.input_image` is a greyscale image (or an RGB image where all channels are identical)."""
         if self.channels == 1:
             return True
         elif self.channels == 3:
@@ -44,6 +63,16 @@ class FramePreprocessor:
             raise ValueError("Input image has {} channels.".format(len(self.input_image.shape)))
 
     def preprocess(self) -> None:
+        """Preprocesses the :attr:`self.input_image` following this steps:
+
+            1. The image is scaled using the :attr:`self.params.image_scaling` parameter.
+            2. The image is rotated using the :attr:`self.params.image_rotation` parameter.
+            3. Attention detection.
+
+                a. If the image is RGB, the :attr:`self.params.red_threshold` parameter is used to determine the attention areas of the image.
+                b. Otherwise the entire image is kept as attention.
+
+        """
         scaled_image = scale_image(self.input_image, self.params.image_scaling)
         rotated_frame = rotate_image(scaled_image, self.params.image_rotation)
 

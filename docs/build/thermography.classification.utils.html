@@ -329,12 +329,26 @@
 <span id="thermography-classification-utils-kernel-summaries-module"></span><h2>thermography.classification.utils.kernel_summaries module<a class="headerlink" href="#module-thermography.classification.utils.kernel_summaries" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="thermography.classification.utils.kernel_summaries.kernel_to_histogram_summary">
-<code class="descname">kernel_to_histogram_summary</code><span class="sig-paren">(</span><em>kernel: tensorflow.python.framework.ops.Tensor</em>, <em>summary_name: str</em>, <em>collection: str = 'histograms'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/utils/kernel_summaries.html#kernel_to_histogram_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.kernel_summaries.kernel_to_histogram_summary" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">kernel_to_histogram_summary</code><span class="sig-paren">(</span><em>kernel: tensorflow.python.framework.ops.Tensor</em>, <em>summary_name: str</em>, <em>collection: str = 'histograms'</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/classification/utils/kernel_summaries.html#kernel_to_histogram_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.kernel_summaries.kernel_to_histogram_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a summary histogram from the kernel passed as argument and adds it to the collection specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>kernel</strong> – Tensor representing a kernel.</li>
+<li><strong>summary_name</strong> – Name to give to the generated summary.</li>
+<li><strong>collection</strong> – Summary collection where the histogram summary is added.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="thermography.classification.utils.kernel_summaries.kernel_to_image_summary">
-<code class="descname">kernel_to_image_summary</code><span class="sig-paren">(</span><em>kernel: tensorflow.python.framework.ops.Tensor</em>, <em>summary_name: str</em>, <em>max_images=3</em>, <em>collection: str = 'kernels'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/utils/kernel_summaries.html#kernel_to_image_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.kernel_summaries.kernel_to_image_summary" title="Permalink to this definition">¶</a></dt>
+<code class="descname">kernel_to_image_summary</code><span class="sig-paren">(</span><em>kernel: tensorflow.python.framework.ops.Tensor</em>, <em>summary_name: str</em>, <em>max_images=3</em>, <em>collection: str = 'kernels'</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/classification/utils/kernel_summaries.html#kernel_to_image_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.kernel_summaries.kernel_to_image_summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a kernel tensor of shape [width, height, in_channels, out_channels] to an image summary.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

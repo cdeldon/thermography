@@ -165,7 +165,15 @@
 
 
 <div class="viewcode-block" id="RectangleDetectorParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.RectangleDetectorParams">[docs]</a><span class="k">class</span> <span class="nc">RectangleDetectorParams</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Parameters used by the :class:`.RectangleDetector`.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the rectangle detector parameters to their default value.</span>
+
+<span class="sd">        :ivar aspect_rato: Expected rectangle aspect ratio.</span>
+<span class="sd">        :ivar aspect_ratio_relative_deviation: Detected rectangles whose aspect ratio deviates from :attr:`self.aspect_ratio` more than this parameter are ignored.</span>
+<span class="sd">        :ivar min_area: Minimal surface of detected rectangles. Smaller rectangles are rejected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aspect_ratio</span> <span class="o">=</span> <span class="mf">1.5</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aspect_ratio_relative_deviation</span> <span class="o">=</span> <span class="mf">0.35</span>
 
@@ -173,13 +181,18 @@
 
 
 <div class="viewcode-block" id="RectangleDetector"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.RectangleDetector">[docs]</a><span class="k">class</span> <span class="nc">RectangleDetector</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class responsible for detecting rectangles given a structured intersection list.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_intersections</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">RectangleDetectorParams</span> <span class="o">=</span> <span class="n">RectangleDetectorParams</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the rectangle detector with the input intersections and the rectangle detection parameters.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intersections</span> <span class="o">=</span> <span class="n">input_intersections</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">rectangles</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="RectangleDetector.detect"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.RectangleDetector.detect">[docs]</a>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RectangleDetector.detect"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.RectangleDetector.detect">[docs]</a>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Detects the rectangles from the input intersections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Detecting rectangles&quot;</span><span class="p">)</span>
         <span class="c1"># Iterate over each pair of clusters.</span>
         <span class="n">num_clusters</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intersections</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
@@ -192,6 +205,13 @@
 
 <div class="viewcode-block" id="RectangleDetector.fulfills_ratio"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.RectangleDetector.fulfills_ratio">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">fulfills_ratio</span><span class="p">(</span><span class="n">rectangle</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">expected_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">deviation</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Computes wether a rectangle defined as a set of four coordinates fulfills a predefined aspect ratio within a maximal deviation.</span>
+
+<span class="sd">        :param rectangle: Rectangle to be tested defined as a set of four pixel coordinates as a numpy array of shape `[4,2]`.</span>
+<span class="sd">        :param expected_ratio: Expected aspect ratio of the rectangle.</span>
+<span class="sd">        :param deviation: Maximal deviation between the query rectangle and the :attr:`expected_ratio` in order to accept or not the ratio test.</span>
+<span class="sd">        :return: A boolean set to True if the aspect relative deviation between its aspect ratio and the :attr:`expected_ratio` is smaller than the :attr:`deviation` threshold.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ratio</span> <span class="o">=</span> <span class="n">aspect_ratio</span><span class="p">(</span><span class="n">rectangle</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">expected_ratio</span> <span class="o">-</span> <span class="n">ratio</span><span class="p">)</span> <span class="o">/</span> <span class="n">expected_ratio</span> <span class="o">&lt;</span> <span class="n">deviation</span><span class="p">:</span>

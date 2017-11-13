@@ -176,237 +176,6 @@
   <div class="section" id="module-thermography.detection">
 <span id="thermography-detection-package"></span><h1>thermography.detection package<a class="headerlink" href="#module-thermography.detection" title="Permalink to this headline">¶</a></h1>
 <p>This package contains the implementation of various sub-steps of <a class="reference internal" href="thermography.html#module-thermography" title="thermography"><code class="xref py py-mod docutils literal"><span class="pre">thermography</span></code></a> for module detection.</p>
-<dl class="class">
-<dt id="thermography.detection.EdgeDetector">
-<em class="property">class </em><code class="descname">EdgeDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.edge_detection.EdgeDetectorParams = &lt;thermography.detection.edge_detection.EdgeDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.EdgeDetector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="thermography.detection.EdgeDetector.detect">
-<code class="descname">detect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetector.detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.EdgeDetector.detect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Detects the edges in the image passed to the constructor using the parameters passed to the constructor.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.EdgeDetectorParams">
-<em class="property">class </em><code class="descname">EdgeDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.EdgeDetectorParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.IntersectionDetector">
-<em class="property">class </em><code class="descname">IntersectionDetector</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.intersection_detection.IntersectionDetectorParams = &lt;thermography.detection.intersection_detection.IntersectionDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.IntersectionDetector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="thermography.detection.IntersectionDetector.detect">
-<code class="descname">detect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetector.detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.IntersectionDetector.detect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Detects the intersections between the segments passed to the constructor using the parameters passed to the
-constructor.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.IntersectionDetectorParams">
-<em class="property">class </em><code class="descname">IntersectionDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.IntersectionDetectorParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.MotionDetector">
-<em class="property">class </em><code class="descname">MotionDetector</code><span class="sig-paren">(</span><em>scaling: float = 1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/motion_detection.html#MotionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.MotionDetector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Class responsible for estimating the motion between two consecutive frames.</p>
-<p>Initializes the motion detector object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scaling</strong> – Scaling to apply to each frame passed to the function. This allows faster estimations of motion over the entire image when scaled down.</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="thermography.detection.MotionDetector.motion_estimate">
-<code class="descname">motion_estimate</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/thermography/detection/motion_detection.html#MotionDetector.motion_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.MotionDetector.motion_estimate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimates the motion between the frame passed as parameter and the one stored in self.last_frame.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – New frame of the sequence.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The estimation of the mean motion between self.last_frame and the frame passed as argument. The motion estimate is expressed in pixel units.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.RectangleDetector">
-<em class="property">class </em><code class="descname">RectangleDetector</code><span class="sig-paren">(</span><em>input_intersections: dict</em>, <em>params: thermography.detection.rectangle_detection.RectangleDetectorParams = &lt;thermography.detection.rectangle_detection.RectangleDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.RectangleDetector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="thermography.detection.RectangleDetector.detect">
-<code class="descname">detect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector.detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.RectangleDetector.detect" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="thermography.detection.RectangleDetector.fulfills_ratio">
-<em class="property">static </em><code class="descname">fulfills_ratio</code><span class="sig-paren">(</span><em>rectangle: numpy.ndarray</em>, <em>expected_ratio: float</em>, <em>deviation: float</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector.fulfills_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.RectangleDetector.fulfills_ratio" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.RectangleDetectorParams">
-<em class="property">class </em><code class="descname">RectangleDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.RectangleDetectorParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.PreprocessingParams">
-<em class="property">class </em><code class="descname">PreprocessingParams</code><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#PreprocessingParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.PreprocessingParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.FramePreprocessor">
-<em class="property">class </em><code class="descname">FramePreprocessor</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.preprocessing.PreprocessingParams = &lt;thermography.detection.preprocessing.PreprocessingParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#FramePreprocessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.FramePreprocessor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="attribute">
-<dt id="thermography.detection.FramePreprocessor.channels">
-<code class="descname">channels</code><a class="headerlink" href="#thermography.detection.FramePreprocessor.channels" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.detection.FramePreprocessor.gray_scale">
-<code class="descname">gray_scale</code><a class="headerlink" href="#thermography.detection.FramePreprocessor.gray_scale" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="thermography.detection.FramePreprocessor.preprocess">
-<code class="descname">preprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/detection/preprocessing.html#FramePreprocessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.FramePreprocessor.preprocess" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.SegmentClusterer">
-<em class="property">class </em><code class="descname">SegmentClusterer</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.segment_clustering.SegmentClustererParams = &lt;thermography.detection.segment_clustering.SegmentClustererParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClusterer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="thermography.detection.SegmentClusterer.clean_clusters">
-<code class="descname">clean_clusters</code><span class="sig-paren">(</span><em>mean_angles</em>, <em>params: thermography.detection.segment_clustering.ClusterCleaningParams</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.clean_clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClusterer.clean_clusters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging
-almost collinear segments into a single segment.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mean_angles</strong> – List of mean angles computed for each cluster.</li>
-<li><strong>params</strong> – Parameters used to clean the clusters.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="thermography.detection.SegmentClusterer.clean_clusters_angle">
-<code class="descname">clean_clusters_angle</code><span class="sig-paren">(</span><em>mean_angles: numpy.ndarray</em>, <em>max_angle_variation_mean: float</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.clean_clusters_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClusterer.clean_clusters_angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes all segments whose angle deviates more than the passed parameter from the mean cluster angle.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mean_angles</strong> – List of cluster means.</li>
-<li><strong>max_angle_variation_mean</strong> – Maximal angle variation to allow between the cluster segments and the associated mean angle.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="thermography.detection.SegmentClusterer.cluster_segments">
-<code class="descname">cluster_segments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.cluster_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClusterer.cluster_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clusters the input segments based on the parameters passed as argument. The features that can be used to cluster
-the segments are their mean coordinates, and their angle.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="thermography.detection.SegmentClusterer.compute_cluster_mean">
-<code class="descname">compute_cluster_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; tuple<a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.compute_cluster_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClusterer.compute_cluster_mean" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the mean values (coordinates and angles) for each one of the identified clusters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The mean angles, and mean coordinates of each cluster.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="thermography.detection.SegmentClusterer.merge_collinear_segments">
-<code class="descname">merge_collinear_segments</code><span class="sig-paren">(</span><em>max_merging_angle: float</em>, <em>max_endpoint_distance: float</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.merge_collinear_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClusterer.merge_collinear_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Merges all collinear segments belonging to the same cluster.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>max_merging_angle</strong> – Maximal angle to allow between segments to be merged.</li>
-<li><strong>max_endpoint_distance</strong> – Maximal summed distance between segments endpoints and fitted line for merging segments.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.SegmentClustererParams">
-<em class="property">class </em><code class="descname">SegmentClustererParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClustererParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClustererParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.ClusterCleaningParams">
-<em class="property">class </em><code class="descname">ClusterCleaningParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#ClusterCleaningParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.ClusterCleaningParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.SegmentDetector">
-<em class="property">class </em><code class="descname">SegmentDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params=&lt;thermography.detection.segment_detection.SegmentDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentDetector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="thermography.detection.SegmentDetector.detect">
-<code class="descname">detect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetector.detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentDetector.detect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Detects the segments in the input image using the parameters passed as argument. Furthermore the detected
-segments are extended on each side by a few pixels as defined in the parameters.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="thermography.detection.SegmentDetectorParams">
-<em class="property">class </em><code class="descname">SegmentDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentDetectorParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-</dd></dl>
-
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -416,15 +185,52 @@ segments are extended on each side by a few pixels as defined in the parameters.
 <dt id="thermography.detection.edge_detection.EdgeDetectorParams">
 <em class="property">class </em><code class="descname">EdgeDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.edge_detection.EdgeDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parameters used by the <a class="reference internal" href="#thermography.detection.edge_detection.EdgeDetector" title="thermography.detection.edge_detection.EdgeDetector"><code class="xref py py-class docutils literal"><span class="pre">EdgeDetector</span></code></a>.</p>
+<p>Initializes the edge detector parameters to their default value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hysteresis_min_thresh</strong> – Canny candidate edges whose weight is smaller than this threshold are ignored.</li>
+<li><strong>hysteresis_max_thresh</strong> – Canny candidate edges whose weights is larger than this threshold are considered as edges without hysteresis.</li>
+<li><strong>kernel</strong> – Kernel shape to use when performing dilation and erosion of binary edge image.</li>
+<li><strong>dilation_steps</strong> – Number of dilation steps to take before skeletonization.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.edge_detection.EdgeDetector">
 <em class="property">class </em><code class="descname">EdgeDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.edge_detection.EdgeDetectorParams = &lt;thermography.detection.edge_detection.EdgeDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.edge_detection.EdgeDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class responsible for detecting edges in greyscale images.
+The approach taken to detect edges in the input greyscale image is the following:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Perform a canny edge detection on the input image.</li>
+<li>Dilate the resulting binary image for a parametrized number of steps in order to connect short edges and smooth out the edge shape.</li>
+<li>Erode the dilated edge image in order to obtain a 1-pixel wide skeletonization of the edges in the input image.</li>
+</ol>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input_image</strong> – Input greyscale image where edges must be detected.</li>
+<li><strong>params</strong> – Parameters used for edge detection.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="thermography.detection.edge_detection.EdgeDetector.detect">
-<code class="descname">detect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetector.detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.edge_detection.EdgeDetector.detect" title="Permalink to this definition">¶</a></dt>
+<code class="descname">detect</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetector.detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.edge_detection.EdgeDetector.detect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects the edges in the image passed to the constructor using the parameters passed to the constructor.</p>
 </dd></dl>
 
@@ -435,13 +241,32 @@ segments are extended on each side by a few pixels as defined in the parameters.
 <span id="thermography-detection-intersection-detection-module"></span><h2>thermography.detection.intersection_detection module<a class="headerlink" href="#module-thermography.detection.intersection_detection" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.detection.intersection_detection.IntersectionDetector">
-<em class="property">class </em><code class="descname">IntersectionDetector</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.intersection_detection.IntersectionDetectorParams = &lt;thermography.detection.intersection_detection.IntersectionDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.intersection_detection.IntersectionDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">IntersectionDetector</code><span class="sig-paren">(</span><em>input_segments: list</em>, <em>params: thermography.detection.intersection_detection.IntersectionDetectorParams = &lt;thermography.detection.intersection_detection.IntersectionDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.intersection_detection.IntersectionDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class responsible for detecting intersections between segments.</p>
+<p>Initializes the intersection detector object.</p>
+<p>Intersections are computed between all segments <cite>s_i</cite> of cluster <cite>i</cite>, against all segments <cite>s_j</cite> of cluster <cite>j</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input_segments</strong> – List of segment clusters. Each element <cite>cluster_i</cite> of this list is a numpy array of shape <cite>[num_segments_i, 4]</cite></li>
+<li><strong>params</strong> – Parameters to be used for intersection detection.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="thermography.detection.intersection_detection.IntersectionDetector.detect">
 <code class="descname">detect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetector.detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.intersection_detection.IntersectionDetector.detect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects the intersections between the segments passed to the constructor using the parameters passed to the
 constructor.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The intersections are only computed between segments belonging to different clusters, and never between segments of the same cluster.</p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -450,6 +275,16 @@ constructor.</p>
 <dt id="thermography.detection.intersection_detection.IntersectionDetectorParams">
 <em class="property">class </em><code class="descname">IntersectionDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.intersection_detection.IntersectionDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parameters used by the <a class="reference internal" href="#thermography.detection.intersection_detection.IntersectionDetector" title="thermography.detection.intersection_detection.IntersectionDetector"><code class="xref py py-class docutils literal"><span class="pre">IntersectionDetector</span></code></a>.</p>
+<p>Initializes the intersection detector parameters to their default value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><strong>angle_threshold</strong> – Only intersections between segments which deviate less than this parameter from the canonical 90° angle are accepted.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -465,21 +300,21 @@ constructor.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scaling</strong> – Scaling to apply to each frame passed to the function. This allows faster estimations of motion over the entire image when scaled down.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scaling</strong> – Scaling to apply to each image frame passed to the motion estimate. This allows faster estimations of motion over the entire image when scaled down.</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="thermography.detection.motion_detection.MotionDetector.motion_estimate">
 <code class="descname">motion_estimate</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/thermography/detection/motion_detection.html#MotionDetector.motion_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.motion_detection.MotionDetector.motion_estimate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimates the motion between the frame passed as parameter and the one stored in self.last_frame.</p>
+<dd><p>Estimates the motion between the frame passed as parameter and the one stored in <code class="xref py py-attr docutils literal"><span class="pre">self.last_frame</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – New frame of the sequence.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The estimation of the mean motion between self.last_frame and the frame passed as argument. The motion estimate is expressed in pixel units.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The estimation of the mean motion between <code class="xref py py-attr docutils literal"><span class="pre">self.last_frame</span></code> and the frame passed as argument. The motion estimate is expressed in pixel units.</td>
 </tr>
 </tbody>
 </table>
@@ -494,26 +329,74 @@ constructor.</p>
 <dt id="thermography.detection.preprocessing.PreprocessingParams">
 <em class="property">class </em><code class="descname">PreprocessingParams</code><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#PreprocessingParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.preprocessing.PreprocessingParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parameters used by the <a class="reference internal" href="#thermography.detection.preprocessing.FramePreprocessor" title="thermography.detection.preprocessing.FramePreprocessor"><code class="xref py py-class docutils literal"><span class="pre">FramePreprocessor</span></code></a>.</p>
+<p>Initializes the preprocessing parameters to their default value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>gaussian_blur</strong> – Radius of the gaussian blur to apply to the input image.</li>
+<li><strong>image_scaling</strong> – Scaling factor to apply to the input image.</li>
+<li><strong>image_rotation</strong> – Angle expressed in radiants used to rotate the input image.</li>
+<li><strong>red_threshold</strong> – Temperature threshold used to discard <cite>cold</cite> unimportant areas in the image.</li>
+<li><strong>min_area</strong> – Minimal surface of retained <cite>important</cite> areas of the image. Warm regions whose surface is smaller than this threshold are discarded.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.preprocessing.FramePreprocessor">
 <em class="property">class </em><code class="descname">FramePreprocessor</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.preprocessing.PreprocessingParams = &lt;thermography.detection.preprocessing.PreprocessingParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#FramePreprocessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.preprocessing.FramePreprocessor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class responsible for preprocessing an image frame.</p>
+<p>Initializes the frame preprocessor with the input image and the preprocessor parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input_image</strong> – RGB or greyscale input image to be preprocessed.</li>
+<li><strong>params</strong> – Preprocessing parameters.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="thermography.detection.preprocessing.FramePreprocessor.channels">
 <code class="descname">channels</code><a class="headerlink" href="#thermography.detection.preprocessing.FramePreprocessor.channels" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the number of channels of the <code class="xref py py-attr docutils literal"><span class="pre">self.input_image</span></code> image.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.detection.preprocessing.FramePreprocessor.gray_scale">
 <code class="descname">gray_scale</code><a class="headerlink" href="#thermography.detection.preprocessing.FramePreprocessor.gray_scale" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns a boolean indicating wheter <code class="xref py py-attr docutils literal"><span class="pre">self.input_image</span></code> is a greyscale image (or an RGB image where all channels are identical).</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="thermography.detection.preprocessing.FramePreprocessor.preprocess">
 <code class="descname">preprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/detection/preprocessing.html#FramePreprocessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.preprocessing.FramePreprocessor.preprocess" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Preprocesses the <code class="xref py py-attr docutils literal"><span class="pre">self.input_image</span></code> following this steps:</p>
+<ol class="arabic">
+<li><p class="first">The image is scaled using the <code class="xref py py-attr docutils literal"><span class="pre">self.params.image_scaling</span></code> parameter.</p>
+</li>
+<li><p class="first">The image is rotated using the <code class="xref py py-attr docutils literal"><span class="pre">self.params.image_rotation</span></code> parameter.</p>
+</li>
+<li><p class="first">Attention detection.</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>If the image is RGB, the <code class="xref py py-attr docutils literal"><span class="pre">self.params.red_threshold</span></code> parameter is used to determine the attention areas of the image.</li>
+<li>Otherwise the entire image is kept as attention.</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</dd></dl>
 
 </dd></dl>
 
@@ -524,15 +407,35 @@ constructor.</p>
 <dt id="thermography.detection.rectangle_detection.RectangleDetector">
 <em class="property">class </em><code class="descname">RectangleDetector</code><span class="sig-paren">(</span><em>input_intersections: dict</em>, <em>params: thermography.detection.rectangle_detection.RectangleDetectorParams = &lt;thermography.detection.rectangle_detection.RectangleDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.rectangle_detection.RectangleDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class responsible for detecting rectangles given a structured intersection list.</p>
+<p>Initializes the rectangle detector with the input intersections and the rectangle detection parameters.</p>
 <dl class="method">
 <dt id="thermography.detection.rectangle_detection.RectangleDetector.detect">
-<code class="descname">detect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector.detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.rectangle_detection.RectangleDetector.detect" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">detect</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector.detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.rectangle_detection.RectangleDetector.detect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects the rectangles from the input intersections.</p>
+</dd></dl>
 
 <dl class="staticmethod">
 <dt id="thermography.detection.rectangle_detection.RectangleDetector.fulfills_ratio">
 <em class="property">static </em><code class="descname">fulfills_ratio</code><span class="sig-paren">(</span><em>rectangle: numpy.ndarray</em>, <em>expected_ratio: float</em>, <em>deviation: float</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector.fulfills_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.rectangle_detection.RectangleDetector.fulfills_ratio" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes wether a rectangle defined as a set of four coordinates fulfills a predefined aspect ratio within a maximal deviation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>rectangle</strong> – Rectangle to be tested defined as a set of four pixel coordinates as a numpy array of shape <cite>[4,2]</cite>.</li>
+<li><strong>expected_ratio</strong> – Expected aspect ratio of the rectangle.</li>
+<li><strong>deviation</strong> – Maximal deviation between the query rectangle and the <code class="xref py py-attr docutils literal"><span class="pre">expected_ratio</span></code> in order to accept or not the ratio test.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A boolean set to True if the aspect relative deviation between its aspect ratio and the <code class="xref py py-attr docutils literal"><span class="pre">expected_ratio</span></code> is smaller than the <code class="xref py py-attr docutils literal"><span class="pre">deviation</span></code> threshold.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -540,6 +443,21 @@ constructor.</p>
 <dt id="thermography.detection.rectangle_detection.RectangleDetectorParams">
 <em class="property">class </em><code class="descname">RectangleDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.rectangle_detection.RectangleDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parameters used by the <a class="reference internal" href="#thermography.detection.rectangle_detection.RectangleDetector" title="thermography.detection.rectangle_detection.RectangleDetector"><code class="xref py py-class docutils literal"><span class="pre">RectangleDetector</span></code></a>.</p>
+<p>Initializes the rectangle detector parameters to their default value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>aspect_rato</strong> – Expected rectangle aspect ratio.</li>
+<li><strong>aspect_ratio_relative_deviation</strong> – Detected rectangles whose aspect ratio deviates from <code class="xref py py-attr docutils literal"><span class="pre">self.aspect_ratio</span></code> more than this parameter are ignored.</li>
+<li><strong>min_area</strong> – Minimal surface of detected rectangles. Smaller rectangles are rejected.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -549,9 +467,11 @@ constructor.</p>
 <dt id="thermography.detection.segment_clustering.SegmentClusterer">
 <em class="property">class </em><code class="descname">SegmentClusterer</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.segment_clustering.SegmentClustererParams = &lt;thermography.detection.segment_clustering.SegmentClustererParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClusterer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class responsible for clustering and cleaning the raw segments extracted by the <code class="xref py py-class docutils literal"><span class="pre">SegmentDetector</span></code> class.</p>
+<p>Initializes the segment clusterer with the input segments and the semgment clusterer parameters.</p>
 <dl class="method">
 <dt id="thermography.detection.segment_clustering.SegmentClusterer.clean_clusters">
-<code class="descname">clean_clusters</code><span class="sig-paren">(</span><em>mean_angles</em>, <em>params: thermography.detection.segment_clustering.ClusterCleaningParams</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.clean_clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClusterer.clean_clusters" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clean_clusters</code><span class="sig-paren">(</span><em>mean_angles</em>, <em>params: thermography.detection.segment_clustering.ClusterCleaningParams = &lt;thermography.detection.segment_clustering.ClusterCleaningParams object&gt;</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.clean_clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClusterer.clean_clusters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging
 almost collinear segments into a single segment.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -569,60 +489,16 @@ almost collinear segments into a single segment.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="thermography.detection.segment_clustering.SegmentClusterer.clean_clusters_angle">
-<code class="descname">clean_clusters_angle</code><span class="sig-paren">(</span><em>mean_angles: numpy.ndarray</em>, <em>max_angle_variation_mean: float</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.clean_clusters_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClusterer.clean_clusters_angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes all segments whose angle deviates more than the passed parameter from the mean cluster angle.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mean_angles</strong> – List of cluster means.</li>
-<li><strong>max_angle_variation_mean</strong> – Maximal angle variation to allow between the cluster segments and the associated mean angle.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="thermography.detection.segment_clustering.SegmentClusterer.cluster_segments">
-<code class="descname">cluster_segments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.cluster_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClusterer.cluster_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clusters the input segments based on the parameters passed as argument. The features that can be used to cluster
-the segments are their mean coordinates, and their angle.</p>
+<code class="descname">cluster_segments</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.cluster_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClusterer.cluster_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clusters the input segments <code class="xref py py-attr docutils literal"><span class="pre">self.raw_segments</span></code> based on the parameters passed as argument.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.detection.segment_clustering.SegmentClusterer.compute_cluster_mean">
 <code class="descname">compute_cluster_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; tuple<a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.compute_cluster_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClusterer.compute_cluster_mean" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the mean values (coordinates and angles) for each one of the identified clusters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The mean angles, and mean coordinates of each cluster.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="thermography.detection.segment_clustering.SegmentClusterer.merge_collinear_segments">
-<code class="descname">merge_collinear_segments</code><span class="sig-paren">(</span><em>max_merging_angle: float</em>, <em>max_endpoint_distance: float</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer.merge_collinear_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClusterer.merge_collinear_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Merges all collinear segments belonging to the same cluster.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>max_merging_angle</strong> – Maximal angle to allow between segments to be merged.</li>
-<li><strong>max_endpoint_distance</strong> – Maximal summed distance between segments endpoints and fitted line for merging segments.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Computes the mean values (coordinates and angles) for each one of the identified clusters.
+:return The mean angles, and mean coordinates of each cluster.</p>
 </dd></dl>
 
 </dd></dl>
@@ -631,12 +507,45 @@ the segments are their mean coordinates, and their angle.</p>
 <dt id="thermography.detection.segment_clustering.SegmentClustererParams">
 <em class="property">class </em><code class="descname">SegmentClustererParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClustererParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClustererParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parameters used by the <a class="reference internal" href="#thermography.detection.segment_clustering.SegmentClusterer" title="thermography.detection.segment_clustering.SegmentClusterer"><code class="xref py py-class docutils literal"><span class="pre">SegmentClusterer</span></code></a> related to segment clustering.</p>
+<p>Initializes the segment clusterer parameters to their default value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_init</strong> – Number of times the cluster detector should reinitialize the cluster search (only works if <code class="xref py py-attr docutils literal"><span class="pre">self.cluster_type</span></code> is <cite>“knn”</cite>).</li>
+<li><strong>num_clusters</strong> – Number of clusters to be searched.</li>
+<li><strong>swipe_clusters</strong> – Boolean flag which indicates whether the cluster search should sweep over the possible number of clusters or not. (only works if <code class="xref py py-attr docutils literal"><span class="pre">self.cluster_type</span></code> is <cite>“gmm”</cite>).</li>
+<li><strong>cluster_type</strong> – String specifying which algorithm to used for cluster detection (<cite>“knn”</cite> : K-nearest neighbors, <cite>“gmm”</cite> : Gaussian mixture model).</li>
+<li><strong>use_angles</strong> – Boolean flag indicating if the features to be used for clustering should include the segment angles.</li>
+<li><strong>use_centers</strong> – Boolean flag indicating if the features to be used for clustering should include the segment centers.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.segment_clustering.ClusterCleaningParams">
 <em class="property">class </em><code class="descname">ClusterCleaningParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#ClusterCleaningParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.ClusterCleaningParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parameters used by the <a class="reference internal" href="#thermography.detection.segment_clustering.SegmentClusterer" title="thermography.detection.segment_clustering.SegmentClusterer"><code class="xref py py-class docutils literal"><span class="pre">SegmentClusterer</span></code></a> related to segment filtering.</p>
+<p>Initializes the cluster cleaning parameters to their default value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>max_angle_variation_mean</strong> – Segments whose angle with the mean cluster angle deviates more than this parameter, are rejected.</li>
+<li><strong>max_merging_angle</strong> – Candidate segment pairs for merging whose relative angle deviates more than this threshold are not merged.</li>
+<li><strong>max_endpoint_distance</strong> – Candidate segment pairs for merging whose sum of squared distances between endpoints is larger than the square of this parameter are not merged.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -646,11 +555,24 @@ the segments are their mean coordinates, and their angle.</p>
 <dt id="thermography.detection.segment_detection.SegmentDetector">
 <em class="property">class </em><code class="descname">SegmentDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params=&lt;thermography.detection.segment_detection.SegmentDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_detection.SegmentDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class responsible for detecting segments in the edge image generated by <code class="xref py py-class docutils literal"><span class="pre">EdgeDetector</span></code>.</p>
+<p>Initializes the segment detector with the binary input image and the segment detector parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input_image</strong> – Binary edge image (usually generated by <code class="xref py py-class docutils literal"><span class="pre">EdgeDetector</span></code>.</li>
+<li><strong>params</strong> – Segment detector parameters to be used for segment detection.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="thermography.detection.segment_detection.SegmentDetector.detect">
 <code class="descname">detect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetector.detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_detection.SegmentDetector.detect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Detects the segments in the input image using the parameters passed as argument. Furthermore the detected
-segments are extended on each side by a few pixels as defined in the parameters.</p>
+<dd><p>Detects the segments in the input image using the parameters passed as argument using a probilistic Hough transform.</p>
 </dd></dl>
 
 </dd></dl>
@@ -659,6 +581,24 @@ segments are extended on each side by a few pixels as defined in the parameters.
 <dt id="thermography.detection.segment_detection.SegmentDetectorParams">
 <em class="property">class </em><code class="descname">SegmentDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_detection.SegmentDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parameters used by the <a class="reference internal" href="#thermography.detection.segment_detection.SegmentDetector" title="thermography.detection.segment_detection.SegmentDetector"><code class="xref py py-class docutils literal"><span class="pre">SegmentDetector</span></code></a>.</p>
+<p>Initializes the segment detector parameters to their default value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>d_rho</strong> – Distance resolution in pixels of the Hough parameter space.</li>
+<li><strong>d_theta</strong> – Angle resolution in pixels of the Hough parameter space expressed in radiants.</li>
+<li><strong>min_number_votes</strong> – Minimum number of votes in the Hough space to accept a segment.</li>
+<li><strong>min_line_length</strong> – Minimum line length for segment acceptance expressed in pixel units.</li>
+<li><strong>max_line_gap</strong> – Different segments who present a gap smaller than this parameter are detected as a single segment.</li>
+<li><strong>extension_pixels</strong> – All the detected segments are extended by this amount of pixels on each side.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

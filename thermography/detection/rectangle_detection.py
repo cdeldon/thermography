@@ -7,7 +7,15 @@ __all__ = ["RectangleDetector", "RectangleDetectorParams"]
 
 
 class RectangleDetectorParams:
+    """Parameters used by the :class:`.RectangleDetector`."""
+
     def __init__(self):
+        """Initializes the rectangle detector parameters to their default value.
+
+        :ivar aspect_rato: Expected rectangle aspect ratio.
+        :ivar aspect_ratio_relative_deviation: Detected rectangles whose aspect ratio deviates from :attr:`self.aspect_ratio` more than this parameter are ignored.
+        :ivar min_area: Minimal surface of detected rectangles. Smaller rectangles are rejected.
+        """
         self.aspect_ratio = 1.5
         self.aspect_ratio_relative_deviation = 0.35
 
@@ -15,13 +23,18 @@ class RectangleDetectorParams:
 
 
 class RectangleDetector:
+    """Class responsible for detecting rectangles given a structured intersection list."""
+
     def __init__(self, input_intersections: dict, params: RectangleDetectorParams = RectangleDetectorParams()):
+        """Initializes the rectangle detector with the input intersections and the rectangle detection parameters."""
         self.intersections = input_intersections
         self.params = params
 
         self.rectangles = []
 
-    def detect(self):
+    def detect(self) -> None:
+        """Detects the rectangles from the input intersections.
+        """
         Logger.debug("Detecting rectangles")
         # Iterate over each pair of clusters.
         num_clusters = int((np.sqrt(8 * len(self.intersections) + 1) + 1) / 2)
@@ -34,6 +47,13 @@ class RectangleDetector:
 
     @staticmethod
     def fulfills_ratio(rectangle: np.ndarray, expected_ratio: float, deviation: float) -> bool:
+        """Computes wether a rectangle defined as a set of four coordinates fulfills a predefined aspect ratio within a maximal deviation.
+
+        :param rectangle: Rectangle to be tested defined as a set of four pixel coordinates as a numpy array of shape `[4,2]`.
+        :param expected_ratio: Expected aspect ratio of the rectangle.
+        :param deviation: Maximal deviation between the query rectangle and the :attr:`expected_ratio` in order to accept or not the ratio test.
+        :return: A boolean set to True if the aspect relative deviation between its aspect ratio and the :attr:`expected_ratio` is smaller than the :attr:`deviation` threshold.
+        """
         ratio = aspect_ratio(rectangle)
 
         if np.abs(expected_ratio - ratio) / expected_ratio < deviation:

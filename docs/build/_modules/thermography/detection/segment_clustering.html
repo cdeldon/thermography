@@ -167,8 +167,19 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SegmentClusterer&quot;</span><span class="p">,</span> <span class="s2">&quot;SegmentClustererParams&quot;</span><span class="p">,</span> <span class="s2">&quot;ClusterCleaningParams&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="SegmentClustererParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClustererParams">[docs]</a><span class="k">class</span> <span class="nc">SegmentClustererParams</span><span class="p">:</span>
+<div class="viewcode-block" id="SegmentClustererParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.segment_clustering.SegmentClustererParams">[docs]</a><span class="k">class</span> <span class="nc">SegmentClustererParams</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Parameters used by the :class:`.SegmentClusterer` related to segment clustering.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the segment clusterer parameters to their default value.</span>
+
+<span class="sd">        :ivar num_init: Number of times the cluster detector should reinitialize the cluster search (only works if :attr:`self.cluster_type` is `&quot;knn&quot;`).</span>
+<span class="sd">        :ivar num_clusters: Number of clusters to be searched.</span>
+<span class="sd">        :ivar swipe_clusters: Boolean flag which indicates whether the cluster search should sweep over the possible number of clusters or not. (only works if :attr:`self.cluster_type` is `&quot;gmm&quot;`).</span>
+<span class="sd">        :ivar cluster_type: String specifying which algorithm to used for cluster detection (`&quot;knn&quot;` : K-nearest neighbors, `&quot;gmm&quot;` : Gaussian mixture model).</span>
+<span class="sd">        :ivar use_angles: Boolean flag indicating if the features to be used for clustering should include the segment angles.</span>
+<span class="sd">        :ivar use_centers: Boolean flag indicating if the features to be used for clustering should include the segment centers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#  Number of initializations to be performed when clustering.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_init</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="c1"># Number of clusters to extract from the parameter space.</span>
@@ -185,8 +196,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">use_centers</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="ClusterCleaningParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.ClusterCleaningParams">[docs]</a><span class="k">class</span> <span class="nc">ClusterCleaningParams</span><span class="p">:</span>
+<div class="viewcode-block" id="ClusterCleaningParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.segment_clustering.ClusterCleaningParams">[docs]</a><span class="k">class</span> <span class="nc">ClusterCleaningParams</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Parameters used by the :class:`.SegmentClusterer` related to segment filtering.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the cluster cleaning parameters to their default value.</span>
+
+<span class="sd">        :ivar max_angle_variation_mean: Segments whose angle with the mean cluster angle deviates more than this parameter, are rejected.</span>
+<span class="sd">        :ivar max_merging_angle: Candidate segment pairs for merging whose relative angle deviates more than this threshold are not merged.</span>
+<span class="sd">        :ivar max_endpoint_distance: Candidate segment pairs for merging whose sum of squared distances between endpoints is larger than the square of this parameter are not merged.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Maximal allowed angle between each segment and corresponding cluster mean angle.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_angle_variation_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="mi">20</span>
         <span class="c1"># Maximal allowed angle between two segments in order to merge them into a single one.</span>
@@ -195,18 +214,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">max_endpoint_distance</span> <span class="o">=</span> <span class="mf">10.0</span></div>
 
 
-<div class="viewcode-block" id="SegmentClusterer"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer">[docs]</a><span class="k">class</span> <span class="nc">SegmentClusterer</span><span class="p">:</span>
+<div class="viewcode-block" id="SegmentClusterer"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.segment_clustering.SegmentClusterer">[docs]</a><span class="k">class</span> <span class="nc">SegmentClusterer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class responsible for clustering and cleaning the raw segments extracted by the :class:`SegmentDetector` class.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_segments</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SegmentClustererParams</span> <span class="o">=</span> <span class="n">SegmentClustererParams</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the segment clusterer with the input segments and the semgment clusterer parameters.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raw_segments</span> <span class="o">=</span> <span class="n">input_segments</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cluster_features</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="SegmentClusterer.cluster_segments"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer.cluster_segments">[docs]</a>    <span class="k">def</span> <span class="nf">cluster_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Clusters the input segments based on the parameters passed as argument. The features that can be used to cluster</span>
-<span class="sd">        the segments are their mean coordinates, and their angle.</span>
+<div class="viewcode-block" id="SegmentClusterer.cluster_segments"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.segment_clustering.SegmentClusterer.cluster_segments">[docs]</a>    <span class="k">def</span> <span class="nf">cluster_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Clusters the input segments :attr:`self.raw_segments` based on the parameters passed as argument.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Clustering segments&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">cluster_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;gmm&quot;</span><span class="p">,</span> <span class="s2">&quot;knn&quot;</span><span class="p">]:</span>
@@ -285,11 +305,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span> <span class="o">=</span> <span class="n">cluster_segment_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cluster_features</span> <span class="o">=</span> <span class="n">cluster_feature_list</span></div>
 
-<div class="viewcode-block" id="SegmentClusterer.compute_cluster_mean"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer.compute_cluster_mean">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cluster_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Computes the mean values (coordinates and angles) for each one of the identified clusters.</span>
-
-<span class="sd">        :return: The mean angles, and mean coordinates of each cluster.</span>
+<div class="viewcode-block" id="SegmentClusterer.compute_cluster_mean"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.segment_clustering.SegmentClusterer.compute_cluster_mean">[docs]</a>    <span class="k">def</span> <span class="nf">compute_cluster_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Computes the mean values (coordinates and angles) for each one of the identified clusters.</span>
+<span class="sd">        :return The mean angles, and mean coordinates of each cluster.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mean_centers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">mean_angles</span> <span class="o">=</span> <span class="p">[]</span>
@@ -303,9 +321,26 @@
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mean_angles</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mean_centers</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SegmentClusterer.clean_clusters_angle"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer.clean_clusters_angle">[docs]</a>    <span class="k">def</span> <span class="nf">clean_clusters_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean_angles</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">max_angle_variation_mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Removes all segments whose angle deviates more than the passed parameter from the mean cluster angle.</span>
+<div class="viewcode-block" id="SegmentClusterer.clean_clusters"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.segment_clustering.SegmentClusterer.clean_clusters">[docs]</a>    <span class="k">def</span> <span class="nf">clean_clusters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean_angles</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">ClusterCleaningParams</span> <span class="o">=</span> <span class="n">ClusterCleaningParams</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging</span>
+<span class="sd">        almost collinear segments into a single segment.</span>
+
+<span class="sd">        :param mean_angles: List of mean angles computed for each cluster.</span>
+<span class="sd">        :param params: Parameters used to clean the clusters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Reorder the segments inside the clusters.</span>
+        <span class="k">for</span> <span class="n">cluster_index</span><span class="p">,</span> <span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_features</span><span class="p">)):</span>
+            <span class="n">cluster_order</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sort_segments</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">[</span><span class="n">cluster_order</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cluster_features</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">cluster_order</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__clean_clusters_angle</span><span class="p">(</span><span class="n">mean_angles</span><span class="o">=</span><span class="n">mean_angles</span><span class="p">,</span> <span class="n">max_angle_variation_mean</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">max_angle_variation_mean</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__merge_collinear_segments</span><span class="p">(</span><span class="n">max_merging_angle</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">max_merging_angle</span><span class="p">,</span>
+                                        <span class="n">max_endpoint_distance</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">max_endpoint_distance</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__clean_clusters_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean_angles</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">max_angle_variation_mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span><span class="o">-&gt;</span><span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Removes all segments whose angle deviates more than the passed parameter from the mean cluster angle.</span>
 
 <span class="sd">        :param mean_angles: List of cluster means.</span>
 <span class="sd">        :param max_angle_variation_mean: Maximal angle variation to allow between the cluster segments and the associated mean angle.</span>
@@ -319,11 +354,10 @@
                 <span class="n">d_angle</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">angle_diff</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">mean_angle</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">d_angle</span> <span class="o">&gt;</span> <span class="n">max_angle_variation_mean</span><span class="p">:</span>
                     <span class="n">invalid_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment_index</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">invalid_indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">invalid_indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SegmentClusterer.merge_collinear_segments"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer.merge_collinear_segments">[docs]</a>    <span class="k">def</span> <span class="nf">merge_collinear_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_merging_angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_endpoint_distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Merges all collinear segments belonging to the same cluster.</span>
+    <span class="k">def</span> <span class="nf">__merge_collinear_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_merging_angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_endpoint_distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Merges all collinear segments belonging to the same cluster.</span>
 
 <span class="sd">        :param max_merging_angle: Maximal angle to allow between segments to be merged.</span>
 <span class="sd">        :param max_endpoint_distance: Maximal summed distance between segments endpoints and fitted line for merging segments.</span>
@@ -350,25 +384,6 @@
                         <span class="n">merged</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">merged_segments</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="SegmentClusterer.clean_clusters"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.SegmentClusterer.clean_clusters">[docs]</a>    <span class="k">def</span> <span class="nf">clean_clusters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean_angles</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">ClusterCleaningParams</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging</span>
-<span class="sd">        almost collinear segments into a single segment.</span>
-
-<span class="sd">        :param mean_angles: List of mean angles computed for each cluster.</span>
-<span class="sd">        :param params: Parameters used to clean the clusters.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Reorder the segments inside the clusters.</span>
-        <span class="k">for</span> <span class="n">cluster_index</span><span class="p">,</span> <span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_features</span><span class="p">)):</span>
-            <span class="n">cluster_order</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sort_segments</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cluster_list</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">[</span><span class="n">cluster_order</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cluster_features</span><span class="p">[</span><span class="n">cluster_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">cluster_order</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">clean_clusters_angle</span><span class="p">(</span><span class="n">mean_angles</span><span class="o">=</span><span class="n">mean_angles</span><span class="p">,</span> <span class="n">max_angle_variation_mean</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">max_angle_variation_mean</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">merge_collinear_segments</span><span class="p">(</span><span class="n">max_merging_angle</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">max_merging_angle</span><span class="p">,</span>
-                                      <span class="n">max_endpoint_distance</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">max_endpoint_distance</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

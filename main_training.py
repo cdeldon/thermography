@@ -15,8 +15,6 @@ def main():
     dataset_path = "Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/padded_dataset"
     dataset_directories = create_directory_list(dataset_path)
 
-    dataset_directories = dataset_directories[0:2]
-
     print("Input dataset directories:")
     for path_index, path in enumerate(dataset_directories):
         print("  ({}) {}".format(path_index, path))
@@ -42,7 +40,7 @@ def main():
     ############################# Runtime parameters #############################
 
     # Dataset params
-    load_all_data = False
+    load_all_data = True
     normalize_images = True
 
     # Learning params
@@ -56,11 +54,11 @@ def main():
     keep_probability = 0.5
 
     # Summary params
-    write_train_summaries_every_n_steps = 1
-    write_histograms_every_n_steps = 1
-    write_kernel_images_every_n_steps = 1
-    write_test_summaries_every_n_epochs = 1
-    save_model_every_n_epochs = 1
+    write_train_summaries_every_n_steps = 501
+    write_histograms_every_n_steps = 1001
+    write_kernel_images_every_n_steps = 1001
+    write_test_summaries_every_n_epochs = 20
+    save_model_every_n_epochs = 20
 
     ############################# Loading the dataset ############################
 

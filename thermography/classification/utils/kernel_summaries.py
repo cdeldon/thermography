@@ -1,11 +1,17 @@
 import tensorflow as tf
 
 
-def kernel_to_histogram_summary(kernel: tf.Tensor, summary_name: str, collection: str = "histograms"):
+def kernel_to_histogram_summary(kernel: tf.Tensor, summary_name: str, collection: str = "histograms") -> None:
+    """Generates a summary histogram from the kernel passed as argument and adds it to the collection specified.
+
+    :param kernel: Tensor representing a kernel.
+    :param summary_name: Name to give to the generated summary.
+    :param collection: Summary collection where the histogram summary is added.
+    """
     tf.summary.histogram(name=summary_name, values=kernel, collections=[collection])
 
 
-def kernel_to_image_summary(kernel: tf.Tensor, summary_name: str, max_images=3, collection: str = "kernels"):
+def kernel_to_image_summary(kernel: tf.Tensor, summary_name: str, max_images=3, collection: str = "kernels") -> None:
     """
     Converts a kernel tensor of shape [width, height, in_channels, out_channels] to an image summary.
 
