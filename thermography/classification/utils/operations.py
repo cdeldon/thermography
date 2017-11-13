@@ -2,7 +2,7 @@
 
 import tensorflow as tf
 
-from . import kernel_to_image_summary
+from . import kernel_to_image_summary, kernel_to_histogram_summary
 
 __all__ = ["weight_variable",
            "bias_variable",
@@ -51,11 +51,13 @@ def conv_relu(x: tf.Tensor, kernel_shape: list, bias_shape: list, name: str = ""
     :param kernel_shape: Kernel shape to be used in the convolution.
     :param bias_shape: Bias shape to be added to the result of the convolution.
     :param name: Name of the returned operation.
-    :return: A new tensor consising of the convolution-bias-relu operation.
+    :return: A new tensor consisting of the convolution-bias-relu operation.
     """
     weights = weight_variable(name="W" + name, shape=kernel_shape)
+    kernel_to_histogram_summary(kernel=weights, summary_name="W")
     kernel_to_image_summary(kernel=weights, summary_name="kernels")
     biases = bias_variable(name="b" + name, shape=bias_shape)
+    kernel_to_histogram_summary(kernel=biases, summary_name="b")
     return tf.nn.relu(conv2d(name="conv2d" + name, x=x, W=weights) + biases)
 
 
