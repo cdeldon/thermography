@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Thermography 1.1 documentation" href="index.html"/>
-        <link rel="up" title="thermography package" href="thermography.html"/>
+        <link rel="up" title="thermography" href="thermography.html"/>
         <link rel="next" title="thermography.io package" href="thermography.io.html"/>
         <link rel="prev" title="thermography.classification.utils package" href="thermography.classification.utils.html"/> 
 
@@ -92,7 +92,10 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="thermography.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">thermography.detection package</a></li>
@@ -102,12 +105,9 @@
 <li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui</a></li>
 </ul>
 
             
@@ -152,7 +152,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="thermography.html">thermography package</a> &raquo;</li>
+          <li><a href="thermography.html">thermography</a> &raquo;</li>
         
       <li>thermography.detection package</li>
     
@@ -175,9 +175,10 @@
             
   <div class="section" id="module-thermography.detection">
 <span id="thermography-detection-package"></span><h1>thermography.detection package<a class="headerlink" href="#module-thermography.detection" title="Permalink to this headline">¶</a></h1>
+<p>This package contains the implementation of various sub-steps of <a class="reference internal" href="thermography.html#module-thermography" title="thermography"><code class="xref py py-mod docutils literal"><span class="pre">thermography</span></code></a> for module detection.</p>
 <dl class="class">
 <dt id="thermography.detection.EdgeDetector">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">EdgeDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.edge_detection.EdgeDetectorParams = &lt;thermography.detection.edge_detection.EdgeDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.EdgeDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">EdgeDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.edge_detection.EdgeDetectorParams = &lt;thermography.detection.edge_detection.EdgeDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.EdgeDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="thermography.detection.EdgeDetector.detect">
@@ -189,13 +190,13 @@
 
 <dl class="class">
 <dt id="thermography.detection.EdgeDetectorParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">EdgeDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.EdgeDetectorParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">EdgeDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.EdgeDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.IntersectionDetector">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">IntersectionDetector</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.intersection_detection.IntersectionDetectorParams = &lt;thermography.detection.intersection_detection.IntersectionDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.IntersectionDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">IntersectionDetector</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.intersection_detection.IntersectionDetectorParams = &lt;thermography.detection.intersection_detection.IntersectionDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.IntersectionDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="thermography.detection.IntersectionDetector.detect">
@@ -208,15 +209,24 @@ constructor.</p>
 
 <dl class="class">
 <dt id="thermography.detection.IntersectionDetectorParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">IntersectionDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.IntersectionDetectorParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">IntersectionDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.IntersectionDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.MotionDetector">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">MotionDetector</code><span class="sig-paren">(</span><em>scaling: float = 1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/motion_detection.html#MotionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.MotionDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MotionDetector</code><span class="sig-paren">(</span><em>scaling: float = 1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/motion_detection.html#MotionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.MotionDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Class responsible for estimating the motion between two consecutive frames.</p>
+<p>Initializes the motion detector object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scaling</strong> – Scaling to apply to each frame passed to the function. This allows faster estimations of motion over the entire image when scaled down.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="thermography.detection.MotionDetector.motion_estimate">
 <code class="descname">motion_estimate</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/thermography/detection/motion_detection.html#MotionDetector.motion_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.MotionDetector.motion_estimate" title="Permalink to this definition">¶</a></dt>
@@ -237,7 +247,7 @@ constructor.</p>
 
 <dl class="class">
 <dt id="thermography.detection.RectangleDetector">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">RectangleDetector</code><span class="sig-paren">(</span><em>input_intersections: dict</em>, <em>params: thermography.detection.rectangle_detection.RectangleDetectorParams = &lt;thermography.detection.rectangle_detection.RectangleDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.RectangleDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">RectangleDetector</code><span class="sig-paren">(</span><em>input_intersections: dict</em>, <em>params: thermography.detection.rectangle_detection.RectangleDetectorParams = &lt;thermography.detection.rectangle_detection.RectangleDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.RectangleDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="thermography.detection.RectangleDetector.detect">
@@ -253,19 +263,19 @@ constructor.</p>
 
 <dl class="class">
 <dt id="thermography.detection.RectangleDetectorParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">RectangleDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.RectangleDetectorParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">RectangleDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.RectangleDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.PreprocessingParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">PreprocessingParams</code><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#PreprocessingParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.PreprocessingParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">PreprocessingParams</code><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#PreprocessingParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.PreprocessingParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.FramePreprocessor">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">FramePreprocessor</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.preprocessing.PreprocessingParams = &lt;thermography.detection.preprocessing.PreprocessingParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#FramePreprocessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.FramePreprocessor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FramePreprocessor</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.preprocessing.PreprocessingParams = &lt;thermography.detection.preprocessing.PreprocessingParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#FramePreprocessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.FramePreprocessor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="attribute">
 <dt id="thermography.detection.FramePreprocessor.channels">
@@ -286,7 +296,7 @@ constructor.</p>
 
 <dl class="class">
 <dt id="thermography.detection.SegmentClusterer">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">SegmentClusterer</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.segment_clustering.SegmentClustererParams = &lt;thermography.detection.segment_clustering.SegmentClustererParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClusterer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">SegmentClusterer</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.segment_clustering.SegmentClustererParams = &lt;thermography.detection.segment_clustering.SegmentClustererParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClusterer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="thermography.detection.SegmentClusterer.clean_clusters">
@@ -368,19 +378,19 @@ the segments are their mean coordinates, and their angle.</p>
 
 <dl class="class">
 <dt id="thermography.detection.SegmentClustererParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">SegmentClustererParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClustererParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClustererParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">SegmentClustererParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClustererParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentClustererParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.ClusterCleaningParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">ClusterCleaningParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#ClusterCleaningParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.ClusterCleaningParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ClusterCleaningParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#ClusterCleaningParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.ClusterCleaningParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.SegmentDetector">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">SegmentDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params=&lt;thermography.detection.segment_detection.SegmentDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">SegmentDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params=&lt;thermography.detection.segment_detection.SegmentDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="thermography.detection.SegmentDetector.detect">
@@ -393,7 +403,7 @@ segments are extended on each side by a few pixels as defined in the parameters.
 
 <dl class="class">
 <dt id="thermography.detection.SegmentDetectorParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.</code><code class="descname">SegmentDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentDetectorParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">SegmentDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.SegmentDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
@@ -404,13 +414,13 @@ segments are extended on each side by a few pixels as defined in the parameters.
 <span id="thermography-detection-edge-detection-module"></span><h2>thermography.detection.edge_detection module<a class="headerlink" href="#module-thermography.detection.edge_detection" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.detection.edge_detection.EdgeDetectorParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.edge_detection.</code><code class="descname">EdgeDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.edge_detection.EdgeDetectorParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">EdgeDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.edge_detection.EdgeDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.edge_detection.EdgeDetector">
-<em class="property">class </em><code class="descclassname">thermography.detection.edge_detection.</code><code class="descname">EdgeDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.edge_detection.EdgeDetectorParams = &lt;thermography.detection.edge_detection.EdgeDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.edge_detection.EdgeDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">EdgeDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.edge_detection.EdgeDetectorParams = &lt;thermography.detection.edge_detection.EdgeDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/edge_detection.html#EdgeDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.edge_detection.EdgeDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="thermography.detection.edge_detection.EdgeDetector.detect">
@@ -425,7 +435,7 @@ segments are extended on each side by a few pixels as defined in the parameters.
 <span id="thermography-detection-intersection-detection-module"></span><h2>thermography.detection.intersection_detection module<a class="headerlink" href="#module-thermography.detection.intersection_detection" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.detection.intersection_detection.IntersectionDetector">
-<em class="property">class </em><code class="descclassname">thermography.detection.intersection_detection.</code><code class="descname">IntersectionDetector</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.intersection_detection.IntersectionDetectorParams = &lt;thermography.detection.intersection_detection.IntersectionDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.intersection_detection.IntersectionDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">IntersectionDetector</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.intersection_detection.IntersectionDetectorParams = &lt;thermography.detection.intersection_detection.IntersectionDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.intersection_detection.IntersectionDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="thermography.detection.intersection_detection.IntersectionDetector.detect">
@@ -438,7 +448,7 @@ constructor.</p>
 
 <dl class="class">
 <dt id="thermography.detection.intersection_detection.IntersectionDetectorParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.intersection_detection.</code><code class="descname">IntersectionDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.intersection_detection.IntersectionDetectorParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">IntersectionDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/intersection_detection.html#IntersectionDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.intersection_detection.IntersectionDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
@@ -447,9 +457,18 @@ constructor.</p>
 <span id="thermography-detection-motion-detection-module"></span><h2>thermography.detection.motion_detection module<a class="headerlink" href="#module-thermography.detection.motion_detection" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.detection.motion_detection.MotionDetector">
-<em class="property">class </em><code class="descclassname">thermography.detection.motion_detection.</code><code class="descname">MotionDetector</code><span class="sig-paren">(</span><em>scaling: float = 1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/motion_detection.html#MotionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.motion_detection.MotionDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MotionDetector</code><span class="sig-paren">(</span><em>scaling: float = 1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/motion_detection.html#MotionDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.motion_detection.MotionDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Class responsible for estimating the motion between two consecutive frames.</p>
+<p>Initializes the motion detector object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scaling</strong> – Scaling to apply to each frame passed to the function. This allows faster estimations of motion over the entire image when scaled down.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="thermography.detection.motion_detection.MotionDetector.motion_estimate">
 <code class="descname">motion_estimate</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/thermography/detection/motion_detection.html#MotionDetector.motion_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.motion_detection.MotionDetector.motion_estimate" title="Permalink to this definition">¶</a></dt>
@@ -473,13 +492,13 @@ constructor.</p>
 <span id="thermography-detection-preprocessing-module"></span><h2>thermography.detection.preprocessing module<a class="headerlink" href="#module-thermography.detection.preprocessing" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.detection.preprocessing.PreprocessingParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.preprocessing.</code><code class="descname">PreprocessingParams</code><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#PreprocessingParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.preprocessing.PreprocessingParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">PreprocessingParams</code><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#PreprocessingParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.preprocessing.PreprocessingParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.preprocessing.FramePreprocessor">
-<em class="property">class </em><code class="descclassname">thermography.detection.preprocessing.</code><code class="descname">FramePreprocessor</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.preprocessing.PreprocessingParams = &lt;thermography.detection.preprocessing.PreprocessingParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#FramePreprocessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.preprocessing.FramePreprocessor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FramePreprocessor</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params: thermography.detection.preprocessing.PreprocessingParams = &lt;thermography.detection.preprocessing.PreprocessingParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/preprocessing.html#FramePreprocessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.preprocessing.FramePreprocessor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="attribute">
 <dt id="thermography.detection.preprocessing.FramePreprocessor.channels">
@@ -503,7 +522,7 @@ constructor.</p>
 <span id="thermography-detection-rectangle-detection-module"></span><h2>thermography.detection.rectangle_detection module<a class="headerlink" href="#module-thermography.detection.rectangle_detection" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.detection.rectangle_detection.RectangleDetector">
-<em class="property">class </em><code class="descclassname">thermography.detection.rectangle_detection.</code><code class="descname">RectangleDetector</code><span class="sig-paren">(</span><em>input_intersections: dict</em>, <em>params: thermography.detection.rectangle_detection.RectangleDetectorParams = &lt;thermography.detection.rectangle_detection.RectangleDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.rectangle_detection.RectangleDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">RectangleDetector</code><span class="sig-paren">(</span><em>input_intersections: dict</em>, <em>params: thermography.detection.rectangle_detection.RectangleDetectorParams = &lt;thermography.detection.rectangle_detection.RectangleDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.rectangle_detection.RectangleDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="thermography.detection.rectangle_detection.RectangleDetector.detect">
@@ -519,7 +538,7 @@ constructor.</p>
 
 <dl class="class">
 <dt id="thermography.detection.rectangle_detection.RectangleDetectorParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.rectangle_detection.</code><code class="descname">RectangleDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.rectangle_detection.RectangleDetectorParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">RectangleDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/rectangle_detection.html#RectangleDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.rectangle_detection.RectangleDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
@@ -528,7 +547,7 @@ constructor.</p>
 <span id="thermography-detection-segment-clustering-module"></span><h2>thermography.detection.segment_clustering module<a class="headerlink" href="#module-thermography.detection.segment_clustering" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.detection.segment_clustering.SegmentClusterer">
-<em class="property">class </em><code class="descclassname">thermography.detection.segment_clustering.</code><code class="descname">SegmentClusterer</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.segment_clustering.SegmentClustererParams = &lt;thermography.detection.segment_clustering.SegmentClustererParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClusterer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">SegmentClusterer</code><span class="sig-paren">(</span><em>input_segments: numpy.ndarray</em>, <em>params: thermography.detection.segment_clustering.SegmentClustererParams = &lt;thermography.detection.segment_clustering.SegmentClustererParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClusterer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClusterer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="thermography.detection.segment_clustering.SegmentClusterer.clean_clusters">
@@ -610,13 +629,13 @@ the segments are their mean coordinates, and their angle.</p>
 
 <dl class="class">
 <dt id="thermography.detection.segment_clustering.SegmentClustererParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.segment_clustering.</code><code class="descname">SegmentClustererParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClustererParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClustererParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">SegmentClustererParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#SegmentClustererParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.SegmentClustererParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="thermography.detection.segment_clustering.ClusterCleaningParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.segment_clustering.</code><code class="descname">ClusterCleaningParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#ClusterCleaningParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.ClusterCleaningParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ClusterCleaningParams</code><a class="reference internal" href="_modules/thermography/detection/segment_clustering.html#ClusterCleaningParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_clustering.ClusterCleaningParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
@@ -625,7 +644,7 @@ the segments are their mean coordinates, and their angle.</p>
 <span id="thermography-detection-segment-detection-module"></span><h2>thermography.detection.segment_detection module<a class="headerlink" href="#module-thermography.detection.segment_detection" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.detection.segment_detection.SegmentDetector">
-<em class="property">class </em><code class="descclassname">thermography.detection.segment_detection.</code><code class="descname">SegmentDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params=&lt;thermography.detection.segment_detection.SegmentDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_detection.SegmentDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">SegmentDetector</code><span class="sig-paren">(</span><em>input_image: numpy.ndarray</em>, <em>params=&lt;thermography.detection.segment_detection.SegmentDetectorParams object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_detection.SegmentDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="thermography.detection.segment_detection.SegmentDetector.detect">
@@ -638,7 +657,7 @@ segments are extended on each side by a few pixels as defined in the parameters.
 
 <dl class="class">
 <dt id="thermography.detection.segment_detection.SegmentDetectorParams">
-<em class="property">class </em><code class="descclassname">thermography.detection.segment_detection.</code><code class="descname">SegmentDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_detection.SegmentDetectorParams" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">SegmentDetectorParams</code><a class="reference internal" href="_modules/thermography/detection/segment_detection.html#SegmentDetectorParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.detection.segment_detection.SegmentDetectorParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 

@@ -9,7 +9,28 @@ from .models.base_net import BaseNet
 
 
 class Inference:
+    """Class implementing the inference procedure to classify new images according to a preexisting moduel.
+
+    :Example:
+
+    .. code-block:: python
+
+        classification_model = ThermoNet3x3
+        inference = Inference(checkpoint_dir, classification_model, img_shape, num_classes)
+        img_list = [img_1, img_2, ...] # len(img_list) = N
+        class_probabilities = inference.classify(img_list) # class_probabilities.shape = [N, num_classes]
+
+    """
     def __init__(self, checkpoint_dir: str, model_class: type, image_shape: np.ndarray, num_classes: int):
+        """Initializes the inference object by loading the weights of an already trained model.
+
+        :param checkpoint_dir: Directory of the checkpoint where the weights of the model are stored.
+        :param model_class: Class associated to the stored weights. This class is used to build the :attr:`tf.graph` which will be used for the inference.
+        :param image_shape: Shape of the images fed to the classifier. The images passed to the :func:`self.classify <thermography.classification.inference.Inference.classify>` function are resized according to this parameter.
+        :param num_classes: Number of classes predicted by the model.
+
+        .. warning:: The parameters must all be consistent with the preexisting weights!
+        """
         self.checkpoint_dir = checkpoint_dir
         self.image_shape = image_shape
         self.num_classes = num_classes
@@ -41,6 +62,7 @@ class Inference:
 
     @property
     def model(self):
+        """Returns the model being used for classification."""
         return self.__model
 
     @model.setter
@@ -50,6 +72,13 @@ class Inference:
         self.__model = m
 
     def classify(self, image_list: list) -> np.ndarray:
+        """Classifies the image list passed as argument using the model loaded in :attr:`self.model`.
+
+        :param image_list: Python list of numpy arrays representing the images to be classified. All images are classified as a mini-batch.
+        :return: A numpy array of shape `[len(image_list), self.num_classes]` containing the class probability for each image passed as argument.
+
+        .. note:: If the images contained in the input parameter are not of the same shape as the one store in :attr:`self.image_shape`, the input images are resized to fit the desired image shape.
+        """
         if len(image_list) == 0:
             return np.empty(shape=[0])
 

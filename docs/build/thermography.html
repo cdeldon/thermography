@@ -180,7 +180,7 @@
 <span id="thermography-module-map-module"></span><h2>thermography.module_map module<a class="headerlink" href="#module-thermography.module_map" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.module_map.ModuleMap">
-<em class="property">class </em><code class="descclassname">thermography.module_map.</code><code class="descname">ModuleMap</code><a class="reference internal" href="_modules/thermography/module_map.html#ModuleMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.module_map.ModuleMap" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ModuleMap</code><a class="reference internal" href="_modules/thermography/module_map.html#ModuleMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.module_map.ModuleMap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Class responsible for storing a spatial representation of the detected modules.
 Each module is keyed by an unique ID Multiple detections of the same module are considered and the existing module is updated in the internal representation of the map.</p>
@@ -206,6 +206,7 @@ Each module is keyed by an unique ID Multiple detections of the same module are 
 <span class="c1">#                                 3: &lt;..., rect4, frame_id_history=[1]&gt;}</span>
 </pre></div>
 </div>
+<p>Initializes the module map to be empty.</p>
 <dl class="method">
 <dt id="thermography.module_map.ModuleMap.insert">
 <code class="descname">insert</code><span class="sig-paren">(</span><em>rectangle_list: list</em>, <em>frame_id: int</em>, <em>motion_estimate: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/module_map.html#ModuleMap.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.module_map.ModuleMap.insert" title="Permalink to this definition">¶</a></dt>
@@ -246,7 +247,7 @@ Each module is keyed by an unique ID Multiple detections of the same module are 
 <span id="thermography-thermo-app-module"></span><h2>thermography.thermo_app module<a class="headerlink" href="#module-thermography.thermo_app" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.thermo_app.ThermoApp">
-<em class="property">class </em><code class="descclassname">thermography.thermo_app.</code><code class="descname">ThermoApp</code><span class="sig-paren">(</span><em>input_video_path</em>, <em>camera_param_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ThermoApp</code><span class="sig-paren">(</span><em>input_video_path</em>, <em>camera_param_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Application implementing the routines for module detections and analysis under the form of an object.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -257,6 +258,19 @@ Each module is keyed by an unique ID Multiple detections of the same module are 
 <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Initializes the <a class="reference internal" href="#thermography.thermo_app.ThermoApp" title="thermography.thermo_app.ThermoApp"><code class="xref py py-class docutils literal"><span class="pre">ThermoApp</span></code></a> instance by defining default parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input_video_path</strong> – Absolute path to the input video.</li>
+<li><strong>camera_param_file</strong> – Parameter file of the camera.</li>
+</ul>
 </td>
 </tr>
 </tbody>

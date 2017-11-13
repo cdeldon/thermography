@@ -1,3 +1,5 @@
+"""This package contains the implementation of various sub-steps of :mod:`~thermography` for module detection."""
+
 from .edge_detection import *
 from .intersection_detection import *
 from .motion_detection import *

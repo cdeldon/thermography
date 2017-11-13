@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Thermography 1.1 documentation" href="index.html"/>
-        <link rel="up" title="thermography package" href="thermography.html"/>
+        <link rel="up" title="thermography" href="thermography.html"/>
         <link rel="next" title="thermography.test package" href="thermography.test.html"/>
         <link rel="prev" title="thermography.io package" href="thermography.io.html"/> 
 
@@ -92,7 +92,10 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="thermography.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a></li>
@@ -102,12 +105,9 @@
 <li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui</a></li>
 </ul>
 
             
@@ -152,7 +152,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="thermography.html">thermography package</a> &raquo;</li>
+          <li><a href="thermography.html">thermography</a> &raquo;</li>
         
       <li>thermography.settings package</li>
     
@@ -177,8 +177,17 @@
 <span id="thermography-settings-package"></span><h1>thermography.settings package<a class="headerlink" href="#module-thermography.settings" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="thermography.settings.Camera">
-<em class="property">class </em><code class="descclassname">thermography.settings.</code><code class="descname">Camera</code><span class="sig-paren">(</span><em>camera_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/settings/camera.html#Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.Camera" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">Camera</code><span class="sig-paren">(</span><em>camera_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/settings/camera.html#Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.Camera" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Loads the camera parameters into the object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>camera_path</strong> – Absolute path to the camera file parameter.</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="thermography.settings.Camera.camera_matrix">
 <code class="descname">camera_matrix</code><a class="headerlink" href="#thermography.settings.Camera.camera_matrix" title="Permalink to this definition">¶</a></dt>
@@ -238,28 +247,28 @@
 
 <dl class="function">
 <dt id="thermography.settings.get_data_dir">
-<code class="descclassname">thermography.settings.</code><code class="descname">get_data_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_data_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_data_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_data_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_data_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_data_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the absolute path to the data directory.
 :return: Absolute path to the data directory.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="thermography.settings.get_log_dir">
-<code class="descclassname">thermography.settings.</code><code class="descname">get_log_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_log_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_log_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_log_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_log_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_log_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the absolute path to the log directory.
 :return: Absolute path to the log directory.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="thermography.settings.get_settings_dir">
-<code class="descclassname">thermography.settings.</code><code class="descname">get_settings_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_settings_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_settings_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_settings_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_settings_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_settings_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the absolute path to the settings directory, i.e. the directory containing this file.
 :return: Absolute path to the settings directory.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="thermography.settings.get_thermography_root_dir">
-<code class="descclassname">thermography.settings.</code><code class="descname">get_thermography_root_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_thermography_root_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_thermography_root_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_thermography_root_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_thermography_root_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_thermography_root_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the absolute path to the root directory of the thermography project,
 i.e. the parent directory of the settings directory.
 :return: Absolute path to the project root directory.</p>
@@ -267,21 +276,21 @@ i.e. the parent directory of the settings directory.
 
 <dl class="function">
 <dt id="thermography.settings.get_test_dir">
-<code class="descclassname">thermography.settings.</code><code class="descname">get_test_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_test_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_test_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_test_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_test_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_test_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the absolute path to the test directory.
 :return: Absolute path to the rest directory.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="thermography.settings.set_data_dir">
-<code class="descclassname">thermography.settings.</code><code class="descname">set_data_dir</code><span class="sig-paren">(</span><em>data_dir: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/settings.html#set_data_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.set_data_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_data_dir</code><span class="sig-paren">(</span><em>data_dir: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/settings.html#set_data_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.set_data_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the data directory.
 :param data_dir: Absolute path to the data directory.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="thermography.settings.get_resources_dir">
-<code class="descclassname">thermography.settings.</code><code class="descname">get_resources_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_resources_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_resources_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_resources_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/thermography/settings.html#get_resources_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.get_resources_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the absolute path to the resources directory.
 :return: Absolute path to the resources directory.</p>
 </dd></dl>
@@ -293,8 +302,17 @@ i.e. the parent directory of the settings directory.
 <span id="thermography-settings-camera-module"></span><h2>thermography.settings.camera module<a class="headerlink" href="#module-thermography.settings.camera" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.settings.camera.Camera">
-<em class="property">class </em><code class="descclassname">thermography.settings.camera.</code><code class="descname">Camera</code><span class="sig-paren">(</span><em>camera_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/settings/camera.html#Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.camera.Camera" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">Camera</code><span class="sig-paren">(</span><em>camera_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/settings/camera.html#Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.camera.Camera" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Loads the camera parameters into the object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>camera_path</strong> – Absolute path to the camera file parameter.</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.camera_matrix">
 <code class="descname">camera_matrix</code><a class="headerlink" href="#thermography.settings.camera.Camera.camera_matrix" title="Permalink to this definition">¶</a></dt>

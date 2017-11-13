@@ -92,7 +92,10 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="thermography.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a></li>
@@ -102,12 +105,9 @@
 <li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui</a></li>
 </ul>
 
             
@@ -152,7 +152,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="thermography.html">thermography package</a> &raquo;</li>
+          <li><a href="thermography.html">thermography</a> &raquo;</li>
         
           <li><a href="thermography.classification.html">thermography.classification package</a> &raquo;</li>
         
@@ -184,7 +184,7 @@
 <span id="thermography-classification-models-base-net-module"></span><h2>thermography.classification.models.base_net module<a class="headerlink" href="#module-thermography.classification.models.base_net" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.classification.models.base_net.BaseNet">
-<em class="property">class </em><code class="descclassname">thermography.classification.models.base_net.</code><code class="descname">BaseNet</code><span class="sig-paren">(</span><em>x: tensorflow.python.framework.ops.Tensor</em>, <em>image_shape: numpy.ndarray</em>, <em>num_classes: int</em>, <em>name: str = 'ThermoNet'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/base_net.html#BaseNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.base_net.BaseNet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">BaseNet</code><span class="sig-paren">(</span><em>x: tensorflow.python.framework.ops.Tensor</em>, <em>image_shape: numpy.ndarray</em>, <em>num_classes: int</em>, <em>name: str = 'ThermoNet'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/base_net.html#BaseNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.base_net.BaseNet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">abc.ABC</span></code></p>
 <p>Base interdace for nets used by the thermography package</p>
 <dl class="attribute">
@@ -239,37 +239,37 @@
 <span id="thermography-classification-models-operations-module"></span><h2>thermography.classification.models.operations module<a class="headerlink" href="#module-thermography.classification.models.operations" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="thermography.classification.models.operations.weight_variable">
-<code class="descclassname">thermography.classification.models.operations.</code><code class="descname">weight_variable</code><span class="sig-paren">(</span><em>name</em>, <em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#weight_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.weight_variable" title="Permalink to this definition">¶</a></dt>
+<code class="descname">weight_variable</code><span class="sig-paren">(</span><em>name</em>, <em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#weight_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.weight_variable" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="thermography.classification.models.operations.bias_variable">
-<code class="descclassname">thermography.classification.models.operations.</code><code class="descname">bias_variable</code><span class="sig-paren">(</span><em>name</em>, <em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#bias_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.bias_variable" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bias_variable</code><span class="sig-paren">(</span><em>name</em>, <em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#bias_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.bias_variable" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="thermography.classification.models.operations.conv2d">
-<code class="descclassname">thermography.classification.models.operations.</code><code class="descname">conv2d</code><span class="sig-paren">(</span><em>name</em>, <em>x</em>, <em>W</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.conv2d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">conv2d</code><span class="sig-paren">(</span><em>name</em>, <em>x</em>, <em>W</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.conv2d" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="thermography.classification.models.operations.conv_relu">
-<code class="descclassname">thermography.classification.models.operations.</code><code class="descname">conv_relu</code><span class="sig-paren">(</span><em>x</em>, <em>kernel_shape</em>, <em>bias_shape</em>, <em>name: str = ''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#conv_relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.conv_relu" title="Permalink to this definition">¶</a></dt>
+<code class="descname">conv_relu</code><span class="sig-paren">(</span><em>x</em>, <em>kernel_shape</em>, <em>bias_shape</em>, <em>name: str = ''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#conv_relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.conv_relu" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="thermography.classification.models.operations.max_pool_2x2">
-<code class="descclassname">thermography.classification.models.operations.</code><code class="descname">max_pool_2x2</code><span class="sig-paren">(</span><em>name</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#max_pool_2x2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.max_pool_2x2" title="Permalink to this definition">¶</a></dt>
+<code class="descname">max_pool_2x2</code><span class="sig-paren">(</span><em>name</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#max_pool_2x2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.max_pool_2x2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="thermography.classification.models.operations.max_pool_4x4">
-<code class="descclassname">thermography.classification.models.operations.</code><code class="descname">max_pool_4x4</code><span class="sig-paren">(</span><em>name</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#max_pool_4x4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.max_pool_4x4" title="Permalink to this definition">¶</a></dt>
+<code class="descname">max_pool_4x4</code><span class="sig-paren">(</span><em>name</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#max_pool_4x4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.max_pool_4x4" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="thermography.classification.models.operations.max_pool_kxk">
-<code class="descclassname">thermography.classification.models.operations.</code><code class="descname">max_pool_kxk</code><span class="sig-paren">(</span><em>name</em>, <em>x</em>, <em>k: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#max_pool_kxk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.max_pool_kxk" title="Permalink to this definition">¶</a></dt>
+<code class="descname">max_pool_kxk</code><span class="sig-paren">(</span><em>name</em>, <em>x</em>, <em>k: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/operations.html#max_pool_kxk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.operations.max_pool_kxk" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -277,7 +277,7 @@
 <span id="thermography-classification-models-thermo-net-module"></span><h2>thermography.classification.models.thermo_net module<a class="headerlink" href="#module-thermography.classification.models.thermo_net" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.classification.models.thermo_net.ThermoNet">
-<em class="property">class </em><code class="descclassname">thermography.classification.models.thermo_net.</code><code class="descname">ThermoNet</code><span class="sig-paren">(</span><em>x: tensorflow.python.framework.ops.Tensor</em>, <em>image_shape: numpy.ndarray</em>, <em>num_classes: int</em>, <em>keep_prob: float</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/thermo_net.html#ThermoNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.thermo_net.ThermoNet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ThermoNet</code><span class="sig-paren">(</span><em>x: tensorflow.python.framework.ops.Tensor</em>, <em>image_shape: numpy.ndarray</em>, <em>num_classes: int</em>, <em>keep_prob: float</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/thermo_net.html#ThermoNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.thermo_net.ThermoNet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#thermography.classification.models.base_net.BaseNet" title="thermography.classification.models.base_net.BaseNet"><code class="xref py py-class docutils literal"><span class="pre">thermography.classification.models.base_net.BaseNet</span></code></a></p>
 <dl class="method">
 <dt id="thermography.classification.models.thermo_net.ThermoNet.create">
@@ -291,7 +291,7 @@
 <span id="thermography-classification-models-thermo-net-3x3-module"></span><h2>thermography.classification.models.thermo_net_3x3 module<a class="headerlink" href="#module-thermography.classification.models.thermo_net_3x3" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.classification.models.thermo_net_3x3.ThermoNet">
-<em class="property">class </em><code class="descclassname">thermography.classification.models.thermo_net_3x3.</code><code class="descname">ThermoNet</code><span class="sig-paren">(</span><em>x: tensorflow.python.framework.ops.Tensor</em>, <em>image_shape: numpy.ndarray</em>, <em>num_classes: int</em>, <em>keep_prob: float</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/thermo_net_3x3.html#ThermoNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.thermo_net_3x3.ThermoNet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ThermoNet</code><span class="sig-paren">(</span><em>x: tensorflow.python.framework.ops.Tensor</em>, <em>image_shape: numpy.ndarray</em>, <em>num_classes: int</em>, <em>keep_prob: float</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/models/thermo_net_3x3.html#ThermoNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.models.thermo_net_3x3.ThermoNet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#thermography.classification.models.base_net.BaseNet" title="thermography.classification.models.base_net.BaseNet"><code class="xref py py-class docutils literal"><span class="pre">thermography.classification.models.base_net.BaseNet</span></code></a></p>
 <dl class="method">
 <dt id="thermography.classification.models.thermo_net_3x3.ThermoNet.create">

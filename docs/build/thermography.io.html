@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Thermography 1.1 documentation" href="index.html"/>
-        <link rel="up" title="thermography package" href="thermography.html"/>
+        <link rel="up" title="thermography" href="thermography.html"/>
         <link rel="next" title="thermography.settings package" href="thermography.settings.html"/>
         <link rel="prev" title="thermography.detection package" href="thermography.detection.html"/> 
 
@@ -92,7 +92,10 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="thermography.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a></li>
@@ -102,12 +105,9 @@
 <li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui</a></li>
 </ul>
 
             
@@ -152,7 +152,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="thermography.html">thermography package</a> &raquo;</li>
+          <li><a href="thermography.html">thermography</a> &raquo;</li>
         
       <li>thermography.io package</li>
     
@@ -177,8 +177,21 @@
 <span id="thermography-io-package"></span><h1>thermography.io package<a class="headerlink" href="#module-thermography.io" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="thermography.io.ImageLoader">
-<em class="property">class </em><code class="descclassname">thermography.io.</code><code class="descname">ImageLoader</code><span class="sig-paren">(</span><em>image_path: str</em>, <em>mode: thermography.io.modes.Modality = &lt;Modality.RGB: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#ImageLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.ImageLoader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImageLoader</code><span class="sig-paren">(</span><em>image_path: str</em>, <em>mode: thermography.io.modes.Modality = &lt;Modality.RGB: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#ImageLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.ImageLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Initializes and loads the image associated to the file indicated by the path passed as argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>image_path</strong> – Absolute path to the image file to be loaded.</li>
+<li><strong>mode</strong> – Modality to be used when loading the image.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="thermography.io.ImageLoader.image_path">
 <code class="descname">image_path</code><a class="headerlink" href="#thermography.io.ImageLoader.image_path" title="Permalink to this definition">¶</a></dt>
@@ -206,8 +219,22 @@
 
 <dl class="class">
 <dt id="thermography.io.VideoLoader">
-<em class="property">class </em><code class="descclassname">thermography.io.</code><code class="descname">VideoLoader</code><span class="sig-paren">(</span><em>video_path: str</em>, <em>start_frame: int = 0</em>, <em>end_frame: int = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#VideoLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.VideoLoader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">VideoLoader</code><span class="sig-paren">(</span><em>video_path: str</em>, <em>start_frame: int = 0</em>, <em>end_frame: int = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#VideoLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.VideoLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Loads the frames associated to the video indicated by the path passed as argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>video_path</strong> – Absolute path to the video to be loaded.</li>
+<li><strong>start_frame</strong> – Start frame of the video to be considered (inclusive).</li>
+<li><strong>end_frame</strong> – End frame of the video to be considered (non inclusive).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="thermography.io.VideoLoader.num_frames">
 <code class="descname">num_frames</code><a class="headerlink" href="#thermography.io.VideoLoader.num_frames" title="Permalink to this definition">¶</a></dt>
@@ -241,8 +268,21 @@
 <span id="thermography-io-io-module"></span><h2>thermography.io.io module<a class="headerlink" href="#module-thermography.io.io" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.io.io.ImageLoader">
-<em class="property">class </em><code class="descclassname">thermography.io.io.</code><code class="descname">ImageLoader</code><span class="sig-paren">(</span><em>image_path: str</em>, <em>mode: thermography.io.modes.Modality = &lt;Modality.RGB: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#ImageLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.io.ImageLoader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImageLoader</code><span class="sig-paren">(</span><em>image_path: str</em>, <em>mode: thermography.io.modes.Modality = &lt;Modality.RGB: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#ImageLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.io.ImageLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Initializes and loads the image associated to the file indicated by the path passed as argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>image_path</strong> – Absolute path to the image file to be loaded.</li>
+<li><strong>mode</strong> – Modality to be used when loading the image.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="thermography.io.io.ImageLoader.image_path">
 <code class="descname">image_path</code><a class="headerlink" href="#thermography.io.io.ImageLoader.image_path" title="Permalink to this definition">¶</a></dt>
@@ -270,8 +310,22 @@
 
 <dl class="class">
 <dt id="thermography.io.io.VideoLoader">
-<em class="property">class </em><code class="descclassname">thermography.io.io.</code><code class="descname">VideoLoader</code><span class="sig-paren">(</span><em>video_path: str</em>, <em>start_frame: int = 0</em>, <em>end_frame: int = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#VideoLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.io.VideoLoader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">VideoLoader</code><span class="sig-paren">(</span><em>video_path: str</em>, <em>start_frame: int = 0</em>, <em>end_frame: int = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/io.html#VideoLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.io.VideoLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Loads the frames associated to the video indicated by the path passed as argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>video_path</strong> – Absolute path to the video to be loaded.</li>
+<li><strong>start_frame</strong> – Start frame of the video to be considered (inclusive).</li>
+<li><strong>end_frame</strong> – End frame of the video to be considered (non inclusive).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="thermography.io.io.VideoLoader.num_frames">
 <code class="descname">num_frames</code><a class="headerlink" href="#thermography.io.io.VideoLoader.num_frames" title="Permalink to this definition">¶</a></dt>
@@ -303,7 +357,7 @@
 <span id="thermography-io-logger-module"></span><h2>thermography.io.logger module<a class="headerlink" href="#module-thermography.io.logger" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="thermography.io.logger.setup_logger">
-<code class="descclassname">thermography.io.logger.</code><code class="descname">setup_logger</code><span class="sig-paren">(</span><em>console_log_level: thermography.io.modes.LogLevel = 'INFO'</em>, <em>file_log_level: thermography.io.modes.LogLevel = 'DEBUG'</em>, <em>log_file_name: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/logger.html#setup_logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.logger.setup_logger" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setup_logger</code><span class="sig-paren">(</span><em>console_log_level: thermography.io.modes.LogLevel = 'INFO'</em>, <em>file_log_level: thermography.io.modes.LogLevel = 'DEBUG'</em>, <em>log_file_name: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/io/logger.html#setup_logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.logger.setup_logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets up the simple logger.
 :param console_log_level: Log level associated to the streaming log.
 :param file_log_level: Log level associated to the file log.
@@ -315,7 +369,7 @@
 <span id="thermography-io-modes-module"></span><h2>thermography.io.modes module<a class="headerlink" href="#module-thermography.io.modes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.io.modes.LogLevel">
-<em class="property">class </em><code class="descclassname">thermography.io.modes.</code><code class="descname">LogLevel</code><a class="reference internal" href="_modules/thermography/io/modes.html#LogLevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.modes.LogLevel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">LogLevel</code><a class="reference internal" href="_modules/thermography/io/modes.html#LogLevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.modes.LogLevel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Log levels used for the simple_logger.</p>
 <dl class="attribute">
@@ -352,7 +406,7 @@
 
 <dl class="class">
 <dt id="thermography.io.modes.Modality">
-<em class="property">class </em><code class="descclassname">thermography.io.modes.</code><code class="descname">Modality</code><a class="reference internal" href="_modules/thermography/io/modes.html#Modality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.modes.Modality" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">Modality</code><a class="reference internal" href="_modules/thermography/io/modes.html#Modality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.io.modes.Modality" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.IntEnum</span></code></p>
 <p>Modalities used to load an image into opencv.</p>
 <dl class="attribute">

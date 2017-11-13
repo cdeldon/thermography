@@ -157,6 +157,7 @@
             
   <h1>Source code for thermography.classification.dataset.thermo_dataset</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -165,12 +166,116 @@
 <span class="kn">from</span> <span class="nn">tensorflow.python.framework</span> <span class="k">import</span> <span class="n">dtypes</span>
 <span class="kn">from</span> <span class="nn">tensorflow.python.framework.ops</span> <span class="k">import</span> <span class="n">convert_to_tensor</span>
 
-<span class="kn">from</span> <span class="nn">.thermo_class</span> <span class="k">import</span> <span class="n">ThermoClassList</span>
+
+<div class="viewcode-block" id="ThermoClass"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoClass">[docs]</a><span class="k">class</span> <span class="nc">ThermoClass</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class for defining which label is assigned to each class used in the classification step.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">class_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">class_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Builds a class used for classification with the parameter passed as argument.</span>
+
+<span class="sd">        :param class_name: Human readable name associated to this class.</span>
+<span class="sd">        :param class_value: Numerical value (label) associated to this class.</span>
+<span class="sd">        :param class_folder: Folder where the training images associated to this class are stored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">=</span> <span class="n">class_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_value</span> <span class="o">=</span> <span class="n">class_value</span>
+
+        <span class="k">if</span> <span class="n">class_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">class_folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_folder</span> <span class="o">=</span> <span class="n">class_folder</span></div>
+
+
+<span class="n">ThermoClassList</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">ThermoClass</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="create_directory_list"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.create_directory_list">[docs]</a><span class="k">def</span> <span class="nf">create_directory_list</span><span class="p">(</span><span class="n">root_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a list of directories for dataset loading.</span>
+
+<span class="sd">    :param root_dir: Absolute path to the root directory of the dataset.</span>
+
+<span class="sd">    .. note:: The dataset root directory must be of the following form:</span>
+<span class="sd">        ::</span>
+
+<span class="sd">           root_dir</span>
+<span class="sd">           |__video1</span>
+<span class="sd">           |    |__0-1000</span>
+<span class="sd">           |    |__1000_2000</span>
+<span class="sd">           |__video2</span>
+<span class="sd">           |    |__0-500</span>
+<span class="sd">           |    |__500-1000</span>
+<span class="sd">           |    |__1000-1200</span>
+<span class="sd">           |__video3</span>
+<span class="sd">                |__0-1000</span>
+
+<span class="sd">        and each folder &#39;xxxx-yyyy&#39; must contain three directories associated to the classes of the dataset (see :attr:`ThermoClass.class_folder`).</span>
+
+<span class="sd">    :return: A list of absolute paths to the class directories containing the dataset images.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">root_dir</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;Directory </span><span class="si">{}</span><span class="s2"> does not exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root_dir</span><span class="p">))</span>
+
+    <span class="c1"># List all directories associated to different videos.</span>
+    <span class="n">recording_path_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_dir</span><span class="p">)]</span>
+
+    <span class="n">input_data_path</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">recording_path_list</span><span class="p">:</span>
+        <span class="c1"># Append the different directories associated to different video frame intervals.</span>
+        <span class="n">input_data_path</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">g</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">input_data_path</span></div>
 
 
 <div class="viewcode-block" id="ThermoDataset"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset">[docs]</a><span class="k">class</span> <span class="nc">ThermoDataset</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Dataset class which handles the input image as a dataset.</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            dataset = ThermoDataset(img_shape, batch_size)</span>
+<span class="sd">            dataset.load_dataset(root_directory_list, class_list)</span>
+
+<span class="sd">            train_iterator = dataset.get_train_iterator()</span>
+<span class="sd">            next_train_batch = train_iterator.get_next()</span>
+<span class="sd">            test_iterator = dataset.get_test_iterator()</span>
+<span class="sd">            next_test_batch = test_iterator.get_next()</span>
+
+<span class="sd">            # Build the computation graph.</span>
+<span class="sd">            ...</span>
+
+<span class="sd">            with tf.Session() as sess:</span>
+<span class="sd">                for epoch in range(epochs):</span>
+<span class="sd">                    sess.run(train_iterator.initializer)</span>
+<span class="sd">                    sess.run(test_iterator.initializer)</span>
+
+<span class="sd">                    # Train</span>
+<span class="sd">                    while True:</span>
+<span class="sd">                        try:</span>
+<span class="sd">                            img_batch, label_batch = sess.run(next_train_batch)</span>
+<span class="sd">                        except: # Training dataset is terminated</span>
+<span class="sd">                            break</span>
+<span class="sd">                        # Train the model.</span>
+<span class="sd">                        ...</span>
+
+<span class="sd">                    # Test</span>
+<span class="sd">                     while True:</span>
+<span class="sd">                        try:</span>
+<span class="sd">                            img_batch, label_batch = sess.run(next_test_batch)</span>
+<span class="sd">                        except: # Test dataset is terminated</span>
+<span class="sd">                            break</span>
+<span class="sd">                        # Test the model.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="n">balance_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">normalize_images</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initializes the parameters of the dataset without loading anything.</span>
+
+<span class="sd">        :param img_shape: Image shape of the dataset. All images on disk which don&#39;t fulfill this shape are resized accordingly.</span>
+<span class="sd">        :param batch_size: Batch size used for training. This parameters influences the size of tha batch returned by the dataset iterators (see :func:`&lt;self.get_train_iterator &lt;ThermoDataset.get_train_iterator&gt;`)</span>
+<span class="sd">        :param balance_data: Boolean flag which determines whether to balance the data on disk. If True, the loaded classes will have the same amount of samples (some samples of the majority classes will be discarded).</span>
+<span class="sd">        :param normalize_images: Boolean flag indicating whether no normalize each input image (mean: 0, std: 1)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span> <span class="o">=</span> <span class="n">img_shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">balance_data</span> <span class="o">=</span> <span class="n">balance_data</span>
@@ -184,64 +289,72 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__samples_per_class</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__train_fraction</span> <span class="o">=</span> <span class="mf">0.6</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__train_fraction</span> <span class="o">=</span> <span class="mf">0.8</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__test_fraction</span> <span class="o">=</span> <span class="mf">0.2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__validation_fraction</span> <span class="o">=</span> <span class="mf">0.2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__validation_fraction</span> <span class="o">=</span> <span class="mf">0.0</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__image_file_names</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__labels</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">image_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">image_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the image shape of the dataset.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_shape</span>
 
     <span class="nd">@image_shape</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">image_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">image_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Image shape passed to dataset must be of length 3! Passed: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__image_shape</span> <span class="o">=</span> <span class="n">l</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rgb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">rgb</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a boolean indicating whether the dataset has three channels (RGB) or is grayscale.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">data_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">data_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the size of the dataset, i.e. the total number of images loaded.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__labels</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">train_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">train_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the size of the training data, i.e. the total number of images available for training.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">__train_fraction</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">test_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the size of the testing data, i.e. the total number of images available for testing.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_fraction</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">validation_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">validation_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the size of the validation data, i.e. the total number of images available for validation.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">__validation_fraction</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a reference to the training data.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__train_dataset</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a reference to the test data.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_dataset</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">validation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">validation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a reference to the validation data.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__validation_dataset</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">split_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the fraction used to split the loaded data into train, test and validation data.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">__train_fraction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_fraction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__validation_fraction</span><span class="p">])</span>
 
-<div class="viewcode-block" id="ThermoDataset.dataset_from_id"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.dataset_from_id">[docs]</a>    <span class="k">def</span> <span class="nf">dataset_from_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__train_dataset</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_dataset</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__validation_dataset</span><span class="p">}[</span><span class="n">index</span><span class="p">]</span></div>
-
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">root_directory_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">root_directory_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the list of root directories of the data.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root_directory_list</span>
 
     <span class="nd">@root_directory_list</span><span class="o">.</span><span class="n">setter</span>
@@ -255,13 +368,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__root_directory_list</span> <span class="o">=</span> <span class="n">dir_list</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">thermo_class_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">thermo_class_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ThermoClassList</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the classes associated to the dataset.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thermo_class_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Property &#39;thermo_class_list&#39; has not been set yet!&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thermo_class_list</span>
 
     <span class="nd">@thermo_class_list</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">thermo_class_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thermo_class_list</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">thermo_class_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thermo_class_list</span><span class="p">:</span> <span class="n">ThermoClassList</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root_directory_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must set property &#39;root_directory_list&#39; before setting the class list!&quot;</span><span class="p">)</span>
         <span class="n">directories_which_must_be_contained_in_root_directory</span> <span class="o">=</span> <span class="p">[</span><span class="n">thermo_class</span><span class="o">.</span><span class="n">class_name</span> <span class="k">for</span> <span class="n">thermo_class</span> <span class="ow">in</span>
@@ -279,7 +393,15 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;Class label </span><span class="si">{}</span><span class="s2"> is not present in thermo classes: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">class_label</span><span class="p">,</span> <span class="n">thermo_class_labels</span><span class="p">))</span>
 
-<div class="viewcode-block" id="ThermoDataset.load_dataset"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.load_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root_directory_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">class_list</span><span class="p">:</span> <span class="n">ThermoClassList</span><span class="p">,</span> <span class="n">load_all_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ThermoDataset.load_dataset"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.load_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root_directory_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">class_list</span><span class="p">:</span> <span class="n">ThermoClassList</span><span class="p">,</span> <span class="n">load_all_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Loads the dataset from the files contained in the list of root directories.</span>
+
+<span class="sd">        :param root_directory_list: List of root directories containing the data. This list can be generated using :func:`create_directory_list`.</span>
+<span class="sd">        :param class_list: List of classes used for classification.</span>
+<span class="sd">        :param load_all_data: Boolean flag indicating whether to preload the entire dataset in memory once, or to load the data on the fly whenever a new batch is needed.</span>
+
+<span class="sd">        .. note:: Loading the entire dataset into memory can increase the training process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_directory_list</span> <span class="o">=</span> <span class="n">root_directory_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thermo_class_list</span> <span class="o">=</span> <span class="n">class_list</span>
 
@@ -311,6 +433,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__create_internal_dataset</span><span class="p">(</span><span class="n">load_all_data</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__balance_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Balances the data such that all classes are represented by the same amount of sample. This will discard the remaining samples of the majority classes.&quot;&quot;&quot;</span>
         <span class="c1"># Shuffle each class independently (This is useful in case of multiple root directories because it does not</span>
         <span class="c1"># discard only elements of the last listed root directory, but random elements of all root directories)</span>
         <span class="n">start_index</span> <span class="o">=</span> <span class="mi">0</span>
@@ -345,13 +468,20 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__samples_per_class</span> <span class="o">=</span> <span class="p">[</span><span class="n">num_min_samples</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)]</span>
 
-<div class="viewcode-block" id="ThermoDataset.set_train_test_validation_fraction"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.set_train_test_validation_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">set_train_test_validation_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_fraction</span><span class="p">,</span> <span class="n">test_fraction</span><span class="p">,</span> <span class="n">validation_fraction</span><span class="p">):</span>
+<div class="viewcode-block" id="ThermoDataset.set_train_test_validation_fraction"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.set_train_test_validation_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">set_train_test_validation_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_fraction</span><span class="p">,</span> <span class="n">test_fraction</span><span class="p">,</span> <span class="n">validation_fraction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sets the train-test-validation fraction of the dataset.&quot;&quot;&quot;</span>
         <span class="n">total</span> <span class="o">=</span> <span class="n">train_fraction</span> <span class="o">+</span> <span class="n">test_fraction</span> <span class="o">+</span> <span class="n">validation_fraction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__train_fraction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">train_fraction</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__test_fraction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">test_fraction</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__validation_fraction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">validation_fraction</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span></div>
 
-    <span class="k">def</span> <span class="nf">__parse_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_label</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__parse_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_label</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Function used by tensorflow to preprocess the data when loaded at runtime.</span>
+
+<span class="sd">        :param image_path: absolute path to the input image.</span>
+<span class="sd">        :param image_label: integer associated to the input image label.</span>
+<span class="sd">        :return: A tuple consisting of the preprocessed image, and the one-hot encoding of the label.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">one_hot</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">image_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">img_file</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
         <span class="n">img_decoded</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">decode_jpeg</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
@@ -363,6 +493,12 @@
         <span class="k">return</span> <span class="n">img_decoded</span><span class="p">,</span> <span class="n">one_hot</span>
 
     <span class="k">def</span> <span class="nf">__parse_image_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_label</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function used to preprocess the data when loaded all at once.</span>
+
+<span class="sd">        :param image_path: absolute path to the input image.</span>
+<span class="sd">        :param image_label: integer associated to the input image label.</span>
+<span class="sd">        :return: A tuple consisting of the preprocessed image, and the one-hot encoding of the label.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">one_hot</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">image_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span><span class="p">:</span>
             <span class="n">flag</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_COLOR</span>
@@ -427,16 +563,20 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__validation_dataset</span> <span class="o">=</span> <span class="n">data</span>
 
-<div class="viewcode-block" id="ThermoDataset.get_train_iterator"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">get_train_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ThermoDataset.get_train_iterator"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">get_train_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Iterator</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Builds and returns an initializable iterator for the training dataset.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">make_initializable_iterator</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ThermoDataset.get_test_iterator"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_test_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">get_test_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ThermoDataset.get_test_iterator"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_test_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">get_test_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Iterator</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Builds and returns an initializable iterator for the test dataset.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">make_initializable_iterator</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ThermoDataset.get_validation_iterator"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_validation_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">get_validation_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ThermoDataset.get_validation_iterator"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_validation_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">get_validation_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Iterator</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Builds and returns an initializable iterator for the validation dataset.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">make_initializable_iterator</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ThermoDataset.print_info"><a class="viewcode-back" href="../../../../thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.print_info">[docs]</a>    <span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints the dataset properties.&quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Num samples (train/test/val):  </span><span class="si">{}</span><span class="s2"> tot: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
               <span class="s2">&quot;Samples per class: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
               <span class="s2">&quot;Sample type        </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
