@@ -185,6 +185,7 @@
 <dt id="thermography.settings.camera.Camera">
 <em class="property">class </em><code class="descname">Camera</code><span class="sig-paren">(</span><em>camera_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/settings/camera.html#Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.settings.camera.Camera" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class representing the intrinsic camera parameters of the camera used to capture the videos analyzed by <a class="reference internal" href="thermography.html#module-thermography" title="thermography"><code class="xref py py-mod docutils literal"><span class="pre">thermography</span></code></a>.</p>
 <p>Loads the camera parameters into the object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -197,57 +198,68 @@
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.camera_matrix">
 <code class="descname">camera_matrix</code><a class="headerlink" href="#thermography.settings.camera.Camera.camera_matrix" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the intrinsic camera matrix.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.camera_path">
 <code class="descname">camera_path</code><a class="headerlink" href="#thermography.settings.camera.Camera.camera_path" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the absolute path to the configuarion file associated to the camera parameters contained in this object.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.distortion_coeff">
 <code class="descname">distortion_coeff</code><a class="headerlink" href="#thermography.settings.camera.Camera.distortion_coeff" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the distortion coefficients of the camera.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.focal_length">
 <code class="descname">focal_length</code><a class="headerlink" href="#thermography.settings.camera.Camera.focal_length" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the focal length of the camera expressed in pixel units.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.image_size">
 <code class="descname">image_size</code><a class="headerlink" href="#thermography.settings.camera.Camera.image_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the image size captured by the camera.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.principal_point">
 <code class="descname">principal_point</code><a class="headerlink" href="#thermography.settings.camera.Camera.principal_point" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the pixel coordinates of the principal point.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.r1">
 <code class="descname">r1</code><a class="headerlink" href="#thermography.settings.camera.Camera.r1" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the first radial distortion coefficient.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.r2">
 <code class="descname">r2</code><a class="headerlink" href="#thermography.settings.camera.Camera.r2" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the second radial distortion coefficient.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.r3">
 <code class="descname">r3</code><a class="headerlink" href="#thermography.settings.camera.Camera.r3" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the thirds radial distortion coefficient.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.t1">
 <code class="descname">t1</code><a class="headerlink" href="#thermography.settings.camera.Camera.t1" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the first tangential distortion coefficient.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.settings.camera.Camera.t2">
 <code class="descname">t2</code><a class="headerlink" href="#thermography.settings.camera.Camera.t2" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the second tangential distortion coefficient.</p>
+</dd></dl>
 
 </dd></dl>
 
