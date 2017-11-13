@@ -164,7 +164,15 @@
 
 
 <div class="viewcode-block" id="EdgeDetectorParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.EdgeDetectorParams">[docs]</a><span class="k">class</span> <span class="nc">EdgeDetectorParams</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Parameters used by the :class:`.EdgeDetector`.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the edge detector parameters to their default value.</span>
+
+<span class="sd">        :ivar hysteresis_min_thresh: Canny candidate edges whose weight is smaller than this threshold are ignored.</span>
+<span class="sd">        :ivar hysteresis_max_thresh: Canny candidate edges whose weights is larger than this threshold are considered as edges without hysteresis.</span>
+<span class="sd">        :ivar kernel: Kernel shape to use when performing dilation and erosion of binary edge image.</span>
+<span class="sd">        :ivar dilation_steps: Number of dilation steps to take before skeletonization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hysteresis_min_thresh</span> <span class="o">=</span> <span class="mi">70</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hysteresis_max_thresh</span> <span class="o">=</span> <span class="mi">130</span>
 
@@ -173,15 +181,26 @@
 
 
 <div class="viewcode-block" id="EdgeDetector"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.EdgeDetector">[docs]</a><span class="k">class</span> <span class="nc">EdgeDetector</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class responsible for detecting edges in greyscale images.</span>
+<span class="sd">    The approach taken to detect edges in the input greyscale image is the following:</span>
+
+<span class="sd">        1. Perform a canny edge detection on the input image.</span>
+<span class="sd">        2. Dilate the resulting binary image for a parametrized number of steps in order to connect short edges and smooth out the edge shape.</span>
+<span class="sd">        3. Erode the dilated edge image in order to obtain a 1-pixel wide skeletonization of the edges in the input image.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">EdgeDetectorParams</span> <span class="o">=</span> <span class="n">EdgeDetectorParams</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param input_image: Input greyscale image where edges must be detected.</span>
+<span class="sd">        :param params: Parameters used for edge detection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_image</span> <span class="o">=</span> <span class="n">input_image</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">edge_image</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="EdgeDetector.detect"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.EdgeDetector.detect">[docs]</a>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Detects the edges in the image passed to the constructor using the parameters passed to the constructor.</span>
+<div class="viewcode-block" id="EdgeDetector.detect"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.EdgeDetector.detect">[docs]</a>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Detects the edges in the image passed to the constructor using the parameters passed to the constructor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">canny</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Canny</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_image</span><span class="p">,</span> <span class="n">threshold1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">hysteresis_min_thresh</span><span class="p">,</span>
                           <span class="n">threshold2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">hysteresis_max_thresh</span><span class="p">,</span> <span class="n">apertureSize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>

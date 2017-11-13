@@ -2,7 +2,6 @@ thermography\.detection package
 ===============================
 
 .. automodule:: thermography.detection
-    :members:
     :undoc-members:
     :show-inheritance:
 

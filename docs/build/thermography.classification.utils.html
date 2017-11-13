@@ -92,7 +92,10 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="thermography.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a></li>
@@ -102,12 +105,9 @@
 <li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui</a></li>
 </ul>
 
             
@@ -152,7 +152,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="thermography.html">thermography package</a> &raquo;</li>
+          <li><a href="thermography.html">thermography</a> &raquo;</li>
         
           <li><a href="thermography.classification.html">thermography.classification package</a> &raquo;</li>
         
@@ -177,14 +177,178 @@
             
   <div class="section" id="module-thermography.classification.utils">
 <span id="thermography-classification-utils-package"></span><h1>thermography.classification.utils package<a class="headerlink" href="#module-thermography.classification.utils" title="Permalink to this headline">¶</a></h1>
+<p>The utility functions associated to the <a class="reference internal" href="thermography.classification.html#module-thermography.classification" title="thermography.classification"><code class="xref py py-mod docutils literal"><span class="pre">thermography.classification</span></code></a> module are implemented here.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-thermography.classification.utils.operations">
+<span id="thermography-classification-utils-operations-module"></span><h2>thermography.classification.utils.operations module<a class="headerlink" href="#module-thermography.classification.utils.operations" title="Permalink to this headline">¶</a></h2>
+<p>Module containing utility functions to combine multiple tensorflow operations into a single function call.</p>
+<dl class="function">
+<dt id="thermography.classification.utils.operations.weight_variable">
+<code class="descname">weight_variable</code><span class="sig-paren">(</span><em>name: str</em>, <em>shape: list</em><span class="sig-paren">)</span> &#x2192; tensorflow.python.framework.ops.Tensor<a class="reference internal" href="_modules/thermography/classification/utils/operations.html#weight_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.operations.weight_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates or returns an existing tensorflow variable to be used as weight.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – Name of the variable to be returned.</li>
+<li><strong>shape</strong> – Shape of the variable to be returned.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:return A tf.Variable with the name and shape passed as argument, initialized with a truncated normal initializer.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.classification.utils.operations.bias_variable">
+<code class="descname">bias_variable</code><span class="sig-paren">(</span><em>name: str</em>, <em>shape: list</em><span class="sig-paren">)</span> &#x2192; tensorflow.python.framework.ops.Tensor<a class="reference internal" href="_modules/thermography/classification/utils/operations.html#bias_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.operations.bias_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates or returns an existing tensorflow variable to be used as a bias.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – Name of the variable to be returned.</li>
+<li><strong>shape</strong> – Shape of the variable to be returned.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A tf.variable with the name and shape passed as argument, initialized with a constant initializer.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.classification.utils.operations.conv2d">
+<code class="descname">conv2d</code><span class="sig-paren">(</span><em>name: str</em>, <em>x: tensorflow.python.framework.ops.Tensor</em>, <em>W: tensorflow.python.framework.ops.Tensor</em><span class="sig-paren">)</span> &#x2192; tensorflow.python.framework.ops.Tensor<a class="reference internal" href="_modules/thermography/classification/utils/operations.html#conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.operations.conv2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the graph node associated to the convolution between the input parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – Name to give to the resulting convolution.</li>
+<li><strong>x</strong> – Tensor to be convolved.</li>
+<li><strong>W</strong> – Weight variable to be used in the convolution.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A new tensor consisting of the convolution between the two input parameters.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.classification.utils.operations.conv_relu">
+<code class="descname">conv_relu</code><span class="sig-paren">(</span><em>x: tensorflow.python.framework.ops.Tensor</em>, <em>kernel_shape: list</em>, <em>bias_shape: list</em>, <em>name: str = ''</em><span class="sig-paren">)</span> &#x2192; tensorflow.python.framework.ops.Tensor<a class="reference internal" href="_modules/thermography/classification/utils/operations.html#conv_relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.operations.conv_relu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs and returns a convolution, followed by bias addition and non-linearity (relu).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – Input tensor to the convolution-bias-relu operation.</li>
+<li><strong>kernel_shape</strong> – Kernel shape to be used in the convolution.</li>
+<li><strong>bias_shape</strong> – Bias shape to be added to the result of the convolution.</li>
+<li><strong>name</strong> – Name of the returned operation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A new tensor consisting of the convolution-bias-relu operation.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.classification.utils.operations.max_pool_2x2">
+<code class="descname">max_pool_2x2</code><span class="sig-paren">(</span><em>name: str</em>, <em>x: tensorflow.python.framework.ops.Tensor</em><span class="sig-paren">)</span> &#x2192; tensorflow.python.framework.ops.Tensor<a class="reference internal" href="_modules/thermography/classification/utils/operations.html#max_pool_2x2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.operations.max_pool_2x2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a max_pool of size 2x2 to the input parameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – Name to assign to the returned operation.</li>
+<li><strong>x</strong> – input tensor.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.classification.utils.operations.max_pool_4x4">
+<code class="descname">max_pool_4x4</code><span class="sig-paren">(</span><em>name: str</em>, <em>x: tensorflow.python.framework.ops.Tensor</em><span class="sig-paren">)</span> &#x2192; tensorflow.python.framework.ops.Tensor<a class="reference internal" href="_modules/thermography/classification/utils/operations.html#max_pool_4x4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.operations.max_pool_4x4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a max_pool of size 4x4 to the input parameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – Name to assign to the returned operation.</li>
+<li><strong>x</strong> – input tensor.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="thermography.classification.utils.operations.max_pool_kxk">
+<code class="descname">max_pool_kxk</code><span class="sig-paren">(</span><em>name: str</em>, <em>x: tensorflow.python.framework.ops.Tensor</em>, <em>k: int</em><span class="sig-paren">)</span> &#x2192; tensorflow.python.framework.ops.Tensor<a class="reference internal" href="_modules/thermography/classification/utils/operations.html#max_pool_kxk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.operations.max_pool_kxk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a max_pool of size kxk to the input parameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – Name to assign to the returned operation.</li>
+<li><strong>x</strong> – input tensor.</li>
+<li><strong>k</strong> – size of the pooling operation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-thermography.classification.utils.kernel_summaries">
 <span id="thermography-classification-utils-kernel-summaries-module"></span><h2>thermography.classification.utils.kernel_summaries module<a class="headerlink" href="#module-thermography.classification.utils.kernel_summaries" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="thermography.classification.utils.kernel_summaries.kernel_to_histogram_summary">
+<code class="descname">kernel_to_histogram_summary</code><span class="sig-paren">(</span><em>kernel: tensorflow.python.framework.ops.Tensor</em>, <em>summary_name: str</em>, <em>collection: str = 'histograms'</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/classification/utils/kernel_summaries.html#kernel_to_histogram_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.kernel_summaries.kernel_to_histogram_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a summary histogram from the kernel passed as argument and adds it to the collection specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>kernel</strong> – Tensor representing a kernel.</li>
+<li><strong>summary_name</strong> – Name to give to the generated summary.</li>
+<li><strong>collection</strong> – Summary collection where the histogram summary is added.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="thermography.classification.utils.kernel_summaries.kernel_to_image_summary">
-<code class="descclassname">thermography.classification.utils.kernel_summaries.</code><code class="descname">kernel_to_image_summary</code><span class="sig-paren">(</span><em>kernel: tensorflow.python.framework.ops.Tensor</em>, <em>summary_name: str</em>, <em>max_images=3</em>, <em>collection: str = 'kernels'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/utils/kernel_summaries.html#kernel_to_image_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.kernel_summaries.kernel_to_image_summary" title="Permalink to this definition">¶</a></dt>
+<code class="descname">kernel_to_image_summary</code><span class="sig-paren">(</span><em>kernel: tensorflow.python.framework.ops.Tensor</em>, <em>summary_name: str</em>, <em>max_images=3</em>, <em>collection: str = 'kernels'</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/classification/utils/kernel_summaries.html#kernel_to_image_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.utils.kernel_summaries.kernel_to_image_summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a kernel tensor of shape [width, height, in_channels, out_channels] to an image summary.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

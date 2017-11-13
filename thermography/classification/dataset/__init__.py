@@ -1,3 +1,3 @@
-from .thermo_dataset import ThermoDataset
-from .thermo_class import ThermoClass
-from .create_directory_list import create_directory_list
+"""This package contains the source code for loading and handling the dataset needed to train a classifier."""
+
+from .thermo_dataset import ThermoDataset, create_directory_list, ThermoClass

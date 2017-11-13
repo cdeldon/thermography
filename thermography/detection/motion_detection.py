@@ -8,15 +8,14 @@ __all__ = ["MotionDetector"]
 
 
 class MotionDetector:
-    """
-    Class responsible for estimating the motion between two consecutive frames.
+    """Class responsible for estimating the motion between two consecutive frames.
     """
 
     def __init__(self, scaling: float = 1.0):
         """
         Initializes the motion detector object.
 
-        :param scaling: Scaling to apply to each frame passed to the function. This allows faster estimations of motion over the entire image when scaled down.
+        :param scaling: Scaling to apply to each image frame passed to the motion estimate. This allows faster estimations of motion over the entire image when scaled down.
         """
         self.scaling = scaling
 
@@ -24,11 +23,10 @@ class MotionDetector:
         self.flow = None
 
     def motion_estimate(self, frame: np.ndarray) -> np.ndarray:
-        """
-        Estimates the motion between the frame passed as parameter and the one stored in self.last_frame.
+        """Estimates the motion between the frame passed as parameter and the one stored in :attr:`self.last_frame`.
 
         :param frame: New frame of the sequence.
-        :return: The estimation of the mean motion between self.last_frame and the frame passed as argument. The motion estimate is expressed in pixel units.
+        :return: The estimation of the mean motion between :attr:`self.last_frame` and the frame passed as argument. The motion estimate is expressed in pixel units.
         """
         Logger.debug("Detecting motion")
         frame = scale_image(frame, self.scaling)

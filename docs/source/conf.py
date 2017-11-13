@@ -47,6 +47,12 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
+# Add also __init__ functions to documentation.
+autoclass_content = 'both'
+
+# Remove full path from functions and classes
+add_module_names = False
+
 # General information about the project.
 project = 'Thermography'
 copyright = '2017, Carlo Del Don'

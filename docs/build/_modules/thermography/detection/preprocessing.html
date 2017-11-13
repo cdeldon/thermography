@@ -165,7 +165,17 @@
 
 
 <div class="viewcode-block" id="PreprocessingParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.PreprocessingParams">[docs]</a><span class="k">class</span> <span class="nc">PreprocessingParams</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Parameters used by the :class:`.FramePreprocessor`.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the preprocessing parameters to their default value.</span>
+
+<span class="sd">       :ivar gaussian_blur: Radius of the gaussian blur to apply to the input image.</span>
+<span class="sd">       :ivar image_scaling: Scaling factor to apply to the input image.</span>
+<span class="sd">       :ivar image_rotation: Angle expressed in radiants used to rotate the input image.</span>
+<span class="sd">       :ivar red_threshold: Temperature threshold used to discard `cold` unimportant areas in the image.</span>
+<span class="sd">       :ivar min_area: Minimal surface of retained `important` areas of the image. Warm regions whose surface is smaller than this threshold are discarded.</span>
+<span class="sd">       &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_blur</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_scaling</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_rotation</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -174,7 +184,14 @@
 
 
 <div class="viewcode-block" id="FramePreprocessor"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.FramePreprocessor">[docs]</a><span class="k">class</span> <span class="nc">FramePreprocessor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class responsible for preprocessing an image frame.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">PreprocessingParams</span> <span class="o">=</span> <span class="n">PreprocessingParams</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the frame preprocessor with the input image and the preprocessor parameters.</span>
+
+<span class="sd">        :param input_image: RGB or greyscale input image to be preprocessed.</span>
+<span class="sd">        :param params: Preprocessing parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_image</span> <span class="o">=</span> <span class="n">input_image</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">preprocessed_image</span> <span class="o">=</span> <span class="kc">None</span>
@@ -183,7 +200,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attention_image</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the number of channels of the :attr:`self.input_image` image.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">1</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
@@ -192,7 +210,8 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input image has </span><span class="si">{}</span><span class="s2"> channels.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">gray_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">gray_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a boolean indicating wheter :attr:`self.input_image` is a greyscale image (or an RGB image where all channels are identical).&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
@@ -202,6 +221,16 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input image has </span><span class="si">{}</span><span class="s2"> channels.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="FramePreprocessor.preprocess"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.FramePreprocessor.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Preprocesses the :attr:`self.input_image` following this steps:</span>
+
+<span class="sd">            1. The image is scaled using the :attr:`self.params.image_scaling` parameter.</span>
+<span class="sd">            2. The image is rotated using the :attr:`self.params.image_rotation` parameter.</span>
+<span class="sd">            3. Attention detection.</span>
+
+<span class="sd">                a. If the image is RGB, the :attr:`self.params.red_threshold` parameter is used to determine the attention areas of the image.</span>
+<span class="sd">                b. Otherwise the entire image is kept as attention.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">scaled_image</span> <span class="o">=</span> <span class="n">scale_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">image_scaling</span><span class="p">)</span>
         <span class="n">rotated_frame</span> <span class="o">=</span> <span class="n">rotate_image</span><span class="p">(</span><span class="n">scaled_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">image_rotation</span><span class="p">)</span>
 

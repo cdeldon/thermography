@@ -4,9 +4,7 @@ import cv2
 
 
 class Modality(IntEnum):
-    """
-    Modalities used to load an image into opencv.
-    """
+    """Modalities used to load an image into opencv."""
 
     RGB = cv2.IMREAD_COLOR
     GRAY_SCALE = cv2.IMREAD_GRAYSCALE
@@ -16,9 +14,7 @@ class Modality(IntEnum):
 
 
 class LogLevel:
-    """
-    Log levels used for the simple_logger.
-    """
+    """Log levels used for the :class:`simple_logger.Logger` object."""
     DEBUG = "DEBUG"
     INFO = "INFO"
     WARNING = "WARNING"

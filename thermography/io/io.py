@@ -10,9 +10,10 @@ __all__ = ["ImageLoader", "VideoLoader"]
 
 
 class ImageLoader:
+    """Class responsible for loading a single image file into a numpy array."""
+
     def __init__(self, image_path: str, mode: Modality = Modality.DEFAULT):
-        """
-        Initializes and loads the image associated to the file indicated by the path passed as argument.
+        """Initializes and loads the image associated to the file indicated by the path passed as argument.
 
         :param image_path: Absolute path to the image file to be loaded.
         :param mode: Modality to be used when loading the image.
@@ -22,9 +23,8 @@ class ImageLoader:
         self.mode = mode
         self.image_raw = cv2.imread(self.image_path, self.mode)
 
-    def show_raw(self, title: str = "", wait: int = 0):
-        """
-        Displays the raw image associated with the calling instance.
+    def show_raw(self, title: str = "", wait: int = 0) -> None:
+        """Displays the raw image associated with the calling instance.
 
         :param title: Title to be added to the displayed image.
         :param wait: Time to wait until displayed windows is closed. If set to 0, then the image does not close.
@@ -33,7 +33,8 @@ class ImageLoader:
         cv2.waitKey(wait)
 
     @property
-    def image_path(self):
+    def image_path(self) -> str:
+        """Returns the absolute path to the image loaded by this object."""
         return self.__image_path
 
     @image_path.setter
@@ -44,13 +45,14 @@ class ImageLoader:
 
 
 class VideoLoader:
+    """Class responsible for laoding a video into a sequence of numpy arrays representing the single video frames."""
+
     def __init__(self, video_path: str, start_frame: int = 0, end_frame: int = None):
-        """
-        Loads the frames associated to the video indicated by the path passed as argument.
+        """Loads the frames associated to the video indicated by the path passed as argument.
 
         :param video_path: Absolute path to the video to be loaded.
         :param start_frame: Start frame of the video to be considered (inclusive).
-        :param end_frame: End frame of the video to be considered (non inclusive).
+        :param end_frame: End frame of the video to be considered (non inclusive). If set to None, the video will be loaded until the last frame.
         """
         Logger.debug("Loading video at {}".format(video_path))
         self.video_path = video_path
@@ -62,24 +64,14 @@ class VideoLoader:
         self.frames = []
         self.__load_video(cv2.VideoCapture(self.video_path))
 
-    def show_video(self, fps: int = 60):
-        """
-        Shows the loaded frames.
-
-        :param fps: Frames per second to be used when showing the images.
-        """
-        seconds_per_frame = 1.0 / fps
-        for i, frame in enumerate(self.frames):
-            cv2.imshow("Frame", frame)
-            cv2.setWindowTitle("Frame", "Frame {}".format(self.start_frame + i))
-            cv2.waitKey(int(1000 * seconds_per_frame))
-
     @property
-    def num_frames(self):
+    def num_frames(self) -> int:
+        """Returns the number of frames loaded by this object."""
         return self.end_frame - self.start_frame
 
     @property
-    def video_path(self):
+    def video_path(self) -> str:
+        """Returns the absolute path associated to the video loaded by this object."""
         return self.__video_path
 
     @video_path.setter

@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Thermography 1.1 documentation" href="index.html"/>
-        <link rel="up" title="gui package" href="gui.html"/>
+        <link rel="up" title="gui" href="gui.html"/>
         <link rel="next" title="gui.threads package" href="gui.threads.html"/>
         <link rel="prev" title="gui.design package" href="gui.design.html"/> 
 
@@ -92,8 +92,8 @@
             
             
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="thermography.html">thermography package</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="gui.html">gui package</a><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="thermography.html">thermography</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="gui.html">gui</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="gui.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="gui.design.html">gui.design package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">gui.dialogs package</a></li>
@@ -146,7 +146,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="gui.html">gui package</a> &raquo;</li>
+          <li><a href="gui.html">gui</a> &raquo;</li>
         
       <li>gui.dialogs package</li>
     
@@ -176,7 +176,7 @@
 <span id="gui-dialogs-about-dialog-module"></span><h2>gui.dialogs.about_dialog module<a class="headerlink" href="#module-gui.dialogs.about_dialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gui.dialogs.about_dialog.AboutDialog">
-<em class="property">class </em><code class="descclassname">gui.dialogs.about_dialog.</code><code class="descname">AboutDialog</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/about_dialog.html#AboutDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.about_dialog.AboutDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">AboutDialog</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/about_dialog.html#AboutDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.about_dialog.AboutDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMessageBox</span></code></p>
 <dl class="method">
 <dt id="gui.dialogs.about_dialog.AboutDialog.set_logo_icon">
@@ -190,7 +190,7 @@
 <span id="gui-dialogs-create-dataset-dialog-module"></span><h2>gui.dialogs.create_dataset_dialog module<a class="headerlink" href="#module-gui.dialogs.create_dataset_dialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI">
-<em class="property">class </em><code class="descclassname">gui.dialogs.create_dataset_dialog.</code><code class="descname">CreateDatasetGUI</code><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">CreateDatasetGUI</code><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="gui.design.html#gui.design.create_dataset_gui.Ui_CreateDataset_main_window" title="gui.design.create_dataset_gui.Ui_CreateDataset_main_window"><code class="xref py py-class docutils literal"><span class="pre">gui.design.create_dataset_gui.Ui_CreateDataset_main_window</span></code></a></p>
 <p>Dataset creation GUI.</p>
 <dl class="method">
@@ -357,7 +357,7 @@
 
 <dl class="class">
 <dt id="gui.dialogs.create_dataset_dialog.VideoLoaderThread">
-<em class="property">class </em><code class="descclassname">gui.dialogs.create_dataset_dialog.</code><code class="descname">VideoLoaderThread</code><span class="sig-paren">(</span><em>video_path: str</em>, <em>from_index: int</em>, <em>to_index: int</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#VideoLoaderThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.VideoLoaderThread" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">VideoLoaderThread</code><span class="sig-paren">(</span><em>video_path: str</em>, <em>from_index: int</em>, <em>to_index: int</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#VideoLoaderThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.VideoLoaderThread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtCore.QThread</span></code></p>
 <dl class="attribute">
 <dt id="gui.dialogs.create_dataset_dialog.VideoLoaderThread.finish_signal">
@@ -376,7 +376,7 @@
 <span id="gui-dialogs-image-saving-dialog-module"></span><h2>gui.dialogs.image_saving_dialog module<a class="headerlink" href="#module-gui.dialogs.image_saving_dialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gui.dialogs.image_saving_dialog.SaveImageDialog">
-<em class="property">class </em><code class="descclassname">gui.dialogs.image_saving_dialog.</code><code class="descname">SaveImageDialog</code><span class="sig-paren">(</span><em>working_modules: dict</em>, <em>broken_modules: dict</em>, <em>misdetected_modules: dict</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/image_saving_dialog.html#SaveImageDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.image_saving_dialog.SaveImageDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">SaveImageDialog</code><span class="sig-paren">(</span><em>working_modules: dict</em>, <em>broken_modules: dict</em>, <em>misdetected_modules: dict</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/image_saving_dialog.html#SaveImageDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.image_saving_dialog.SaveImageDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code>, <a class="reference internal" href="gui.design.html#gui.design.image_saving_gui.Ui_Save_images_dialog" title="gui.design.image_saving_gui.Ui_Save_images_dialog"><code class="xref py py-class docutils literal"><span class="pre">gui.design.image_saving_gui.Ui_Save_images_dialog</span></code></a></p>
 <dl class="method">
 <dt id="gui.dialogs.image_saving_dialog.SaveImageDialog.open_directory_dialog">
@@ -400,7 +400,7 @@
 <span id="gui-dialogs-thermo-gui-dialog-module"></span><h2>gui.dialogs.thermo_gui_dialog module<a class="headerlink" href="#module-gui.dialogs.thermo_gui_dialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI">
-<em class="property">class </em><code class="descclassname">gui.dialogs.thermo_gui_dialog.</code><code class="descname">ThermoGUI</code><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ThermoGUI</code><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="gui.design.html#gui.design.thermo_gui_design.Ui_ThermoGUI_main_window" title="gui.design.thermo_gui_design.Ui_ThermoGUI_main_window"><code class="xref py py-class docutils literal"><span class="pre">gui.design.thermo_gui_design.Ui_ThermoGUI_main_window</span></code></a></p>
 <p>Main GUI window.</p>
 <dl class="method">
@@ -575,7 +575,7 @@
 <span id="gui-dialogs-webcam-dialog-module"></span><h2>gui.dialogs.webcam_dialog module<a class="headerlink" href="#module-gui.dialogs.webcam_dialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gui.dialogs.webcam_dialog.WebcamDialog">
-<em class="property">class </em><code class="descclassname">gui.dialogs.webcam_dialog.</code><code class="descname">WebcamDialog</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">WebcamDialog</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="gui.design.html#gui.design.webcam_dialog_design.Ui_WebCam" title="gui.design.webcam_dialog_design.Ui_WebCam"><code class="xref py py-class docutils literal"><span class="pre">gui.design.webcam_dialog_design.Ui_WebCam</span></code></a></p>
 <dl class="method">
 <dt id="gui.dialogs.webcam_dialog.WebcamDialog.current_webcam_value_found">
