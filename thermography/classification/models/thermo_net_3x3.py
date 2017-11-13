@@ -1,18 +1,28 @@
 import numpy as np
 import tensorflow as tf
 
+from thermography.classification.utils.operations import *
 from .base_net import BaseNet
-from .operations import *
 
 
-class ThermoNet(BaseNet):
+class ThermoNet3x3(BaseNet):
+    """Class representing the computational graph structure used for classification of solar panel modules."""
+
     def __init__(self, x: tf.Tensor, image_shape: np.ndarray, num_classes: int, keep_prob: float, *args, **kwargs):
-        super(self.__class__, self).__init__(x=x, image_shape=image_shape, num_classes=num_classes, name="ThermoNet")
+        """Initializes the computational graph according to the structure defined in :func:`self.create <.ThermoNet3x3.create>`.
+
+        :param x: Tensorflow placeholder which will be fed with a batch of images.
+        :param image_shape: Shape of each input image fed to :attr:`self.x`.
+        :param num_classes: Number of classes which the model can predict.
+        :param keep_prob: Tensorflow placeholder representing the keep probability for the dropout layers.
+        """
+        super(self.__class__, self).__init__(x=x, image_shape=image_shape, num_classes=num_classes, name="ThermoNet3x3")
         self.keep_probability = keep_prob
 
         self.create()
 
     def create(self):
+        """Creates the ThermoNet3x3 computation graph consisting of three convolutional layers followed by three fully connected layers."""
         with tf.variable_scope(self.name):
             current_shape = self.flat_shape
             with tf.variable_scope('conv_1'):

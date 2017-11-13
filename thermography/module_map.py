@@ -34,7 +34,8 @@ class ModuleMap:
         the image-coordinates of the module center during the last detection, the module's surface,
         a list of frames in which the module has been detected, and a list of associated image-coordinates.
 
-        An estimate of the motion occourred from the last time the module has been detected and the current frame is
+        An estimate of the motion occurred from the last time the module has been detected and the current frame is
+        An estimate of the motion occurred from the last time the module has been detected and the current frame is
         updated each time new modules are added to the module map.
 
         An estimate of class probabilities associated to the module is computed by taking the mean over all probability

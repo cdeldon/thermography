@@ -159,18 +159,28 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
+<span class="kn">from</span> <span class="nn">thermography.classification.utils.operations</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.base_net</span> <span class="k">import</span> <span class="n">BaseNet</span>
-<span class="kn">from</span> <span class="nn">.operations</span> <span class="k">import</span> <span class="o">*</span>
 
 
-<div class="viewcode-block" id="ThermoNet"><a class="viewcode-back" href="../../../../thermography.classification.models.html#thermography.classification.models.thermo_net_3x3.ThermoNet">[docs]</a><span class="k">class</span> <span class="nc">ThermoNet</span><span class="p">(</span><span class="n">BaseNet</span><span class="p">):</span>
+<div class="viewcode-block" id="ThermoNet3x3"><a class="viewcode-back" href="../../../../thermography.classification.models.html#thermography.classification.models.thermo_net_3x3.ThermoNet3x3">[docs]</a><span class="k">class</span> <span class="nc">ThermoNet3x3</span><span class="p">(</span><span class="n">BaseNet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class representing the computational graph structure used for classification of solar panel modules.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">image_shape</span><span class="o">=</span><span class="n">image_shape</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ThermoNet&quot;</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the computational graph according to the structure defined in :func:`self.create &lt;.ThermoNet3x3.create&gt;`.</span>
+
+<span class="sd">        :param x: Tensorflow placeholder which will be fed with a batch of images.</span>
+<span class="sd">        :param image_shape: Shape of each input image fed to :attr:`self.x`.</span>
+<span class="sd">        :param num_classes: Number of classes which the model can predict.</span>
+<span class="sd">        :param keep_prob: Tensorflow placeholder representing the keep probability for the dropout layers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">image_shape</span><span class="o">=</span><span class="n">image_shape</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ThermoNet3x3&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keep_probability</span> <span class="o">=</span> <span class="n">keep_prob</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ThermoNet.create"><a class="viewcode-back" href="../../../../thermography.classification.models.html#thermography.classification.models.thermo_net_3x3.ThermoNet.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ThermoNet3x3.create"><a class="viewcode-back" href="../../../../thermography.classification.models.html#thermography.classification.models.thermo_net_3x3.ThermoNet3x3.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates the ThermoNet3x3 computation graph consisting of three convolutional layers followed by three fully connected layers.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
             <span class="n">current_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_shape</span>
             <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s1">&#39;conv_1&#39;</span><span class="p">):</span>

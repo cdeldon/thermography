@@ -1,8 +1,8 @@
 import numpy as np
 import tensorflow as tf
 
+from thermography.classification.utils.operations import *
 from .base_net import BaseNet
-from .operations import *
 
 
 class ThermoNet(BaseNet):

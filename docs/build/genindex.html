@@ -211,7 +211,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="thermography.classification.models.html#thermography.classification.models.operations.bias_variable">bias_variable() (in module thermography.classification.models.operations)</a>
+      <li><a href="thermography.classification.utils.html#thermography.classification.utils.operations.bias_variable">bias_variable() (in module thermography.classification.utils.operations)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -275,14 +275,16 @@
         <li><a href="gui.dialogs.html#gui.dialogs.thermo_gui_dialog.ThermoGUI.connect_widgets">(ThermoGUI method)</a>
 </li>
       </ul></li>
-      <li><a href="thermography.classification.models.html#thermography.classification.models.operations.conv2d">conv2d() (in module thermography.classification.models.operations)</a>
+      <li><a href="thermography.classification.utils.html#thermography.classification.utils.operations.conv2d">conv2d() (in module thermography.classification.utils.operations)</a>
 </li>
-      <li><a href="thermography.classification.models.html#thermography.classification.models.operations.conv_relu">conv_relu() (in module thermography.classification.models.operations)</a>
+      <li><a href="thermography.classification.utils.html#thermography.classification.utils.operations.conv_relu">conv_relu() (in module thermography.classification.utils.operations)</a>
 </li>
       <li><a href="thermography.classification.models.html#thermography.classification.models.base_net.BaseNet.create">create() (BaseNet method)</a>
 
       <ul>
-        <li><a href="thermography.classification.models.html#thermography.classification.models.thermo_net.ThermoNet.create">(ThermoNet method)</a>, <a href="thermography.classification.models.html#thermography.classification.models.thermo_net_3x3.ThermoNet.create">[1]</a>
+        <li><a href="thermography.classification.models.html#thermography.classification.models.thermo_net.ThermoNet.create">(ThermoNet method)</a>
+</li>
+        <li><a href="thermography.classification.models.html#thermography.classification.models.thermo_net_3x3.ThermoNet3x3.create">(ThermoNet3x3 method)</a>
 </li>
       </ul></li>
       <li><a href="thermography.html#thermography.thermo_app.ThermoApp.create_classes_image">create_classes_image() (ThermoApp method)</a>
@@ -597,11 +599,11 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="thermography.classification.models.html#thermography.classification.models.operations.max_pool_2x2">max_pool_2x2() (in module thermography.classification.models.operations)</a>
+      <li><a href="thermography.classification.utils.html#thermography.classification.utils.operations.max_pool_2x2">max_pool_2x2() (in module thermography.classification.utils.operations)</a>
 </li>
-      <li><a href="thermography.classification.models.html#thermography.classification.models.operations.max_pool_4x4">max_pool_4x4() (in module thermography.classification.models.operations)</a>
+      <li><a href="thermography.classification.utils.html#thermography.classification.utils.operations.max_pool_4x4">max_pool_4x4() (in module thermography.classification.utils.operations)</a>
 </li>
-      <li><a href="thermography.classification.models.html#thermography.classification.models.operations.max_pool_kxk">max_pool_kxk() (in module thermography.classification.models.operations)</a>
+      <li><a href="thermography.classification.utils.html#thermography.classification.utils.operations.max_pool_kxk">max_pool_kxk() (in module thermography.classification.utils.operations)</a>
 </li>
       <li><a href="thermography.utils.html#thermography.utils.geometry.mean_segment_angle">mean_segment_angle() (in module thermography.utils.geometry)</a>
 </li>
@@ -983,8 +985,6 @@
 </li>
       <li><a href="thermography.classification.models.html#module-thermography.classification.models.base_net">thermography.classification.models.base_net (module)</a>
 </li>
-      <li><a href="thermography.classification.models.html#module-thermography.classification.models.operations">thermography.classification.models.operations (module)</a>
-</li>
       <li><a href="thermography.classification.models.html#module-thermography.classification.models.thermo_net">thermography.classification.models.thermo_net (module)</a>
 </li>
       <li><a href="thermography.classification.models.html#module-thermography.classification.models.thermo_net_3x3">thermography.classification.models.thermo_net_3x3 (module)</a>
@@ -992,6 +992,8 @@
       <li><a href="thermography.classification.utils.html#module-thermography.classification.utils">thermography.classification.utils (module)</a>
 </li>
       <li><a href="thermography.classification.utils.html#module-thermography.classification.utils.kernel_summaries">thermography.classification.utils.kernel_summaries (module)</a>
+</li>
+      <li><a href="thermography.classification.utils.html#module-thermography.classification.utils.operations">thermography.classification.utils.operations (module)</a>
 </li>
       <li><a href="thermography.detection.html#module-thermography.detection">thermography.detection (module)</a>
 </li>
@@ -1048,11 +1050,9 @@
       <li><a href="gui.threads.html#gui.threads.thermo_thread.ThermoGuiThread">ThermoGuiThread (class in gui.threads.thermo_thread)</a>
 </li>
       <li><a href="thermography.classification.models.html#thermography.classification.models.thermo_net.ThermoNet">ThermoNet (class in thermography.classification.models.thermo_net)</a>
-
-      <ul>
-        <li><a href="thermography.classification.models.html#thermography.classification.models.thermo_net_3x3.ThermoNet">(class in thermography.classification.models.thermo_net_3x3)</a>
 </li>
-      </ul></li>
+      <li><a href="thermography.classification.models.html#thermography.classification.models.thermo_net_3x3.ThermoNet3x3">ThermoNet3x3 (class in thermography.classification.models.thermo_net_3x3)</a>
+</li>
       <li><a href="thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.train">train (ThermoDataset attribute)</a>
 </li>
       <li><a href="thermography.classification.dataset.html#thermography.classification.dataset.thermo_dataset.ThermoDataset.train_size">train_size (ThermoDataset attribute)</a>
@@ -1201,7 +1201,7 @@
 </li>
       <li><a href="gui.dialogs.html#gui.dialogs.webcam_dialog.WebcamDialog">WebcamDialog (class in gui.dialogs.webcam_dialog)</a>
 </li>
-      <li><a href="thermography.classification.models.html#thermography.classification.models.operations.weight_variable">weight_variable() (in module thermography.classification.models.operations)</a>
+      <li><a href="thermography.classification.utils.html#thermography.classification.utils.operations.weight_variable">weight_variable() (in module thermography.classification.utils.operations)</a>
 </li>
   </ul></td>
 </tr></table>

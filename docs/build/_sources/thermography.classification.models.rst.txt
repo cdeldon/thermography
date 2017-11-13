@@ -17,14 +17,6 @@ thermography\.classification\.models\.base\_net module
     :undoc-members:
     :show-inheritance:
 
-thermography\.classification\.models\.operations module
--------------------------------------------------------
-
-.. automodule:: thermography.classification.models.operations
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 thermography\.classification\.models\.thermo\_net module
 --------------------------------------------------------
 
