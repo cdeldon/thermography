@@ -9,11 +9,11 @@ from . import LogLevel
 
 def setup_logger(console_log_level: LogLevel = LogLevel.INFO, file_log_level: LogLevel = LogLevel.DEBUG,
                  log_file_name: str = None):
-    """
-    Sets up the simple logger.
+    """Sets up the simple logger.
+
     :param console_log_level: Log level associated to the streaming log.
     :param file_log_level: Log level associated to the file log.
-    :param log_file_name: If set, then the file log is written to this file. Otherwise a new log file will be created in the log directory returned by get_log_dir()
+    :param log_file_name: If set, then the file log is written to this file. Otherwise a new log file will be created in the log directory returned by :func:`get_log_dir <thermography.settings.get_log_dir>`.
     """
     if log_file_name is None:
         log_directory = get_log_dir()
