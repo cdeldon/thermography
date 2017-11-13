@@ -30,7 +30,7 @@ Subpackages
 
 .. toctree::
    :maxdepth: 1
-   
+
    thermography.classification
    thermography.detection
    thermography.io

@@ -249,17 +249,44 @@ Each module is keyed by an unique ID Multiple detections of the same module are 
 <em class="property">class </em><code class="descclassname">thermography.thermo_app.</code><code class="descname">ThermoApp</code><span class="sig-paren">(</span><em>input_video_path</em>, <em>camera_param_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Application implementing the routines for module detections and analysis under the form of an object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first last highlight-python"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">ThermoApp</span><span class="p">(</span><span class="n">path_to_input_video</span><span class="p">,</span> <span class="n">camera_params</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.classify_detected_modules">
-<code class="descname">classify_detected_modules</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.classify_detected_modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.classify_detected_modules" title="Permalink to this definition">¶</a></dt>
-<dd><p>Classifies the modules in the global module map which have been detected in the current frame. This function
-must be called after inserting the modules in the global module map!</p>
+<code class="descname">classify_detected_modules</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.classify_detected_modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.classify_detected_modules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classifies the modules in the global module map which have been detected in the current frame.</p>
+<p>This function classifies all modules detected in the current frame which have been registered in the
+<code class="xref py py-attr docutils literal"><span class="pre">self.module_map</span></code> module map. The modules are classified by the <code class="xref py py-attr docutils literal"><span class="pre">self.inference</span></code> object which
+generates a class probability distribution for each module.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function must be called after inserting the modules in the global module map!</p>
+</div>
+<dl class="docutils">
+<dt>See Also:</dt>
+<dd>Module <a class="reference internal" href="thermography.classification.html#module-thermography.classification.inference" title="thermography.classification.inference"><code class="xref py py-mod docutils literal"><span class="pre">inference</span></code></a> for more details.</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.cluster_segments">
-<code class="descname">cluster_segments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.cluster_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.cluster_segments" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">cluster_segments</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.cluster_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.cluster_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clusters the segments in <code class="xref py py-attr docutils literal"><span class="pre">self.last_segments</span></code> according to the parameters in <code class="xref py py-attr docutils literal"><span class="pre">self.segment_clustering_parameters</span></code>.</p>
+<dl class="docutils">
+<dt>See Also:</dt>
+<dd>Module <a class="reference internal" href="thermography.detection.html#module-thermography.detection.segment_clustering" title="thermography.detection.segment_clustering"><code class="xref py py-mod docutils literal"><span class="pre">segment_clustering</span></code></a> for more details.</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.create_classes_image">
@@ -288,32 +315,53 @@ must be called after inserting the modules in the global module map!</p>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.detect_edges">
-<code class="descname">detect_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_edges" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">detect_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects the edges in the <code class="xref py py-attr docutils literal"><span class="pre">self.last_preprocessed_image</span></code> using the parameters in <code class="xref py py-attr docutils literal"><span class="pre">self.edge_detection_parameters</span></code>.</p>
+<dl class="docutils">
+<dt>See Also:</dt>
+<dd>Module <a class="reference internal" href="thermography.detection.html#module-thermography.detection.edge_detection" title="thermography.detection.edge_detection"><code class="xref py py-mod docutils literal"><span class="pre">edge_detection</span></code></a> for more details.</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.detect_intersections">
-<code class="descname">detect_intersections</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_intersections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_intersections" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">detect_intersections</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_intersections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_intersections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects the intersections between the segments in <code class="xref py py-attr docutils literal"><span class="pre">self.last_cluster_list</span></code> according to the parameters in <code class="xref py py-attr docutils literal"><span class="pre">self.intersection_detection_parameters</span></code>.</p>
+<dl class="docutils">
+<dt>See Also:</dt>
+<dd>Module <a class="reference internal" href="thermography.detection.html#module-thermography.detection.intersection_detection" title="thermography.detection.intersection_detection"><code class="xref py py-mod docutils literal"><span class="pre">intersection_detection</span></code></a> for more details.</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.detect_rectangles">
-<code class="descname">detect_rectangles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_rectangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_rectangles" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">detect_rectangles</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_rectangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_rectangles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects the rectangles defined through the intersections in <code class="xref py py-attr docutils literal"><span class="pre">self.last_intersections</span></code> according to the parameters in <code class="xref py py-attr docutils literal"><span class="pre">self.rectangle_detection_parameters</span></code>.</p>
+<dl class="docutils">
+<dt>See Also:</dt>
+<dd>Module <a class="reference internal" href="thermography.detection.html#module-thermography.detection.rectangle_detection" title="thermography.detection.rectangle_detection"><code class="xref py py-mod docutils literal"><span class="pre">rectangle_detection</span></code></a> for more details.</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.detect_segments">
-<code class="descname">detect_segments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_segments" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">detect_segments</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.detect_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.detect_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects the segments in the <code class="xref py py-attr docutils literal"><span class="pre">self.last_edges_frame</span></code> using the parameters in <code class="xref py py-attr docutils literal"><span class="pre">self.segment_detection_parameters</span></code>.</p>
+<dl class="docutils">
+<dt>See Also:</dt>
+<dd>Module <a class="reference internal" href="thermography.detection.html#module-thermography.detection.segment_detection" title="thermography.detection.segment_detection"><code class="xref py py-mod docutils literal"><span class="pre">segment_detection</span></code></a> for more details.</dd>
+</dl>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="thermography.thermo_app.ThermoApp.frames">
 <code class="descname">frames</code><a class="headerlink" href="#thermography.thermo_app.ThermoApp.frames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the frames loaded by the <code class="xref py py-attr docutils literal"><span class="pre">self.video_loader</span></code>.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.load_video">
-<code class="descname">load_video</code><span class="sig-paren">(</span><em>start_frame: int</em>, <em>end_frame: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.load_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.load_video" title="Permalink to this definition">¶</a></dt>
+<code class="descname">load_video</code><span class="sig-paren">(</span><em>start_frame: int</em>, <em>end_frame: int</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.load_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.load_video" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the video associated with the absolute path given to the constructor between the frames indicated as argument.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -327,27 +375,53 @@ must be called after inserting the modules in the global module map!</p>
 </tr>
 </tbody>
 </table>
+<p>See Also:
+Module <a class="reference internal" href="thermography.io.html#module-thermography.io.io" title="thermography.io.io"><code class="xref py py-mod docutils literal"><span class="pre">io</span></code></a> for more details.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.preprocess_frame">
-<code class="descname">preprocess_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.preprocess_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.preprocess_frame" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">preprocess_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.preprocess_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.preprocess_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocesses the frame stored at <code class="xref py py-attr docutils literal"><span class="pre">self.last_input_frame</span></code> by scaling, rotating and computing the attention regions.</p>
+<dl class="docutils">
+<dt>See Also:</dt>
+<dd>Module <a class="reference internal" href="thermography.detection.html#module-thermography.detection.preprocessing" title="thermography.detection.preprocessing"><code class="xref py py-mod docutils literal"><span class="pre">preprocessing</span></code></a> for more details.</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.reset">
-<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.reset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the values computed in the last step.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the <a class="reference internal" href="#thermography.thermo_app.ThermoApp" title="thermography.thermo_app.ThermoApp"><code class="xref py py-class docutils literal"><span class="pre">ThermoApp</span></code></a> by iterating over all frames and detecting the modules. This function does not perform module classification.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="thermography.thermo_app.ThermoApp.step">
-<code class="descname">step</code><span class="sig-paren">(</span><em>frame_id</em>, <em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.step" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">step</code><span class="sig-paren">(</span><em>frame_id</em>, <em>frame</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/thermography/thermo_app.html#ThermoApp.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.thermo_app.ThermoApp.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a single step of the module detection using the frame passed as argument.</p>
+<p>If the detection step is successful, the <code class="xref py py-attr docutils literal"><span class="pre">self.last_*</span></code> parameters are filled with the newly computed elements.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>frame_id</strong> – Integer identifying the id of the frame to be processed.</li>
+<li><strong>frame</strong> – Numpy array containing the RGB image representing the frame to be processed.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if the detection was successful, False otherwise.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
