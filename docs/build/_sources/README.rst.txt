@@ -19,13 +19,13 @@ data to the system is a sequence of images in the infrared spectrum.
 Structure
 ~~~~~~~~~
 
-The repository is structured as follows: 1. `Documentation <docs>`__ of
-the *Thermography* repository. 2. `GUI <gui>`__ source code associated
-to the graphical user interface for interacting with the *Thermography*
-framework. 3. `Log files <logs>`__ generated at runtime. 4.
-`Resources <resources>`__ used by the *Thermography* framework. 5.
-`Thermography <thermography>`__ core source code related to detection
-and classification of solar panel modules.
+The repository is structured as follows:
+
+   1. `Documentation <docs>`__ of the *Thermography* repository.
+   2. `GUI <gui>`__ source code associated to the graphical user interface for interacting with the *Thermography* framework.
+   3. `Log files <logs>`__ generated at runtime.
+   4. `Resources <resources>`__ used by the *Thermography* framework.
+   5. `Thermography <thermography>`__ core source code related to detection and classification of solar panel modules.
 
 The *python* scripts located in the root directory can be used to launch
 different executables which exploit the *Thermography* framework for
@@ -64,13 +64,10 @@ simple video.
 GUIs
 ''''
 
-A graphical user interface is provided for interacting with the
-*Thermography* framework. In particular the following executables are
-available: 1. `Dataset creation <main_create_dataset.py>`__ script used
-to facilitate the creation of a labeled dataset of images representing
-solar panel modules. 2. `ThermoGUI <main_thermogui.py>`__ graphical
-interface which allows the used to interact with the *Thermography*
-framework and to analyze a new sequence of frames on the fly.
+A graphical user interface is provided for interacting with the *Thermography* framework. In particular the following executables are available:
+
+   1. `Dataset creation <main_create_dataset.py>`__ script used to facilitate the creation of a labeled dataset of images representing solar panel modules.
+   2. `ThermoGUI <main_thermogui.py>`__ graphical interface which allows the used to interact with the *Thermography* framework and to analyze a new sequence of frames on the fly.
 
 The executables with a graphical interface offer the following tools and
 visualizations: |GUI|
