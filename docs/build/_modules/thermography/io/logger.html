@@ -167,11 +167,11 @@
 
 <div class="viewcode-block" id="setup_logger"><a class="viewcode-back" href="../../../thermography.io.html#thermography.io.logger.setup_logger">[docs]</a><span class="k">def</span> <span class="nf">setup_logger</span><span class="p">(</span><span class="n">console_log_level</span><span class="p">:</span> <span class="n">LogLevel</span> <span class="o">=</span> <span class="n">LogLevel</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">file_log_level</span><span class="p">:</span> <span class="n">LogLevel</span> <span class="o">=</span> <span class="n">LogLevel</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
                  <span class="n">log_file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sets up the simple logger.</span>
+    <span class="sd">&quot;&quot;&quot;Sets up the simple logger.</span>
+
 <span class="sd">    :param console_log_level: Log level associated to the streaming log.</span>
 <span class="sd">    :param file_log_level: Log level associated to the file log.</span>
-<span class="sd">    :param log_file_name: If set, then the file log is written to this file. Otherwise a new log file will be created in the log directory returned by get_log_dir()</span>
+<span class="sd">    :param log_file_name: If set, then the file log is written to this file. Otherwise a new log file will be created in the log directory returned by :func:`get_log_dir &lt;thermography.settings.get_log_dir&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">log_file_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">log_directory</span> <span class="o">=</span> <span class="n">get_log_dir</span><span class="p">()</span>

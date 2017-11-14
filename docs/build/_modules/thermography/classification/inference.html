@@ -167,7 +167,28 @@
 
 
 <div class="viewcode-block" id="Inference"><a class="viewcode-back" href="../../../thermography.classification.html#thermography.classification.inference.Inference">[docs]</a><span class="k">class</span> <span class="nc">Inference</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class implementing the inference procedure to classify new images according to a preexisting moduel.</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        classification_model = ThermoNet3x3</span>
+<span class="sd">        inference = Inference(checkpoint_dir, classification_model, img_shape, num_classes)</span>
+<span class="sd">        img_list = [img_1, img_2, ...] # len(img_list) = N</span>
+<span class="sd">        class_probabilities = inference.classify(img_list) # class_probabilities.shape = [N, num_classes]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">checkpoint_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the inference object by loading the weights of an already trained model.</span>
+
+<span class="sd">        :param checkpoint_dir: Directory of the checkpoint where the weights of the model are stored.</span>
+<span class="sd">        :param model_class: Class associated to the stored weights. This class is used to build the :attr:`tf.graph` which will be used for the inference.</span>
+<span class="sd">        :param image_shape: Shape of the images fed to the classifier. The images passed to the :func:`self.classify &lt;thermography.classification.inference.Inference.classify&gt;` function are resized according to this parameter.</span>
+<span class="sd">        :param num_classes: Number of classes predicted by the model.</span>
+
+<span class="sd">        .. warning:: The parameters must all be consistent with the preexisting weights!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_dir</span> <span class="o">=</span> <span class="n">checkpoint_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span> <span class="o">=</span> <span class="n">image_shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="n">num_classes</span>
@@ -199,6 +220,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the model being used for classification.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__model</span>
 
     <span class="nd">@model</span><span class="o">.</span><span class="n">setter</span>
@@ -208,6 +230,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__model</span> <span class="o">=</span> <span class="n">m</span>
 
 <div class="viewcode-block" id="Inference.classify"><a class="viewcode-back" href="../../../thermography.classification.html#thermography.classification.inference.Inference.classify">[docs]</a>    <span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Classifies the image list passed as argument using the model loaded in :attr:`self.model`.</span>
+
+<span class="sd">        :param image_list: Python list of numpy arrays representing the images to be classified. All images are classified as a mini-batch.</span>
+<span class="sd">        :return: A numpy array of shape `[len(image_list), self.num_classes]` containing the class probability for each image passed as argument.</span>
+
+<span class="sd">        .. note:: If the images contained in the input parameter are not of the same shape as the one store in :attr:`self.image_shape`, the input images are resized to fit the desired image shape.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 

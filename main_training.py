@@ -121,7 +121,7 @@ def main():
     # Merge all summaries together
     train_summaries = tf.summary.merge_all(key="train")
     test_summaries = tf.summary.merge_all(key="test")
-    histogram_summaries = tf.summary.merge_all(key="histogram")
+    histogram_summaries = tf.summary.merge_all(key="histograms")
     kernel_summaries = tf.summary.merge_all(key="kernels")
 
     # Initialize the FileWriter

@@ -1,3 +1,5 @@
+"""This module contains the implementation of the logic used by the graphical interface for dataset creation."""
+
 import os
 
 import cv2
@@ -13,29 +15,45 @@ from gui.threads import ThermoDatasetCreationThread
 
 
 class VideoLoaderThread(QtCore.QThread):
+    """Class representing a thread which is responsible for loading a video from file.
+    Internally it loads the video by using an instance of :class:`~thermography.io.io.VideoLoader`.
+    """
+
     finish_signal = QtCore.pyqtSignal(list)
+    """Signal emitted when the video loader has terminated the loading of the video frame.
+    This signal contains a python list of the loaded frames."""
 
     def __init__(self, video_path: str, from_index: int, to_index: int, parent=None):
+        """Initializes the video loader thread with the video path and the loading indices.
+
+        :param video_path: Absolute path of the video to load.
+        :param from_index: Start index of the video-frame to be loaded (inclusive).
+        :param to_index: End index of the video-frame to be loaded (exclusive).
+        :param parent: Parent class of the thread.
+        """
         super(self.__class__, self).__init__(parent=parent)
         self.video_path = video_path
         self.from_index = from_index
         self.to_index = to_index
 
     def run(self):
+        """Function executed automatically when the thread is started. When the video is loaded a `pyqtSignal`
+        containing all loaded frames is emitted
+        """
         video_loader = tg.io.VideoLoader(self.video_path, self.from_index, self.to_index)
         self.finish_signal.emit(video_loader.frames)
 
 
 class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
-    """
-    Dataset creation GUI.
+    """Dataset creation GUI.
     """
 
     def __init__(self):
+        """Initializes the GUI and connects its widgets to the corresponding functions."""
         super(self.__class__, self).__init__()
         Logger.info("Creating dataset creation GUI")
         self.setupUi(self)
-        self.set_logo_icon()
+        self.__set_logo_icon()
 
         self.last_folder_opened = None
         self.frames = []
@@ -52,9 +70,10 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
         self.thermo_thread = None
 
-        self.connect_widgets()
+        self.__connect_widgets()
 
-    def set_logo_icon(self):
+    def __set_logo_icon(self):
+        """Sets the default logo icon."""
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
         logo_path = os.path.join(gui_path, "img/logo.png")
         Logger.debug("Setting logo {}".format(logo_path))
@@ -62,79 +81,86 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         icon.addPixmap(QtGui.QPixmap(logo_path), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
 
-    def connect_widgets(self):
+    def __connect_widgets(self):
+        """Connects all widgets defined in :mod:`~gui.design.create_dataset_gui` to the functions which must be
+        executed when the widgets are triggered."""
         Logger.debug("Connecting all widgets")
         # File buttons
-        self.file_about.triggered.connect(self.open_about_window)
+        self.file_about.triggered.connect(self.__open_about_window)
         self.file_exit.triggered.connect(self.deleteLater)
 
         # Main buttons.
-        self.load_video_button.clicked.connect(self.load_video_from_file)
+        self.load_video_button.clicked.connect(self.__load_video_from_file)
 
-        self.play_video_button.clicked.connect(self.start_playing_frames)
-        self.stop_video_button.clicked.connect(self.save_and_close)
-        self.quick_save_button.clicked.connect(self.save_module_dataset)
+        self.play_video_button.clicked.connect(self.__start_playing_frames)
+        self.stop_video_button.clicked.connect(self.__save_and_close)
+        self.quick_save_button.clicked.connect(self.__save_module_dataset)
 
         # Working and Broken module buttons.
-        self.module_working_button.clicked.connect(self.current_module_is_working)
-        self.module_broken_button.clicked.connect(self.current_module_is_broken)
-        self.misdetection_button.clicked.connect(self.current_module_misdetection)
+        self.module_working_button.clicked.connect(self.__current_module_is_working)
+        self.module_broken_button.clicked.connect(self.__current_module_is_broken)
+        self.misdetection_button.clicked.connect(self.__current_module_misdetection)
 
         # Preprocessing
-        self.undistort_image_box.stateChanged.connect(self.update_image_distortion)
+        self.undistort_image_box.stateChanged.connect(self.__update_image_distortion)
 
-        self.image_scaling_slider.valueChanged.connect(self.update_preprocessing_params)
-        self.angle_value.valueChanged.connect(self.update_preprocessing_params)
-        self.blur_value.valueChanged.connect(self.update_preprocessing_params)
-        self.temperature_value.valueChanged.connect(self.update_preprocessing_params)
+        self.image_scaling_slider.valueChanged.connect(self.__update_preprocessing_params)
+        self.angle_value.valueChanged.connect(self.__update_preprocessing_params)
+        self.blur_value.valueChanged.connect(self.__update_preprocessing_params)
+        self.temperature_value.valueChanged.connect(self.__update_preprocessing_params)
 
         # Edge extraction.
-        self.max_histeresis_value.valueChanged.connect(self.update_histeresis_params)
-        self.min_histeresis_value.valueChanged.connect(self.update_histeresis_params)
-        self.dilation_value.valueChanged.connect(self.update_dilation_steps)
+        self.max_histeresis_value.valueChanged.connect(self.__update_histeresis_params)
+        self.min_histeresis_value.valueChanged.connect(self.__update_histeresis_params)
+        self.dilation_value.valueChanged.connect(self.__update_dilation_steps)
 
         # Segment detection.
-        self.delta_rho_value.valueChanged.connect(self.update_edge_params)
-        self.delta_theta_value.valueChanged.connect(self.update_edge_params)
-        self.min_votes_value.valueChanged.connect(self.update_edge_params)
-        self.min_length_value.valueChanged.connect(self.update_edge_params)
-        self.max_gap_value.valueChanged.connect(self.update_edge_params)
-        self.extend_segments_value.valueChanged.connect(self.update_edge_params)
+        self.delta_rho_value.valueChanged.connect(self.__update_edge_params)
+        self.delta_theta_value.valueChanged.connect(self.__update_edge_params)
+        self.min_votes_value.valueChanged.connect(self.__update_edge_params)
+        self.min_length_value.valueChanged.connect(self.__update_edge_params)
+        self.max_gap_value.valueChanged.connect(self.__update_edge_params)
+        self.extend_segments_value.valueChanged.connect(self.__update_edge_params)
 
         # Segment clustering.
-        self.gmm_value.clicked.connect(self.update_clustering_params)
-        self.knn_value.clicked.connect(self.update_clustering_params)
-        self.num_clusters_value.valueChanged.connect(self.update_clustering_params)
-        self.num_init_value.valueChanged.connect(self.update_clustering_params)
-        self.use_angle_value.stateChanged.connect(self.update_clustering_params)
-        self.use_centers_value.stateChanged.connect(self.update_clustering_params)
-        self.swipe_clusters_value.stateChanged.connect(self.update_clustering_params)
+        self.gmm_value.clicked.connect(self.__update_clustering_params)
+        self.knn_value.clicked.connect(self.__update_clustering_params)
+        self.num_clusters_value.valueChanged.connect(self.__update_clustering_params)
+        self.num_init_value.valueChanged.connect(self.__update_clustering_params)
+        self.use_angle_value.stateChanged.connect(self.__update_clustering_params)
+        self.use_centers_value.stateChanged.connect(self.__update_clustering_params)
+        self.swipe_clusters_value.stateChanged.connect(self.__update_clustering_params)
 
         # Segment cleaning
-        self.max_angle_variation_mean_value.valueChanged.connect(self.update_cluster_cleaning_params)
-        self.max_merging_angle_value.valueChanged.connect(self.update_cluster_cleaning_params)
-        self.max_merging_distance_value.valueChanged.connect(self.update_cluster_cleaning_params)
+        self.max_angle_variation_mean_value.valueChanged.connect(self.__update_cluster_cleaning_params)
+        self.max_merging_angle_value.valueChanged.connect(self.__update_cluster_cleaning_params)
+        self.max_merging_distance_value.valueChanged.connect(self.__update_cluster_cleaning_params)
 
         # Rectangle detection.
-        self.expected_ratio_value.valueChanged.connect(self.update_rectangle_detection_params)
-        self.ratio_max_deviation_value.valueChanged.connect(self.update_rectangle_detection_params)
-        self.min_area_value.valueChanged.connect(self.update_rectangle_detection_params)
+        self.expected_ratio_value.valueChanged.connect(self.__update_rectangle_detection_params)
+        self.ratio_max_deviation_value.valueChanged.connect(self.__update_rectangle_detection_params)
+        self.min_area_value.valueChanged.connect(self.__update_rectangle_detection_params)
         Logger.debug("Windgets connected")
 
-    def connect_thermo_thread(self):
+    def __connect_thermo_thread(self):
+        """Connects the signals emitted by the
+        :class:`~gui.threads.thermo_thread_dataset_creation.ThermoDatasetCreationThread` to the functions which must be
+        executed when receiving those signals.
+        """
         Logger.debug("Connecting thermo thread")
-        self.thermo_thread.last_frame_signal.connect(lambda x: self.store_last_frame_image(x))
-        self.thermo_thread.module_list_signal.connect(lambda x: self.display_all_modules(x))
+        self.thermo_thread.last_frame_signal.connect(lambda x: self.__store_last_frame_image(x))
+        self.thermo_thread.module_list_signal.connect(lambda x: self.__display_all_modules(x))
         Logger.debug("Thermo thread connected")
 
-    def store_last_frame_image(self, img: np.ndarray):
+    def __store_last_frame_image(self, img: np.ndarray):
         self.last_frame_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    def open_about_window(self):
+    def __open_about_window(self):
         about = AboutDialog(parent=self)
         about.show()
 
-    def load_video_from_file(self):
+    def __load_video_from_file(self):
+        """Initializes a :class:`.VideoLoaderThread` thread and runs it to load a video from file."""
         open_directory = ""
         if self.last_folder_opened is not None:
             open_directory = self.last_folder_opened
@@ -159,9 +185,13 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         video_loader_thread = VideoLoaderThread(video_path=video_file_name, from_index=start_frame, to_index=end_frame,
                                                 parent=self)
         video_loader_thread.start()
-        video_loader_thread.finish_signal.connect(self.video_loader_finished)
+        video_loader_thread.finish_signal.connect(self.__video_loader_finished)
 
-    def video_loader_finished(self, frame_list: list):
+    def __video_loader_finished(self, frame_list: list):
+        """Function called when the :class:`.VideoLoaderThread` thread finishes its execution.
+
+        :param frame_list: Python list containing the video frames loaded by the video laoder thread.
+        """
         Logger.debug("Video loader finished")
         self.frames = frame_list.copy()
         self.global_progress_bar.setMinimum(0)
@@ -173,20 +203,26 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.module_broken_button.setEnabled(True)
         self.misdetection_button.setEnabled(True)
 
-    def save_module_dataset(self):
+    def __save_module_dataset(self):
+        """Function which saves the current dataset to disk."""
         self.save_dialog = SaveImageDialog(working_modules=self.accepted_modules, broken_modules=self.discarded_modules,
                                            misdetected_modules=self.misdetected_modules, parent=self)
         self.save_dialog.exec_()
 
-    def save_and_close(self):
-        self.save_module_dataset()
+    def __save_and_close(self):
+        """Function which saves the current dataset to disk and closes the current application."""
+        self.__save_module_dataset()
         self.close()
 
-    def start_playing_frames(self):
+    def __start_playing_frames(self):
+        """Function which initializes a :class:`~gui.threads.thermo_thread_dataset_creation.ThermoDatasetCreationThread`
+        and starts the execution of the module detection-classification routine implemented in the
+        :class:`~thermography.thermo_app.ThermoApp` class.
+        """
         self.thermo_thread = ThermoDatasetCreationThread()
-        self.connect_thermo_thread()
+        self.__connect_thermo_thread()
         self.image_scaling_slider.setEnabled(False)
-        self.update_image_scaling()
+        self.__update_image_scaling()
 
         self.play_video_button.setEnabled(False)
         self.stop_video_button.setEnabled(True)
@@ -200,25 +236,32 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
         self.thermo_thread.start()
 
-    def current_module_is_working(self):
+    def __current_module_is_working(self):
+        """Function executed when the current detected module is classified as `working`."""
         Logger.debug("Current module is working")
-        self.update_module_counter("manual", 0)
-        self.register_module(self.accepted_modules)
-        self.display_next_module()
+        self.__update_module_counter("manual", 0)
+        self.__register_module(self.accepted_modules)
+        self.__display_next_module()
 
-    def current_module_is_broken(self):
+    def __current_module_is_broken(self):
+        """Function executed when the current detected module is classified as `broken`."""
         Logger.debug("Current module is broken")
-        self.update_module_counter("manual", 1)
-        self.register_module(self.discarded_modules)
-        self.display_next_module()
+        self.__update_module_counter("manual", 1)
+        self.__register_module(self.discarded_modules)
+        self.__display_next_module()
 
-    def current_module_misdetection(self):
+    def __current_module_misdetection(self):
+        """Function executed when the current detected module is classified as a `misdetection`."""
         Logger.debug("Current module was misdetected")
-        self.update_module_counter("manual", 2)
-        self.register_module(self.misdetected_modules)
-        self.display_next_module()
+        self.__update_module_counter("manual", 2)
+        self.__register_module(self.misdetected_modules)
+        self.__display_next_module()
 
-    def register_module(self, m: dict):
+    def __register_module(self, m: dict):
+        """Registers the current module into the corresponding dictionary.
+
+        :param m: Module dictionary where the current module has to be stored.
+        """
         current_module = self.current_frame_modules[self.current_module_id_in_frame]
         image = cv2.cvtColor(current_module["image"], cv2.COLOR_BGR2RGB)
         coords = current_module["coordinates"]
@@ -227,16 +270,13 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
             m[moduel_id] = []
         m[moduel_id].append({"image": image, "coordinates": coords, "frame_id": self.current_frame_id})
 
-    def update_global_progress_bar(self, frame_index: int):
-        self.global_progress_bar.setValue(frame_index)
-
-    def update_image_scaling(self):
+    def __update_image_scaling(self):
         image_scaling = self.image_scaling_slider.value() * 0.1
         if self.thermo_thread is not None:
             self.thermo_thread.app.preprocessing_parameters.image_scaling = image_scaling
         self.image_scaling_label.setText("Input image scaling: {:0.2f}".format(image_scaling))
 
-    def update_histeresis_params(self):
+    def __update_histeresis_params(self):
         min_value = self.min_histeresis_value.value()
         max_value = self.max_histeresis_value.value()
         if max_value <= min_value:
@@ -245,30 +285,30 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.thermo_thread.app.edge_detection_parameters.hysteresis_max_thresh = max_value
         self.thermo_thread.app.edge_detection_parameters.hysteresis_min_thresh = min_value
 
-    def update_dilation_steps(self):
+    def __update_dilation_steps(self):
         self.thermo_thread.app.edge_detection_parameters.dilation_steps = self.dilation_value.value()
 
-    def update_image_distortion(self):
+    def __update_image_distortion(self):
         self.thermo_thread.app.should_undistort_image = self.undistort_image_box.isChecked()
 
-    def update_image_angle(self):
+    def __update_image_angle(self):
         self.thermo_thread.app.preprocessing_parameters.image_rotation = self.angle_value.value() * np.pi / 180
         if self.angle_value.value() == 360:
             self.angle_value.setValue(0)
 
-    def update_blur_value(self):
+    def __update_blur_value(self):
         self.thermo_thread.app.preprocessing_parameters.gaussian_blur = self.blur_value.value()
 
-    def update_temperature_value(self):
+    def __update_temperature_value(self):
         self.thermo_thread.app.preprocessing_parameters.red_threshold = self.temperature_value.value()
 
-    def update_preprocessing_params(self):
-        self.update_image_scaling()
-        self.update_image_angle()
-        self.update_blur_value()
-        self.update_temperature_value()
+    def __update_preprocessing_params(self):
+        self.__update_image_scaling()
+        self.__update_image_angle()
+        self.__update_blur_value()
+        self.__update_temperature_value()
 
-    def update_edge_params(self):
+    def __update_edge_params(self):
         self.thermo_thread.app.segment_detection_parameters.d_rho = self.delta_rho_value.value()
         self.thermo_thread.app.segment_detection_parameters.d_theta = np.pi / 180 * self.delta_theta_value.value()
         self.thermo_thread.app.segment_detection_parameters.min_num_votes = self.min_votes_value.value()
@@ -276,7 +316,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.thermo_thread.app.segment_detection_parameters.max_line_gap = self.max_gap_value.value()
         self.thermo_thread.app.segment_detection_parameters.extension_pixels = self.extend_segments_value.value()
 
-    def update_clustering_params(self):
+    def __update_clustering_params(self):
         self.thermo_thread.app.segment_clustering_parameters.num_init = self.num_init_value.value()
         self.thermo_thread.app.segment_clustering_parameters.swipe_clusters = self.swipe_clusters_value.isChecked()
         self.thermo_thread.app.segment_clustering_parameters.num_clusters = self.num_clusters_value.value()
@@ -291,17 +331,17 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
             self.swipe_clusters_value.setEnabled(True)
             self.num_init_value.setEnabled(False)
 
-    def update_cluster_cleaning_params(self):
+    def __update_cluster_cleaning_params(self):
         self.thermo_thread.app.cluster_cleaning_parameters.max_angle_variation_mean = np.pi / 180 * self.max_angle_variation_mean_value.value()
         self.thermo_thread.app.cluster_cleaning_parameters.max_merging_angle = np.pi / 180 * self.max_merging_angle_value.value()
         self.thermo_thread.app.cluster_cleaning_parameters.max_endpoint_distance = np.pi / 180 * self.max_merging_distance_value.value()
 
-    def update_rectangle_detection_params(self):
+    def __update_rectangle_detection_params(self):
         self.thermo_thread.app.rectangle_detection_parameters.aspect_ratio = self.expected_ratio_value.value()
         self.thermo_thread.app.rectangle_detection_parameters.aspect_ratio_relative_deviation = self.ratio_max_deviation_value.value()
         self.thermo_thread.app.rectangle_detection_parameters.min_area = self.min_area_value.value()
 
-    def display_all_modules(self, module_list: list):
+    def __display_all_modules(self, module_list: list):
         self.current_frame_modules = module_list.copy()
         self.current_module_id_in_frame = -1
         if len(self.current_frame_modules) == 0:
@@ -320,11 +360,11 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
             painter.drawText(rect, QtCore.Qt.AlignCenter, "No Module detected")
             painter.end()
             self.rectangle_image_view.setPixmap(pixmap)
-            self.frame_finished()
+            self.__frame_finished()
         else:
-            self.display_next_module()
+            self.__display_next_module()
 
-    def update_module_counter(self, automatic_manual_str, module_class_id):
+    def __update_module_counter(self, automatic_manual_str, module_class_id):
         label_text = {0: "accepted", 1: "discarded", 2: "misdetected"}[module_class_id]
         self.module_counter[automatic_manual_str][label_text] += 1
         self.working_manual_classified_label.setText(str(self.module_counter["manual"]["accepted"]))
@@ -336,10 +376,10 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.total_manual_classified_label.setText(str(sum(self.module_counter["manual"].values())))
         self.total_automatic_classified_label.setText(str(sum(self.module_counter["automatic"].values())))
 
-    def display_next_module(self):
+    def __display_next_module(self):
         self.current_module_id_in_frame += 1
         if len(self.current_frame_modules) == self.current_module_id_in_frame:
-            self.frame_finished()
+            self.__frame_finished()
             return
 
         d = self.current_frame_modules[self.current_module_id_in_frame]
@@ -356,7 +396,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
                     {"image": module_image, "coordinates": coordinates, "frame_id": self.current_frame_id})
                 was_already_classified = True
                 # Update counting labels:
-                self.update_module_counter("automatic", module_class_id)
+                self.__update_module_counter("automatic", module_class_id)
 
         mask = np.zeros_like(self.last_frame_image)
         tmp_image = self.last_frame_image.copy()
@@ -372,7 +412,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
                              QtCore.Qt.SmoothTransformation)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.rectangle_image_view.setPixmap(pixmap)
-        self.resize_video_view(module_image.shape, self.current_module_view)
+        self.__resize_video_view(module_image.shape, self.current_module_view)
         image = QImage(module_image.data, module_image.shape[1], module_image.shape[0], module_image.strides[0],
                        QImage.Format_RGB888)
         pixmap = QtGui.QPixmap.fromImage(image)
@@ -380,13 +420,13 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         self.current_module_view.repaint()
 
         if was_already_classified:
-            self.display_next_module()
+            self.__display_next_module()
 
     @staticmethod
-    def resize_video_view(size, view):
+    def __resize_video_view(size, view):
         view.setFixedSize(size[1], size[0])
 
-    def frame_finished(self):
+    def __frame_finished(self):
         self.current_frame_id += 1
         self.current_module_id_in_frame = 0
 
@@ -394,7 +434,7 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
         if self.current_frame_id == len(self.frames):
             _ = QtWidgets.QMessageBox.information(self, "Finished", "Analyzed all frames", QtWidgets.QMessageBox.Ok)
-            self.save_module_dataset()
+            self.__save_module_dataset()
             return
 
         self.thermo_thread.processing_frame = self.frames[self.current_frame_id]

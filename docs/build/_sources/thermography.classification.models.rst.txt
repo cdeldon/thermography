@@ -17,14 +17,6 @@ thermography\.classification\.models\.base\_net module
     :undoc-members:
     :show-inheritance:
 
-thermography\.classification\.models\.operations module
--------------------------------------------------------
-
-.. automodule:: thermography.classification.models.operations
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 thermography\.classification\.models\.thermo\_net module
 --------------------------------------------------------
 
@@ -40,5 +32,13 @@ thermography\.classification\.models\.thermo\_net\_3x3 module
     :members:
     :undoc-members:
     :show-inheritance:
+
+Thermonet3x3 Structure
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: _static/thermonet.png
+   :scale: 40 %
+   :alt: ThermoNet3x3 structure
+   :align: center
 
 

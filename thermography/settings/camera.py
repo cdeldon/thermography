@@ -6,9 +6,10 @@ from simple_logger import Logger
 
 
 class Camera:
+    """Class representing the intrinsic camera parameters of the camera used to capture the videos analyzed by :mod:`thermography`."""
+
     def __init__(self, camera_path: str):
-        """
-        Loads the camera parameters into the object.
+        """Loads the camera parameters into the object.
 
         :param camera_path: Absolute path to the camera file parameter.
         """
@@ -29,49 +30,60 @@ class Camera:
                                                       self.r2, self.r3, self.t1, self.t2)
 
     @property
-    def camera_matrix(self):
+    def camera_matrix(self) -> np.ndarray:
+        """Returns the intrinsic camera matrix."""
         return np.array([np.array([self.focal_length, 0, self.principal_point[0]]),
                          np.array([0, self.focal_length, self.principal_point[1]]),
                          np.array([0, 0, 1])])
 
     @property
-    def distortion_coeff(self):
+    def distortion_coeff(self) -> np.ndarray:
+        """Returns the distortion coefficients of the camera."""
         return np.array([self.r1, self.r2, self.t1, self.t2, self.r3])
 
     @property
-    def image_size(self):
+    def image_size(self) -> np.ndarray:
+        """Returns the image size captured by the camera."""
         return np.array(self.camera_params["image_size"])
 
     @property
-    def focal_length(self):
+    def focal_length(self) -> float:
+        """Returns the focal length of the camera expressed in pixel units."""
         return self.camera_params["focal_length"]
 
     @property
-    def principal_point(self):
+    def principal_point(self) -> np.ndarray:
+        """Returns the pixel coordinates of the principal point."""
         return np.array(self.camera_params["principal_point"])
 
     @property
-    def r1(self):
+    def r1(self) -> float:
+        "Returns the first radial distortion coefficient."
         return self.camera_params["distortion"]["radial"]["r1"]
 
     @property
-    def r2(self):
+    def r2(self) -> float:
+        """Returns the second radial distortion coefficient."""
         return self.camera_params["distortion"]["radial"]["r2"]
 
     @property
-    def r3(self):
+    def r3(self) -> float:
+        """Returns the thirds radial distortion coefficient."""
         return self.camera_params["distortion"]["radial"]["r3"]
 
     @property
-    def t1(self):
+    def t1(self) -> float:
+        """Returns the first tangential distortion coefficient."""
         return self.camera_params["distortion"]["tangential"]["t1"]
 
     @property
-    def t2(self):
+    def t2(self) -> float:
+        """Returns the second tangential distortion coefficient."""
         return self.camera_params["distortion"]["tangential"]["t2"]
 
     @property
-    def camera_path(self):
+    def camera_path(self) -> str:
+        """Returns the absolute path to the configuarion file associated to the camera parameters contained in this object."""
         return self.__camera_path
 
     @camera_path.setter

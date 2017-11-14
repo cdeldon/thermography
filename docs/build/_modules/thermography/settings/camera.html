@@ -165,10 +165,11 @@
 <span class="kn">from</span> <span class="nn">simple_logger</span> <span class="k">import</span> <span class="n">Logger</span>
 
 
-<div class="viewcode-block" id="Camera"><a class="viewcode-back" href="../../../thermography.settings.html#thermography.settings.Camera">[docs]</a><span class="k">class</span> <span class="nc">Camera</span><span class="p">:</span>
+<div class="viewcode-block" id="Camera"><a class="viewcode-back" href="../../../thermography.settings.html#thermography.settings.camera.Camera">[docs]</a><span class="k">class</span> <span class="nc">Camera</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class representing the intrinsic camera parameters of the camera used to capture the videos analyzed by :mod:`thermography`.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camera_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Loads the camera parameters into the object.</span>
+        <span class="sd">&quot;&quot;&quot;Loads the camera parameters into the object.</span>
 
 <span class="sd">        :param camera_path: Absolute path to the camera file parameter.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -189,49 +190,60 @@
                                                       <span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t2</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">camera_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">camera_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the intrinsic camera matrix.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">focal_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">principal_point</span><span class="p">[</span><span class="mi">0</span><span class="p">]]),</span>
                          <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">focal_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">principal_point</span><span class="p">[</span><span class="mi">1</span><span class="p">]]),</span>
                          <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])])</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">distortion_coeff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">distortion_coeff</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the distortion coefficients of the camera.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">r1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r3</span><span class="p">])</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">image_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">image_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the image size captured by the camera.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_params</span><span class="p">[</span><span class="s2">&quot;image_size&quot;</span><span class="p">])</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">focal_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">focal_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the focal length of the camera expressed in pixel units.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera_params</span><span class="p">[</span><span class="s2">&quot;focal_length&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">principal_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">principal_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the pixel coordinates of the principal point.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_params</span><span class="p">[</span><span class="s2">&quot;principal_point&quot;</span><span class="p">])</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">r1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">r1</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="s2">&quot;Returns the first radial distortion coefficient.&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera_params</span><span class="p">[</span><span class="s2">&quot;distortion&quot;</span><span class="p">][</span><span class="s2">&quot;radial&quot;</span><span class="p">][</span><span class="s2">&quot;r1&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">r2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">r2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the second radial distortion coefficient.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera_params</span><span class="p">[</span><span class="s2">&quot;distortion&quot;</span><span class="p">][</span><span class="s2">&quot;radial&quot;</span><span class="p">][</span><span class="s2">&quot;r2&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">r3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">r3</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the thirds radial distortion coefficient.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera_params</span><span class="p">[</span><span class="s2">&quot;distortion&quot;</span><span class="p">][</span><span class="s2">&quot;radial&quot;</span><span class="p">][</span><span class="s2">&quot;r3&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">t1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">t1</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the first tangential distortion coefficient.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera_params</span><span class="p">[</span><span class="s2">&quot;distortion&quot;</span><span class="p">][</span><span class="s2">&quot;tangential&quot;</span><span class="p">][</span><span class="s2">&quot;t1&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">t2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">t2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the second tangential distortion coefficient.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera_params</span><span class="p">[</span><span class="s2">&quot;distortion&quot;</span><span class="p">][</span><span class="s2">&quot;tangential&quot;</span><span class="p">][</span><span class="s2">&quot;t2&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">camera_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">camera_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the absolute path to the configuarion file associated to the camera parameters contained in this object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__camera_path</span>
 
     <span class="nd">@camera_path</span><span class="o">.</span><span class="n">setter</span>

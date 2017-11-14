@@ -156,7 +156,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for thermography.test.test_images</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module implements the tests of the functions in :mod:`geometry &lt;thermography.utils.images&gt;` package.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -165,19 +167,18 @@
 
 <div class="viewcode-block" id="TestImageUtils"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_images.TestImageUtils">[docs]</a><span class="k">class</span> <span class="nc">TestImageUtils</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 <div class="viewcode-block" id="TestImageUtils.setUp"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_images.TestImageUtils.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the common elements for the tests.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gray_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestImageUtils.test_scale_image_gray_identity"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_images.TestImageUtils.test_scale_image_gray_identity">[docs]</a>    <span class="k">def</span> <span class="nf">test_scale_image_gray_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the shape of the input gray_scale image after being scaled by the identity.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the shape of the input gray_scale image after being scaled by the identity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">scaled</span> <span class="o">=</span> <span class="n">scale_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gray_image</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gray_image</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">scaled</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestImageUtils.test_scale_image_gray"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_images.TestImageUtils.test_scale_image_gray">[docs]</a>    <span class="k">def</span> <span class="nf">test_scale_image_gray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the shape of the input gray_scale image after being scaled.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the shape of the input gray_scale image after being scaled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">larger</span> <span class="o">=</span> <span class="n">scale_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gray_image</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mi">300</span><span class="p">),</span> <span class="n">larger</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -186,15 +187,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="n">smaller</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestImageUtils.test_scale_image_rgb_identity"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_images.TestImageUtils.test_scale_image_rgb_identity">[docs]</a>    <span class="k">def</span> <span class="nf">test_scale_image_rgb_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the shape of the input rgb image after being scaled by the identity.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the shape of the input rgb image after being scaled by the identity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">scaled</span> <span class="o">=</span> <span class="n">scale_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rgb_image</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rgb_image</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">scaled</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestImageUtils.test_scale_image_rgb"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_images.TestImageUtils.test_scale_image_rgb">[docs]</a>    <span class="k">def</span> <span class="nf">test_scale_image_rgb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the shape of the input rgb image after being scaled.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the shape of the input rgb image after being scaled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">larger</span> <span class="o">=</span> <span class="n">scale_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rgb_image</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">larger</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>

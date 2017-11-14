@@ -163,11 +163,9 @@
 
 
 <div class="viewcode-block" id="BaseNet"><a class="viewcode-back" href="../../../../thermography.classification.models.html#thermography.classification.models.base_net.BaseNet">[docs]</a><span class="k">class</span> <span class="nc">BaseNet</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base interdace for nets used by the thermography package</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Base interface for nets used by the :mod:`thermography` package. This class offers a convenience interface to train a classifier and to access its data.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">:</span>  <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ThermoNet&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ThermoNet&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span> <span class="o">=</span> <span class="n">image_shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__num_classes</span> <span class="o">=</span> <span class="n">num_classes</span>
@@ -175,7 +173,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__logits</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a reference to the input placeholder.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__x</span>
 
     <span class="nd">@x</span><span class="o">.</span><span class="n">setter</span>
@@ -185,27 +184,33 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__x</span> <span class="o">=</span> <span class="n">x_</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">image_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">image_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the image shape accepted by the model. This shape corresponds to the shape of each element carried by the input placeholder :attr:`self.x`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_shape</span>
 
     <span class="nd">@image_shape</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">image_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span>  <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;__image_shape in </span><span class="si">{}</span><span class="s2"> must be a  np.ndarray of three elements&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;__image_shape in </span><span class="si">{}</span><span class="s2"> must be a  np.ndarray of three elements&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;__image_shape in </span><span class="si">{}</span><span class="s2"> must be a  np.ndarray of there elements&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;__image_shape in </span><span class="si">{}</span><span class="s2"> must be a  np.ndarray of there elements&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__image_shape</span> <span class="o">=</span> <span class="n">shape</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the number of channels accepted by the model.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the name associated to the model.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">num_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">num_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the number of classes which the model will consider for classification.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__num_classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;__num_classes in </span><span class="si">{}</span><span class="s2"> is has not been overridden!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__num_classes</span>
@@ -219,7 +224,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__num_classes</span> <span class="o">=</span> <span class="n">n</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">logits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">logits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a tf.Tensor representing the logits of the classified input images.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__logits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;__logits in </span><span class="si">{}</span><span class="s2"> is has not been overridden!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__logits</span>
@@ -230,15 +236,38 @@
 
 <div class="viewcode-block" id="BaseNet.create"><a class="viewcode-back" href="../../../../thermography.classification.models.html#thermography.classification.models.base_net.BaseNet.create">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Method which each subclass must implement which creates the computational graph.</span>
+
+<span class="sd">        .. note:: This method must use the input placeholder :attr:`self.x` and terminate into the logits tensor :attr:`self.logits`.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="BaseNet.update_shape"><a class="viewcode-back" href="../../../../thermography.classification.models.html#thermography.classification.models.base_net.BaseNet.update_shape">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">update_shape</span><span class="p">(</span><span class="n">current_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">current_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">update_shape</span><span class="p">(</span><span class="n">current_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Updates the current shape of the data in the computational graph when a pooling operation is applied to it.</span>
+
+<span class="sd">        :Example:</span>
+
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                current_shape = self.flat_shape # [w, h]</span>
+<span class="sd">                conv = conv_relu(x=self.x, kernel_shape, bias_shape)</span>
+<span class="sd">                pool = max_pool_2x2(name=&quot;max_pool&quot;, x=conv)</span>
+<span class="sd">                current_shape = self.update_shape(current_shape, 2) # [w/2, h/2]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">current_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">current_shape</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="n">scale</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">flat_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">flat_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the shape of the image which the model takes as input to the computational graph.</span>
+
+<span class="sd">        :Example:</span>
+
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                img_batch.shape = [batch_shape, w, h, c]</span>
+<span class="sd">                flat = model.flat_shape # [w, h]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span></div>
 </pre></div>
 

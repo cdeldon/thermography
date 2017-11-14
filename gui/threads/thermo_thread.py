@@ -10,23 +10,54 @@ import thermography as tg
 
 
 class ThermoGuiThread(QThread):
+    """Class encapsulating the :class:`~thermography.thermo_app.ThermoApp` application used for the
+    :class:`~gui.dialogs.thermo_gui_dialog.ThermoGUI` class.
+    """
+
     iteration_signal = QtCore.pyqtSignal(int)
+    """Signal emitted whenever the :func:`ThermoApp.step <thermography.thermo_app.ThermoApp.step>`
+    function is terminated."""
+
     finish_signal = QtCore.pyqtSignal(bool)
+    """Signal emitted when all frames in :class:`~thermography.thermo_app.ThermoApp` are processed."""
+
     last_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    """Signal emitted in every :func:`ThermoApp.step <thermography.thermo_app.ThermoApp.step>` containing the data
+    representing the last processed frame."""
+
     attention_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    """Signal emitted in every :func:`ThermoApp.step <thermography.thermo_app.ThermoApp.step>` containing the data
+    representing the attention image of the last frame."""
+
     edge_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    """Signal emitted in every :func:`ThermoApp.step <thermography.thermo_app.ThermoApp.step>` containing the data
+    representing the edge image extracted in the last frame."""
+
     segment_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    """Signal emitted in every :func:`ThermoApp.step <thermography.thermo_app.ThermoApp.step>` containing the data
+    representing segment image computed in the last frame."""
+
     rectangle_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    """Signal emitted in every :func:`ThermoApp.step <thermography.thermo_app.ThermoApp.step>` containing the data
+    representing the rectangle image computed in the last frame."""
+
     module_map_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    """Signal emitted in every :func:`ThermoApp.step <thermography.thermo_app.ThermoApp.step>` containing the data
+    representing the  global module map computed in the last frame."""
+
     classes_frame_signal = QtCore.pyqtSignal(np.ndarray)
+    """Signal emitted in every :func:`ThermoApp.step <thermography.thermo_app.ThermoApp.step>` containing the data
+    representing the classification of the modules in the global module map overlayed to the last frame."""
+
     module_list_signal = QtCore.pyqtSignal(list)
+    """Signal emitted in every :func:`ThermoApp.step <thermography.thermo_app.ThermoApp.step>` containing the data
+    representing a python list of detected modules."""
 
     def __init__(self):
-        """
-        Initializes the Thermo Thread.
+        """Initializes the Thermo Thread.
         """
         super(ThermoGuiThread, self).__init__()
-        Logger.info("Created thermoGUI thread")
+        Logger.info("Created ThermoGUI thread")
 
         self.camera_param_file_name = None
         self.input_file_name = None
@@ -38,17 +69,20 @@ class ThermoGuiThread(QThread):
         self.cap = None
         self.should_use_webcam = False
 
-        self.load_default_paths()
+        self.__load_default_paths()
 
         self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name)
 
     def use_webcam(self, webcam_port: int):
+        """If this image is called, then the :class:`~thermography.thermo_app.ThermoApp` encapsulated by this thread
+        uses the webcam as input instead of loading a video from disk."""
+
         Logger.debug("Thermo thread uses webcam port {}".format(webcam_port))
         self.webcam_port = webcam_port
         self.cap = cv2.VideoCapture(self.webcam_port)
         self.should_use_webcam = True
 
-    def load_default_paths(self):
+    def __load_default_paths(self):
         # Load camera parameters.
         settings_dir = tg.settings.get_settings_dir()
 
@@ -59,10 +93,21 @@ class ThermoGuiThread(QThread):
                      "Default input file name: {}".format(self.camera_param_file_name, self.input_file_name))
 
     def load_video(self, start_frame: int, end_frame: int):
+        """Loads the video associated to the absolute path in
+        :attr:´self.input_file_name <gui.threads.thermo_thread.ThermoThread.input_file_name>`
+
+        :param start_frame: Starting frame index (inclusive).
+        :param end_frame: End frame index (exclusive).
+        """
         self.app = tg.App(input_video_path=self.input_file_name, camera_param_file=self.camera_param_file_name)
         self.app.load_video(start_frame=start_frame, end_frame=end_frame)
 
     def run(self):
+        """Function executed when this thread is launched.
+
+        This function chooses whether to process the video loaded from disk or to use the images taken as input from
+        the webcam.
+        The sequence of images is processed by the encapsulated :class:`~thermography.thermo_app.ThermoApp`."""
         if self.should_use_webcam:
             frame_id = 0
             while True:

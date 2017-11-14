@@ -10,8 +10,9 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 1
 
-    gui.design
-    gui.dialogs
-    gui.threads
+   gui.design
+   gui.dialogs
+   gui.threads
 

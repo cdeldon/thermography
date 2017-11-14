@@ -1,5 +1,7 @@
-Welcome to Thermography's documentation!
-========================================
+.. image:: _static/logo.png
+   :scale: 100 %
+   :alt: Thermography Logo
+   :align: center
 
 .. include:: README.rst
 

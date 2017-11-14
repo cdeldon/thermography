@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Thermography 1.1 documentation" href="index.html"/>
-        <link rel="up" title="thermography package" href="thermography.html"/>
+        <link rel="up" title="thermography" href="thermography.html"/>
         <link rel="next" title="thermography.utils package" href="thermography.utils.html"/>
         <link rel="prev" title="thermography.settings package" href="thermography.settings.html"/> 
 
@@ -92,7 +92,10 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="thermography.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a></li>
@@ -102,12 +105,9 @@
 <li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui</a></li>
 </ul>
 
             
@@ -152,7 +152,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="thermography.html">thermography package</a> &raquo;</li>
+          <li><a href="thermography.html">thermography</a> &raquo;</li>
         
       <li>thermography.test package</li>
     
@@ -175,6 +175,7 @@
             
   <div class="section" id="module-thermography.test">
 <span id="thermography-test-package"></span><h1>thermography.test package<a class="headerlink" href="#module-thermography.test" title="Permalink to this headline">¶</a></h1>
+<p>This package contains the unittests related to the utility functions of <a class="reference internal" href="thermography.html#module-thermography" title="thermography"><code class="xref py py-mod docutils literal"><span class="pre">thermography</span></code></a>.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -182,12 +183,15 @@
 <span id="thermography-test-test-id-module"></span><h2>thermography.test.test_ID module<a class="headerlink" href="#module-thermography.test.test_ID" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="thermography.test.test_ID.TestIDUtils">
-<em class="property">class </em><code class="descclassname">thermography.test.test_ID.</code><code class="descname">TestIDUtils</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_ID.html#TestIDUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_ID.TestIDUtils" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">TestIDUtils</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_ID.html#TestIDUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_ID.TestIDUtils" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
 <dl class="method">
 <dt id="thermography.test.test_ID.TestIDUtils.test_ID_generator">
 <code class="descname">test_ID_generator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_ID.html#TestIDUtils.test_ID_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_ID.TestIDUtils.test_ID_generator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the values of the generated IDs.</p>
+<dd><p>Tests the values of the IDs generated by <a class="reference internal" href="thermography.utils.html#thermography.utils.ID.next_id" title="thermography.utils.ID.next_id"><code class="xref py py-func docutils literal"><span class="pre">next_id()</span></code></a> and <a class="reference internal" href="thermography.utils.html#thermography.utils.ID.reset_id" title="thermography.utils.ID.reset_id"><code class="xref py py-func docutils literal"><span class="pre">reset_id()</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -195,10 +199,14 @@
 </div>
 <div class="section" id="module-thermography.test.test_geometry">
 <span id="thermography-test-test-geometry-module"></span><h2>thermography.test.test_geometry module<a class="headerlink" href="#module-thermography.test.test_geometry" title="Permalink to this headline">¶</a></h2>
+<p>This module implements the tests of the functions in <a class="reference internal" href="thermography.utils.html#module-thermography.utils.geometry" title="thermography.utils.geometry"><code class="xref py py-mod docutils literal"><span class="pre">geometry</span></code></a> package.</p>
 <dl class="class">
 <dt id="thermography.test.test_geometry.TestGeometryUtils">
-<em class="property">class </em><code class="descclassname">thermography.test.test_geometry.</code><code class="descname">TestGeometryUtils</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">TestGeometryUtils</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.assertListAlmostEqual">
 <code class="descname">assertListAlmostEqual</code><span class="sig-paren">(</span><em>first</em>, <em>second</em>, <em>places=None</em>, <em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.assertListAlmostEqual"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.assertListAlmostEqual" title="Permalink to this definition">¶</a></dt>
@@ -223,120 +231,119 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="thermography.test.test_geometry.TestGeometryUtils.setUp">
-<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.setUp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_angle_difference">
 <code class="descname">test_angle_difference</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_angle_difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_angle_difference" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘angle_diff’ function which computes the angle difference between two segments.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.angle_diff" title="thermography.utils.geometry.angle_diff"><code class="xref py py-func docutils literal"><span class="pre">angle_diff()</span></code></a> function which computes the angle difference between two segments.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_area">
 <code class="descname">test_area</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_area" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘area’ function which computes the surface enclosed by a set of points.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.area" title="thermography.utils.geometry.area"><code class="xref py py-func docutils literal"><span class="pre">area()</span></code></a> function which computes the surface enclosed by a set of points.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_area_between_rectangles">
 <code class="descname">test_area_between_rectangles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_area_between_rectangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_area_between_rectangles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘area_between_rectangles’ function which computes the surface between two rectangles.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.area_between_rectangles" title="thermography.utils.geometry.area_between_rectangles"><code class="xref py py-func docutils literal"><span class="pre">area_between_rectangles()</span></code></a> function which computes the surface between two rectangles.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_aspect_ratio">
 <code class="descname">test_aspect_ratio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_aspect_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_aspect_ratio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘aspect_ratio’ function which computes the aspect ratio of a rectangle.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.aspect_ratio" title="thermography.utils.geometry.aspect_ratio"><code class="xref py py-func docutils literal"><span class="pre">aspect_ratio()</span></code></a> function which computes the aspect ratio of a rectangle.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_line_estimate">
 <code class="descname">test_line_estimate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_line_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_line_estimate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘line_estimate’ function which computes a line estimate from two segments.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.line_estimate" title="thermography.utils.geometry.line_estimate"><code class="xref py py-func docutils literal"><span class="pre">line_estimate()</span></code></a> function which computes a line estimate from two segments.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_mean_segment_angle">
 <code class="descname">test_mean_segment_angle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_mean_segment_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_mean_segment_angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘mean_segment_angle’ function which computes the mean angle from a set of segments.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.mean_segment_angle" title="thermography.utils.geometry.mean_segment_angle"><code class="xref py py-func docutils literal"><span class="pre">mean_segment_angle()</span></code></a> function which computes the mean angle from a set of segments.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_merge_segments">
 <code class="descname">test_merge_segments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_merge_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_merge_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘merge_segments’ function which merges two segments into a single segment.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.merge_segments" title="thermography.utils.geometry.merge_segments"><code class="xref py py-func docutils literal"><span class="pre">merge_segments()</span></code></a> function which merges two segments into a single segment.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_point_line_distance">
 <code class="descname">test_point_line_distance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_point_line_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_point_line_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘point_line_distance’ function which computes the distance between a point and a line.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.point_line_distance" title="thermography.utils.geometry.point_line_distance"><code class="xref py py-func docutils literal"><span class="pre">point_line_distance()</span></code></a> function which computes the distance between a point and a line.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_rectangle_contains">
 <code class="descname">test_rectangle_contains</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_rectangle_contains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_rectangle_contains" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘rectangle_contains’ function which computes whether a point is contained by a rectangle or not.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.rectangle_contains" title="thermography.utils.geometry.rectangle_contains"><code class="xref py py-func docutils literal"><span class="pre">rectangle_contains()</span></code></a> function which computes whether a point is contained by a rectangle or not.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_segment_angle">
 <code class="descname">test_segment_angle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_segment_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_segment_angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘angle’ function which computes the angle for a segment.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.angle" title="thermography.utils.geometry.angle"><code class="xref py py-func docutils literal"><span class="pre">angle()</span></code></a> function which computes the angle for a segment.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_segment_line_intersection">
 <code class="descname">test_segment_line_intersection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_segment_line_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_segment_line_intersection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘segment_line_intersection’ function which computes the intersection point between a segment and a
-line.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.segment_line_intersection" title="thermography.utils.geometry.segment_line_intersection"><code class="xref py py-func docutils literal"><span class="pre">segment_line_intersection()</span></code></a> function which computes the intersection point between a segment and a line.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_segment_min_distance">
 <code class="descname">test_segment_min_distance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_segment_min_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_segment_min_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘segment_min_distance’ function which computes the minimal distance between two segments.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.segment_min_distance" title="thermography.utils.geometry.segment_min_distance"><code class="xref py py-func docutils literal"><span class="pre">segment_min_distance()</span></code></a> function which computes the minimal distance between two segments.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_segment_segment_intersection">
 <code class="descname">test_segment_segment_intersection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_segment_segment_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_segment_segment_intersection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘segment_segment_intersection’ function which computes the intersection point between two segments.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.segment_segment_intersection" title="thermography.utils.geometry.segment_segment_intersection"><code class="xref py py-func docutils literal"><span class="pre">segment_segment_intersection()</span></code></a> function which computes the intersection point between two segments.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_segment_sorting">
 <code class="descname">test_segment_sorting</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_segment_sorting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_segment_sorting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘sort_segments’ function which sorts a set of almost collinear segments based on their mean normal
-direction.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.sort_segments" title="thermography.utils.geometry.sort_segments"><code class="xref py py-func docutils literal"><span class="pre">sort_segments()</span></code></a> function which sorts a set of almost collinear segments based on their mean normal direction.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_segments_collinear">
 <code class="descname">test_segments_collinear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_segments_collinear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_segments_collinear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the ‘segments_collinear’ function which computes whether two segments are almost collinear or not.</p>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.segments_collinear" title="thermography.utils.geometry.segments_collinear"><code class="xref py py-func docutils literal"><span class="pre">segments_collinear()</span></code></a> function which computes whether two segments are almost collinear or not.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_geometry.TestGeometryUtils.test_sort_rectangle">
 <code class="descname">test_sort_rectangle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_geometry.html#TestGeometryUtils.test_sort_rectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_geometry.TestGeometryUtils.test_sort_rectangle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Tests the <a class="reference internal" href="thermography.utils.html#thermography.utils.geometry.sort_rectangle" title="thermography.utils.geometry.sort_rectangle"><code class="xref py py-func docutils literal"><span class="pre">sort_rectangle()</span></code></a> function which sorts the vertices composing a rectangle into a canonical order.</p>
+</dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="module-thermography.test.test_images">
 <span id="thermography-test-test-images-module"></span><h2>thermography.test.test_images module<a class="headerlink" href="#module-thermography.test.test_images" title="Permalink to this headline">¶</a></h2>
+<p>This module implements the tests of the functions in <a class="reference internal" href="thermography.utils.html#module-thermography.utils.images" title="thermography.utils.images"><code class="xref py py-mod docutils literal"><span class="pre">geometry</span></code></a> package.</p>
 <dl class="class">
 <dt id="thermography.test.test_images.TestImageUtils">
-<em class="property">class </em><code class="descclassname">thermography.test.test_images.</code><code class="descname">TestImageUtils</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_images.html#TestImageUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_images.TestImageUtils" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">TestImageUtils</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_images.html#TestImageUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_images.TestImageUtils" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
 <dl class="method">
 <dt id="thermography.test.test_images.TestImageUtils.setUp">
 <code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/test/test_images.html#TestImageUtils.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.test.test_images.TestImageUtils.setUp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initializes the common elements for the tests.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="thermography.test.test_images.TestImageUtils.test_scale_image_gray">

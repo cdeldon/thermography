@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>thermography.classification.utils.operations &mdash; Thermography 1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/thermo_theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="Thermography 1.1 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> Thermography
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../thermography.html">thermography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gui.html">gui</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Thermography</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>thermography.classification.utils.operations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for thermography.classification.utils.operations</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module containing utility functions to combine multiple tensorflow operations into a single function call.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">kernel_to_image_summary</span><span class="p">,</span> <span class="n">kernel_to_histogram_summary</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;weight_variable&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;bias_variable&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;conv2d&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;conv_relu&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;max_pool_2x2&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;max_pool_4x4&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;max_pool_kxk&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="weight_variable"><a class="viewcode-back" href="../../../../thermography.classification.utils.html#thermography.classification.utils.operations.weight_variable">[docs]</a><span class="k">def</span> <span class="nf">weight_variable</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Generates or returns an existing tensorflow variable to be used as weight.</span>
+
+<span class="sd">    :param name: Name of the variable to be returned.</span>
+<span class="sd">    :param shape: Shape of the variable to be returned.</span>
+<span class="sd">    :return A tf.Variable with the name and shape passed as argument, initialized with a truncated normal initializer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal_initializer</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">stddev</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="bias_variable"><a class="viewcode-back" href="../../../../thermography.classification.utils.html#thermography.classification.utils.operations.bias_variable">[docs]</a><span class="k">def</span> <span class="nf">bias_variable</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Generates or returns an existing tensorflow variable to be used as a bias.</span>
+
+<span class="sd">    :param name: Name of the variable to be returned.</span>
+<span class="sd">    :param shape: Shape of the variable to be returned.</span>
+<span class="sd">    :return: A tf.variable with the name and shape passed as argument, initialized with a constant initializer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">constant_initializer</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="conv2d"><a class="viewcode-back" href="../../../../thermography.classification.utils.html#thermography.classification.utils.operations.conv2d">[docs]</a><span class="k">def</span> <span class="nf">conv2d</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">W</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the graph node associated to the convolution between the input parameters.</span>
+
+<span class="sd">    :param name: Name to give to the resulting convolution.</span>
+<span class="sd">    :param x: Tensor to be convolved.</span>
+<span class="sd">    :param W: Weight variable to be used in the convolution.</span>
+<span class="sd">    :return: A new tensor consisting of the convolution between the two input parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">conv2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;SAME&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="conv_relu"><a class="viewcode-back" href="../../../../thermography.classification.utils.html#thermography.classification.utils.operations.conv_relu">[docs]</a><span class="k">def</span> <span class="nf">conv_relu</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">kernel_shape</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">bias_shape</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Performs and returns a convolution, followed by bias addition and non-linearity (relu).</span>
+
+<span class="sd">    :param x: Input tensor to the convolution-bias-relu operation.</span>
+<span class="sd">    :param kernel_shape: Kernel shape to be used in the convolution.</span>
+<span class="sd">    :param bias_shape: Bias shape to be added to the result of the convolution.</span>
+<span class="sd">    :param name: Name of the returned operation.</span>
+<span class="sd">    :return: A new tensor consisting of the convolution-bias-relu operation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">weight_variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;W&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">kernel_shape</span><span class="p">)</span>
+    <span class="n">kernel_to_histogram_summary</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">summary_name</span><span class="o">=</span><span class="s2">&quot;W&quot;</span><span class="p">)</span>
+    <span class="n">kernel_to_image_summary</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">summary_name</span><span class="o">=</span><span class="s2">&quot;kernels&quot;</span><span class="p">)</span>
+    <span class="n">biases</span> <span class="o">=</span> <span class="n">bias_variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;b&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">bias_shape</span><span class="p">)</span>
+    <span class="n">kernel_to_histogram_summary</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">biases</span><span class="p">,</span> <span class="n">summary_name</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">conv2d</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;conv2d&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">W</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span> <span class="o">+</span> <span class="n">biases</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="max_pool_2x2"><a class="viewcode-back" href="../../../../thermography.classification.utils.html#thermography.classification.utils.operations.max_pool_2x2">[docs]</a><span class="k">def</span> <span class="nf">max_pool_2x2</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Performs a max_pool of size 2x2 to the input parameter.</span>
+
+<span class="sd">    :param name: Name to assign to the returned operation.</span>
+<span class="sd">    :param x: input tensor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">max_pool_kxk</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="max_pool_4x4"><a class="viewcode-back" href="../../../../thermography.classification.utils.html#thermography.classification.utils.operations.max_pool_4x4">[docs]</a><span class="k">def</span> <span class="nf">max_pool_4x4</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Performs a max_pool of size 4x4 to the input parameter.</span>
+
+<span class="sd">    :param name: Name to assign to the returned operation.</span>
+<span class="sd">    :param x: input tensor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">max_pool_kxk</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="max_pool_kxk"><a class="viewcode-back" href="../../../../thermography.classification.utils.html#thermography.classification.utils.operations.max_pool_kxk">[docs]</a><span class="k">def</span> <span class="nf">max_pool_kxk</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Performs a max_pool of size kxk to the input parameter.</span>
+
+<span class="sd">    :param name: Name to assign to the returned operation.</span>
+<span class="sd">    :param x: input tensor.</span>
+<span class="sd">    :param k: size of the pooling operation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">max_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;SAME&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Carlo Del Don.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -156,12 +156,27 @@
            <div itemprop="articleBody">
             
   <h1>Source code for thermography.utils.ID</h1><div class="highlight"><pre>
-<span></span><span class="n">__initial_value</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module implements a simple unique-ID generator. The generated IDs follow the natural numbers order.</span>
+
+<span class="sd">:Example:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        first_id = next_id() # first_id = 0</span>
+<span class="sd">        second_id = next_id() # second_id = 1</span>
+
+<span class="sd">        reset_id()</span>
+<span class="sd">        third_id = next_id() # third_id = 0</span>
+
+<span class="sd">        reset_id(10)</span>
+<span class="sd">        fourth_id = next_id() # fourth_id = 10</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__initial_value</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
 
 <div class="viewcode-block" id="reset_id"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.ID.reset_id">[docs]</a><span class="k">def</span> <span class="nf">reset_id</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Resets the id of the ID generator.</span>
+    <span class="sd">&quot;&quot;&quot;Resets the id of the ID generator.</span>
 
 <span class="sd">    :param value: New start value of the ID generator.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -170,8 +185,7 @@
 
 
 <div class="viewcode-block" id="next_id"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.ID.next_id">[docs]</a><span class="k">def</span> <span class="nf">next_id</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates the next unique id.</span>
+    <span class="sd">&quot;&quot;&quot;Generates the next unique id.</span>
 
 <span class="sd">    :return: The generated ID</span>
 <span class="sd">    &quot;&quot;&quot;</span>

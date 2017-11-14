@@ -10,7 +10,18 @@ __all__ = ["SegmentClusterer", "SegmentClustererParams", "ClusterCleaningParams"
 
 
 class SegmentClustererParams:
+    """Parameters used by the :class:`.SegmentClusterer` related to segment clustering."""
+
     def __init__(self):
+        """Initializes the segment clusterer parameters to their default value.
+
+        :ivar num_init: Number of times the cluster detector should reinitialize the cluster search (only works if :attr:`self.cluster_type` is `"knn"`).
+        :ivar num_clusters: Number of clusters to be searched.
+        :ivar swipe_clusters: Boolean flag which indicates whether the cluster search should sweep over the possible number of clusters or not. (only works if :attr:`self.cluster_type` is `"gmm"`).
+        :ivar cluster_type: String specifying which algorithm to used for cluster detection (`"knn"` : K-nearest neighbors, `"gmm"` : Gaussian mixture model).
+        :ivar use_angles: Boolean flag indicating if the features to be used for clustering should include the segment angles.
+        :ivar use_centers: Boolean flag indicating if the features to be used for clustering should include the segment centers.
+        """
         #  Number of initializations to be performed when clustering.
         self.num_init = 10
         # Number of clusters to extract from the parameter space.
@@ -28,7 +39,15 @@ class SegmentClustererParams:
 
 
 class ClusterCleaningParams:
+    """Parameters used by the :class:`.SegmentClusterer` related to segment filtering."""
+
     def __init__(self):
+        """Initializes the cluster cleaning parameters to their default value.
+
+        :ivar max_angle_variation_mean: Segments whose angle with the mean cluster angle deviates more than this parameter, are rejected.
+        :ivar max_merging_angle: Candidate segment pairs for merging whose relative angle deviates more than this threshold are not merged.
+        :ivar max_endpoint_distance: Candidate segment pairs for merging whose sum of squared distances between endpoints is larger than the square of this parameter are not merged.
+        """
         # Maximal allowed angle between each segment and corresponding cluster mean angle.
         self.max_angle_variation_mean = np.pi / 180 * 20
         # Maximal allowed angle between two segments in order to merge them into a single one.
@@ -38,17 +57,18 @@ class ClusterCleaningParams:
 
 
 class SegmentClusterer:
+    """Class responsible for clustering and cleaning the raw segments extracted by the :class:`SegmentDetector` class."""
+
     def __init__(self, input_segments: np.ndarray, params: SegmentClustererParams = SegmentClustererParams()):
+        """Initializes the segment clusterer with the input segments and the semgment clusterer parameters."""
         self.raw_segments = input_segments
         self.params = params
 
         self.cluster_list = None
         self.cluster_features = None
 
-    def cluster_segments(self):
-        """
-        Clusters the input segments based on the parameters passed as argument. The features that can be used to cluster
-        the segments are their mean coordinates, and their angle.
+    def cluster_segments(self) -> None:
+        """Clusters the input segments :attr:`self.raw_segments` based on the parameters passed as argument.
         """
         Logger.debug("Clustering segments")
         if self.params.cluster_type not in ["gmm", "knn"]:
@@ -128,10 +148,8 @@ class SegmentClusterer:
         self.cluster_features = cluster_feature_list
 
     def compute_cluster_mean(self) -> tuple:
-        """
-        Computes the mean values (coordinates and angles) for each one of the identified clusters.
-
-        :return: The mean angles, and mean coordinates of each cluster.
+        """Computes the mean values (coordinates and angles) for each one of the identified clusters.
+        :return The mean angles, and mean coordinates of each cluster.
         """
         mean_centers = []
         mean_angles = []
@@ -145,9 +163,26 @@ class SegmentClusterer:
 
         return np.array(mean_angles), np.array(mean_centers)
 
-    def clean_clusters_angle(self, mean_angles: np.ndarray, max_angle_variation_mean: float):
+    def clean_clusters(self, mean_angles, params: ClusterCleaningParams = ClusterCleaningParams()) -> None:
+        """Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging
+        almost collinear segments into a single segment.
+
+        :param mean_angles: List of mean angles computed for each cluster.
+        :param params: Parameters used to clean the clusters.
         """
-        Removes all segments whose angle deviates more than the passed parameter from the mean cluster angle.
+
+        # Reorder the segments inside the clusters.
+        for cluster_index, (cluster, features) in enumerate(zip(self.cluster_list, self.cluster_features)):
+            cluster_order = tg.utils.sort_segments(cluster)
+            self.cluster_list[cluster_index] = cluster[cluster_order]
+            self.cluster_features[cluster_index] = features[cluster_order]
+
+        self.__clean_clusters_angle(mean_angles=mean_angles, max_angle_variation_mean=params.max_angle_variation_mean)
+        self.__merge_collinear_segments(max_merging_angle=params.max_merging_angle,
+                                        max_endpoint_distance=params.max_endpoint_distance)
+
+    def __clean_clusters_angle(self, mean_angles: np.ndarray, max_angle_variation_mean: float)->None:
+        """Removes all segments whose angle deviates more than the passed parameter from the mean cluster angle.
 
         :param mean_angles: List of cluster means.
         :param max_angle_variation_mean: Maximal angle variation to allow between the cluster segments and the associated mean angle.
@@ -163,9 +198,8 @@ class SegmentClusterer:
                     invalid_indices.append(segment_index)
             self.cluster_list[cluster_index] = np.delete(cluster, invalid_indices, axis=0)
 
-    def merge_collinear_segments(self, max_merging_angle: float, max_endpoint_distance: float):
-        """
-        Merges all collinear segments belonging to the same cluster.
+    def __merge_collinear_segments(self, max_merging_angle: float, max_endpoint_distance: float):
+        """Merges all collinear segments belonging to the same cluster.
 
         :param max_merging_angle: Maximal angle to allow between segments to be merged.
         :param max_endpoint_distance: Maximal summed distance between segments endpoints and fitted line for merging segments.
@@ -192,22 +226,3 @@ class SegmentClusterer:
                         merged.append(index)
 
             self.cluster_list[cluster_index] = np.array(merged_segments)
-
-    def clean_clusters(self, mean_angles, params: ClusterCleaningParams):
-        """
-        Cleans the clusters by removing edges outliers (angle deviation from cluster mean is too high), and by merging
-        almost collinear segments into a single segment.
-
-        :param mean_angles: List of mean angles computed for each cluster.
-        :param params: Parameters used to clean the clusters.
-        """
-
-        # Reorder the segments inside the clusters.
-        for cluster_index, (cluster, features) in enumerate(zip(self.cluster_list, self.cluster_features)):
-            cluster_order = tg.utils.sort_segments(cluster)
-            self.cluster_list[cluster_index] = cluster[cluster_order]
-            self.cluster_features[cluster_index] = features[cluster_order]
-
-        self.clean_clusters_angle(mean_angles=mean_angles, max_angle_variation_mean=params.max_angle_variation_mean)
-        self.merge_collinear_segments(max_merging_angle=params.max_merging_angle,
-                                      max_endpoint_distance=params.max_endpoint_distance)

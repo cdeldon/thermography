@@ -168,20 +168,51 @@
 
 
 <div class="viewcode-block" id="ThermoGuiThread"><a class="viewcode-back" href="../../../gui.threads.html#gui.threads.thermo_thread.ThermoGuiThread">[docs]</a><span class="k">class</span> <span class="nc">ThermoGuiThread</span><span class="p">(</span><span class="n">QThread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class encapsulating the :class:`~thermography.thermo_app.ThermoApp` application used for the</span>
+<span class="sd">    :class:`~gui.dialogs.thermo_gui_dialog.ThermoGUI` class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">iteration_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted whenever the :func:`ThermoApp.step &lt;thermography.thermo_app.ThermoApp.step&gt;`</span>
+<span class="sd">    function is terminated.&quot;&quot;&quot;</span>
+
     <span class="n">finish_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted when all frames in :class:`~thermography.thermo_app.ThermoApp` are processed.&quot;&quot;&quot;</span>
+
     <span class="n">last_frame_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted in every :func:`ThermoApp.step &lt;thermography.thermo_app.ThermoApp.step&gt;` containing the data</span>
+<span class="sd">    representing the last processed frame.&quot;&quot;&quot;</span>
+
     <span class="n">attention_frame_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted in every :func:`ThermoApp.step &lt;thermography.thermo_app.ThermoApp.step&gt;` containing the data</span>
+<span class="sd">    representing the attention image of the last frame.&quot;&quot;&quot;</span>
+
     <span class="n">edge_frame_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted in every :func:`ThermoApp.step &lt;thermography.thermo_app.ThermoApp.step&gt;` containing the data</span>
+<span class="sd">    representing the edge image extracted in the last frame.&quot;&quot;&quot;</span>
+
     <span class="n">segment_frame_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted in every :func:`ThermoApp.step &lt;thermography.thermo_app.ThermoApp.step&gt;` containing the data</span>
+<span class="sd">    representing segment image computed in the last frame.&quot;&quot;&quot;</span>
+
     <span class="n">rectangle_frame_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted in every :func:`ThermoApp.step &lt;thermography.thermo_app.ThermoApp.step&gt;` containing the data</span>
+<span class="sd">    representing the rectangle image computed in the last frame.&quot;&quot;&quot;</span>
+
     <span class="n">module_map_frame_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted in every :func:`ThermoApp.step &lt;thermography.thermo_app.ThermoApp.step&gt;` containing the data</span>
+<span class="sd">    representing the  global module map computed in the last frame.&quot;&quot;&quot;</span>
+
     <span class="n">classes_frame_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted in every :func:`ThermoApp.step &lt;thermography.thermo_app.ThermoApp.step&gt;` containing the data</span>
+<span class="sd">    representing the classification of the modules in the global module map overlayed to the last frame.&quot;&quot;&quot;</span>
+
     <span class="n">module_list_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted in every :func:`ThermoApp.step &lt;thermography.thermo_app.ThermoApp.step&gt;` containing the data</span>
+<span class="sd">    representing a python list of detected modules.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initializes the Thermo Thread.</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the Thermo Thread.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ThermoGuiThread</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Created thermoGUI thread&quot;</span><span class="p">)</span>
@@ -196,17 +227,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">should_use_webcam</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_default_paths</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__load_default_paths</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">App</span><span class="p">(</span><span class="n">input_video_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file_name</span><span class="p">,</span> <span class="n">camera_param_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_param_file_name</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ThermoGuiThread.use_webcam"><a class="viewcode-back" href="../../../gui.threads.html#gui.threads.thermo_thread.ThermoGuiThread.use_webcam">[docs]</a>    <span class="k">def</span> <span class="nf">use_webcam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">webcam_port</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;If this image is called, then the :class:`~thermography.thermo_app.ThermoApp` encapsulated by this thread</span>
+<span class="sd">        uses the webcam as input instead of loading a video from disk.&quot;&quot;&quot;</span>
+
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Thermo thread uses webcam port </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">webcam_port</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">webcam_port</span> <span class="o">=</span> <span class="n">webcam_port</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">webcam_port</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">should_use_webcam</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="ThermoGuiThread.load_default_paths"><a class="viewcode-back" href="../../../gui.threads.html#gui.threads.thermo_thread.ThermoGuiThread.load_default_paths">[docs]</a>    <span class="k">def</span> <span class="nf">load_default_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__load_default_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Load camera parameters.</span>
         <span class="n">settings_dir</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get_settings_dir</span><span class="p">()</span>
 
@@ -214,13 +248,18 @@
         <span class="n">tg</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">set_data_dir</span><span class="p">(</span><span class="s2">&quot;Z:/SE/SEI/Servizi Civili/Del Don Carlo/termografia/&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tg</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get_data_dir</span><span class="p">(),</span> <span class="s2">&quot;Ispez Termografica Ghidoni 1.mov&quot;</span><span class="p">)</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using default camera param file: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                     <span class="s2">&quot;Default input file name: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_param_file_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_name</span><span class="p">))</span></div>
+                     <span class="s2">&quot;Default input file name: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_param_file_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_name</span><span class="p">))</span>
 
-<div class="viewcode-block" id="ThermoGuiThread.load_video"><a class="viewcode-back" href="../../../gui.threads.html#gui.threads.thermo_thread.ThermoGuiThread.load_video">[docs]</a>    <span class="k">def</span> <span class="nf">load_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__load_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">App</span><span class="p">(</span><span class="n">input_video_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file_name</span><span class="p">,</span> <span class="n">camera_param_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_param_file_name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">load_video</span><span class="p">(</span><span class="n">start_frame</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">end_frame</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">load_video</span><span class="p">(</span><span class="n">start_frame</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">end_frame</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ThermoGuiThread.run"><a class="viewcode-back" href="../../../gui.threads.html#gui.threads.thermo_thread.ThermoGuiThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function executed when this thread is launched.</span>
+
+<span class="sd">        This function chooses whether to process the video loaded from disk or to use the images taken as input from</span>
+<span class="sd">        the webcam.</span>
+<span class="sd">        The sequence of images is processed by the encapsulated :class:`~thermography.thermo_app.ThermoApp`.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_use_webcam</span><span class="p">:</span>
             <span class="n">frame_id</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>

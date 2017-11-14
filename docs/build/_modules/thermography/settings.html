@@ -156,7 +156,8 @@
            <div itemprop="articleBody">
             
   <h1>Source code for thermography.settings</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="sd">&quot;&quot;&quot;This package contains the settings and associated function used in :mod:`thermography`.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">.camera</span> <span class="k">import</span> <span class="n">Camera</span>
 
 <span class="n">SETTINGS_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
@@ -168,25 +169,21 @@
 
 
 <div class="viewcode-block" id="get_settings_dir"><a class="viewcode-back" href="../../thermography.settings.html#thermography.settings.get_settings_dir">[docs]</a><span class="k">def</span> <span class="nf">get_settings_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the absolute path to the settings directory, i.e. the directory containing this file.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the absolute path to the settings directory, i.e. the directory containing this file.</span>
 <span class="sd">    :return: Absolute path to the settings directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">SETTINGS_DIR</span></div>
 
 
 <div class="viewcode-block" id="get_thermography_root_dir"><a class="viewcode-back" href="../../thermography.settings.html#thermography.settings.get_thermography_root_dir">[docs]</a><span class="k">def</span> <span class="nf">get_thermography_root_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the absolute path to the root directory of the thermography project,</span>
-<span class="sd">    i.e. the parent directory of the settings directory.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the absolute path to the root directory of the thermography project, i.e. the parent directory of the settings directory.</span>
 <span class="sd">    :return: Absolute path to the project root directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">THERMOGRAPHY_ROOT_DIR</span></div>
 
 
 <div class="viewcode-block" id="get_data_dir"><a class="viewcode-back" href="../../thermography.settings.html#thermography.settings.get_data_dir">[docs]</a><span class="k">def</span> <span class="nf">get_data_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the absolute path to the data directory.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the absolute path to the data directory.</span>
 <span class="sd">    :return: Absolute path to the data directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">DATA_DIR</span> <span class="ow">is</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
@@ -197,8 +194,7 @@
 
 
 <div class="viewcode-block" id="set_data_dir"><a class="viewcode-back" href="../../thermography.settings.html#thermography.settings.set_data_dir">[docs]</a><span class="k">def</span> <span class="nf">set_data_dir</span><span class="p">(</span><span class="n">data_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sets the data directory.</span>
+    <span class="sd">&quot;&quot;&quot;Sets the data directory.</span>
 <span class="sd">    :param data_dir: Absolute path to the data directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_dir</span><span class="p">):</span>
@@ -208,23 +204,20 @@
 
 
 <div class="viewcode-block" id="get_test_dir"><a class="viewcode-back" href="../../thermography.settings.html#thermography.settings.get_test_dir">[docs]</a><span class="k">def</span> <span class="nf">get_test_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the absolute path to the test directory.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the absolute path to the test directory.</span>
 <span class="sd">    :return: Absolute path to the rest directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">TEST_DIR</span></div>
 
 
 <div class="viewcode-block" id="get_log_dir"><a class="viewcode-back" href="../../thermography.settings.html#thermography.settings.get_log_dir">[docs]</a><span class="k">def</span> <span class="nf">get_log_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the absolute path to the log directory.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the absolute path to the log directory.</span>
 <span class="sd">    :return: Absolute path to the log directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">LOG_DIR</span></div>
 
 <div class="viewcode-block" id="get_resources_dir"><a class="viewcode-back" href="../../thermography.settings.html#thermography.settings.get_resources_dir">[docs]</a><span class="k">def</span> <span class="nf">get_resources_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the absolute path to the resources directory.</span>
+    <span class="sd">&quot;&quot;&quot;Returns the absolute path to the resources directory.</span>
 <span class="sd">    :return: Absolute path to the resources directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">RES_DIR</span></div>

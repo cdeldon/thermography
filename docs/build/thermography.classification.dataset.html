@@ -92,7 +92,10 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="thermography.html">thermography</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="thermography.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="thermography.classification.html">thermography.classification package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="thermography.detection.html">thermography.detection package</a></li>
@@ -102,12 +105,9 @@
 <li class="toctree-l3"><a class="reference internal" href="thermography.utils.html">thermography.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.module_map">thermography.module_map module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="thermography.html#module-thermography.thermo_app">thermography.thermo_app module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui</a></li>
 </ul>
 
             
@@ -152,7 +152,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="thermography.html">thermography package</a> &raquo;</li>
+          <li><a href="thermography.html">thermography</a> &raquo;</li>
         
           <li><a href="thermography.classification.html">thermography.classification package</a> &raquo;</li>
         
@@ -177,14 +177,225 @@
             
   <div class="section" id="module-thermography.classification.dataset">
 <span id="thermography-classification-dataset-package"></span><h1>thermography.classification.dataset package<a class="headerlink" href="#module-thermography.classification.dataset" title="Permalink to this headline">¶</a></h1>
+<p>This package contains the source code for loading and handling the dataset needed to train a classifier.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-thermography.classification.dataset.create_directory_list">
-<span id="thermography-classification-dataset-create-directory-list-module"></span><h2>thermography.classification.dataset.create_directory_list module<a class="headerlink" href="#module-thermography.classification.dataset.create_directory_list" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-thermography.classification.dataset.thermo_dataset">
+<span id="thermography-classification-dataset-thermo-dataset-module"></span><h2>thermography.classification.dataset.thermo_dataset module<a class="headerlink" href="#module-thermography.classification.dataset.thermo_dataset" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoClass">
+<em class="property">class </em><code class="descname">ThermoClass</code><span class="sig-paren">(</span><em>class_name: str</em>, <em>class_value: int</em>, <em>class_folder: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A class for defining which label is assigned to each class used in the classification step.</p>
+<p>Builds a class used for classification with the parameter passed as argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>class_name</strong> – Human readable name associated to this class.</li>
+<li><strong>class_value</strong> – Numerical value (label) associated to this class.</li>
+<li><strong>class_folder</strong> – Folder where the training images associated to this class are stored.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset">
+<em class="property">class </em><code class="descname">ThermoDataset</code><span class="sig-paren">(</span><em>img_shape: numpy.ndarray</em>, <em>batch_size: int = 32</em>, <em>balance_data: bool = True</em>, <em>normalize_images: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Dataset class which handles the input image as a dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first last highlight-python"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">ThermoDataset</span><span class="p">(</span><span class="n">img_shape</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+<span class="n">dataset</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">root_directory_list</span><span class="p">,</span> <span class="n">class_list</span><span class="p">)</span>
+
+<span class="n">train_iterator</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_train_iterator</span><span class="p">()</span>
+<span class="n">next_train_batch</span> <span class="o">=</span> <span class="n">train_iterator</span><span class="o">.</span><span class="n">get_next</span><span class="p">()</span>
+<span class="n">test_iterator</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_test_iterator</span><span class="p">()</span>
+<span class="n">next_test_batch</span> <span class="o">=</span> <span class="n">test_iterator</span><span class="o">.</span><span class="n">get_next</span><span class="p">()</span>
+
+<span class="c1"># Build the computation graph.</span>
+<span class="o">...</span>
+
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+        <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_iterator</span><span class="o">.</span><span class="n">initializer</span><span class="p">)</span>
+        <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">test_iterator</span><span class="o">.</span><span class="n">initializer</span><span class="p">)</span>
+
+        <span class="c1"># Train</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">img_batch</span><span class="p">,</span> <span class="n">label_batch</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">next_train_batch</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span> <span class="c1"># Training dataset is terminated</span>
+                <span class="k">break</span>
+            <span class="c1"># Train the model.</span>
+            <span class="o">...</span>
+
+        <span class="c1"># Test</span>
+         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">img_batch</span><span class="p">,</span> <span class="n">label_batch</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">next_test_batch</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span> <span class="c1"># Test dataset is terminated</span>
+                <span class="k">break</span>
+            <span class="c1"># Test the model.</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Initializes the parameters of the dataset without loading anything.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>img_shape</strong> – Image shape of the dataset. All images on disk which don’t fulfill this shape are resized accordingly.</li>
+<li><strong>batch_size</strong> – Batch size used for training. This parameters influences the size of tha batch returned by the dataset iterators (see <a class="reference internal" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator" title="thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator"><code class="xref py py-func docutils literal"><span class="pre">&lt;self.get_train_iterator</span></code></a>)</li>
+<li><strong>balance_data</strong> – Boolean flag which determines whether to balance the data on disk. If True, the loaded classes will have the same amount of samples (some samples of the majority classes will be discarded).</li>
+<li><strong>normalize_images</strong> – Boolean flag indicating whether no normalize each input image (mean: 0, std: 1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.data_size">
+<code class="descname">data_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.data_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of the dataset, i.e. the total number of images loaded.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.get_test_iterator">
+<code class="descname">get_test_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; tensorflow.contrib.data.python.ops.dataset_ops.Iterator<a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.get_test_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_test_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns an initializable iterator for the test dataset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator">
+<code class="descname">get_train_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; tensorflow.contrib.data.python.ops.dataset_ops.Iterator<a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.get_train_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns an initializable iterator for the training dataset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.get_validation_iterator">
+<code class="descname">get_validation_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; tensorflow.contrib.data.python.ops.dataset_ops.Iterator<a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.get_validation_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_validation_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns an initializable iterator for the validation dataset.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.image_shape">
+<code class="descname">image_shape</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.image_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the image shape of the dataset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.load_dataset">
+<code class="descname">load_dataset</code><span class="sig-paren">(</span><em>root_directory_list: list, class_list: typing.List[thermography.classification.dataset.thermo_dataset.ThermoClass], load_all_data: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.load_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.load_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the dataset from the files contained in the list of root directories.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>root_directory_list</strong> – List of root directories containing the data. This list can be generated using <a class="reference internal" href="#thermography.classification.dataset.thermo_dataset.create_directory_list" title="thermography.classification.dataset.thermo_dataset.create_directory_list"><code class="xref py py-func docutils literal"><span class="pre">create_directory_list()</span></code></a>.</li>
+<li><strong>class_list</strong> – List of classes used for classification.</li>
+<li><strong>load_all_data</strong> – Boolean flag indicating whether to preload the entire dataset in memory once, or to load the data on the fly whenever a new batch is needed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Loading the entire dataset into memory can increase the training process.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.print_info">
+<code class="descname">print_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.print_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.print_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the dataset properties.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.rgb">
+<code class="descname">rgb</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.rgb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a boolean indicating whether the dataset has three channels (RGB) or is grayscale.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.root_directory_list">
+<code class="descname">root_directory_list</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.root_directory_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of root directories of the data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.set_train_test_validation_fraction">
+<code class="descname">set_train_test_validation_fraction</code><span class="sig-paren">(</span><em>train_fraction</em>, <em>test_fraction</em>, <em>validation_fraction</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.set_train_test_validation_fraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.set_train_test_validation_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the train-test-validation fraction of the dataset.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.split_fraction">
+<code class="descname">split_fraction</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.split_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the fraction used to split the loaded data into train, test and validation data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.test">
+<code class="descname">test</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the test data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.test_size">
+<code class="descname">test_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.test_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of the testing data, i.e. the total number of images available for testing.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.thermo_class_list">
+<code class="descname">thermo_class_list</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.thermo_class_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the classes associated to the dataset.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.train">
+<code class="descname">train</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the training data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.train_size">
+<code class="descname">train_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.train_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of the training data, i.e. the total number of images available for training.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.validation">
+<code class="descname">validation</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the validation data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.validation_size">
+<code class="descname">validation_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.validation_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of the validation data, i.e. the total number of images available for validation.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
-<dt id="thermography.classification.dataset.create_directory_list.create_directory_list">
-<code class="descclassname">thermography.classification.dataset.create_directory_list.</code><code class="descname">create_directory_list</code><span class="sig-paren">(</span><em>root_dir: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/create_directory_list.html#create_directory_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.create_directory_list.create_directory_list" title="Permalink to this definition">¶</a></dt>
+<dt id="thermography.classification.dataset.thermo_dataset.create_directory_list">
+<code class="descname">create_directory_list</code><span class="sig-paren">(</span><em>root_dir: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#create_directory_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.create_directory_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a list of directories for dataset loading.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -194,6 +405,8 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
 <p>The dataset root directory must be of the following form:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">root_dir</span>
 <span class="o">|</span><span class="n">__video1</span>
@@ -207,7 +420,8 @@
      <span class="o">|</span><span class="n">__0</span><span class="o">-</span><span class="mi">1000</span>
 </pre></div>
 </div>
-<p>and each folder ‘xxxx-yyyy’ must contain three directories associated to the classes of the dataset.</p>
+<p class="last">and each folder ‘xxxx-yyyy’ must contain three directories associated to the classes of the dataset (see <code class="xref py py-attr docutils literal"><span class="pre">ThermoClass.class_folder</span></code>).</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -216,119 +430,6 @@
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-thermography.classification.dataset.thermo_class">
-<span id="thermography-classification-dataset-thermo-class-module"></span><h2>thermography.classification.dataset.thermo_class module<a class="headerlink" href="#module-thermography.classification.dataset.thermo_class" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="thermography.classification.dataset.thermo_class.ThermoClass">
-<em class="property">class </em><code class="descclassname">thermography.classification.dataset.thermo_class.</code><code class="descname">ThermoClass</code><span class="sig-paren">(</span><em>class_name: str</em>, <em>class_value: int</em>, <em>class_folder: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_class.html#ThermoClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_class.ThermoClass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-thermography.classification.dataset.thermo_dataset">
-<span id="thermography-classification-dataset-thermo-dataset-module"></span><h2>thermography.classification.dataset.thermo_dataset module<a class="headerlink" href="#module-thermography.classification.dataset.thermo_dataset" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset">
-<em class="property">class </em><code class="descclassname">thermography.classification.dataset.thermo_dataset.</code><code class="descname">ThermoDataset</code><span class="sig-paren">(</span><em>img_shape: numpy.ndarray</em>, <em>batch_size: int = 32</em>, <em>balance_data: bool = True</em>, <em>normalize_images: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.data_size">
-<code class="descname">data_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.data_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.dataset_from_id">
-<code class="descname">dataset_from_id</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.dataset_from_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.dataset_from_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.get_test_iterator">
-<code class="descname">get_test_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.get_test_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_test_iterator" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator">
-<code class="descname">get_train_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.get_train_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_train_iterator" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.get_validation_iterator">
-<code class="descname">get_validation_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.get_validation_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.get_validation_iterator" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.image_shape">
-<code class="descname">image_shape</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.image_shape" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.load_dataset">
-<code class="descname">load_dataset</code><span class="sig-paren">(</span><em>root_directory_list: list, class_list: typing.List[thermography.classification.dataset.thermo_class.ThermoClass], load_all_data: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.load_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.load_dataset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.print_info">
-<code class="descname">print_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.print_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.print_info" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.rgb">
-<code class="descname">rgb</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.rgb" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.root_directory_list">
-<code class="descname">root_directory_list</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.root_directory_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.set_train_test_validation_fraction">
-<code class="descname">set_train_test_validation_fraction</code><span class="sig-paren">(</span><em>train_fraction</em>, <em>test_fraction</em>, <em>validation_fraction</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/classification/dataset/thermo_dataset.html#ThermoDataset.set_train_test_validation_fraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.set_train_test_validation_fraction" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.split_fraction">
-<code class="descname">split_fraction</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.split_fraction" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.test">
-<code class="descname">test</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.test" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.test_size">
-<code class="descname">test_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.test_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.thermo_class_list">
-<code class="descname">thermo_class_list</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.thermo_class_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.train">
-<code class="descname">train</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.train" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.train_size">
-<code class="descname">train_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.train_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.validation">
-<code class="descname">validation</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.validation" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="thermography.classification.dataset.thermo_dataset.ThermoDataset.validation_size">
-<code class="descname">validation_size</code><a class="headerlink" href="#thermography.classification.dataset.thermo_dataset.ThermoDataset.validation_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </div>

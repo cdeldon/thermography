@@ -1,3 +1,5 @@
+"""This package contains the logic behind the graphical user interfaces."""
+
 from .about_dialog import AboutDialog
 from .webcam_dialog import WebcamDialog
 from .image_saving_dialog import SaveImageDialog

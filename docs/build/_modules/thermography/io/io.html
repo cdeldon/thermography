@@ -167,10 +167,11 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ImageLoader&quot;</span><span class="p">,</span> <span class="s2">&quot;VideoLoader&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="ImageLoader"><a class="viewcode-back" href="../../../thermography.io.html#thermography.io.ImageLoader">[docs]</a><span class="k">class</span> <span class="nc">ImageLoader</span><span class="p">:</span>
+<div class="viewcode-block" id="ImageLoader"><a class="viewcode-back" href="../../../thermography.io.html#thermography.io.io.ImageLoader">[docs]</a><span class="k">class</span> <span class="nc">ImageLoader</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class responsible for loading a single image file into a numpy array.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Modality</span> <span class="o">=</span> <span class="n">Modality</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initializes and loads the image associated to the file indicated by the path passed as argument.</span>
+        <span class="sd">&quot;&quot;&quot;Initializes and loads the image associated to the file indicated by the path passed as argument.</span>
 
 <span class="sd">        :param image_path: Absolute path to the image file to be loaded.</span>
 <span class="sd">        :param mode: Modality to be used when loading the image.</span>
@@ -180,9 +181,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_raw</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ImageLoader.show_raw"><a class="viewcode-back" href="../../../thermography.io.html#thermography.io.ImageLoader.show_raw">[docs]</a>    <span class="k">def</span> <span class="nf">show_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Displays the raw image associated with the calling instance.</span>
+<div class="viewcode-block" id="ImageLoader.show_raw"><a class="viewcode-back" href="../../../thermography.io.html#thermography.io.io.ImageLoader.show_raw">[docs]</a>    <span class="k">def</span> <span class="nf">show_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Displays the raw image associated with the calling instance.</span>
 
 <span class="sd">        :param title: Title to be added to the displayed image.</span>
 <span class="sd">        :param wait: Time to wait until displayed windows is closed. If set to 0, then the image does not close.</span>
@@ -191,7 +191,8 @@
         <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="n">wait</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">image_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">image_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the absolute path to the image loaded by this object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_path</span>
 
     <span class="nd">@image_path</span><span class="o">.</span><span class="n">setter</span>
@@ -201,14 +202,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__image_path</span> <span class="o">=</span> <span class="n">path</span></div>
 
 
-<div class="viewcode-block" id="VideoLoader"><a class="viewcode-back" href="../../../thermography.io.html#thermography.io.VideoLoader">[docs]</a><span class="k">class</span> <span class="nc">VideoLoader</span><span class="p">:</span>
+<div class="viewcode-block" id="VideoLoader"><a class="viewcode-back" href="../../../thermography.io.html#thermography.io.io.VideoLoader">[docs]</a><span class="k">class</span> <span class="nc">VideoLoader</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class responsible for laoding a video into a sequence of numpy arrays representing the single video frames.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Loads the frames associated to the video indicated by the path passed as argument.</span>
+        <span class="sd">&quot;&quot;&quot;Loads the frames associated to the video indicated by the path passed as argument.</span>
 
 <span class="sd">        :param video_path: Absolute path to the video to be loaded.</span>
 <span class="sd">        :param start_frame: Start frame of the video to be considered (inclusive).</span>
-<span class="sd">        :param end_frame: End frame of the video to be considered (non inclusive).</span>
+<span class="sd">        :param end_frame: End frame of the video to be considered (non inclusive). If set to None, the video will be loaded until the last frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loading video at </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">video_path</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">video_path</span> <span class="o">=</span> <span class="n">video_path</span>
@@ -220,24 +222,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__load_video</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">video_path</span><span class="p">))</span>
 
-<div class="viewcode-block" id="VideoLoader.show_video"><a class="viewcode-back" href="../../../thermography.io.html#thermography.io.VideoLoader.show_video">[docs]</a>    <span class="k">def</span> <span class="nf">show_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shows the loaded frames.</span>
-
-<span class="sd">        :param fps: Frames per second to be used when showing the images.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">seconds_per_frame</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">fps</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">):</span>
-            <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Frame&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
-            <span class="n">cv2</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Frame&quot;</span><span class="p">,</span> <span class="s2">&quot;Frame </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_frame</span> <span class="o">+</span> <span class="n">i</span><span class="p">))</span>
-            <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">seconds_per_frame</span><span class="p">))</span></div>
-
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">num_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">num_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the number of frames loaded by this object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_frame</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_frame</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">video_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">video_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the absolute path associated to the video loaded by this object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__video_path</span>
 
     <span class="nd">@video_path</span><span class="o">.</span><span class="n">setter</span>

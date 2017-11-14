@@ -9,6 +9,14 @@ thermography\.classification\.utils package
 Submodules
 ----------
 
+thermography\.classification\.utils\.operations module
+-------------------------------------------------------
+
+.. automodule:: thermography.classification.utils.operations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 thermography\.classification\.utils\.kernel\_summaries module
 -------------------------------------------------------------
 

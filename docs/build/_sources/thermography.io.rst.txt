@@ -2,7 +2,6 @@ thermography\.io package
 ========================
 
 .. automodule:: thermography.io
-    :members:
     :undoc-members:
     :show-inheritance:
 

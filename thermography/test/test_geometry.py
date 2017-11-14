@@ -1,3 +1,5 @@
+"""This module implements the tests of the functions in :mod:`geometry <thermography.utils.geometry>` package."""
+
 import collections
 import unittest
 
@@ -7,12 +9,8 @@ from thermography.utils.geometry import *
 
 
 class TestGeometryUtils(unittest.TestCase):
-    def setUp(self):
-        pass
-
     def assertListAlmostEqual(self, first, second, places=None, msg=None):
-        """
-        Tests whether the elements of two lists are almost equal.
+        """Tests whether the elements of two lists are almost equal.
 
         :param first: The first list to compare.
         :param second: The second list to compare.
@@ -30,8 +28,7 @@ class TestGeometryUtils(unittest.TestCase):
                 self.assertAlmostEqual(f, s, places=places, msg=msg)
 
     def test_segment_angle(self):
-        """
-        Tests the 'angle' function which computes the angle for a segment.
+        """Tests the :func:`~thermography.utils.geometry.angle` function which computes the angle for a segment.
         """
         segment1 = np.array([0, 0, 1, 0])
         self.assertAlmostEqual(angle(segment1[0:2], segment1[2:4]), 0.0 / 180 * np.pi)
@@ -54,8 +51,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(angle(segment5[2:4], segment5[0:2]), 45.0 / 180 * np.pi)
 
     def test_angle_difference(self):
-        """
-        Tests the 'angle_diff' function which computes the angle difference between two segments.
+        """Tests the :func:`~thermography.utils.geometry.angle_diff` function which computes the angle difference between two segments.
         """
         angle1 = 0.0
         self.assertAlmostEqual(angle_diff(angle1, angle1), 0.0)
@@ -69,8 +65,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(angle_diff(angle3, angle1), np.pi * 0.5)
 
     def test_area(self):
-        """
-        Tests the 'area' function which computes the surface enclosed by a set of points.
+        """Tests the :func:`~thermography.utils.geometry.area` function which computes the surface enclosed by a set of points.
         """
         point1 = np.array([0, 0])
         point2 = np.array([1, 0])
@@ -84,8 +79,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertEqual(area(points=polygon), 1.5)
 
     def test_area_between_rectangles(self):
-        """
-        Tests the 'area_between_rectangles' function which computes the surface between two rectangles.
+        """Tests the :func:`~thermography.utils.geometry.area_between_rectangles` function which computes the surface between two rectangles.
         """
         rect1 = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
         self.assertEqual(area_between_rectangles(rect1, rect1), 0.0)
@@ -99,8 +93,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(area_between_rectangles(rect3, rect1), 0.8)
 
     def test_aspect_ratio(self):
-        """
-        Tests the 'aspect_ratio' function which computes the aspect ratio of a rectangle.
+        """Tests the :func:`~thermography.utils.geometry.aspect_ratio` function which computes the aspect ratio of a rectangle.
         """
         ratios = np.linspace(0.5, 3, 10)
         angles = np.linspace(0, np.pi, 10)
@@ -125,8 +118,7 @@ class TestGeometryUtils(unittest.TestCase):
                 self.assertAlmostEqual(ratio, computed_ratio)
 
     def test_mean_segment_angle(self):
-        """
-        Tests the 'mean_segment_angle' function which computes the mean angle from a set of segments.
+        """Tests the :func:`~thermography.utils.geometry.mean_segment_angle` function which computes the mean angle from a set of segments.
         """
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([0, -1, 1, -1])
@@ -137,8 +129,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(mean_segment_angle(segments), 0.0)
 
     def test_segment_min_distance(self):
-        """
-        Tests the 'segment_min_distance' function which computes the minimal distance between two segments.
+        """Tests the :func:`~thermography.utils.geometry.segment_min_distance` function which computes the minimal distance between two segments.
         """
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([0, 1, 1, 1])
@@ -158,8 +149,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(segment_min_distance(segment1, segment6), 1)
 
     def test_line_estimate(self):
-        """
-        Tests the 'line_estimate' function which computes a line estimate from two segments.
+        """Tests the :func:`~thermography.utils.geometry.line_estimate` function which computes a line estimate from two segments.
         """
 
         # Horizontal line estimate.
@@ -193,13 +183,11 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertListAlmostEqual(line_estimate(segment5, segment4), ((1, 0), True), places=3)
 
     def test_merge_segments(self):
-        """
-        Tests the 'merge_segments' function which merges two segments into a single segment.
+        """Tests the :func:`~thermography.utils.geometry.merge_segments` function which merges two segments into a single segment.
         """
 
         def sort_points(segment):
-            """
-            Sorts the endpoints of the segment passed as argument in lexicographical order.
+            """Sorts the endpoints of the segment passed as argument in lexicographical order.
 
             :param segment: Segment to be sorted.
             :return: Sorted segment.
@@ -239,8 +227,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertListAlmostEqual(merged_segment, [-0.00769, 0, 0.10769, 2.5], places=4)
 
     def test_point_line_distance(self):
-        """
-        Tests the 'point_line_distance' function which computes the distance between a point and a line.
+        """Tests the :func:`~thermography.utils.geometry.point_line_distance` function which computes the distance between a point and a line.
         """
         slope = 1
         intercept = 0
@@ -283,8 +270,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertAlmostEqual(point_line_distance(point4, slope, intercept, vertical), 1.341640786)
 
     def test_rectangle_contains(self):
-        """
-        Tests the 'rectangle_contains' function which computes whether a point is contained by a rectangle or not.
+        """Tests the :func:`~thermography.utils.geometry.rectangle_contains` function which computes whether a point is contained by a rectangle or not.
         """
         rectangle = np.array([[0, 0], [10, 0], [10, 10], [0, 10]])
         self.assertTrue(rectangle_contains(rectangle, np.array([5, 5])))
@@ -293,8 +279,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertTrue(rectangle_contains(rectangle, np.array([10, 10])))
 
     def test_segments_collinear(self):
-        """
-        Tests the 'segments_collinear' function which computes whether two segments are almost collinear or not.
+        """Tests the :func:`~thermography.utils.geometry.segments_collinear` function which computes whether two segments are almost collinear or not.
         """
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([0.5, 0, 1.5, 0])
@@ -309,8 +294,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertTrue(segments_collinear(segment1, segment4, max_angle=np.pi, max_endpoint_distance=5))
 
     def test_segment_segment_intersection(self):
-        """
-        Tests the 'segment_segment_intersection' function which computes the intersection point between two segments.
+        """Tests the :func:`~thermography.utils.geometry.segment_segment_intersection` function which computes the intersection point between two segments.
         """
         segment1 = np.array([0, 0, 1, 0])
         segment2 = np.array([0, 0, 0, 1])
@@ -334,9 +318,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertFalse(segment_segment_intersection(segment6, segment1))
 
     def test_segment_line_intersection(self):
-        """
-        Tests the 'segment_line_intersection' function which computes the intersection point between a segment and a
-        line.
+        """Tests the :func:`~thermography.utils.geometry.segment_line_intersection` function which computes the intersection point between a segment and a line.
         """
         segment1 = np.array([0, 1, 1, 0])
         segment2 = np.array([1, 0, 0, 1])
@@ -353,15 +335,15 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertFalse(segment_line_intersection(segment2, line3[0], line3[1]))
 
     def test_segment_sorting(self):
-        """
-        Tests the 'sort_segments' function which sorts a set of almost collinear segments based on their mean normal
-        direction.
+        """Tests the :func:`~thermography.utils.geometry.sort_segments` function which sorts a set of almost collinear segments based on their mean normal direction.
         """
         segments = np.array([[0, 0, 1, 0], [0, 1, 1, 1], [0, 1, 1, 1.1], [0, -1, 1, -0.5]])
         sorted_segments_indices = sort_segments(segments)
         self.assertListEqual([*sorted_segments_indices], [3, 0, 1, 2])
 
     def test_sort_rectangle(self):
+        """Tests the :func:`~thermography.utils.geometry.sort_rectangle` function which sorts the vertices composing a rectangle into a canonical order.
+        """
         p0 = np.array([0.0, 0.0])
         p1 = np.array([1.0, 0.0])
         p2 = np.array([1.0, 1.0])
