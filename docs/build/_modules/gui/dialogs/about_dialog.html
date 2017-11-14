@@ -179,15 +179,15 @@
             <span class="n">text</span> <span class="o">=</span> <span class="n">rich_text_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logo_path</span><span class="o">=</span><span class="n">logo_path</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_logo_icon</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_logo_icon</span><span class="p">()</span>
 
-<div class="viewcode-block" id="AboutDialog.set_logo_icon"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.about_dialog.AboutDialog.set_logo_icon">[docs]</a>    <span class="k">def</span> <span class="nf">set_logo_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__set_logo_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sets the default logo to the dialog.&quot;&quot;&quot;</span>
         <span class="n">gui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tg</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get_thermography_root_dir</span><span class="p">(),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">),</span> <span class="s2">&quot;gui&quot;</span><span class="p">)</span>
         <span class="n">logo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gui_path</span><span class="p">,</span> <span class="s2">&quot;img/logo.png&quot;</span><span class="p">)</span>
         <span class="n">icon</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">()</span>
         <span class="n">icon</span><span class="o">.</span><span class="n">addPixmap</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="p">(</span><span class="n">logo_path</span><span class="p">),</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="o">.</span><span class="n">Normal</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="o">.</span><span class="n">Off</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

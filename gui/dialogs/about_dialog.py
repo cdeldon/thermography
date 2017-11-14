@@ -21,9 +21,9 @@ class AboutDialog(QtWidgets.QMessageBox):
             text = rich_text_file.read()
             self.setText(text.format(logo_path=logo_path))
 
-        self.set_logo_icon()
+        self.__set_logo_icon()
 
-    def set_logo_icon(self):
+    def __set_logo_icon(self):
         """Sets the default logo to the dialog."""
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
         logo_path = os.path.join(gui_path, "img/logo.png")

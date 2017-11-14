@@ -318,8 +318,8 @@ class ThermoApp:
 
         for module_id, module in self.module_map.global_module_map.items():
             if module.frame_id_history[-1] == self.last_frame_id:
-
                 module_coords = module.last_rectangle - np.int32(module.cumulated_motion)
+
                 mean_prob = module.mean_probability
                 color = color_from_probabilities(mean_prob)
 
@@ -349,6 +349,7 @@ class ThermoApp:
     def create_module_map_image(self):
         Logger.debug("Creating module map image")
         base_image = self.last_scaled_frame_rgb.copy()
+
         for rect_id, rectangle in self.module_map.global_module_map.items():
             rect_shift = rectangle.last_rectangle - np.int32(rectangle.cumulated_motion)
             if rectangle.frame_id_history[-1] == self.last_frame_id:
@@ -362,7 +363,6 @@ class ThermoApp:
             if thickness > 1:
                 cv2.putText(base_image, str(rect_id), (int(center[0]), int(center[1])), cv2.FONT_HERSHEY_PLAIN,
                             1, (255, 255, 255), 1)
-
         return base_image
 
     def create_module_list(self):

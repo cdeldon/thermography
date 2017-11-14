@@ -167,13 +167,23 @@
 
 
 <div class="viewcode-block" id="SaveImageDialog"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.image_saving_dialog.SaveImageDialog">[docs]</a><span class="k">class</span> <span class="nc">SaveImageDialog</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDialog</span><span class="p">,</span> <span class="n">Ui_Save_images_dialog</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class implements a dialog which allows to save all data collected by the</span>
+<span class="sd">    :class:`~gui.dialogs.create_dataset_dialog.CreateDatasetGUI` class to disk.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">working_modules</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">broken_modules</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">misdetected_modules</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the dialog with the files to save to disk.</span>
+
+<span class="sd">        :param working_modules: Dictionary of working modules.</span>
+<span class="sd">        :param broken_modules: Dictionary of broken modules.</span>
+<span class="sd">        :param misdetected_modules: Dictionary of misdetected modules.</span>
+<span class="sd">        :param parent: Parent window of this dialog.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
 
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Opened &#39;Save Images&#39; dialog&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_logo_icon</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_logo_icon</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">working_modules</span> <span class="o">=</span> <span class="n">working_modules</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broken_modules</span> <span class="o">=</span> <span class="n">broken_modules</span>
@@ -181,21 +191,23 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">choose_directory_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_directory_dialog</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_module_dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">choose_directory_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__open_directory_dialog</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__save_module_dataset</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress_bar_all_frames</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress_bar_all_frames</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">working_modules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broken_modules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">misdetected_modules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SaveImageDialog.set_logo_icon"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.image_saving_dialog.SaveImageDialog.set_logo_icon">[docs]</a>    <span class="k">def</span> <span class="nf">set_logo_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__set_logo_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default logo to the dialog.&quot;&quot;&quot;</span>
         <span class="n">gui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tg</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get_thermography_root_dir</span><span class="p">(),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">),</span> <span class="s2">&quot;gui&quot;</span><span class="p">)</span>
         <span class="n">logo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gui_path</span><span class="p">,</span> <span class="s2">&quot;img/logo.png&quot;</span><span class="p">)</span>
         <span class="n">icon</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">()</span>
         <span class="n">icon</span><span class="o">.</span><span class="n">addPixmap</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="p">(</span><span class="n">logo_path</span><span class="p">),</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="o">.</span><span class="n">Normal</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="o">.</span><span class="n">Off</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SaveImageDialog.open_directory_dialog"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.image_saving_dialog.SaveImageDialog.open_directory_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">open_directory_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__open_directory_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Opens a file explorer to select the destination of the files to store to disk.&quot;&quot;&quot;</span>
         <span class="n">output_directory</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s2">&quot;Select dataset output directory&quot;</span><span class="p">)</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Selected &lt;</span><span class="si">{}</span><span class="s2">&gt; directory to store all images&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output_directory</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">output_directory</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
@@ -209,12 +221,13 @@
                                           <span class="s2">&quot;Directory </span><span class="si">{}</span><span class="s2"> not empty! Select an empty directory!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                               <span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">),</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">,</span>
                                           <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">open_directory_dialog</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__open_directory_dialog</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_directory_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Saving to directory: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">save_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SaveImageDialog.save_module_dataset"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.image_saving_dialog.SaveImageDialog.save_module_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">save_module_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__save_module_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Saves the data to the directory selected when opening the file explorer.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress_bar_all_frames</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress_bar_intra_frame</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">button_reply</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Save dataset&#39;</span><span class="p">,</span>
@@ -224,7 +237,7 @@
         <span class="k">if</span> <span class="n">button_reply</span> <span class="o">==</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">:</span>
             <span class="n">Logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Rejected directory &lt;</span><span class="si">{}</span><span class="s2">&gt; for saving all images&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">save_module_dataset</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__save_module_dataset</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">Logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Saving all images to &lt;</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">))</span>
             <span class="n">Logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;If dialog freezes, check log file, but DON&#39;T close the window!&quot;</span><span class="p">)</span>
@@ -263,7 +276,7 @@
 
         <span class="n">_</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Saved!&quot;</span><span class="p">,</span> <span class="s2">&quot;Saved all modules to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">),</span>
                                               <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
