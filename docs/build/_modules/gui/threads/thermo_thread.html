@@ -215,7 +215,7 @@
         <span class="sd">&quot;&quot;&quot;Initializes the Thermo Thread.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ThermoGuiThread</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">Logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Created thermoGUI thread&quot;</span><span class="p">)</span>
+        <span class="n">Logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Created ThermoGUI thread&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">camera_param_file_name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file_name</span> <span class="o">=</span> <span class="kc">None</span>
@@ -250,9 +250,15 @@
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using default camera param file: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
                      <span class="s2">&quot;Default input file name: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_param_file_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_name</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__load_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<div class="viewcode-block" id="ThermoGuiThread.load_video"><a class="viewcode-back" href="../../../gui.threads.html#gui.threads.thermo_thread.ThermoGuiThread.load_video">[docs]</a>    <span class="k">def</span> <span class="nf">load_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Loads the video associated to the absolute path in</span>
+<span class="sd">        :attr:´self.input_file_name &lt;gui.threads.thermo_thread.ThermoThread.input_file_name&gt;`</span>
+
+<span class="sd">        :param start_frame: Starting frame index (inclusive).</span>
+<span class="sd">        :param end_frame: End frame index (exclusive).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">App</span><span class="p">(</span><span class="n">input_video_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file_name</span><span class="p">,</span> <span class="n">camera_param_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_param_file_name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">load_video</span><span class="p">(</span><span class="n">start_frame</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">end_frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">load_video</span><span class="p">(</span><span class="n">start_frame</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">end_frame</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThermoGuiThread.run"><a class="viewcode-back" href="../../../gui.threads.html#gui.threads.thermo_thread.ThermoGuiThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Function executed when this thread is launched.</span>

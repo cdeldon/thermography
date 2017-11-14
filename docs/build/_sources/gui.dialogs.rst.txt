@@ -56,7 +56,7 @@ gui\.dialogs\.thermo\_gui\_dialog module
     :undoc-members:
     :show-inheritance:
 
-.. image:: _static/gui_video.png
+.. image:: _static/gui_video.PNG
    :scale: 100 %
    :alt: ThermoGUI dialog
    :align: center

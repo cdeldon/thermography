@@ -203,7 +203,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__connect_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Connects all widgets defined in :mod:`~gui.design.thremo_gui_dialog` to the functions which must be</span>
+        <span class="sd">&quot;&quot;&quot;Connects all widgets defined in :mod:`~gui.design.thermo_gui_dialog` to the functions which must be</span>
 <span class="sd">        executed when the widgets are triggered.&quot;&quot;&quot;</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Connecting all widgets&quot;</span><span class="p">)</span>
         <span class="c1"># File buttons</span>
@@ -297,6 +297,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">last_folder_opened</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">video_file_name</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">input_file_name</span> <span class="o">=</span> <span class="n">video_file_name</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">is_stoppable</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Thermography: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">video_file_name</span><span class="p">))</span>
 
@@ -306,7 +307,7 @@
             <span class="n">end_frame</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start frame: </span><span class="si">{}</span><span class="s2">, end frame: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">__load_video</span><span class="p">(</span><span class="n">start_frame</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">end_frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">load_video</span><span class="p">(</span><span class="n">start_frame</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">end_frame</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">global_progress_bar</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">global_progress_bar</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thermo_thread</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
