@@ -8,7 +8,7 @@ Devel|[![BuildStatusDev](https://travis-ci.org/cdeldon/thermography.svg?branch=d
 This repository contains the implementation of a feasibility study for automatic detection of defected solar panel modules.
 The developed framework has been coined _Thermography_ due to the fact that the input data to the system is a sequence of images in the infrared spectrum.
 
-![Thermography in action](docs/_static/example-view.gif)
+![Thermography in action](docs/source/_static/example-view.gif)
 
 ### Structure
 The repository is structured as follows:
@@ -45,18 +45,18 @@ A graphical user interface is provided for interacting with the _Thermography_ f
   2. [ThermoGUI](main_thermogui.py) graphical interface which allows the used to interact with the _Thermography_ framework and to analyze a new sequence of frames on the fly.
 
 The executables with a graphical interface offer the following tools and visualizations:
-![GUI](./docs/_static/gui_video.PNG?raw=true "GUI")
+![GUI](./docs/source/_static/gui_video.PNG?raw=true "GUI")
 
 The GUI presents different views of the processed input video, in particular the following views are available:
 
 
 Attention image|Edge image
 :---:|:---:
-![AtteImage](./docs/_static/attention_image.PNG?raw=true "Attention image")|![EdgeImage](./docs/_static/edge_image.PNG?raw=true "Edge image")
+![AtteImage](./docs/source/_static/attention_image.PNG?raw=true "Attention image")|![EdgeImage](./docs/source/_static/edge_image.PNG?raw=true "Edge image")
 
 Segment image|Rectangle image
 :---:|:---:
-![SegmImage](./docs/_static/segments_image.PNG?raw=true "Segment Image")|![RectImage](./docs/_static/rectangle_image.PNG?raw=true "Rectangle Image")
+![SegmImage](./docs/source/_static/segments_image.PNG?raw=true "Segment Image")|![RectImage](./docs/source/_static/rectangle_image.PNG?raw=true "Rectangle Image")
 
 
 
@@ -64,7 +64,7 @@ The lateral toolbar offers runtime parameter tuning with immediate application:
 
 Video tab|Prepr. tab|Segment tab|Modules tab
 :---:|:---:|:---:|:---:
-![VideoTab](./docs/_static/video_tab.PNG?raw=true "Video tab")|![PreprTab](./docs/_static/preprocessing_tab.PNG?raw=true "Preprocessing Tab")|![SegmeTab](./docs/_static/segments_tab.PNG?raw=true "Segments Tab")|![ModulTab](./docs/_static/modules_tab.PNG?raw=true "Modules Tab")
+![VideoTab](./docs/source/_static/video_tab.PNG?raw=true "Video tab")|![PreprTab](./docs/source/_static/preprocessing_tab.PNG?raw=true "Preprocessing Tab")|![SegmeTab](./docs/source/_static/segments_tab.PNG?raw=true "Segments Tab")|![ModulTab](./docs/source/_static/modules_tab.PNG?raw=true "Modules Tab")
 
 ##### Training and restoring
 Executables for training and restoring a learning system are offered with the _Thermography_ framework.
@@ -88,5 +88,5 @@ $ python main_test.py
 
 
 ### Documentation
-The documentation of the code is available [here](https://cdeldon.github.io/thermography/html/html/index.html).
+The documentation of the code is available [here](https://cdeldon.github.io/thermography/).
 
