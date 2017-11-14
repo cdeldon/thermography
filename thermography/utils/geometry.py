@@ -1,3 +1,5 @@
+"""The functions implemented in this module are used bz :mod:`thermography` for the computation of geometric properties."""
+
 import cv2
 import numpy as np
 
@@ -20,14 +22,13 @@ __all__ = ["angle",
 
 
 def angle(pt1: np.ndarray, pt2: np.ndarray) -> float:
-    """
-    Computes the angle (in radiants) between a segment specified by the two points and the x-axis.
-    Note that this function assumes the input are pixel coordinates, and thus negates the y-difference between the two
-    points to get a consistent angle with the one seen by the user.
+    """Computes the angle (in radiants) between a segment specified by the two points and the x-axis.
+
+    .. note:: The computed angle lies in [0, pi].
 
     :param pt1: First point of the segment.
     :param pt2: Second point of the segment.
-    :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]
+    :return: Angle in radiants between the segment and the x-axis.
     """
     diff = pt2 - pt1
     a = np.arctan2(diff[1], diff[0])
@@ -39,8 +40,9 @@ def angle(pt1: np.ndarray, pt2: np.ndarray) -> float:
 
 
 def angle_diff(angle1: float, angle2: float) -> float:
-    """
-    Computes the angle difference between the input arguments. The resulting angle difference is in [0, pi * 0.5]
+    """Computes the angle difference between the input arguments.
+
+    .. note:: The resulting angle difference is in [0, pi * 0.5]
 
     :param angle1: First angle expressed in radiants.
     :param angle2: Second angle expressed in radiants.
@@ -54,8 +56,7 @@ def angle_diff(angle1: float, angle2: float) -> float:
 
 
 def area(points: np.ndarray) -> float:
-    """
-    Computes the surface of the polygon defined by the coordinates passed as argument.
+    """Computes the surface of the polygon defined by the coordinates passed as argument.
 
     :param points: List of coordinates defining  the polygon's vertices.
     :return: The surface contained by the polygon.
@@ -67,8 +68,8 @@ def area(points: np.ndarray) -> float:
 
 
 def area_between_rectangles(rect1: np.ndarray, rect2: np.ndarray) -> float:
-    """
-    Computes the cumulative surface between the corresponding edges of the two rectangles passed as argument.
+    """Computes the cumulative surface between the corresponding edges of the two rectangles passed as argument.
+
     ::
 
        *--------------------*
@@ -96,10 +97,10 @@ def area_between_rectangles(rect1: np.ndarray, rect2: np.ndarray) -> float:
 
 
 def aspect_ratio(rectangle: np.ndarray) -> float:
-    """
-    Computes the aspect ratio of a rectangle.
+    """Computes the aspect ratio of a rectangle.
 
     The aspect ratio is computed based on the following rectangle.
+
     ::
 
          3      s2     2
@@ -123,10 +124,9 @@ def aspect_ratio(rectangle: np.ndarray) -> float:
 
 
 def line_estimate(seg1: np.ndarray, seg2: np.ndarray) -> tuple:
-    """
-    Computes the line estimation (regression) using the endpoints of the segments passed as argument.
-    Depending on the points' distribution, the line estimate is computed in the x-y plane as usual, or on the y-x plane
-    (i.e. with inverted coordinates).
+    """Computes the line estimation (regression) using the endpoints of the segments passed as argument.
+
+    .. note:: Depending on the points' distribution, the line estimate is computed in the x-y plane as usual, or on the y-x plane (i.e. with inverted coordinates).
 
     :param seg1: First segment.
     :param seg2: Second segment.
@@ -150,11 +150,12 @@ def line_estimate(seg1: np.ndarray, seg2: np.ndarray) -> tuple:
 
 
 def mean_segment_angle(segment_list: list) -> float:
-    """
-    Computes the mean angle of a list of segments.
+    """Computes the mean angle of a list of segments.
+
+    .. note:: The computed mean angle lies in [0, pi]
 
     :param segment_list: A list of segments of the form [np.array([x0, y0, x1, y1]), np.array([...]), .... ]
-    :return: The mean angle of the segments passed as argument. The angle lies in [0, pi]
+    :return: The mean angle of the segments passed as argument.
     """
     complex_coordinates = []
     for segment in segment_list:
@@ -172,8 +173,7 @@ def mean_segment_angle(segment_list: list) -> float:
 
 
 def merge_segments(segment_list: list) -> np.ndarray:
-    """
-    Computes a unique segments as a representation of the almost collinear segments passed as argument.
+    """Computes a unique segments as a representation of the almost collinear segments passed as argument.
 
     :param segment_list: List of almost collinear segments to be merged into a single segment.
     :return: A new segment defined on the line estimation over the segments passed as argument.
@@ -212,8 +212,7 @@ def merge_segments(segment_list: list) -> np.ndarray:
 
 
 def point_line_distance(point: np.ndarray, slope: float, intercept: float, vertical: bool) -> float:
-    """
-    Computes the shortest distance between a point and a line defined by its slope and intercept.
+    """Computes the shortest distance between a point and a line defined by its slope and intercept.
 
     :param point: Point given by a 2D coordinate in the form of [x, y]
     :param slope: Slope of the line
@@ -227,8 +226,7 @@ def point_line_distance(point: np.ndarray, slope: float, intercept: float, verti
 
 
 def rectangle_contains(rectangle: np.ndarray, point: np.ndarray) -> bool:
-    """
-    Computes whether a point is inside a rectangle or not.
+    """Computes whether a point is inside a rectangle or not.
 
     :param rectangle: Rectangle to be tested against the query point.
     :param point: Point to be tested against the rectangle.
@@ -241,8 +239,7 @@ def rectangle_contains(rectangle: np.ndarray, point: np.ndarray) -> bool:
 
 def segments_collinear(seg1: np.ndarray, seg2: np.ndarray, max_angle: float = 5.0 / 180 * np.pi,
                        max_endpoint_distance: float = 50.0) -> bool:
-    """
-    Tests whether two segments are collinear given some thresholds for collinearity.
+    """Tests whether two segments are collinear given some thresholds for collinearity.
 
     :param seg1: First segment to be tested.
     :param seg2: Second segment to be tested.
@@ -269,8 +266,9 @@ def segments_collinear(seg1: np.ndarray, seg2: np.ndarray, max_angle: float = 5.
 
 
 def segment_line_intersection(seg: np.ndarray, slope: float, intercept: float) -> np.ndarray:
-    """
-    Computes the intersection point between a segment and a line.
+    """Computes the intersection point between a segment and a line.
+
+    .. note:: If no intersection is found, a boolean flag set to `False` is returned instead.
 
     :param seg: Segment to be intersected with the line.
     :param slope: Slope of the intersecting line.
@@ -302,9 +300,9 @@ def segment_line_intersection(seg: np.ndarray, slope: float, intercept: float) -
 
 
 def segment_min_distance(seg1: np.ndarray, seg2: np.ndarray) -> float:
-    """
-    Computes the minimal distance between two segments.
-    Implementation taken form "https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&tab=function"
+    """Computes the minimal distance between two segments.
+
+    Implementation taken form `here <https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&tab=function>`_.
 
     :param seg1: First segment defined as [x1, y1, x2, y2]
     :param seg2: Second segment defined as [x2, y3, x4, y4]
@@ -387,8 +385,9 @@ def segment_min_distance(seg1: np.ndarray, seg2: np.ndarray) -> float:
 
 
 def segment_segment_intersection(seg1: np.ndarray, seg2: np.ndarray) -> np.ndarray:
-    """
-    Computes the intersection point between two segments.
+    """Computes the intersection point between two segments.
+
+    .. note:: If no intersection is found, a boolean flag set to `False` is returned.
 
     :param seg1: First segment of intersection.
     :param seg2: Second segment of intersection.
@@ -416,8 +415,8 @@ def segment_segment_intersection(seg1: np.ndarray, seg2: np.ndarray) -> np.ndarr
 
 
 def sort_rectangle(rectangle: np.ndarray) -> np.ndarray:
-    """
-    Sorts the coordinates in the rectangle such that the final indexing corresponds to the following structure:
+    """Sorts the coordinates in the rectangle such that the final indexing corresponds to the following structure:
+
     ::
 
        +-----------> x
@@ -442,8 +441,7 @@ def sort_rectangle(rectangle: np.ndarray) -> np.ndarray:
 
 
 def sort_segments(segment_list: list) -> np.ndarray:
-    """
-    Sorts the segments passed as argument based on the normal associated to the mean angle.
+    """Sorts the segments passed as argument based on the normal associated to the mean angle.
 
     :param segment_list:  A list of segments of the form [[x0, y0, x1, y1], [...], .... ]
     :return: A list of indices in the segment list passed as argument which sorts the segments.

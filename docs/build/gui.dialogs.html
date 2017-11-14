@@ -169,6 +169,7 @@
             
   <div class="section" id="module-gui.dialogs">
 <span id="gui-dialogs-package"></span><h1>gui.dialogs package<a class="headerlink" href="#module-gui.dialogs" title="Permalink to this headline">¶</a></h1>
+<p>This package contains the logic behind the graphical user interfaces.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -178,199 +179,61 @@
 <dt id="gui.dialogs.about_dialog.AboutDialog">
 <em class="property">class </em><code class="descname">AboutDialog</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/about_dialog.html#AboutDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.about_dialog.AboutDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMessageBox</span></code></p>
-<dl class="method">
-<dt id="gui.dialogs.about_dialog.AboutDialog.set_logo_icon">
-<code class="descname">set_logo_icon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/about_dialog.html#AboutDialog.set_logo_icon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.about_dialog.AboutDialog.set_logo_icon" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>This class represents the dialog that opens when the user clicks on <cite>File-&gt;About</cite> when using the graphical
+interface.</p>
 </dd></dl>
 
+<a class="reference internal image-reference" href="_images/about_dialog.png"><img alt="About dialog" class="align-center" src="_images/about_dialog.png" style="width: 361.0px; height: 508.0px;" /></a>
 </div>
 <div class="section" id="module-gui.dialogs.create_dataset_dialog">
 <span id="gui-dialogs-create-dataset-dialog-module"></span><h2>gui.dialogs.create_dataset_dialog module<a class="headerlink" href="#module-gui.dialogs.create_dataset_dialog" title="Permalink to this headline">¶</a></h2>
+<p>This module contains the implementation of the logic used by the graphical interface for dataset creation.</p>
 <dl class="class">
 <dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI">
 <em class="property">class </em><code class="descname">CreateDatasetGUI</code><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="gui.design.html#gui.design.create_dataset_gui.Ui_CreateDataset_main_window" title="gui.design.create_dataset_gui.Ui_CreateDataset_main_window"><code class="xref py py-class docutils literal"><span class="pre">gui.design.create_dataset_gui.Ui_CreateDataset_main_window</span></code></a></p>
 <p>Dataset creation GUI.</p>
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_thermo_thread">
-<code class="descname">connect_thermo_thread</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.connect_thermo_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_thermo_thread" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_widgets">
-<code class="descname">connect_widgets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.connect_widgets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_widgets" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.current_module_is_broken">
-<code class="descname">current_module_is_broken</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.current_module_is_broken"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.current_module_is_broken" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.current_module_is_working">
-<code class="descname">current_module_is_working</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.current_module_is_working"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.current_module_is_working" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.current_module_misdetection">
-<code class="descname">current_module_misdetection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.current_module_misdetection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.current_module_misdetection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.display_all_modules">
-<code class="descname">display_all_modules</code><span class="sig-paren">(</span><em>module_list: list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.display_all_modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.display_all_modules" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.display_next_module">
-<code class="descname">display_next_module</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.display_next_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.display_next_module" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.frame_finished">
-<code class="descname">frame_finished</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.frame_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.frame_finished" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.load_video_from_file">
-<code class="descname">load_video_from_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.load_video_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.load_video_from_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.open_about_window">
-<code class="descname">open_about_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.open_about_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.open_about_window" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.register_module">
-<code class="descname">register_module</code><span class="sig-paren">(</span><em>m: dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.register_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.register_module" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.resize_video_view">
-<em class="property">static </em><code class="descname">resize_video_view</code><span class="sig-paren">(</span><em>size</em>, <em>view</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.resize_video_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.resize_video_view" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.save_and_close">
-<code class="descname">save_and_close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.save_and_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.save_and_close" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.save_module_dataset">
-<code class="descname">save_module_dataset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.save_module_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.save_module_dataset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.set_logo_icon">
-<code class="descname">set_logo_icon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.set_logo_icon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.set_logo_icon" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.start_playing_frames">
-<code class="descname">start_playing_frames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.start_playing_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.start_playing_frames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.store_last_frame_image">
-<code class="descname">store_last_frame_image</code><span class="sig-paren">(</span><em>img: numpy.ndarray</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.store_last_frame_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.store_last_frame_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_blur_value">
-<code class="descname">update_blur_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_blur_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_blur_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_cluster_cleaning_params">
-<code class="descname">update_cluster_cleaning_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_cluster_cleaning_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_cluster_cleaning_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_clustering_params">
-<code class="descname">update_clustering_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_clustering_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_clustering_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_dilation_steps">
-<code class="descname">update_dilation_steps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_dilation_steps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_dilation_steps" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_edge_params">
-<code class="descname">update_edge_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_edge_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_edge_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_global_progress_bar">
-<code class="descname">update_global_progress_bar</code><span class="sig-paren">(</span><em>frame_index: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_global_progress_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_global_progress_bar" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_histeresis_params">
-<code class="descname">update_histeresis_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_histeresis_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_histeresis_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_image_angle">
-<code class="descname">update_image_angle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_image_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_image_angle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_image_distortion">
-<code class="descname">update_image_distortion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_image_distortion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_image_distortion" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_image_scaling">
-<code class="descname">update_image_scaling</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_image_scaling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_image_scaling" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_module_counter">
-<code class="descname">update_module_counter</code><span class="sig-paren">(</span><em>automatic_manual_str</em>, <em>module_class_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_module_counter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_module_counter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_preprocessing_params">
-<code class="descname">update_preprocessing_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_preprocessing_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_preprocessing_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_rectangle_detection_params">
-<code class="descname">update_rectangle_detection_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_rectangle_detection_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_rectangle_detection_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_temperature_value">
-<code class="descname">update_temperature_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.update_temperature_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.update_temperature_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.video_loader_finished">
-<code class="descname">video_loader_finished</code><span class="sig-paren">(</span><em>frame_list: list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.video_loader_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.video_loader_finished" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>Initializes the GUI and connects its widgets to the corresponding functions.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="gui.dialogs.create_dataset_dialog.VideoLoaderThread">
 <em class="property">class </em><code class="descname">VideoLoaderThread</code><span class="sig-paren">(</span><em>video_path: str</em>, <em>from_index: int</em>, <em>to_index: int</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#VideoLoaderThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.VideoLoaderThread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtCore.QThread</span></code></p>
+<p>Class representing a thread which is responsible for loading a video from file.
+Internally it loads the video by using an instance of <a class="reference internal" href="thermography.io.html#thermography.io.io.VideoLoader" title="thermography.io.io.VideoLoader"><code class="xref py py-class docutils literal"><span class="pre">VideoLoader</span></code></a>.</p>
+<p>Initializes the video loader thread with the video path and the loading indices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>video_path</strong> – Absolute path of the video to load.</li>
+<li><strong>from_index</strong> – Start index of the video-frame to be loaded (inclusive).</li>
+<li><strong>to_index</strong> – End index of the video-frame to be loaded (exclusive).</li>
+<li><strong>parent</strong> – Parent class of the thread.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="gui.dialogs.create_dataset_dialog.VideoLoaderThread.finish_signal">
 <code class="descname">finish_signal</code><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.VideoLoaderThread.finish_signal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Signal emitted when the video loader has terminated the loading of the video frame.
+This signal contains a python list of the loaded frames.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="gui.dialogs.create_dataset_dialog.VideoLoaderThread.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#VideoLoaderThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.VideoLoaderThread.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function executed automatically when the thread is started. When the video is loaded a <cite>pyqtSignal</cite>
+containing all loaded frames is emitted</p>
+</dd></dl>
 
 </dd></dl>
 
+<a class="reference internal image-reference" href="_images/create_dataset_dialog.png"><img alt="Dataset creation dialog" class="align-center" src="_images/create_dataset_dialog.png" style="width: 905.0px; height: 589.0px;" /></a>
 </div>
 <div class="section" id="module-gui.dialogs.image_saving_dialog">
 <span id="gui-dialogs-image-saving-dialog-module"></span><h2>gui.dialogs.image_saving_dialog module<a class="headerlink" href="#module-gui.dialogs.image_saving_dialog" title="Permalink to this headline">¶</a></h2>
@@ -378,198 +241,39 @@
 <dt id="gui.dialogs.image_saving_dialog.SaveImageDialog">
 <em class="property">class </em><code class="descname">SaveImageDialog</code><span class="sig-paren">(</span><em>working_modules: dict</em>, <em>broken_modules: dict</em>, <em>misdetected_modules: dict</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/image_saving_dialog.html#SaveImageDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.image_saving_dialog.SaveImageDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code>, <a class="reference internal" href="gui.design.html#gui.design.image_saving_gui.Ui_Save_images_dialog" title="gui.design.image_saving_gui.Ui_Save_images_dialog"><code class="xref py py-class docutils literal"><span class="pre">gui.design.image_saving_gui.Ui_Save_images_dialog</span></code></a></p>
-<dl class="method">
-<dt id="gui.dialogs.image_saving_dialog.SaveImageDialog.open_directory_dialog">
-<code class="descname">open_directory_dialog</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/image_saving_dialog.html#SaveImageDialog.open_directory_dialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.image_saving_dialog.SaveImageDialog.open_directory_dialog" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.image_saving_dialog.SaveImageDialog.save_module_dataset">
-<code class="descname">save_module_dataset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/image_saving_dialog.html#SaveImageDialog.save_module_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.image_saving_dialog.SaveImageDialog.save_module_dataset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.image_saving_dialog.SaveImageDialog.set_logo_icon">
-<code class="descname">set_logo_icon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/image_saving_dialog.html#SaveImageDialog.set_logo_icon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.image_saving_dialog.SaveImageDialog.set_logo_icon" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>This class implements a dialog which allows to save all data collected by the
+<a class="reference internal" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI" title="gui.dialogs.create_dataset_dialog.CreateDatasetGUI"><code class="xref py py-class docutils literal"><span class="pre">CreateDatasetGUI</span></code></a> class to disk.</p>
+<p>Initializes the dialog with the files to save to disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>working_modules</strong> – Dictionary of working modules.</li>
+<li><strong>broken_modules</strong> – Dictionary of broken modules.</li>
+<li><strong>misdetected_modules</strong> – Dictionary of misdetected modules.</li>
+<li><strong>parent</strong> – Parent window of this dialog.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
+<a class="reference internal image-reference" href="_images/image_saving_dialog.png"><img alt="Image saving dialog" class="align-center" src="_images/image_saving_dialog.png" style="width: 382.0px; height: 222.0px;" /></a>
 </div>
 <div class="section" id="module-gui.dialogs.thermo_gui_dialog">
 <span id="gui-dialogs-thermo-gui-dialog-module"></span><h2>gui.dialogs.thermo_gui_dialog module<a class="headerlink" href="#module-gui.dialogs.thermo_gui_dialog" title="Permalink to this headline">¶</a></h2>
+<p>This module contains the implementation of the logic used by the graphical interface of <a class="reference internal" href="thermography.html#module-thermography" title="thermography"><code class="xref py py-mod docutils literal"><span class="pre">thermography</span></code></a>.</p>
 <dl class="class">
 <dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI">
 <em class="property">class </em><code class="descname">ThermoGUI</code><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="gui.design.html#gui.design.thermo_gui_design.Ui_ThermoGUI_main_window" title="gui.design.thermo_gui_design.Ui_ThermoGUI_main_window"><code class="xref py py-class docutils literal"><span class="pre">gui.design.thermo_gui_design.Ui_ThermoGUI_main_window</span></code></a></p>
 <p>Main GUI window.</p>
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.connect_thermo_thread">
-<code class="descname">connect_thermo_thread</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.connect_thermo_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.connect_thermo_thread" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.connect_widgets">
-<code class="descname">connect_widgets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.connect_widgets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.connect_widgets" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.display_attention">
-<code class="descname">display_attention</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.display_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.display_attention" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.display_canny_edges">
-<code class="descname">display_canny_edges</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.display_canny_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.display_canny_edges" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.display_classes_image">
-<code class="descname">display_classes_image</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.display_classes_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.display_classes_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.display_image">
-<code class="descname">display_image</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.display_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.display_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.display_module_map_image">
-<code class="descname">display_module_map_image</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.display_module_map_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.display_module_map_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.display_rectangle_image">
-<code class="descname">display_rectangle_image</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.display_rectangle_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.display_rectangle_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.display_segment_image">
-<code class="descname">display_segment_image</code><span class="sig-paren">(</span><em>frame: numpy.ndarray</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.display_segment_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.display_segment_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.load_video_from_file">
-<code class="descname">load_video_from_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.load_video_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.load_video_from_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.load_webcam">
-<code class="descname">load_webcam</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.load_webcam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.load_webcam" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.open_about_window">
-<code class="descname">open_about_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.open_about_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.open_about_window" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.pause_all_frames">
-<code class="descname">pause_all_frames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.pause_all_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.pause_all_frames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.play_all_frames">
-<code class="descname">play_all_frames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.play_all_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.play_all_frames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.reset_app">
-<code class="descname">reset_app</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.reset_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.reset_app" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.resize_video_view">
-<em class="property">static </em><code class="descname">resize_video_view</code><span class="sig-paren">(</span><em>size</em>, <em>view</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.resize_video_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.resize_video_view" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.set_logo_icon">
-<code class="descname">set_logo_icon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.set_logo_icon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.set_logo_icon" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.set_webcam_port">
-<code class="descname">set_webcam_port</code><span class="sig-paren">(</span><em>port</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.set_webcam_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.set_webcam_port" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.stop_all_frames">
-<code class="descname">stop_all_frames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.stop_all_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.stop_all_frames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_blur_value">
-<code class="descname">update_blur_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_blur_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_blur_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_cluster_cleaning_params">
-<code class="descname">update_cluster_cleaning_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_cluster_cleaning_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_cluster_cleaning_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_clustering_params">
-<code class="descname">update_clustering_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_clustering_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_clustering_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_dilation_steps">
-<code class="descname">update_dilation_steps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_dilation_steps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_dilation_steps" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_edge_params">
-<code class="descname">update_edge_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_edge_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_edge_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_global_progress_bar">
-<code class="descname">update_global_progress_bar</code><span class="sig-paren">(</span><em>frame_index: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_global_progress_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_global_progress_bar" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_histeresis_params">
-<code class="descname">update_histeresis_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_histeresis_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_histeresis_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_image_angle">
-<code class="descname">update_image_angle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_image_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_image_angle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_image_distortion">
-<code class="descname">update_image_distortion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_image_distortion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_image_distortion" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_image_scaling">
-<code class="descname">update_image_scaling</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_image_scaling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_image_scaling" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_preprocessing_params">
-<code class="descname">update_preprocessing_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_preprocessing_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_preprocessing_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_rectangle_detection_params">
-<code class="descname">update_rectangle_detection_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_rectangle_detection_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_rectangle_detection_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.update_temperature_value">
-<code class="descname">update_temperature_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.update_temperature_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.update_temperature_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.thermo_gui_dialog.ThermoGUI.video_finished">
-<code class="descname">video_finished</code><span class="sig-paren">(</span><em>finished: bool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/thermo_gui_dialog.html#ThermoGUI.video_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.thermo_gui_dialog.ThermoGUI.video_finished" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>Initializes the GUI and connects its widgets to the corresponding functions.</p>
 </dd></dl>
 
+<a class="reference internal image-reference" href="_images/gui_video.png"><img alt="ThermoGUI dialog" class="align-center" src="_images/gui_video.png" style="width: 1193.0px; height: 599.0px;" /></a>
 </div>
 <div class="section" id="module-gui.dialogs.webcam_dialog">
 <span id="gui-dialogs-webcam-dialog-module"></span><h2>gui.dialogs.webcam_dialog module<a class="headerlink" href="#module-gui.dialogs.webcam_dialog" title="Permalink to this headline">¶</a></h2>
@@ -577,55 +281,18 @@
 <dt id="gui.dialogs.webcam_dialog.WebcamDialog">
 <em class="property">class </em><code class="descname">WebcamDialog</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="gui.design.html#gui.design.webcam_dialog_design.Ui_WebCam" title="gui.design.webcam_dialog_design.Ui_WebCam"><code class="xref py py-class docutils literal"><span class="pre">gui.design.webcam_dialog_design.Ui_WebCam</span></code></a></p>
-<dl class="method">
-<dt id="gui.dialogs.webcam_dialog.WebcamDialog.current_webcam_value_found">
-<code class="descname">current_webcam_value_found</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog.current_webcam_value_found"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog.current_webcam_value_found" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.webcam_dialog.WebcamDialog.decrease_webcam_value">
-<code class="descname">decrease_webcam_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog.decrease_webcam_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog.decrease_webcam_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>Class representing the webcam dialog for webcam detection.</p>
+<p>Initializes the current dialog and shows its view to the user.</p>
 <dl class="method">
 <dt id="gui.dialogs.webcam_dialog.WebcamDialog.deleteLater">
 <code class="descname">deleteLater</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog.deleteLater"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog.deleteLater" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="gui.dialogs.webcam_dialog.WebcamDialog.increase_webcam_value">
-<code class="descname">increase_webcam_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog.increase_webcam_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog.increase_webcam_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.webcam_dialog.WebcamDialog.next_frame">
-<code class="descname">next_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog.next_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog.next_frame" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.webcam_dialog.WebcamDialog.set_logo_icon">
-<code class="descname">set_logo_icon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog.set_logo_icon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog.set_logo_icon" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.webcam_dialog.WebcamDialog.set_webcam">
-<code class="descname">set_webcam</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog.set_webcam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog.set_webcam" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.webcam_dialog.WebcamDialog.start">
-<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog.start" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gui.dialogs.webcam_dialog.WebcamDialog.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/webcam_dialog.html#WebcamDialog.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="attribute">
 <dt id="gui.dialogs.webcam_dialog.WebcamDialog.webcam_port_signal">
 <code class="descname">webcam_port_signal</code><a class="headerlink" href="#gui.dialogs.webcam_dialog.WebcamDialog.webcam_port_signal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Signal emitted by the current dialog when the webcam port has been detected.</p>
+</dd></dl>
 
 </dd></dl>
 

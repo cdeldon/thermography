@@ -476,8 +476,8 @@
 
         <span class="k">for</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_map</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_id</span><span class="p">:</span>
-
                 <span class="n">module_coords</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">last_rectangle</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">cumulated_motion</span><span class="p">)</span>
+
                 <span class="n">mean_prob</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">mean_probability</span>
                 <span class="n">color</span> <span class="o">=</span> <span class="n">color_from_probabilities</span><span class="p">(</span><span class="n">mean_prob</span><span class="p">)</span>
 
@@ -507,6 +507,7 @@
 <div class="viewcode-block" id="ThermoApp.create_module_map_image"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.create_module_map_image">[docs]</a>    <span class="k">def</span> <span class="nf">create_module_map_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating module map image&quot;</span><span class="p">)</span>
         <span class="n">base_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_scaled_frame_rgb</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
         <span class="k">for</span> <span class="n">rect_id</span><span class="p">,</span> <span class="n">rectangle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_map</span><span class="o">.</span><span class="n">global_module_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">rect_shift</span> <span class="o">=</span> <span class="n">rectangle</span><span class="o">.</span><span class="n">last_rectangle</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">rectangle</span><span class="o">.</span><span class="n">cumulated_motion</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">rectangle</span><span class="o">.</span><span class="n">frame_id_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_frame_id</span><span class="p">:</span>
@@ -520,7 +521,6 @@
             <span class="k">if</span> <span class="n">thickness</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">base_image</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">rect_id</span><span class="p">),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_PLAIN</span><span class="p">,</span>
                             <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="n">base_image</span></div>
 
 <div class="viewcode-block" id="ThermoApp.create_module_list"><a class="viewcode-back" href="../../thermography.html#thermography.thermo_app.ThermoApp.create_module_list">[docs]</a>    <span class="k">def</span> <span class="nf">create_module_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

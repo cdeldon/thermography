@@ -17,6 +17,11 @@ gui\.dialogs\.about\_dialog module
     :undoc-members:
     :show-inheritance:
 
+.. image:: _static/about_dialog.png
+   :scale: 100 %
+   :alt: About dialog
+   :align: center
+
 gui\.dialogs\.create\_dataset\_dialog module
 --------------------------------------------
 
@@ -24,6 +29,11 @@ gui\.dialogs\.create\_dataset\_dialog module
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. image:: _static/create_dataset_dialog.png
+   :scale: 100 %
+   :alt: Dataset creation dialog
+   :align: center
 
 gui\.dialogs\.image\_saving\_dialog module
 ------------------------------------------
@@ -33,6 +43,11 @@ gui\.dialogs\.image\_saving\_dialog module
     :undoc-members:
     :show-inheritance:
 
+.. image:: _static/image_saving_dialog.png
+   :scale: 100 %
+   :alt: Image saving dialog
+   :align: center
+
 gui\.dialogs\.thermo\_gui\_dialog module
 ----------------------------------------
 
@@ -40,6 +55,11 @@ gui\.dialogs\.thermo\_gui\_dialog module
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. image:: _static/gui_video.png
+   :scale: 100 %
+   :alt: ThermoGUI dialog
+   :align: center
 
 gui\.dialogs\.webcam\_dialog module
 -----------------------------------

@@ -156,7 +156,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for thermography.test.test_geometry</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module implements the tests of the functions in :mod:`geometry &lt;thermography.utils.geometry&gt;` package.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -165,12 +167,8 @@
 
 
 <div class="viewcode-block" id="TestGeometryUtils"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils">[docs]</a><span class="k">class</span> <span class="nc">TestGeometryUtils</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
-<div class="viewcode-block" id="TestGeometryUtils.setUp"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
-
 <div class="viewcode-block" id="TestGeometryUtils.assertListAlmostEqual"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.assertListAlmostEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertListAlmostEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests whether the elements of two lists are almost equal.</span>
+        <span class="sd">&quot;&quot;&quot;Tests whether the elements of two lists are almost equal.</span>
 
 <span class="sd">        :param first: The first list to compare.</span>
 <span class="sd">        :param second: The second list to compare.</span>
@@ -188,8 +186,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="n">places</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_segment_angle"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_segment_angle">[docs]</a>    <span class="k">def</span> <span class="nf">test_segment_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;angle&#39; function which computes the angle for a segment.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.angle` function which computes the angle for a segment.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">segment1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">angle</span><span class="p">(</span><span class="n">segment1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">segment1</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]),</span> <span class="mf">0.0</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
@@ -212,8 +209,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">angle</span><span class="p">(</span><span class="n">segment5</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">segment5</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]),</span> <span class="mf">45.0</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_angle_difference"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_angle_difference">[docs]</a>    <span class="k">def</span> <span class="nf">test_angle_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;angle_diff&#39; function which computes the angle difference between two segments.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.angle_diff` function which computes the angle difference between two segments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">angle1</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">angle_diff</span><span class="p">(</span><span class="n">angle1</span><span class="p">,</span> <span class="n">angle1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
@@ -227,8 +223,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">angle_diff</span><span class="p">(</span><span class="n">angle3</span><span class="p">,</span> <span class="n">angle1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_area"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_area">[docs]</a>    <span class="k">def</span> <span class="nf">test_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;area&#39; function which computes the surface enclosed by a set of points.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.area` function which computes the surface enclosed by a set of points.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">point1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="n">point2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -242,8 +237,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">area</span><span class="p">(</span><span class="n">points</span><span class="o">=</span><span class="n">polygon</span><span class="p">),</span> <span class="mf">1.5</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_area_between_rectangles"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_area_between_rectangles">[docs]</a>    <span class="k">def</span> <span class="nf">test_area_between_rectangles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;area_between_rectangles&#39; function which computes the surface between two rectangles.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.area_between_rectangles` function which computes the surface between two rectangles.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rect1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">area_between_rectangles</span><span class="p">(</span><span class="n">rect1</span><span class="p">,</span> <span class="n">rect1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
@@ -257,8 +251,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">area_between_rectangles</span><span class="p">(</span><span class="n">rect3</span><span class="p">,</span> <span class="n">rect1</span><span class="p">),</span> <span class="mf">0.8</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_aspect_ratio"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_aspect_ratio">[docs]</a>    <span class="k">def</span> <span class="nf">test_aspect_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;aspect_ratio&#39; function which computes the aspect ratio of a rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.aspect_ratio` function which computes the aspect ratio of a rectangle.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ratios</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
         <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
@@ -283,8 +276,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">computed_ratio</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_mean_segment_angle"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_mean_segment_angle">[docs]</a>    <span class="k">def</span> <span class="nf">test_mean_segment_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;mean_segment_angle&#39; function which computes the mean angle from a set of segments.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.mean_segment_angle` function which computes the mean angle from a set of segments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">segment1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="n">segment2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -295,8 +287,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">mean_segment_angle</span><span class="p">(</span><span class="n">segments</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_segment_min_distance"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_segment_min_distance">[docs]</a>    <span class="k">def</span> <span class="nf">test_segment_min_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;segment_min_distance&#39; function which computes the minimal distance between two segments.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.segment_min_distance` function which computes the minimal distance between two segments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">segment1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="n">segment2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -316,8 +307,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">segment_min_distance</span><span class="p">(</span><span class="n">segment1</span><span class="p">,</span> <span class="n">segment6</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_line_estimate"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_line_estimate">[docs]</a>    <span class="k">def</span> <span class="nf">test_line_estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;line_estimate&#39; function which computes a line estimate from two segments.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.line_estimate` function which computes a line estimate from two segments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Horizontal line estimate.</span>
@@ -351,13 +341,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertListAlmostEqual</span><span class="p">(</span><span class="n">line_estimate</span><span class="p">(</span><span class="n">segment5</span><span class="p">,</span> <span class="n">segment4</span><span class="p">),</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="kc">True</span><span class="p">),</span> <span class="n">places</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_merge_segments"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_merge_segments">[docs]</a>    <span class="k">def</span> <span class="nf">test_merge_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;merge_segments&#39; function which merges two segments into a single segment.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.merge_segments` function which merges two segments into a single segment.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">sort_points</span><span class="p">(</span><span class="n">segment</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Sorts the endpoints of the segment passed as argument in lexicographical order.</span>
+            <span class="sd">&quot;&quot;&quot;Sorts the endpoints of the segment passed as argument in lexicographical order.</span>
 
 <span class="sd">            :param segment: Segment to be sorted.</span>
 <span class="sd">            :return: Sorted segment.</span>
@@ -397,8 +385,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertListAlmostEqual</span><span class="p">(</span><span class="n">merged_segment</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.00769</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.10769</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="n">places</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_point_line_distance"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_point_line_distance">[docs]</a>    <span class="k">def</span> <span class="nf">test_point_line_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;point_line_distance&#39; function which computes the distance between a point and a line.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.point_line_distance` function which computes the distance between a point and a line.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">slope</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">intercept</span> <span class="o">=</span> <span class="mi">0</span>
@@ -441,8 +428,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">point_line_distance</span><span class="p">(</span><span class="n">point4</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">vertical</span><span class="p">),</span> <span class="mf">1.341640786</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_rectangle_contains"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_rectangle_contains">[docs]</a>    <span class="k">def</span> <span class="nf">test_rectangle_contains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;rectangle_contains&#39; function which computes whether a point is contained by a rectangle or not.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.rectangle_contains` function which computes whether a point is contained by a rectangle or not.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rectangle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">rectangle_contains</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])))</span>
@@ -451,8 +437,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">rectangle_contains</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])))</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_segments_collinear"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_segments_collinear">[docs]</a>    <span class="k">def</span> <span class="nf">test_segments_collinear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;segments_collinear&#39; function which computes whether two segments are almost collinear or not.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.segments_collinear` function which computes whether two segments are almost collinear or not.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">segment1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="n">segment2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -467,8 +452,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">segments_collinear</span><span class="p">(</span><span class="n">segment1</span><span class="p">,</span> <span class="n">segment4</span><span class="p">,</span> <span class="n">max_angle</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">max_endpoint_distance</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_segment_segment_intersection"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_segment_segment_intersection">[docs]</a>    <span class="k">def</span> <span class="nf">test_segment_segment_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;segment_segment_intersection&#39; function which computes the intersection point between two segments.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.segment_segment_intersection` function which computes the intersection point between two segments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">segment1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="n">segment2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -492,9 +476,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">segment_segment_intersection</span><span class="p">(</span><span class="n">segment6</span><span class="p">,</span> <span class="n">segment1</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_segment_line_intersection"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_segment_line_intersection">[docs]</a>    <span class="k">def</span> <span class="nf">test_segment_line_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;segment_line_intersection&#39; function which computes the intersection point between a segment and a</span>
-<span class="sd">        line.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.segment_line_intersection` function which computes the intersection point between a segment and a line.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">segment1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="n">segment2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -511,15 +493,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">segment_line_intersection</span><span class="p">(</span><span class="n">segment2</span><span class="p">,</span> <span class="n">line3</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line3</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_segment_sorting"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_segment_sorting">[docs]</a>    <span class="k">def</span> <span class="nf">test_segment_sorting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tests the &#39;sort_segments&#39; function which sorts a set of almost collinear segments based on their mean normal</span>
-<span class="sd">        direction.</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.sort_segments` function which sorts a set of almost collinear segments based on their mean normal direction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">segments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">]])</span>
         <span class="n">sorted_segments_indices</span> <span class="o">=</span> <span class="n">sort_segments</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertListEqual</span><span class="p">([</span><span class="o">*</span><span class="n">sorted_segments_indices</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="TestGeometryUtils.test_sort_rectangle"><a class="viewcode-back" href="../../../thermography.test.html#thermography.test.test_geometry.TestGeometryUtils.test_sort_rectangle">[docs]</a>    <span class="k">def</span> <span class="nf">test_sort_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tests the :func:`~thermography.utils.geometry.sort_rectangle` function which sorts the vertices composing a rectangle into a canonical order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
         <span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
         <span class="n">p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>

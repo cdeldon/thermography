@@ -1,3 +1,5 @@
+"""This module contains multiple utility functions which can be used to display intermediate representations computed by the :class:`ThermoApp <thermography.thermo_app.ThermoApp>` class."""
+
 import cv2
 import numpy as np
 
@@ -6,9 +8,7 @@ __all__ = ["draw_intersections", "draw_motion", "draw_rectangles", "draw_segment
 
 
 def draw_intersections(intersections: list, base_image: np.ndarray, windows_name: str):
-    """
-    Draws the intersections contained in the first parameter onto the base image passed as second parameter and displays
-    the image using the third parameter as title.
+    """Draws the intersections contained in the first parameter onto the base image passed as second parameter and displays the image using the third parameter as title.
 
     :param intersections: List of intersection coordinates.
     :param base_image: Base image over which to render the intersections.
@@ -25,9 +25,7 @@ def draw_intersections(intersections: list, base_image: np.ndarray, windows_name
 
 
 def draw_motion(flow: np.ndarray, base_image: np.ndarray, windows_name: str, draw_mean_motion: bool = True, nums=10):
-    """
-    Draws the motion flow contained in the first parameter onto the base image passed as second argument and displays
-    the image using the third argument as title.
+    """Draws the motion flow contained in the first parameter onto the base image passed as second argument and displays the image using the third argument as title.
 
     :param flow: Numpy array of flow computed by the motion estimator.
     :param base_image: Base image over which to render the intersection. Note that this image must have the dimensions used for the flow computation.
@@ -65,10 +63,10 @@ def draw_motion(flow: np.ndarray, base_image: np.ndarray, windows_name: str, dra
 
 def draw_segments(segments: list, base_image: np.ndarray, windows_name: str, render_indices: bool = True,
                   colors: list = None):
-    """
-    Draws the segments contained in the first parameter onto the base image passed as second parameter and displays
-    the image using the third parameter as title. The indices associated to the segments are rendered on the image
-    depending on 'render_indices'.
+    """Draws the segments contained in the first parameter onto the base image passed as second parameter.
+
+    This function displays the image using the third parameter as title.
+    The indices associated to the segments are rendered on the image depending on 'render_indices'.
     A list of colors can be passed as argument to specify the colors to be used for different segment clusters.
 
     :param segments: List of segment clusters.
@@ -95,9 +93,9 @@ def draw_segments(segments: list, base_image: np.ndarray, windows_name: str, ren
 
 
 def draw_rectangles(rectangles: list, base_image: np.ndarray, windows_name: str):
-    """
-    Draws the rectangles contained in the first parameter onto the base image passed as second parameter and displays
-    the image using the third parameter as title.
+    """Draws the rectangles contained in the first parameter onto the base image passed as second parameter.
+
+    This function displays the image using the third parameter as title.
 
     :param rectangles: List of rectangles.
     :param base_image: Base image over which to render the rectangles.
@@ -119,8 +117,7 @@ def draw_rectangles(rectangles: list, base_image: np.ndarray, windows_name: str)
 
 
 def random_color() -> tuple:
-    """
-    Generates a random RGB color in [0, 255]^3
+    """Generates a random RGB color in [0, 255]^3
 
     :return: A randomly generated color defined as a triplet of RGB values.
     """
@@ -129,8 +126,7 @@ def random_color() -> tuple:
 
 
 def color_from_probabilities(prob: np.ndarray) -> tuple:
-    """
-    Constructs a color tuple given the probability distribution prob.
+    """Constructs a color tuple given the probability distribution prob.
 
     :param prob: A three dimensional numpy array containing class probabilities.
     :return: The color associated to the probability distribution.

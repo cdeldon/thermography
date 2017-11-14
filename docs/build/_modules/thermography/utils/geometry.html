@@ -156,7 +156,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for thermography.utils.geometry</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">cv2</span>
+<span></span><span class="sd">&quot;&quot;&quot;The functions implemented in this module are used bz :mod:`thermography` for the computation of geometric properties.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span>
@@ -178,14 +180,13 @@
 
 
 <div class="viewcode-block" id="angle"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.angle">[docs]</a><span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="n">pt1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">pt2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the angle (in radiants) between a segment specified by the two points and the x-axis.</span>
-<span class="sd">    Note that this function assumes the input are pixel coordinates, and thus negates the y-difference between the two</span>
-<span class="sd">    points to get a consistent angle with the one seen by the user.</span>
+    <span class="sd">&quot;&quot;&quot;Computes the angle (in radiants) between a segment specified by the two points and the x-axis.</span>
+
+<span class="sd">    .. note:: The computed angle lies in [0, pi].</span>
 
 <span class="sd">    :param pt1: First point of the segment.</span>
 <span class="sd">    :param pt2: Second point of the segment.</span>
-<span class="sd">    :return: Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]</span>
+<span class="sd">    :return: Angle in radiants between the segment and the x-axis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">diff</span> <span class="o">=</span> <span class="n">pt2</span> <span class="o">-</span> <span class="n">pt1</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">diff</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -197,8 +198,9 @@
 
 
 <div class="viewcode-block" id="angle_diff"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.angle_diff">[docs]</a><span class="k">def</span> <span class="nf">angle_diff</span><span class="p">(</span><span class="n">angle1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">angle2</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the angle difference between the input arguments. The resulting angle difference is in [0, pi * 0.5]</span>
+    <span class="sd">&quot;&quot;&quot;Computes the angle difference between the input arguments.</span>
+
+<span class="sd">    .. note:: The resulting angle difference is in [0, pi * 0.5]</span>
 
 <span class="sd">    :param angle1: First angle expressed in radiants.</span>
 <span class="sd">    :param angle2: Second angle expressed in radiants.</span>
@@ -212,8 +214,7 @@
 
 
 <div class="viewcode-block" id="area"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.area">[docs]</a><span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the surface of the polygon defined by the coordinates passed as argument.</span>
+    <span class="sd">&quot;&quot;&quot;Computes the surface of the polygon defined by the coordinates passed as argument.</span>
 
 <span class="sd">    :param points: List of coordinates defining  the polygon&#39;s vertices.</span>
 <span class="sd">    :return: The surface contained by the polygon.</span>
@@ -225,8 +226,8 @@
 
 
 <div class="viewcode-block" id="area_between_rectangles"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.area_between_rectangles">[docs]</a><span class="k">def</span> <span class="nf">area_between_rectangles</span><span class="p">(</span><span class="n">rect1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">rect2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the cumulative surface between the corresponding edges of the two rectangles passed as argument.</span>
+    <span class="sd">&quot;&quot;&quot;Computes the cumulative surface between the corresponding edges of the two rectangles passed as argument.</span>
+
 <span class="sd">    ::</span>
 
 <span class="sd">       *--------------------*</span>
@@ -254,10 +255,10 @@
 
 
 <div class="viewcode-block" id="aspect_ratio"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.aspect_ratio">[docs]</a><span class="k">def</span> <span class="nf">aspect_ratio</span><span class="p">(</span><span class="n">rectangle</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the aspect ratio of a rectangle.</span>
+    <span class="sd">&quot;&quot;&quot;Computes the aspect ratio of a rectangle.</span>
 
 <span class="sd">    The aspect ratio is computed based on the following rectangle.</span>
+
 <span class="sd">    ::</span>
 
 <span class="sd">         3      s2     2</span>
@@ -281,10 +282,9 @@
 
 
 <div class="viewcode-block" id="line_estimate"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.line_estimate">[docs]</a><span class="k">def</span> <span class="nf">line_estimate</span><span class="p">(</span><span class="n">seg1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">seg2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the line estimation (regression) using the endpoints of the segments passed as argument.</span>
-<span class="sd">    Depending on the points&#39; distribution, the line estimate is computed in the x-y plane as usual, or on the y-x plane</span>
-<span class="sd">    (i.e. with inverted coordinates).</span>
+    <span class="sd">&quot;&quot;&quot;Computes the line estimation (regression) using the endpoints of the segments passed as argument.</span>
+
+<span class="sd">    .. note:: Depending on the points&#39; distribution, the line estimate is computed in the x-y plane as usual, or on the y-x plane (i.e. with inverted coordinates).</span>
 
 <span class="sd">    :param seg1: First segment.</span>
 <span class="sd">    :param seg2: Second segment.</span>
@@ -308,11 +308,12 @@
 
 
 <div class="viewcode-block" id="mean_segment_angle"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.mean_segment_angle">[docs]</a><span class="k">def</span> <span class="nf">mean_segment_angle</span><span class="p">(</span><span class="n">segment_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the mean angle of a list of segments.</span>
+    <span class="sd">&quot;&quot;&quot;Computes the mean angle of a list of segments.</span>
+
+<span class="sd">    .. note:: The computed mean angle lies in [0, pi]</span>
 
 <span class="sd">    :param segment_list: A list of segments of the form [np.array([x0, y0, x1, y1]), np.array([...]), .... ]</span>
-<span class="sd">    :return: The mean angle of the segments passed as argument. The angle lies in [0, pi]</span>
+<span class="sd">    :return: The mean angle of the segments passed as argument.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">complex_coordinates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">segment_list</span><span class="p">:</span>
@@ -330,8 +331,7 @@
 
 
 <div class="viewcode-block" id="merge_segments"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.merge_segments">[docs]</a><span class="k">def</span> <span class="nf">merge_segments</span><span class="p">(</span><span class="n">segment_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes a unique segments as a representation of the almost collinear segments passed as argument.</span>
+    <span class="sd">&quot;&quot;&quot;Computes a unique segments as a representation of the almost collinear segments passed as argument.</span>
 
 <span class="sd">    :param segment_list: List of almost collinear segments to be merged into a single segment.</span>
 <span class="sd">    :return: A new segment defined on the line estimation over the segments passed as argument.</span>
@@ -370,8 +370,7 @@
 
 
 <div class="viewcode-block" id="point_line_distance"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.point_line_distance">[docs]</a><span class="k">def</span> <span class="nf">point_line_distance</span><span class="p">(</span><span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">slope</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">intercept</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">vertical</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the shortest distance between a point and a line defined by its slope and intercept.</span>
+    <span class="sd">&quot;&quot;&quot;Computes the shortest distance between a point and a line defined by its slope and intercept.</span>
 
 <span class="sd">    :param point: Point given by a 2D coordinate in the form of [x, y]</span>
 <span class="sd">    :param slope: Slope of the line</span>
@@ -385,8 +384,7 @@
 
 
 <div class="viewcode-block" id="rectangle_contains"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.rectangle_contains">[docs]</a><span class="k">def</span> <span class="nf">rectangle_contains</span><span class="p">(</span><span class="n">rectangle</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes whether a point is inside a rectangle or not.</span>
+    <span class="sd">&quot;&quot;&quot;Computes whether a point is inside a rectangle or not.</span>
 
 <span class="sd">    :param rectangle: Rectangle to be tested against the query point.</span>
 <span class="sd">    :param point: Point to be tested against the rectangle.</span>
@@ -399,8 +397,7 @@
 
 <div class="viewcode-block" id="segments_collinear"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.segments_collinear">[docs]</a><span class="k">def</span> <span class="nf">segments_collinear</span><span class="p">(</span><span class="n">seg1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">seg2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">max_angle</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
                        <span class="n">max_endpoint_distance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">50.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Tests whether two segments are collinear given some thresholds for collinearity.</span>
+    <span class="sd">&quot;&quot;&quot;Tests whether two segments are collinear given some thresholds for collinearity.</span>
 
 <span class="sd">    :param seg1: First segment to be tested.</span>
 <span class="sd">    :param seg2: Second segment to be tested.</span>
@@ -427,8 +424,9 @@
 
 
 <div class="viewcode-block" id="segment_line_intersection"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.segment_line_intersection">[docs]</a><span class="k">def</span> <span class="nf">segment_line_intersection</span><span class="p">(</span><span class="n">seg</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">slope</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">intercept</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the intersection point between a segment and a line.</span>
+    <span class="sd">&quot;&quot;&quot;Computes the intersection point between a segment and a line.</span>
+
+<span class="sd">    .. note:: If no intersection is found, a boolean flag set to `False` is returned instead.</span>
 
 <span class="sd">    :param seg: Segment to be intersected with the line.</span>
 <span class="sd">    :param slope: Slope of the intersecting line.</span>
@@ -460,9 +458,9 @@
 
 
 <div class="viewcode-block" id="segment_min_distance"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.segment_min_distance">[docs]</a><span class="k">def</span> <span class="nf">segment_min_distance</span><span class="p">(</span><span class="n">seg1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">seg2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the minimal distance between two segments.</span>
-<span class="sd">    Implementation taken form &quot;https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&amp;tab=function&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Computes the minimal distance between two segments.</span>
+
+<span class="sd">    Implementation taken form `here &lt;https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&amp;tab=function&gt;`_.</span>
 
 <span class="sd">    :param seg1: First segment defined as [x1, y1, x2, y2]</span>
 <span class="sd">    :param seg2: Second segment defined as [x2, y3, x4, y4]</span>
@@ -545,8 +543,9 @@
 
 
 <div class="viewcode-block" id="segment_segment_intersection"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.segment_segment_intersection">[docs]</a><span class="k">def</span> <span class="nf">segment_segment_intersection</span><span class="p">(</span><span class="n">seg1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">seg2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the intersection point between two segments.</span>
+    <span class="sd">&quot;&quot;&quot;Computes the intersection point between two segments.</span>
+
+<span class="sd">    .. note:: If no intersection is found, a boolean flag set to `False` is returned.</span>
 
 <span class="sd">    :param seg1: First segment of intersection.</span>
 <span class="sd">    :param seg2: Second segment of intersection.</span>
@@ -574,8 +573,8 @@
 
 
 <div class="viewcode-block" id="sort_rectangle"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.sort_rectangle">[docs]</a><span class="k">def</span> <span class="nf">sort_rectangle</span><span class="p">(</span><span class="n">rectangle</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sorts the coordinates in the rectangle such that the final indexing corresponds to the following structure:</span>
+    <span class="sd">&quot;&quot;&quot;Sorts the coordinates in the rectangle such that the final indexing corresponds to the following structure:</span>
+
 <span class="sd">    ::</span>
 
 <span class="sd">       +-----------&gt; x</span>
@@ -600,8 +599,7 @@
 
 
 <div class="viewcode-block" id="sort_segments"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.geometry.sort_segments">[docs]</a><span class="k">def</span> <span class="nf">sort_segments</span><span class="p">(</span><span class="n">segment_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sorts the segments passed as argument based on the normal associated to the mean angle.</span>
+    <span class="sd">&quot;&quot;&quot;Sorts the segments passed as argument based on the normal associated to the mean angle.</span>
 
 <span class="sd">    :param segment_list:  A list of segments of the form [[x0, y0, x1, y1], [...], .... ]</span>
 <span class="sd">    :return: A list of indices in the segment list passed as argument which sorts the segments.</span>

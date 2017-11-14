@@ -9,13 +9,23 @@ from gui.design import Ui_Save_images_dialog
 
 
 class SaveImageDialog(QtWidgets.QDialog, Ui_Save_images_dialog):
+    """This class implements a dialog which allows to save all data collected by the
+    :class:`~gui.dialogs.create_dataset_dialog.CreateDatasetGUI` class to disk.
+    """
     def __init__(self, working_modules: dict, broken_modules: dict, misdetected_modules: dict, parent=None):
+        """Initializes the dialog with the files to save to disk.
+
+        :param working_modules: Dictionary of working modules.
+        :param broken_modules: Dictionary of broken modules.
+        :param misdetected_modules: Dictionary of misdetected modules.
+        :param parent: Parent window of this dialog.
+        """
         super(self.__class__, self).__init__(parent=parent)
 
         Logger.debug("Opened 'Save Images' dialog")
 
         self.setupUi(self)
-        self.set_logo_icon()
+        self.__set_logo_icon()
 
         self.working_modules = working_modules
         self.broken_modules = broken_modules
@@ -23,21 +33,23 @@ class SaveImageDialog(QtWidgets.QDialog, Ui_Save_images_dialog):
 
         self.output_directory = " "
 
-        self.choose_directory_button.clicked.connect(self.open_directory_dialog)
-        self.save_button.clicked.connect(self.save_module_dataset)
+        self.choose_directory_button.clicked.connect(self.__open_directory_dialog)
+        self.save_button.clicked.connect(self.__save_module_dataset)
         self.progress_bar_all_frames.setMinimum(0)
         self.progress_bar_all_frames.setMaximum(
             len(self.working_modules.keys()) + len(self.broken_modules.keys()) + len(
                 self.misdetected_modules.keys()) - 1)
 
-    def set_logo_icon(self):
+    def __set_logo_icon(self):
+        """Sets the default logo to the dialog."""
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
         logo_path = os.path.join(gui_path, "img/logo.png")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(logo_path), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
 
-    def open_directory_dialog(self):
+    def __open_directory_dialog(self):
+        """Opens a file explorer to select the destination of the files to store to disk."""
         output_directory = QtWidgets.QFileDialog.getExistingDirectory(caption="Select dataset output directory")
         Logger.debug("Selected <{}> directory to store all images".format(output_directory))
         if output_directory == "":
@@ -51,12 +63,13 @@ class SaveImageDialog(QtWidgets.QDialog, Ui_Save_images_dialog):
                                           "Directory {} not empty! Select an empty directory!".format(
                                               self.output_directory), QtWidgets.QMessageBox.Ok,
                                           QtWidgets.QMessageBox.Ok)
-            self.open_directory_dialog()
+            self.__open_directory_dialog()
         else:
             self.save_directory_label.setText('Saving to directory: "{}"'.format(self.output_directory))
             self.save_button.setEnabled(True)
 
-    def save_module_dataset(self):
+    def __save_module_dataset(self):
+        """Saves the data to the directory selected when opening the file explorer."""
         self.progress_bar_all_frames.setEnabled(True)
         self.progress_bar_intra_frame.setEnabled(True)
         button_reply = QtWidgets.QMessageBox.question(self, 'Save dataset',
@@ -66,7 +79,7 @@ class SaveImageDialog(QtWidgets.QDialog, Ui_Save_images_dialog):
         if button_reply == QtWidgets.QMessageBox.No:
             Logger.warning("Rejected directory <{}> for saving all images".format(self.output_directory))
             self.output_directory = None
-            self.save_module_dataset()
+            self.__save_module_dataset()
         else:
             Logger.info("Saving all images to <{}>".format(self.output_directory))
             Logger.warning("If dialog freezes, check log file, but DON'T close the window!")
