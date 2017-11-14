@@ -175,11 +175,31 @@
             
   <div class="section" id="module-thermography.utils">
 <span id="thermography-utils-package"></span><h1>thermography.utils package<a class="headerlink" href="#module-thermography.utils" title="Permalink to this headline">¶</a></h1>
+<p>This package contains utility functions which are used by <a class="reference internal" href="thermography.html#module-thermography" title="thermography"><code class="xref py py-mod docutils literal"><span class="pre">thermography</span></code></a>.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-thermography.utils.ID">
 <span id="thermography-utils-id-module"></span><h2>thermography.utils.ID module<a class="headerlink" href="#module-thermography.utils.ID" title="Permalink to this headline">¶</a></h2>
+<p>This module implements a simple unique-ID generator. The generated IDs follow the natural numbers order.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first last highlight-python"><div class="highlight"><pre><span></span><span class="n">first_id</span> <span class="o">=</span> <span class="n">next_id</span><span class="p">()</span> <span class="c1"># first_id = 0</span>
+<span class="n">second_id</span> <span class="o">=</span> <span class="n">next_id</span><span class="p">()</span> <span class="c1"># second_id = 1</span>
+
+<span class="n">reset_id</span><span class="p">()</span>
+<span class="n">third_id</span> <span class="o">=</span> <span class="n">next_id</span><span class="p">()</span> <span class="c1"># third_id = 0</span>
+
+<span class="n">reset_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">fourth_id</span> <span class="o">=</span> <span class="n">next_id</span><span class="p">()</span> <span class="c1"># fourth_id = 10</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="function">
 <dt id="thermography.utils.ID.next_id">
 <code class="descname">next_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/utils/ID.html#next_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.ID.next_id" title="Permalink to this definition">¶</a></dt>
@@ -211,11 +231,11 @@
 </div>
 <div class="section" id="module-thermography.utils.display">
 <span id="thermography-utils-display-module"></span><h2>thermography.utils.display module<a class="headerlink" href="#module-thermography.utils.display" title="Permalink to this headline">¶</a></h2>
+<p>This module contains multiple utility functions which can be used to display intermediate representations computed by the <a class="reference internal" href="thermography.html#thermography.thermo_app.ThermoApp" title="thermography.thermo_app.ThermoApp"><code class="xref py py-class docutils literal"><span class="pre">ThermoApp</span></code></a> class.</p>
 <dl class="function">
 <dt id="thermography.utils.display.draw_intersections">
 <code class="descname">draw_intersections</code><span class="sig-paren">(</span><em>intersections: list</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/utils/display.html#draw_intersections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.display.draw_intersections" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draws the intersections contained in the first parameter onto the base image passed as second parameter and displays
-the image using the third parameter as title.</p>
+<dd><p>Draws the intersections contained in the first parameter onto the base image passed as second parameter and displays the image using the third parameter as title.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -234,8 +254,7 @@ the image using the third parameter as title.</p>
 <dl class="function">
 <dt id="thermography.utils.display.draw_motion">
 <code class="descname">draw_motion</code><span class="sig-paren">(</span><em>flow: numpy.ndarray</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em>, <em>draw_mean_motion: bool = True</em>, <em>nums=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/utils/display.html#draw_motion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.display.draw_motion" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draws the motion flow contained in the first parameter onto the base image passed as second argument and displays
-the image using the third argument as title.</p>
+<dd><p>Draws the motion flow contained in the first parameter onto the base image passed as second argument and displays the image using the third argument as title.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -256,8 +275,8 @@ the image using the third argument as title.</p>
 <dl class="function">
 <dt id="thermography.utils.display.draw_rectangles">
 <code class="descname">draw_rectangles</code><span class="sig-paren">(</span><em>rectangles: list</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/utils/display.html#draw_rectangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.display.draw_rectangles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draws the rectangles contained in the first parameter onto the base image passed as second parameter and displays
-the image using the third parameter as title.</p>
+<dd><p>Draws the rectangles contained in the first parameter onto the base image passed as second parameter.</p>
+<p>This function displays the image using the third parameter as title.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -276,9 +295,9 @@ the image using the third parameter as title.</p>
 <dl class="function">
 <dt id="thermography.utils.display.draw_segments">
 <code class="descname">draw_segments</code><span class="sig-paren">(</span><em>segments: list</em>, <em>base_image: numpy.ndarray</em>, <em>windows_name: str</em>, <em>render_indices: bool = True</em>, <em>colors: list = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/thermography/utils/display.html#draw_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.display.draw_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draws the segments contained in the first parameter onto the base image passed as second parameter and displays
-the image using the third parameter as title. The indices associated to the segments are rendered on the image
-depending on ‘render_indices’.
+<dd><p>Draws the segments contained in the first parameter onto the base image passed as second parameter.</p>
+<p>This function displays the image using the third parameter as title.
+The indices associated to the segments are rendered on the image depending on ‘render_indices’.
 A list of colors can be passed as argument to specify the colors to be used for different segment clusters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -330,12 +349,15 @@ A list of colors can be passed as argument to specify the colors to be used for 
 </div>
 <div class="section" id="module-thermography.utils.geometry">
 <span id="thermography-utils-geometry-module"></span><h2>thermography.utils.geometry module<a class="headerlink" href="#module-thermography.utils.geometry" title="Permalink to this headline">¶</a></h2>
+<p>The functions implemented in this module are used bz <a class="reference internal" href="thermography.html#module-thermography" title="thermography"><code class="xref py py-mod docutils literal"><span class="pre">thermography</span></code></a> for the computation of geometric properties.</p>
 <dl class="function">
 <dt id="thermography.utils.geometry.angle">
 <code class="descname">angle</code><span class="sig-paren">(</span><em>pt1: numpy.ndarray</em>, <em>pt2: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="_modules/thermography/utils/geometry.html#angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.geometry.angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the angle (in radiants) between a segment specified by the two points and the x-axis.
-Note that this function assumes the input are pixel coordinates, and thus negates the y-difference between the two
-points to get a consistent angle with the one seen by the user.</p>
+<dd><p>Computes the angle (in radiants) between a segment specified by the two points and the x-axis.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The computed angle lies in [0, pi].</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -346,7 +368,7 @@ points to get a consistent angle with the one seen by the user.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Angle in radiants between the segment and the x-axis. The returned angle is in [0, pi]</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Angle in radiants between the segment and the x-axis.</p>
 </td>
 </tr>
 </tbody>
@@ -356,7 +378,11 @@ points to get a consistent angle with the one seen by the user.</p>
 <dl class="function">
 <dt id="thermography.utils.geometry.angle_diff">
 <code class="descname">angle_diff</code><span class="sig-paren">(</span><em>angle1: float</em>, <em>angle2: float</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="_modules/thermography/utils/geometry.html#angle_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.geometry.angle_diff" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the angle difference between the input arguments. The resulting angle difference is in [0, pi * 0.5]</p>
+<dd><p>Computes the angle difference between the input arguments.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The resulting angle difference is in [0, pi * 0.5]</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -451,9 +477,11 @@ points to get a consistent angle with the one seen by the user.</p>
 <dl class="function">
 <dt id="thermography.utils.geometry.line_estimate">
 <code class="descname">line_estimate</code><span class="sig-paren">(</span><em>seg1: numpy.ndarray</em>, <em>seg2: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; tuple<a class="reference internal" href="_modules/thermography/utils/geometry.html#line_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.geometry.line_estimate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the line estimation (regression) using the endpoints of the segments passed as argument.
-Depending on the points’ distribution, the line estimate is computed in the x-y plane as usual, or on the y-x plane
-(i.e. with inverted coordinates).</p>
+<dd><p>Computes the line estimation (regression) using the endpoints of the segments passed as argument.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Depending on the points’ distribution, the line estimate is computed in the x-y plane as usual, or on the y-x plane (i.e. with inverted coordinates).</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -475,13 +503,17 @@ Depending on the points’ distribution, the line estimate is computed in the x-
 <dt id="thermography.utils.geometry.mean_segment_angle">
 <code class="descname">mean_segment_angle</code><span class="sig-paren">(</span><em>segment_list: list</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="_modules/thermography/utils/geometry.html#mean_segment_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.geometry.mean_segment_angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the mean angle of a list of segments.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The computed mean angle lies in [0, pi]</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>segment_list</strong> – A list of segments of the form [np.array([x0, y0, x1, y1]), np.array([…]), …. ]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The mean angle of the segments passed as argument. The angle lies in [0, pi]</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The mean angle of the segments passed as argument.</td>
 </tr>
 </tbody>
 </table>
@@ -574,6 +606,10 @@ Depending on the points’ distribution, the line estimate is computed in the x-
 <dt id="thermography.utils.geometry.segment_line_intersection">
 <code class="descname">segment_line_intersection</code><span class="sig-paren">(</span><em>seg: numpy.ndarray</em>, <em>slope: float</em>, <em>intercept: float</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/thermography/utils/geometry.html#segment_line_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.geometry.segment_line_intersection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the intersection point between a segment and a line.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If no intersection is found, a boolean flag set to <cite>False</cite> is returned instead.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -595,8 +631,8 @@ Depending on the points’ distribution, the line estimate is computed in the x-
 <dl class="function">
 <dt id="thermography.utils.geometry.segment_min_distance">
 <code class="descname">segment_min_distance</code><span class="sig-paren">(</span><em>seg1: numpy.ndarray</em>, <em>seg2: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="_modules/thermography/utils/geometry.html#segment_min_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.geometry.segment_min_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the minimal distance between two segments.
-Implementation taken form “<a class="reference external" href="https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&amp;tab=function">https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&amp;tab=function</a>”</p>
+<dd><p>Computes the minimal distance between two segments.</p>
+<p>Implementation taken form <a class="reference external" href="https://ch.mathworks.com/matlabcentral/fileexchange/32487-shortest-distance-between-two-line-segments?focused=3821416&amp;tab=function">here</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -618,6 +654,10 @@ Implementation taken form “<a class="reference external" href="https://ch.math
 <dt id="thermography.utils.geometry.segment_segment_intersection">
 <code class="descname">segment_segment_intersection</code><span class="sig-paren">(</span><em>seg1: numpy.ndarray</em>, <em>seg2: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/thermography/utils/geometry.html#segment_segment_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#thermography.utils.geometry.segment_segment_intersection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the intersection point between two segments.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If no intersection is found, a boolean flag set to <cite>False</cite> is returned.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

@@ -1,3 +1,5 @@
+"""This module contains the implementation of the logic used by the graphical interface for dataset creation."""
+
 import os
 
 import cv2
@@ -13,25 +15,41 @@ from gui.threads import ThermoDatasetCreationThread
 
 
 class VideoLoaderThread(QtCore.QThread):
+    """Class representing a thread which is responsible for loading a video from file.
+    Internally it loads the video by using an instance of :class:`~thermography.io.io.VideoLoader`.
+    """
+
     finish_signal = QtCore.pyqtSignal(list)
+    """Signal emitted when the video loader has terminated the loading of the video frame.
+    This signal contains a python list of the loaded frames."""
 
     def __init__(self, video_path: str, from_index: int, to_index: int, parent=None):
+        """Initializes the video loader thread with the video path and the loading indices.
+
+        :param video_path: Absolute path of the video to load.
+        :param from_index: Start index of the video-frame to be loaded (inclusive).
+        :param to_index: End index of the video-frame to be loaded (exclusive).
+        :param parent: Parent class of the thread.
+        """
         super(self.__class__, self).__init__(parent=parent)
         self.video_path = video_path
         self.from_index = from_index
         self.to_index = to_index
 
     def run(self):
+        """Function executed automatically when the thread is started. When the video is loaded a `pyqtSignal`
+        containing all loaded frames is emitted
+        """
         video_loader = tg.io.VideoLoader(self.video_path, self.from_index, self.to_index)
         self.finish_signal.emit(video_loader.frames)
 
 
 class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
-    """
-    Dataset creation GUI.
+    """Dataset creation GUI.
     """
 
     def __init__(self):
+        """Initializes the GUI and connects its widgets to the corresponding functions."""
         super(self.__class__, self).__init__()
         Logger.info("Creating dataset creation GUI")
         self.setupUi(self)
@@ -52,9 +70,10 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
 
         self.thermo_thread = None
 
-        self.connect_widgets()
+        self.__connect_widgets()
 
     def set_logo_icon(self):
+        """Sets the default logo icon."""
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
         logo_path = os.path.join(gui_path, "img/logo.png")
         Logger.debug("Setting logo {}".format(logo_path))
@@ -62,7 +81,9 @@ class CreateDatasetGUI(QtWidgets.QMainWindow, Ui_CreateDataset_main_window):
         icon.addPixmap(QtGui.QPixmap(logo_path), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
 
-    def connect_widgets(self):
+    def __connect_widgets(self):
+        """Connects all widgets defined in :mod:`~gui.design.create_dataset_gui` to the functions which must be
+        executed when the widgets are triggered."""
         Logger.debug("Connecting all widgets")
         # File buttons
         self.file_about.triggered.connect(self.open_about_window)

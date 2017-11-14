@@ -7,6 +7,8 @@ import thermography as tg
 
 
 class AboutDialog(QtWidgets.QMessageBox):
+    """This class represents the dialog that opens when the user clicks on `File->About` when using the graphical
+    interface."""
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent=parent)
         Logger.debug("Opened About dialog")
@@ -22,6 +24,7 @@ class AboutDialog(QtWidgets.QMessageBox):
         self.set_logo_icon()
 
     def set_logo_icon(self):
+        """Sets the default logo to the dialog."""
         gui_path = os.path.join(os.path.join(tg.settings.get_thermography_root_dir(), os.pardir), "gui")
         logo_path = os.path.join(gui_path, "img/logo.png")
         icon = QtGui.QIcon()

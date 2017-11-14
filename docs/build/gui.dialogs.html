@@ -169,6 +169,7 @@
             
   <div class="section" id="module-gui.dialogs">
 <span id="gui-dialogs-package"></span><h1>gui.dialogs package<a class="headerlink" href="#module-gui.dialogs" title="Permalink to this headline">¶</a></h1>
+<p>This package contains the logic behind the graphical user interfaces.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -178,21 +179,26 @@
 <dt id="gui.dialogs.about_dialog.AboutDialog">
 <em class="property">class </em><code class="descname">AboutDialog</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/about_dialog.html#AboutDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.about_dialog.AboutDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMessageBox</span></code></p>
+<p>This class represents the dialog that opens when the user clicks on <cite>File-&gt;About</cite> when using the graphical
+interface.</p>
 <dl class="method">
 <dt id="gui.dialogs.about_dialog.AboutDialog.set_logo_icon">
 <code class="descname">set_logo_icon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/about_dialog.html#AboutDialog.set_logo_icon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.about_dialog.AboutDialog.set_logo_icon" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Sets the default logo to the dialog.</p>
+</dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="module-gui.dialogs.create_dataset_dialog">
 <span id="gui-dialogs-create-dataset-dialog-module"></span><h2>gui.dialogs.create_dataset_dialog module<a class="headerlink" href="#module-gui.dialogs.create_dataset_dialog" title="Permalink to this headline">¶</a></h2>
+<p>This module contains the implementation of the logic used by the graphical interface for dataset creation.</p>
 <dl class="class">
 <dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI">
 <em class="property">class </em><code class="descname">CreateDatasetGUI</code><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="gui.design.html#gui.design.create_dataset_gui.Ui_CreateDataset_main_window" title="gui.design.create_dataset_gui.Ui_CreateDataset_main_window"><code class="xref py py-class docutils literal"><span class="pre">gui.design.create_dataset_gui.Ui_CreateDataset_main_window</span></code></a></p>
 <p>Dataset creation GUI.</p>
+<p>Initializes the GUI and connects its widgets to the corresponding functions.</p>
 <dl class="method">
 <dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_thermo_thread">
 <code class="descname">connect_thermo_thread</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.connect_thermo_thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_thermo_thread" title="Permalink to this definition">¶</a></dt>
@@ -201,7 +207,9 @@
 <dl class="method">
 <dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_widgets">
 <code class="descname">connect_widgets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.connect_widgets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_widgets" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Connects all widgets defined in <a class="reference internal" href="gui.design.html#module-gui.design.create_dataset_gui" title="gui.design.create_dataset_gui"><code class="xref py py-mod docutils literal"><span class="pre">create_dataset_gui</span></code></a> to the functions which must be
+executed when the widgets are triggered.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.current_module_is_broken">
@@ -266,7 +274,8 @@
 <dl class="method">
 <dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.set_logo_icon">
 <code class="descname">set_logo_icon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#CreateDatasetGUI.set_logo_icon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.set_logo_icon" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Sets the default logo icon.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="gui.dialogs.create_dataset_dialog.CreateDatasetGUI.start_playing_frames">
@@ -359,15 +368,36 @@
 <dt id="gui.dialogs.create_dataset_dialog.VideoLoaderThread">
 <em class="property">class </em><code class="descname">VideoLoaderThread</code><span class="sig-paren">(</span><em>video_path: str</em>, <em>from_index: int</em>, <em>to_index: int</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#VideoLoaderThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.VideoLoaderThread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtCore.QThread</span></code></p>
+<p>Class representing a thread which is responsible for loading a video from file.
+Internally it loads the video by using an instance of <a class="reference internal" href="thermography.io.html#thermography.io.io.VideoLoader" title="thermography.io.io.VideoLoader"><code class="xref py py-class docutils literal"><span class="pre">VideoLoader</span></code></a>.</p>
+<p>Initializes the video loader thread with the video path and the loading indices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>video_path</strong> – Absolute path of the video to load.</li>
+<li><strong>from_index</strong> – Start index of the video-frame to be loaded (inclusive).</li>
+<li><strong>to_index</strong> – End index of the video-frame to be loaded (exclusive).</li>
+<li><strong>parent</strong> – Parent class of the thread.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="gui.dialogs.create_dataset_dialog.VideoLoaderThread.finish_signal">
 <code class="descname">finish_signal</code><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.VideoLoaderThread.finish_signal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Signal emitted when the video loader has terminated the loading of the video frame.
+This signal contains a python list of the loaded frames.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="gui.dialogs.create_dataset_dialog.VideoLoaderThread.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/dialogs/create_dataset_dialog.html#VideoLoaderThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.dialogs.create_dataset_dialog.VideoLoaderThread.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function executed automatically when the thread is started. When the video is loaded a <cite>pyqtSignal</cite>
+containing all loaded frames is emitted</p>
+</dd></dl>
 
 </dd></dl>
 

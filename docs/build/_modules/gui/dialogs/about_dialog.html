@@ -165,6 +165,8 @@
 
 
 <div class="viewcode-block" id="AboutDialog"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.about_dialog.AboutDialog">[docs]</a><span class="k">class</span> <span class="nc">AboutDialog</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class represents the dialog that opens when the user clicks on `File-&gt;About` when using the graphical</span>
+<span class="sd">    interface.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Opened About dialog&quot;</span><span class="p">)</span>
@@ -180,6 +182,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_logo_icon</span><span class="p">()</span>
 
 <div class="viewcode-block" id="AboutDialog.set_logo_icon"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.about_dialog.AboutDialog.set_logo_icon">[docs]</a>    <span class="k">def</span> <span class="nf">set_logo_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default logo to the dialog.&quot;&quot;&quot;</span>
         <span class="n">gui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tg</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get_thermography_root_dir</span><span class="p">(),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">),</span> <span class="s2">&quot;gui&quot;</span><span class="p">)</span>
         <span class="n">logo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gui_path</span><span class="p">,</span> <span class="s2">&quot;img/logo.png&quot;</span><span class="p">)</span>
         <span class="n">icon</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">()</span>

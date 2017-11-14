@@ -156,7 +156,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for gui.dialogs.create_dataset_dialog</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module contains the implementation of the logic used by the graphical interface for dataset creation.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -171,25 +173,41 @@
 
 
 <div class="viewcode-block" id="VideoLoaderThread"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.VideoLoaderThread">[docs]</a><span class="k">class</span> <span class="nc">VideoLoaderThread</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QThread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class representing a thread which is responsible for loading a video from file.</span>
+<span class="sd">    Internally it loads the video by using an instance of :class:`~thermography.io.io.VideoLoader`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">finish_signal</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Signal emitted when the video loader has terminated the loading of the video frame.</span>
+<span class="sd">    This signal contains a python list of the loaded frames.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">from_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the video loader thread with the video path and the loading indices.</span>
+
+<span class="sd">        :param video_path: Absolute path of the video to load.</span>
+<span class="sd">        :param from_index: Start index of the video-frame to be loaded (inclusive).</span>
+<span class="sd">        :param to_index: End index of the video-frame to be loaded (exclusive).</span>
+<span class="sd">        :param parent: Parent class of the thread.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">video_path</span> <span class="o">=</span> <span class="n">video_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">from_index</span> <span class="o">=</span> <span class="n">from_index</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">to_index</span> <span class="o">=</span> <span class="n">to_index</span>
 
 <div class="viewcode-block" id="VideoLoaderThread.run"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.VideoLoaderThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function executed automatically when the thread is started. When the video is loaded a `pyqtSignal`</span>
+<span class="sd">        containing all loaded frames is emitted</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">video_loader</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">VideoLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">video_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_index</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finish_signal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">video_loader</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="CreateDatasetGUI"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI">[docs]</a><span class="k">class</span> <span class="nc">CreateDatasetGUI</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">,</span> <span class="n">Ui_CreateDataset_main_window</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Dataset creation GUI.</span>
+    <span class="sd">&quot;&quot;&quot;Dataset creation GUI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the GUI and connects its widgets to the corresponding functions.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating dataset creation GUI&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -213,6 +231,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">connect_widgets</span><span class="p">()</span>
 
 <div class="viewcode-block" id="CreateDatasetGUI.set_logo_icon"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.set_logo_icon">[docs]</a>    <span class="k">def</span> <span class="nf">set_logo_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default logo icon.&quot;&quot;&quot;</span>
         <span class="n">gui_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tg</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get_thermography_root_dir</span><span class="p">(),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">),</span> <span class="s2">&quot;gui&quot;</span><span class="p">)</span>
         <span class="n">logo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gui_path</span><span class="p">,</span> <span class="s2">&quot;img/logo.png&quot;</span><span class="p">)</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting logo </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logo_path</span><span class="p">))</span>
@@ -221,6 +240,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CreateDatasetGUI.connect_widgets"><a class="viewcode-back" href="../../../gui.dialogs.html#gui.dialogs.create_dataset_dialog.CreateDatasetGUI.connect_widgets">[docs]</a>    <span class="k">def</span> <span class="nf">connect_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Connects all widgets defined in :mod:`~gui.design.create_dataset_gui` to the functions which must be</span>
+<span class="sd">        executed when the widgets are triggered.&quot;&quot;&quot;</span>
         <span class="n">Logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Connecting all widgets&quot;</span><span class="p">)</span>
         <span class="c1"># File buttons</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_about</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_about_window</span><span class="p">)</span>

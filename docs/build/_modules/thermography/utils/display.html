@@ -156,7 +156,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for thermography.utils.display</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">cv2</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module contains multiple utility functions which can be used to display intermediate representations computed by the :class:`ThermoApp &lt;thermography.thermo_app.ThermoApp&gt;` class.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;draw_intersections&quot;</span><span class="p">,</span> <span class="s2">&quot;draw_motion&quot;</span><span class="p">,</span> <span class="s2">&quot;draw_rectangles&quot;</span><span class="p">,</span> <span class="s2">&quot;draw_segments&quot;</span><span class="p">,</span>
@@ -164,9 +166,7 @@
 
 
 <div class="viewcode-block" id="draw_intersections"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.draw_intersections">[docs]</a><span class="k">def</span> <span class="nf">draw_intersections</span><span class="p">(</span><span class="n">intersections</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">base_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">windows_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Draws the intersections contained in the first parameter onto the base image passed as second parameter and displays</span>
-<span class="sd">    the image using the third parameter as title.</span>
+    <span class="sd">&quot;&quot;&quot;Draws the intersections contained in the first parameter onto the base image passed as second parameter and displays the image using the third parameter as title.</span>
 
 <span class="sd">    :param intersections: List of intersection coordinates.</span>
 <span class="sd">    :param base_image: Base image over which to render the intersections.</span>
@@ -183,9 +183,7 @@
 
 
 <div class="viewcode-block" id="draw_motion"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.draw_motion">[docs]</a><span class="k">def</span> <span class="nf">draw_motion</span><span class="p">(</span><span class="n">flow</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">base_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">windows_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">draw_mean_motion</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">nums</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Draws the motion flow contained in the first parameter onto the base image passed as second argument and displays</span>
-<span class="sd">    the image using the third argument as title.</span>
+    <span class="sd">&quot;&quot;&quot;Draws the motion flow contained in the first parameter onto the base image passed as second argument and displays the image using the third argument as title.</span>
 
 <span class="sd">    :param flow: Numpy array of flow computed by the motion estimator.</span>
 <span class="sd">    :param base_image: Base image over which to render the intersection. Note that this image must have the dimensions used for the flow computation.</span>
@@ -223,10 +221,10 @@
 
 <div class="viewcode-block" id="draw_segments"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.draw_segments">[docs]</a><span class="k">def</span> <span class="nf">draw_segments</span><span class="p">(</span><span class="n">segments</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">base_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">windows_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">render_indices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                   <span class="n">colors</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Draws the segments contained in the first parameter onto the base image passed as second parameter and displays</span>
-<span class="sd">    the image using the third parameter as title. The indices associated to the segments are rendered on the image</span>
-<span class="sd">    depending on &#39;render_indices&#39;.</span>
+    <span class="sd">&quot;&quot;&quot;Draws the segments contained in the first parameter onto the base image passed as second parameter.</span>
+
+<span class="sd">    This function displays the image using the third parameter as title.</span>
+<span class="sd">    The indices associated to the segments are rendered on the image depending on &#39;render_indices&#39;.</span>
 <span class="sd">    A list of colors can be passed as argument to specify the colors to be used for different segment clusters.</span>
 
 <span class="sd">    :param segments: List of segment clusters.</span>
@@ -253,9 +251,9 @@
 
 
 <div class="viewcode-block" id="draw_rectangles"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.draw_rectangles">[docs]</a><span class="k">def</span> <span class="nf">draw_rectangles</span><span class="p">(</span><span class="n">rectangles</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">base_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">windows_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Draws the rectangles contained in the first parameter onto the base image passed as second parameter and displays</span>
-<span class="sd">    the image using the third parameter as title.</span>
+    <span class="sd">&quot;&quot;&quot;Draws the rectangles contained in the first parameter onto the base image passed as second parameter.</span>
+
+<span class="sd">    This function displays the image using the third parameter as title.</span>
 
 <span class="sd">    :param rectangles: List of rectangles.</span>
 <span class="sd">    :param base_image: Base image over which to render the rectangles.</span>
@@ -277,8 +275,7 @@
 
 
 <div class="viewcode-block" id="random_color"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.random_color">[docs]</a><span class="k">def</span> <span class="nf">random_color</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates a random RGB color in [0, 255]^3</span>
+    <span class="sd">&quot;&quot;&quot;Generates a random RGB color in [0, 255]^3</span>
 
 <span class="sd">    :return: A randomly generated color defined as a triplet of RGB values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -287,8 +284,7 @@
 
 
 <div class="viewcode-block" id="color_from_probabilities"><a class="viewcode-back" href="../../../thermography.utils.html#thermography.utils.display.color_from_probabilities">[docs]</a><span class="k">def</span> <span class="nf">color_from_probabilities</span><span class="p">(</span><span class="n">prob</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Constructs a color tuple given the probability distribution prob.</span>
+    <span class="sd">&quot;&quot;&quot;Constructs a color tuple given the probability distribution prob.</span>
 
 <span class="sd">    :param prob: A three dimensional numpy array containing class probabilities.</span>
 <span class="sd">    :return: The color associated to the probability distribution.</span>
