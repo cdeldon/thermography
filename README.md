@@ -1,9 +1,10 @@
 ![](https://github.com/cdeldon/thermography/blob/master/docs/source/_static/logo.png?raw=true "Thermography Logo")
 
-Branch|Linux
-:----:|:----:
-Master|[![BuildStatusMaster](https://travis-ci.org/cdeldon/thermography.svg?branch=master)](https://travis-ci.org/cdeldon)
-Devel|[![BuildStatusDev](https://travis-ci.org/cdeldon/thermography.svg?branch=devel)](https://travis-ci.org/cdeldon)
+Branch|Linux|Windows|
+:----:|:----:|:----:|
+Master|[![BuildStatusMaster](https://travis-ci.org/cdeldon/thermography.svg?branch=master)](https://travis-ci.org/cdeldon)|[![BuildStatusMasterWin](https://ci.appveyor.com/api/projects/status/ve3xbuictiakc5cj/branch/master?svg=true&passingText=passing)](https://ci.appveyor.com/project/cdeldon/thermography/branch/master)
+Devel|[![BuildStatusDev](https://travis-ci.org/cdeldon/thermography.svg?branch=devel)](https://travis-ci.org/cdeldon)|[![BuildStatusMasterWin](https://ci.appveyor.com/api/projects/status/ve3xbuictiakc5cj/branch/devel?svg=true&passingText=passing)](https://ci.appveyor.com/project/cdeldon/thermography/branch/devel)
+
 
 This repository contains the implementation of a feasibility study for automatic detection of defected solar panel modules.
 The developed framework has been coined _Thermography_ due to the fact that the input data to the system is a sequence of images in the infrared spectrum.
