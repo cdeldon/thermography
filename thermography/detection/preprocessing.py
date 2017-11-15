@@ -77,7 +77,7 @@ class FramePreprocessor:
         rotated_frame = rotate_image(scaled_image, self.params.image_rotation)
 
         if self.params.gaussian_blur > 0:
-            self.scaled_image = cv2.blur(self.scaled_image, (self.params.gaussian_blur, self.params.gaussian_blur))
+            rotated_frame = cv2.blur(rotated_frame, (self.params.gaussian_blur, self.params.gaussian_blur))
 
         if self.channels == 1:
             self.scaled_image = rotated_frame

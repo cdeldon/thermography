@@ -18,8 +18,10 @@ def draw_intersections(intersections: list, base_image: np.ndarray, windows_name
     if mean_color[0] == mean_color[1] == mean_color[2]:
         mean_color = np.array([255, 255, 0])
     opposite_color = np.array([255, 255, 255]) - mean_color
+    opposite_color = (int(opposite_color[0]), int(opposite_color[1]), int(opposite_color[2]))
     for intersection in intersections:
-        cv2.circle(base_image, (int(intersection[0]), int(intersection[1])), 2, opposite_color, 3, cv2.LINE_4)
+        cv2.circle(img=base_image, center=(int(intersection[0]), int(intersection[1])), radius=2, color=opposite_color,
+                   thickness=3, lineType=cv2.LINE_4)
 
     cv2.imshow(windows_name, base_image)
 
