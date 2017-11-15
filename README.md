@@ -22,15 +22,62 @@ The repository is structured as follows:
 The _python_ scripts located in the root directory can be used to launch different executables which exploit the _Thermography_ framework for solar panel module detection and classification.
 
 ### Installation
+
+*Thermography* has been tested using the 64-bit version of *python 3.5*.
+If you are using an other version of python, consider installing and using *Thermography* inside a virtual environment.
+
+##### System-wide installation
+
+Here follow the steps to install *Thermography* system-wide.
+
+**Get the source**
+
 Download the git repository:
+
 ``` lang=bash
-$ git clone https://github.com/cdeldon/thermography.git
-$ cd thermography/
+    $ git clone https://github.com/cdeldon/thermography.git
+    $ cd thermography/
 ```
 
+Or download the following [zip](https://github.com/cdeldon/thermography/archive/master.zip).
+
+**Prerequisites**
+
 Install the prerequisites:
+
 ``` lang=bash
-$ pip install -r requirements.txt
+    $ pip install -r requirements.txt
+```
+
+#####Anaconda
+
+Here follow the steps to install *Thermography* in a virtual environment created using [Anaconda](https://www.anaconda.com/download/).
+
+**Get the source**
+
+Download the git repository:
+
+``` lang=bash
+    $ git clone https://github.com/cdeldon/thermography.git
+    $ cd thermography/
+```
+
+Or download the following [zip](https://github.com/cdeldon/thermography/archive/master.zip).
+
+**Virtual environment**
+
+Create a new virtual environment
+
+``` lang=bash
+   $ conda create --name my_env python=3.5
+   $ activate my_env
+```
+
+**Prerequisites**
+Install the prerequisites:
+
+``` lang=bash
+    (my_env) $ pip install -r requirements.txt
 ```
 
 ### Example scripts

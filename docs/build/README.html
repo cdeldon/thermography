@@ -154,26 +154,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <table border="1" class="docutils">
-<colgroup>
-<col width="30%" />
-<col width="70%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Branch</th>
-<th class="head">Linux</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Master</td>
-<td><a class="reference external" href="https://travis-ci.org/cdeldon"><img alt="BuildStatusMaster" src="https://travis-ci.org/cdeldon/thermography.svg?branch=master" /></a></td>
-</tr>
-<tr class="row-odd"><td>Devel</td>
-<td><a class="reference external" href="https://travis-ci.org/cdeldon"><img alt="BuildStatusDev" src="https://travis-ci.org/cdeldon/thermography.svg?branch=devel" /></a></td>
-</tr>
-</tbody>
-</table>
-<p>This repository contains the implementation of a feasibility study for
+  <p>This repository contains the implementation of a feasibility study for
 automatic detection of defected solar panel modules. The developed
 framework has been coined <em>Thermography</em> due to the fact that the input
 data to the system is a sequence of images in the infrared spectrum.</p>
@@ -199,14 +180,45 @@ solar panel module detection and classification.</p>
 </div>
 <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p><em>Thermography</em> has been tested using the 64-bit version of <em>python 3.5</em>.
+If you are using an other version of python, consider installing and using <em>Thermography</em> inside a virtual environment.</p>
+<div class="section" id="system-wide-installation">
+<h2>System-wide installation<a class="headerlink" href="#system-wide-installation" title="Permalink to this headline">¶</a></h2>
+<p>Here follow the steps to install <em>Thermography</em> system-wide.</p>
+<p><strong>Get the source</strong></p>
 <p>Download the git repository:</p>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ git clone https://github.com/cdeldon/thermography.git
 $ cd thermography/
 </pre></div>
 </div>
+<p>Or download the following <a class="reference external" href="https://github.com/cdeldon/thermography/archive/master.zip">zip</a>.</p>
+<p><strong>Prerequisites</strong></p>
 <p>Install the prerequisites:</p>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ pip install -r requirements.txt
 </pre></div>
+</div>
+</div>
+<div class="section" id="anaconda">
+<h2>Anaconda<a class="headerlink" href="#anaconda" title="Permalink to this headline">¶</a></h2>
+<p>Here follow the steps to install <em>Thermography</em> in a virtual environment created using <a class="reference external" href="https://www.anaconda.com/download/">Anaconda</a>.</p>
+<p><strong>Get the source</strong></p>
+<p>Download the git repository:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ git clone https://github.com/cdeldon/thermography.git
+$ cd thermography/
+</pre></div>
+</div>
+<p>Or download the following <a class="reference external" href="https://github.com/cdeldon/thermography/archive/master.zip">zip</a>.</p>
+<p><strong>Virtual environment</strong></p>
+<p>Create a new virtual environment</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>$ conda create --name my_env python=3.5
+$ activate my_env
+</pre></div>
+</div>
+<p><strong>Prerequisites</strong>
+Install the prerequisites:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>(my_env) $ pip install -r requirements.txt
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="example-scripts">

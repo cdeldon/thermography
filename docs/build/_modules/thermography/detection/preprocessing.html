@@ -164,7 +164,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PreprocessingParams&quot;</span><span class="p">,</span> <span class="s2">&quot;FramePreprocessor&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="PreprocessingParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.PreprocessingParams">[docs]</a><span class="k">class</span> <span class="nc">PreprocessingParams</span><span class="p">:</span>
+<div class="viewcode-block" id="PreprocessingParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.preprocessing.PreprocessingParams">[docs]</a><span class="k">class</span> <span class="nc">PreprocessingParams</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Parameters used by the :class:`.FramePreprocessor`.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -176,14 +176,14 @@
 <span class="sd">       :ivar red_threshold: Temperature threshold used to discard `cold` unimportant areas in the image.</span>
 <span class="sd">       :ivar min_area: Minimal surface of retained `important` areas of the image. Warm regions whose surface is smaller than this threshold are discarded.</span>
 <span class="sd">       &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_blur</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_blur</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_scaling</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_rotation</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">red_threshold</span> <span class="o">=</span> <span class="mi">200</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_area</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span></div>
 
 
-<div class="viewcode-block" id="FramePreprocessor"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.FramePreprocessor">[docs]</a><span class="k">class</span> <span class="nc">FramePreprocessor</span><span class="p">:</span>
+<div class="viewcode-block" id="FramePreprocessor"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.preprocessing.FramePreprocessor">[docs]</a><span class="k">class</span> <span class="nc">FramePreprocessor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Class responsible for preprocessing an image frame.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">PreprocessingParams</span> <span class="o">=</span> <span class="n">PreprocessingParams</span><span class="p">()):</span>
@@ -220,7 +220,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input image has </span><span class="si">{}</span><span class="s2"> channels.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
 
-<div class="viewcode-block" id="FramePreprocessor.preprocess"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.FramePreprocessor.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="FramePreprocessor.preprocess"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.preprocessing.FramePreprocessor.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Preprocesses the :attr:`self.input_image` following this steps:</span>
 
 <span class="sd">            1. The image is scaled using the :attr:`self.params.image_scaling` parameter.</span>
@@ -235,7 +235,7 @@
         <span class="n">rotated_frame</span> <span class="o">=</span> <span class="n">rotate_image</span><span class="p">(</span><span class="n">scaled_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">image_rotation</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">gaussian_blur</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scaled_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">blur</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scaled_image</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">))</span>
+            <span class="n">rotated_frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">blur</span><span class="p">(</span><span class="n">rotated_frame</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">scaled_image</span> <span class="o">=</span> <span class="n">rotated_frame</span>

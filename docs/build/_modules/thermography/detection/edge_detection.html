@@ -163,7 +163,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;EdgeDetectorParams&quot;</span><span class="p">,</span> <span class="s2">&quot;EdgeDetector&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="EdgeDetectorParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.EdgeDetectorParams">[docs]</a><span class="k">class</span> <span class="nc">EdgeDetectorParams</span><span class="p">:</span>
+<div class="viewcode-block" id="EdgeDetectorParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.edge_detection.EdgeDetectorParams">[docs]</a><span class="k">class</span> <span class="nc">EdgeDetectorParams</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Parameters used by the :class:`.EdgeDetector`.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes the edge detector parameters to their default value.</span>
@@ -180,7 +180,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dilation_steps</span> <span class="o">=</span> <span class="mi">4</span></div>
 
 
-<div class="viewcode-block" id="EdgeDetector"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.EdgeDetector">[docs]</a><span class="k">class</span> <span class="nc">EdgeDetector</span><span class="p">:</span>
+<div class="viewcode-block" id="EdgeDetector"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.edge_detection.EdgeDetector">[docs]</a><span class="k">class</span> <span class="nc">EdgeDetector</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Class responsible for detecting edges in greyscale images.</span>
 <span class="sd">    The approach taken to detect edges in the input greyscale image is the following:</span>
 
@@ -199,7 +199,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">edge_image</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="EdgeDetector.detect"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.EdgeDetector.detect">[docs]</a>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="EdgeDetector.detect"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.edge_detection.EdgeDetector.detect">[docs]</a>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Detects the edges in the image passed to the constructor using the parameters passed to the constructor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">canny</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Canny</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_image</span><span class="p">,</span> <span class="n">threshold1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">hysteresis_min_thresh</span><span class="p">,</span>

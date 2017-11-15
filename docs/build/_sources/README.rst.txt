@@ -1,10 +1,3 @@
-+----------+-----------------------+
-| Branch   | Linux                 |
-+==========+=======================+
-| Master   | |BuildStatusMaster|   |
-+----------+-----------------------+
-| Devel    | |BuildStatusDev|      |
-+----------+-----------------------+
 
 This repository contains the implementation of a feasibility study for
 automatic detection of defected solar panel modules. The developed
@@ -33,6 +26,14 @@ solar panel module detection and classification.
 
 Installation
 ~~~~~~~~~~~~
+*Thermography* has been tested using the 64-bit version of *python 3.5*.
+If you are using an other version of python, consider installing and using *Thermography* inside a virtual environment.
+
+System-wide installation
+''''''''''''''''''''''''
+Here follow the steps to install *Thermography* system-wide.
+
+**Get the source**
 
 Download the git repository:
 
@@ -41,11 +42,48 @@ Download the git repository:
     $ git clone https://github.com/cdeldon/thermography.git
     $ cd thermography/
 
+Or download the following `zip <https://github.com/cdeldon/thermography/archive/master.zip>`__.
+
+**Prerequisites**
+
 Install the prerequisites:
 
 .. code:: bash
 
     $ pip install -r requirements.txt
+
+Anaconda
+''''''''
+Here follow the steps to install *Thermography* in a virtual environment created using `Anaconda <https://www.anaconda.com/download/>`__.
+
+**Get the source**
+
+Download the git repository:
+
+.. code:: bash
+
+    $ git clone https://github.com/cdeldon/thermography.git
+    $ cd thermography/
+
+Or download the following `zip <https://github.com/cdeldon/thermography/archive/master.zip>`__.
+
+**Virtual environment**
+
+Create a new virtual environment
+
+.. code:: bash
+
+   $ conda create --name my_env python=3.5
+   $ activate my_env
+
+**Prerequisites**
+Install the prerequisites:
+
+.. code:: bash
+
+    (my_env) $ pip install -r requirements.txt
+
+
 
 Example scripts
 ~~~~~~~~~~~~~~~
@@ -125,10 +163,6 @@ The same tests can be run as a normal python script as follows:
     $ cd thermography/
     $ python main_test.py
 
-.. |BuildStatusMaster| image:: https://travis-ci.org/cdeldon/thermography.svg?branch=master
-   :target: https://travis-ci.org/cdeldon
-.. |BuildStatusDev| image:: https://travis-ci.org/cdeldon/thermography.svg?branch=devel
-   :target: https://travis-ci.org/cdeldon
 .. |GUI| image:: _static/gui_video.PNG
 .. |AtteImage| image:: _static/attention_image.PNG
 .. |EdgeImage| image:: _static/edge_image.PNG

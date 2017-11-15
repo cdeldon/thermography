@@ -164,7 +164,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;IntersectionDetector&quot;</span><span class="p">,</span> <span class="s2">&quot;IntersectionDetectorParams&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="IntersectionDetectorParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.IntersectionDetectorParams">[docs]</a><span class="k">class</span> <span class="nc">IntersectionDetectorParams</span><span class="p">:</span>
+<div class="viewcode-block" id="IntersectionDetectorParams"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.intersection_detection.IntersectionDetectorParams">[docs]</a><span class="k">class</span> <span class="nc">IntersectionDetectorParams</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Parameters used by the :class:`.IntersectionDetector`.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -176,7 +176,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">angle_threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="mi">25</span></div>
 
 
-<div class="viewcode-block" id="IntersectionDetector"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.IntersectionDetector">[docs]</a><span class="k">class</span> <span class="nc">IntersectionDetector</span><span class="p">:</span>
+<div class="viewcode-block" id="IntersectionDetector"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.intersection_detection.IntersectionDetector">[docs]</a><span class="k">class</span> <span class="nc">IntersectionDetector</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Class responsible for detecting intersections between segments.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_segments</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">IntersectionDetectorParams</span> <span class="o">=</span> <span class="n">IntersectionDetectorParams</span><span class="p">()):</span>
@@ -195,7 +195,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cluster_cluster_intersections</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raw_intersections</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="IntersectionDetector.detect"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.IntersectionDetector.detect">[docs]</a>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IntersectionDetector.detect"><a class="viewcode-back" href="../../../thermography.detection.html#thermography.detection.intersection_detection.IntersectionDetector.detect">[docs]</a>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Detects the intersections between the segments passed to the constructor using the parameters passed to the</span>
 <span class="sd">        constructor.</span>
 
