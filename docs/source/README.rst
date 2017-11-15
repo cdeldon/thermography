@@ -77,6 +77,7 @@ Create a new virtual environment
    $ activate my_env
 
 **Prerequisites**
+
 Install the prerequisites:
 
 .. code:: bash
