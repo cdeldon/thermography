@@ -26,11 +26,11 @@ The _python_ scripts located in the root directory can be used to launch differe
 *Thermography* has been tested using the 64-bit version of *python 3.5*.
 If you are using an other version of python, consider installing and using *Thermography* inside a virtual environment.
 
-##### System-wide installation
+#### System-wide installation
 
 Here follow the steps to install *Thermography* system-wide.
 
-**Get the source**
+##### Get the source
 
 Download the git repository:
 
@@ -41,7 +41,7 @@ Download the git repository:
 
 Or download the following [zip](https://github.com/cdeldon/thermography/archive/master.zip).
 
-**Prerequisites**
+##### Prerequisites
 
 Install the prerequisites:
 
@@ -49,11 +49,11 @@ Install the prerequisites:
     $ pip install -r requirements.txt
 ```
 
-#####Anaconda
+#### Anaconda
 
 Here follow the steps to install *Thermography* in a virtual environment created using [Anaconda](https://www.anaconda.com/download/).
 
-**Get the source**
+##### Get the source
 
 Download the git repository:
 
@@ -64,7 +64,7 @@ Download the git repository:
 
 Or download the following [zip](https://github.com/cdeldon/thermography/archive/master.zip).
 
-**Virtual environment**
+##### Virtual environment
 
 Create a new virtual environment
 
@@ -73,7 +73,7 @@ Create a new virtual environment
    $ activate my_env
 ```
 
-**Prerequisites**
+##### Prerequisites
 Install the prerequisites:
 
 ``` lang=bash
