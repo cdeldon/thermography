@@ -372,7 +372,7 @@ class Ui_CreateDataset_main_window(object):
         self.preprocessing_grid_layout.addWidget(self.angle_label, 0, 0, 1, 1)
         self.blur_value = QtWidgets.QSpinBox(self.preprocessing_tab)
         self.blur_value.setMaximum(15)
-        self.blur_value.setProperty("value", 3)
+        self.blur_value.setProperty("value", 1)
         self.blur_value.setObjectName("blur_value")
         self.preprocessing_grid_layout.addWidget(self.blur_value, 1, 1, 1, 1)
         self.blur_label = QtWidgets.QLabel(self.preprocessing_tab)
