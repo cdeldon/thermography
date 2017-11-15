@@ -110,6 +110,7 @@ logs/*
 resources/*
 !resources/.gitkeep
 !resources/weights/*
+!resources/thermography_in_action.avi
 
 # Documentation
 !/docs/build/
